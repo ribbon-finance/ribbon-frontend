@@ -1,6 +1,6 @@
 /* eslint-disable prefer-destructuring */
 /* eslint-disable no-bitwise */
-import { ethers, providers } from "ethers";
+import { ethers } from "ethers";
 import { BytesLike } from "ethers";
 
 export type ISignatureLike =
@@ -30,34 +30,6 @@ export const domainType = [
   { name: "version", type: "string" },
   { name: "chainId", type: "uint256" },
 ];
-
-// The first signature required to use the random private key
-const signingKeyType = [{ name: "account", type: "address" }];
-
-interface ISigningKeyMessage {
-  account: string;
-}
-
-const registerType = [
-  { name: "key", type: "address" },
-  { name: "expiry", type: "uint256" },
-];
-
-interface IRegisterMessage {
-  key: string;
-  expiry: string;
-}
-
-interface IAuthInfo {
-  // Private key
-  signingKey: string;
-  apiKey: string;
-}
-
-type LocalStorageAuthInfo = {
-  // Wallet connected
-  [address: string]: IAuthInfo;
-};
 
 export function splitSignature(signature: ISignatureLike): ISignature {
   const { isBytesLike, arrayify, hexlify, zeroPad, isHexString, hexZeroPad } =
@@ -141,7 +113,6 @@ export function splitSignature(signature: ISignatureLike): ISignature {
     }
 
     // Use recid and v to populate each other
-    console.log({ result });
     if (result.recoveryParam == null) {
       if (result.v == null) {
         throw Error("signature missing v and recoveryParam");

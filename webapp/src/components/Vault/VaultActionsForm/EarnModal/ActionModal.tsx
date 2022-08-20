@@ -1,4 +1,4 @@
-import React, { useCallback, useMemo, useState } from "react";
+import React, { useCallback, useState } from "react";
 import styled from "styled-components";
 import MobileOverlayMenu from "shared/lib/components/Common/MobileOverlayMenu";
 import colors from "shared/lib/designSystem/colors";
@@ -7,18 +7,11 @@ import ActionSteps from "./ActionSteps";
 import { Steps, STEPS } from "./types";
 import sizes from "shared/lib/designSystem/sizes";
 import { BackIcon, CloseIcon } from "shared/lib/assets/icons/icons";
-import {
-  VaultAddressMap,
-  VaultOptions,
-  VaultVersion,
-} from "shared/lib/constants/constants";
+import { VaultOptions, VaultVersion } from "shared/lib/constants/constants";
 import theme from "shared/lib/designSystem/theme";
 import useVaultActionForm from "../../../../hooks/useVaultActionForm";
 
 import { capitalize } from "shared/lib/utils/text";
-import useTokenAllowance from "shared/lib/hooks/useTokenAllowance";
-import { ERC20Token } from "shared/lib/models/eth";
-import { isPracticallyZero } from "shared/lib/utils/math";
 
 const ModalNavigation = styled.div`
   position: absolute;
@@ -53,8 +46,6 @@ const ModalBody = styled.div<ModalBodyProps>`
   max-width: 450px;
   min-height: ${(props) => {
     switch (props.steps) {
-      case STEPS.warningStep:
-        return "350px";
       case STEPS.confirmationStep:
       case STEPS.submittedStep:
         return "unset";
@@ -171,18 +162,6 @@ const ActionModal: React.FC<ActionModalProps> = ({
   const isDesktop = variant === "desktop";
   const { vaultActionForm } = useVaultActionForm(vault.vaultOption);
 
-  const tokenAllowance = useTokenAllowance(
-    "usdc" as ERC20Token,
-    VaultAddressMap[vault.vaultOption].earn
-  );
-
-  /**
-   * Check if approval needed
-   */
-  const showTokenApproval = useMemo(() => {
-    return tokenAllowance ? isPracticallyZero(tokenAllowance, 6) : false;
-  }, [tokenAllowance]);
-
   const renderModalNavigationItem = useCallback(() => {
     if (isDesktop) {
       return;
@@ -216,7 +195,7 @@ const ActionModal: React.FC<ActionModalProps> = ({
         <CloseIcon />
       </ModalHeaderCloseButton>
     );
-  }, [isDesktop, step, onClose]);
+  }, [isDesktop, onClose]);
 
   const renderModalBackButton = useCallback(() => {
     if (!isDesktop) {
@@ -228,10 +207,10 @@ const ActionModal: React.FC<ActionModalProps> = ({
         <BackIcon />
       </ModalHeaderBackButton>
     );
-  }, [isDesktop, step, onClose]);
+  }, [isDesktop]);
 
   const renderModalHeader = useCallback(() => {
-    if (step === STEPS.formStep || step === STEPS.warningStep) {
+    if (step === STEPS.formStep) {
       return (
         <InvisibleModalHeader className="position-relative d-flex align-items-center justify-content-center">
           {renderModalCloseButton()}
@@ -249,33 +228,10 @@ const ActionModal: React.FC<ActionModalProps> = ({
 
     const actionWord = capitalize(vaultActionForm.actionType);
     const titles = {
-      [STEPS.warningStep]: "",
       [STEPS.formStep]: "Deposit",
-      [STEPS.previewStep]: `Deposit Preview`,
-      [STEPS.confirmationStep]: (() => {
-        switch (vaultActionForm.actionType) {
-          case "withdraw":
-            if (vaultActionForm.withdrawOption === "standard") {
-              return "Confirm Transaction";
-            }
-
-            return `Confirm ${actionWord}`;
-          default:
-            return `Confirm ${actionWord}`;
-        }
-      })(),
-      [STEPS.submittedStep]: (() => {
-        switch (vaultActionForm.actionType) {
-          case "withdraw":
-            if (vaultActionForm.withdrawOption === "standard") {
-              return "Initiating Withdrawal";
-            }
-
-            return "Transaction Submitted";
-          default:
-            return "Transaction Submitted";
-        }
-      })(),
+      [STEPS.previewStep]: "Deposit Preview",
+      [STEPS.confirmationStep]: `Confirm ${actionWord}`,
+      [STEPS.submittedStep]: "Transaction Submitted",
     };
 
     return (

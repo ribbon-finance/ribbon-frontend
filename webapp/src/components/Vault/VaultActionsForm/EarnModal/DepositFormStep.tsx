@@ -1,7 +1,6 @@
-import React, { useCallback, useEffect, useMemo, useState } from "react";
+import React, { useCallback, useMemo, useState } from "react";
 import styled from "styled-components";
 import { BigNumber } from "ethers";
-import { useTranslation } from "react-i18next";
 
 import {
   SecondaryText,
@@ -13,46 +12,30 @@ import {
   BaseInputButton,
 } from "shared/lib/designSystem";
 import { ActionButton } from "shared/lib/components/Common/buttons";
-import { ACTIONS, ActionType, V2WithdrawOption } from "./types";
-import { formatBigNumber, isPracticallyZero } from "shared/lib/utils/math";
-import { getAssetDecimals, getAssetDisplay } from "shared/lib/utils/asset";
+import { ActionType } from "./types";
+import { formatBigNumber } from "shared/lib/utils/math";
+import { getAssetDisplay } from "shared/lib/utils/asset";
 import { Assets } from "shared/lib/store/types";
 import {
   VaultOptions,
-  VaultFees,
   VaultVersion,
-  isPutVault,
-  isNativeToken,
   VaultMaxDeposit,
-  VaultAllowedDepositAssets,
-  VaultAddressMap,
 } from "shared/lib/constants/constants";
 import { getVaultColor } from "shared/lib/utils/vault";
-import { capitalize } from "shared/lib/utils/text";
 import { DepositIcon } from "shared/lib/assets/icons/icons";
 import colors from "shared/lib/designSystem/colors";
 import theme from "shared/lib/designSystem/theme";
 import {
   useAssetBalance,
   useV2VaultData,
-  useV2VaultsData,
 } from "shared/lib/hooks/web3DataContext";
-import useLatestAPY from "shared/lib/hooks/useLatestAPY";
-import useVaultPriceHistory from "shared/lib/hooks/useVaultPerformanceUpdate";
 import { parseUnits } from "ethers/lib/utils";
 import HelpInfo from "shared/lib/components/Common/HelpInfo";
 import TooltipExplanation from "shared/lib/components/Common/TooltipExplanation";
 import useWeb3Wallet from "shared/lib/hooks/useWeb3Wallet";
-import useTokenAllowance from "shared/lib/hooks/useTokenAllowance";
-import { ERC20Token } from "shared/lib/models/eth";
-import { useLocation } from "react-router-dom";
-import useVaultActionForm from "../../../../hooks/useVaultActionForm";
 import useVaultAccounts from "shared/lib/hooks/useVaultAccounts";
 import currency from "currency.js";
 import moment from "moment";
-import { VaultInputValidationErrorList, VaultValidationErrors } from "../types";
-import VaultApprovalForm from "../common/VaultApprovalForm";
-import VaultSignatureForm from "../common/VaultSignatureForm";
 
 const ActionLogoContainer = styled.div<{ color: string }>`
   display: flex;
@@ -79,20 +62,10 @@ const StyledTitle = styled(Title)<{ color?: string }>`
   color: ${(props) => props.color};
 `;
 
-const Arrow = styled.i<{ color: string }>`
-  font-size: 12px;
-  color: ${(props) => props.color};
-`;
-
 const WarningContainer = styled.div<{ color: string }>`
   padding: 8px;
   background: ${(props) => props.color}14;
   border-radius: ${theme.border.radiusSmall};
-`;
-
-const DetailWithTooltipContainer = styled.div`
-  display: flex;
-  align-items: center;
 `;
 
 const DepositFormStep: React.FC<{
@@ -110,9 +83,7 @@ const DepositFormStep: React.FC<{
   vaultOption,
   vaultVersion,
 }) => {
-  const { t } = useTranslation();
   const color = getVaultColor(vaultOption);
-  const latestAPY = useLatestAPY(vaultOption, vaultVersion);
   const {
     data: {
       cap,
@@ -127,7 +98,7 @@ const DepositFormStep: React.FC<{
   const [inputAmount, changeInputAmount] = useState<number>(0);
   const { balance: userAssetBalance } = useAssetBalance(asset);
   const vaultBalanceInAsset = depositBalanceInAsset.add(lockedBalanceInAsset);
-  const { active, chainId } = useWeb3Wallet();
+  const { active } = useWeb3Wallet();
   const vaultMaxDepositAmount = VaultMaxDeposit[vaultOption];
   const { vaultAccounts } = useVaultAccounts(vaultVersion);
   const vaultAccount = vaultAccounts["rEARN"];
@@ -176,29 +147,14 @@ const DepositFormStep: React.FC<{
 
   const isButtonDisabled = useMemo((): boolean => {
     return error ? true : !isInputNonZero;
-  }, [error, inputAmount]);
+  }, [error, isInputNonZero]);
 
   const investedInStrategy = useMemo(() => {
     if (!vaultAccount) {
       return BigNumber.from(0.0);
     }
     return vaultAccount.totalBalance.sub(vaultAccount.totalPendingDeposit);
-  }, [vaultAccount, vaultVersion]);
-
-  /**
-   * Side hooks
-   */
-  const tokenAllowance = useTokenAllowance(
-    "usdc" as ERC20Token,
-    VaultAddressMap[vaultOption].earn
-  );
-
-  /**
-   * Check if approval needed
-   */
-  const showTokenApproval = useMemo(() => {
-    return tokenAllowance && isPracticallyZero(tokenAllowance, decimals);
-  }, [decimals, tokenAllowance]);
+  }, [vaultAccount]);
 
   interface Tooltip {
     title: string;
@@ -217,27 +173,14 @@ const DepositFormStep: React.FC<{
         return "Insufficient balance";
       case "maxExceeded":
         break;
-      // const vaultMaxDepositAmount = VaultMaxDeposit[vaultOption];
-      // return `Maximum ${formatBigNumber(
-      //   vaultMaxDepositAmount,
-      //   getAssetDecimals(asset)
-      // )} ${getAssetDisplay(asset)} Exceeded`;
       case "capacityOverflow":
         return "Insufficient vault capacity";
-      case "withdrawLimitExceeded":
-        return "Withdraw limit exceeded";
-      case "withdrawAmountStaked":
-        return "Withdrawal amount staked";
       default:
         return "";
     }
   }, []);
 
   const [toDepositTime, withdrawalDate] = useMemo(() => {
-    // if (optionLoading) return loadingText;
-
-    // if (!currentOption) return "---";
-
     let firstOpenLoanTime = moment.utc("2022-09-02").set("hour", 17);
 
     let toDepositTime;
@@ -264,10 +207,10 @@ const DepositFormStep: React.FC<{
     const actionDetails: ActionDetail[] = [];
 
     actionDetails.push({
-      key: "Current Position (USDC)",
+      key: "Current Position",
       value: `${currency(formatBigNumber(investedInStrategy, decimals), {
         symbol: "",
-      })}`,
+      })} USDC`,
       tooltip: {
         title: "Current Position",
         explanation: "Something Something current position",
@@ -275,18 +218,18 @@ const DepositFormStep: React.FC<{
     });
 
     actionDetails.push({
-      key: "Wallet Balance (USDC)",
+      key: "Wallet Balance",
       value: `${currency(formatBigNumber(userAssetBalance, decimals), {
         symbol: "",
-      }).format()}`,
+      }).format()} USDC`,
       error: "insufficientBalance",
     });
 
     actionDetails.push({
-      key: "Vault Capacity (USDC)",
+      key: "Vault Capacity",
       value: `${currency(formatBigNumber(cap.sub(totalBalance), decimals), {
         symbol: "",
-      }).format()}`,
+      }).format()} USDC`,
       error: "capacityOverflow",
       tooltip: {
         title: "Vault Capacity",
@@ -304,7 +247,14 @@ const DepositFormStep: React.FC<{
     });
 
     return actionDetails;
-  }, [actionType, latestAPY, t, vaultOption, vaultVersion]);
+  }, [
+    investedInStrategy,
+    decimals,
+    userAssetBalance,
+    cap,
+    totalBalance,
+    toDepositTime,
+  ]);
 
   const handleInputChange = useCallback(
     (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -317,7 +267,7 @@ const DepositFormStep: React.FC<{
     changeInputAmount(
       parseFloat(formatBigNumber(userAssetBalance, decimals, 6))
     );
-  }, [userAssetBalance]);
+  }, [userAssetBalance, decimals]);
 
   /**
    * IMPORTANT
@@ -338,7 +288,7 @@ const DepositFormStep: React.FC<{
       </PrimaryText>
     </WarningContainer>
   );
-  const wrapperFunction = () => {
+  const handleConfirm = () => {
     onClickConfirmButton();
     onClickUpdateInput(inputAmount);
   };
@@ -356,7 +306,7 @@ const DepositFormStep: React.FC<{
         <BaseInput
           type="number"
           className="form-control"
-          aria-label="ETH"
+          aria-label="USDC"
           placeholder="0"
           value={inputAmount}
           onChange={handleInputChange}
@@ -401,26 +351,25 @@ const DepositFormStep: React.FC<{
               error && detail.error
                 ? error === detail.error
                   ? colors.red
-                  : "white"
-                : "white"
+                  : colors.primaryText
+                : colors.primaryText
             }
             className="text-right"
           >
-            {" "}
             {detail.value}
           </StyledTitle>
         </div>
       ))}
-
-      <div style={{ height: 40 }}></div>
+      <div style={{ height: 40 }}> </div>
       <ActionButton
-        onClick={wrapperFunction}
+        onClick={handleConfirm}
         disabled={isButtonDisabled}
         className="btn py-3 mt-2 mb-2"
         color={color}
       >
         Next
       </ActionButton>
+
       {warning}
     </div>
   );

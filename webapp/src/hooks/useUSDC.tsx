@@ -1,44 +1,12 @@
 /* eslint-disable no-underscore-dangle */
 /* eslint-disable camelcase */
-import { BigNumber, ethers } from "ethers";
-import { useContext, useEffect } from "react";
-import React, { useCallback, useMemo, useState } from "react";
-import styled from "styled-components";
+import { BigNumber } from "ethers";
+import { useCallback, useMemo } from "react";
 import { useWeb3Wallet } from "shared/lib/hooks/useWeb3Wallet";
-import { AnimatePresence, motion } from "framer";
-
-import {
-  getAssets,
-  isNativeToken,
-  VaultAddressMap,
-  VaultAllowedDepositAssets,
-  VaultOptions,
-  VaultVersion,
-} from "shared/lib/constants/constants";
-import { useWeb3Context } from "shared/lib/hooks/web3Context";
-import { getVaultColor } from "shared/lib/utils/vault";
-import useERC20Token, { getERC20Token } from "shared/lib/hooks/useERC20Token";
+import { getAssets } from "shared/lib/constants/constants";
+import { getERC20Token } from "shared/lib/hooks/useERC20Token";
 import { ERC20Token } from "shared/lib/models/eth";
-import useLoadingText from "shared/lib/hooks/useLoadingText";
-import {
-  BaseLink,
-  PrimaryText,
-  SecondaryText,
-  Title,
-} from "shared/lib/designSystem";
-import colors from "shared/lib/designSystem/colors";
-import { usePendingTransactions } from "shared/lib/hooks/pendingTransactionsContext";
-import { ActionButton } from "shared/lib/components/Common/buttons";
-import {
-  getAssetColor,
-  getAssetDisplay,
-  getAssetLogo,
-} from "shared/lib/utils/asset";
-import useVaultActionForm from "../../../../hooks/useVaultActionForm";
-import ButtonArrow from "shared/lib/components/Common/ButtonArrow";
-import theme from "shared/lib/designSystem/theme";
-import { ISignature, splitSignature } from "./signing";
-import { setTokenSourceMapRange } from "typescript";
+import { splitSignature } from "shared/lib/utils/signing";
 
 const EIP2612_TYPE = [
   { name: "owner", type: "address" },
@@ -52,7 +20,6 @@ const USDCSign = () => {
   const depositAsset = getAssets("rEARN");
 
   const { chainId, ethereumProvider, account } = useWeb3Wallet();
-  const decimals = 6;
 
   const tokenContract = useMemo(() => {
     if (!chainId) {
