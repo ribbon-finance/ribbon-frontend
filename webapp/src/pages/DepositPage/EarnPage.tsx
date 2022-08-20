@@ -9,12 +9,7 @@ import { AnimatePresence, motion } from "framer-motion";
 import { useV2VaultData, useVaultData } from "shared/lib/hooks/web3DataContext";
 import { formatBigNumber, isPracticallyZero } from "shared/lib/utils/math";
 import usePullUp from "../../hooks/usePullUp";
-import {
-  VaultAddressMap,
-  VaultAllowedDepositAssets,
-  VaultList,
-  VaultOptions,
-} from "shared/lib/constants/constants";
+import { VaultList, VaultOptions } from "shared/lib/constants/constants";
 import { Subtitle } from "shared/lib/designSystem";
 import useVaultOption from "../../hooks/useVaultOption";
 import { getVaultColor } from "shared/lib/utils/vault";
@@ -35,11 +30,7 @@ import {
 
 import { useAirtable } from "shared/lib/hooks/useAirtable";
 import ActionModal from "../../components/Vault/VaultActionsForm/EarnModal/ActionModal";
-import useTokenAllowance from "shared/lib/hooks/useTokenAllowance";
-import { ERC20Token } from "shared/lib/models/eth";
-import VaultApprovalForm from "../../components/Vault/VaultActionsForm/common/VaultApprovalForm";
 import { usePendingTransactions } from "shared/lib/hooks/pendingTransactionsContext";
-import { TransactionInstruction } from "@solana/web3.js";
 import moment from "moment";
 
 const { formatUnits } = ethers.utils;
@@ -233,41 +224,26 @@ const EarnPage = () => {
       return (
         transaction.status === "success" &&
         transaction.type === "deposit" &&
-        transaction.vault === "rEARN"
+        transaction.vault === vaultOption
       );
     });
-  }, [pendingTransactions]);
-  // const { status, deposits, vaultLimit } = useVaultData(
-  //   vaultOption || VaultList[0]
-  // );
-
-  // const {
-  //   data: { asset, cap, decimals, totalBalance },
-  //   loading,
-  // } = useV2VaultData(vaultOption || VaultList[0]);
+  }, [pendingTransactions, vaultOption]);
   const [componentRefs] = useGlobalState("componentRefs");
   const { status } = useVaultData(vaultOption || VaultList[0]);
-
   const {
-    data: { decimals },
+    data: { asset, decimals },
     loading,
-  } = useV2VaultData("rEARN");
+  } = useV2VaultData(vaultOption || VaultList[0]);
+  const { vaultAccounts } = useVaultAccounts(vaultVersion);
+  const vaultAccount = vaultAccounts[vaultOption || VaultList[0]];
+  const Logo = getAssetLogo(asset);
+
   const isLoading = status === "loading" || loading;
   useRedirectOnSwitchChain(getChainByVaultOption(vaultOption as VaultOptions));
-
-  const { vaultAccounts } = useVaultAccounts(vaultVersion);
-
-  const vaultAccount = vaultAccounts["rEARN"];
-
-  const Logo = getAssetLogo("USDC");
 
   let logo = <Logo height="100%" />;
 
   const toDepositTime = useMemo(() => {
-    // if (optionLoading) return loadingText;
-
-    // if (!currentOption) return "---";
-
     let firstOpenLoanTime = moment.utc("2022-09-02").set("hour", 17);
 
     let toDepositTime;
@@ -309,7 +285,6 @@ const EarnPage = () => {
   }, [vaultAccount, decimals]);
 
   const [roi, yieldColor] = useMemo(() => {
-    const vaultAccount = vaultAccounts["rEARN"];
     if (
       !vaultAccount ||
       isPracticallyZero(vaultAccount.totalDeposits, decimals)
@@ -339,7 +314,7 @@ const EarnPage = () => {
         100,
       roiColor,
     ];
-  }, [vaultAccounts, decimals]);
+  }, [vaultAccount, decimals]);
 
   // const [investedInStrategy] = useMemo(() => {
   //   let totalBalance = BigNumber.from(0);
@@ -460,9 +435,13 @@ const EarnPage = () => {
                   Your Balance
                 </BalanceTitle>
                 <HeroText>
-                  {!vaultAccount || isLoading
+                  {isLoading
                     ? "---"
-                    : formatBigNumber(investedInStrategy, decimals)}
+                    : vaultAccount
+                    ? parseFloat(
+                        formatBigNumber(investedInStrategy, decimals)
+                      ).toFixed(2)
+                    : "0.00"}
                 </HeroText>
                 <Subtitle color={yieldColor}>+{roi.toFixed(2)}%</Subtitle>
                 <ViewDetailsButton
@@ -535,8 +514,8 @@ const EarnPage = () => {
       />
       <ActionModal
         vault={{
-          vaultOption: "rEARN",
-          vaultVersion: "earn",
+          vaultOption: vaultOption,
+          vaultVersion: vaultVersion,
         }}
         variant={"desktop"}
         show={showDepositModal}

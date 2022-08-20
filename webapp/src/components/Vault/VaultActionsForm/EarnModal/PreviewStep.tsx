@@ -130,9 +130,15 @@ const PreviewStep: React.FC<{
   } = useV2VaultData(vaultOption);
   const { priceHistory } = useVaultPriceHistory(vaultOption, vaultVersion);
   const [signature, setSignature] = useState<ISignature>();
+
+  interface Tooltip {
+    title: string;
+    explanation: string;
+  }
   interface ActionDetail {
     key: string;
     value: string;
+    tooltip?: Tooltip;
   }
 
   const [toDepositTime, withdrawalDate] = useMemo(() => {
@@ -164,30 +170,30 @@ const PreviewStep: React.FC<{
 
   const [waitingApproval, setWaitingApproval] = useState(false);
 
-  const loadingText = useLoadingText("approving");
+  const loadingText = useLoadingText("permitting");
   const detailRows: ActionDetail[] = useMemo(() => {
     const actionDetails: ActionDetail[] = [];
 
     actionDetails.push({
       key: "Deposit Time",
       value: `${toDepositTime}`,
+      tooltip: {
+        title: "Deposit Time",
+        explanation: "Something Something deposit",
+      },
     });
 
     actionDetails.push({
       key: "Counterparty",
       value: "Ribbon Diverisified",
+      tooltip: {
+        title: "Counterparty",
+        explanation: "Something Something counterparty",
+      },
     });
 
     return actionDetails;
-  }, [
-    actionType,
-    latestAPY,
-    receiveVaultOption,
-    t,
-    vaultOption,
-    vaultVersion,
-    withdrawOption,
-  ]);
+  }, [toDepositTime]);
 
   const originalAmount = formatBigNumber(
     positionAmount,
@@ -553,7 +559,24 @@ const PreviewStep: React.FC<{
               className="d-flex w-100 flex-row align-items-center justify-content-between mt-4"
               key={index}
             >
-              <SecondaryText>{detail.key}</SecondaryText>
+              <div className="d-flex flex-row align-items-center">
+                <SecondaryText>{detail.key}</SecondaryText>
+                {detail.tooltip && (
+                  <TooltipExplanation
+                    title={detail.tooltip.title}
+                    explanation={detail.tooltip.explanation}
+                    renderContent={({ ref, ...triggerHandler }) => (
+                      <HelpInfo
+                        containerRef={ref}
+                        {...triggerHandler}
+                        style={{ marginLeft: "4px" }}
+                      >
+                        i
+                      </HelpInfo>
+                    )}
+                  />
+                )}
+              </div>
               <Title className="text-right">{detail.value}</Title>
             </div>
           ))}
@@ -562,13 +585,13 @@ const PreviewStep: React.FC<{
             disabled={!(signature === undefined)}
             className="btn py-3 mt-4 mb-3"
             color={color}
+            variant={signature === undefined ? "primary" : "earn"}
           >
             {waitingApproval
               ? loadingText
               : signature === undefined
-              ? `Approve USDC`
-              : `You can now deposit`}
-            {/* {actionWord} Now */}
+              ? `PERMIT VAULT TO USE YOUR USDC`
+              : `USDC READY TO DEPOSIT`}
           </ActionButton>
           <ActionButton
             onClick={onClickConfirmButton}

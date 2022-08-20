@@ -75,6 +75,10 @@ const FormTitle = styled(Title)`
   letter-spacing: 1px;
 `;
 
+const StyledTitle = styled(Title)<{ color?: string }>`
+  color: ${(props) => props.color};
+`;
+
 const Arrow = styled.i<{ color: string }>`
   font-size: 12px;
   color: ${(props) => props.color};
@@ -196,9 +200,15 @@ const DepositFormStep: React.FC<{
     return tokenAllowance && isPracticallyZero(tokenAllowance, decimals);
   }, [decimals, tokenAllowance]);
 
+  interface Tooltip {
+    title: string;
+    explanation: string;
+  }
   interface ActionDetail {
     key: string;
     value: string;
+    error?: string;
+    tooltip?: Tooltip;
   }
 
   const renderErrorText = useCallback((_error: string) => {
@@ -258,6 +268,10 @@ const DepositFormStep: React.FC<{
       value: `${currency(formatBigNumber(investedInStrategy, decimals), {
         symbol: "",
       })}`,
+      tooltip: {
+        title: "Current Position",
+        explanation: "Something Something current position",
+      },
     });
 
     actionDetails.push({
@@ -265,6 +279,7 @@ const DepositFormStep: React.FC<{
       value: `${currency(formatBigNumber(userAssetBalance, decimals), {
         symbol: "",
       }).format()}`,
+      error: "insufficientBalance",
     });
 
     actionDetails.push({
@@ -272,11 +287,20 @@ const DepositFormStep: React.FC<{
       value: `${currency(formatBigNumber(cap.sub(totalBalance), decimals), {
         symbol: "",
       }).format()}`,
+      error: "capacityOverflow",
+      tooltip: {
+        title: "Vault Capacity",
+        explanation: "Something Something current position",
+      },
     });
 
     actionDetails.push({
       key: "Deposit Time",
       value: `${toDepositTime}`,
+      tooltip: {
+        title: "Deposit Time",
+        explanation: "Something Something current position",
+      },
     });
 
     return actionDetails;
@@ -344,7 +368,7 @@ const DepositFormStep: React.FC<{
         )}
       </BaseInputContainer>
       {error && (
-        <SecondaryText color={colors.red}>
+        <SecondaryText style={{ width: "100%" }} color={colors.red}>
           {renderErrorText(error)}
         </SecondaryText>
       )}
@@ -353,8 +377,38 @@ const DepositFormStep: React.FC<{
           className="d-flex w-100 flex-row align-items-center justify-content-between mt-4"
           key={index}
         >
-          <SecondaryText>{detail.key}</SecondaryText>
-          <Title className="text-right">{detail.value}</Title>
+          <div className="d-flex flex-row align-items-center">
+            <SecondaryText>{detail.key} </SecondaryText>
+            {detail.tooltip && (
+              <TooltipExplanation
+                title={detail.tooltip.title}
+                explanation={detail.tooltip.explanation}
+                renderContent={({ ref, ...triggerHandler }) => (
+                  <HelpInfo
+                    containerRef={ref}
+                    {...triggerHandler}
+                    style={{ marginLeft: "4px" }}
+                  >
+                    i
+                  </HelpInfo>
+                )}
+              />
+            )}
+          </div>
+
+          <StyledTitle
+            color={
+              error && detail.error
+                ? error === detail.error
+                  ? colors.red
+                  : "white"
+                : "white"
+            }
+            className="text-right"
+          >
+            {" "}
+            {detail.value}
+          </StyledTitle>
         </div>
       ))}
 

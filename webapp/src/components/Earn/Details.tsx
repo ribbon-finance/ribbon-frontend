@@ -178,14 +178,9 @@ export const Risk = () => {
               out-the-money
             </HighlightedText>
           )}
-        />
-        .
-      </ParagraphText>
-      <StyledTitle marginTop={24}>Equity Downside Risk</StyledTitle>
-      <ParagraphText marginTop={8}>
-        Prices of the underlyer may drop throughout the life of the product and
-        depositors may not fully capture the downside performance due to the
-        lower knock-out barrier.
+        />{" "}
+        and users may not fully capture the downside/upside performance of the
+        underlying asset due to the knock-out barriers.
       </ParagraphText>
       <StyledTitle marginTop={24}>Smart Contract Risk</StyledTitle>
       <ParagraphText marginTop={8}>

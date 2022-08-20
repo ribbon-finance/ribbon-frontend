@@ -164,8 +164,6 @@ const EarnDetailsModal: React.FC<EarnDetailsModalProps> = ({
     }
   }, [step]);
 
-  console.log({ showDesktopNavigator });
-
   return (
     <>
       <BasicModal
