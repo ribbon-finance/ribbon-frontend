@@ -8,7 +8,6 @@
 
 import { AnimatePresence, motion, MotionStyle } from "framer-motion";
 import styled from "styled-components";
-import sizes from "shared/lib/designSystem/sizes";
 import colors from "shared/lib/designSystem/colors";
 import theme from "shared/lib/designSystem/theme";
 
@@ -31,10 +30,6 @@ const Container = styled(motion.div)<{
       : `
           display: none;
         `}
-
-  @media (max-width: ${sizes.md}px) {
-    display: none;
-  }
 `;
 
 interface FloatingMenuProps {

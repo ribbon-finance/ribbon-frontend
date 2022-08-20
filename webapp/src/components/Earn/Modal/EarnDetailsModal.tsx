@@ -27,6 +27,12 @@ const Container = styled(motion.div)`
 const ModalColumnScroll = styled(BaseModalContentColumn)`
   flex: 1;
   overflow: hidden;
+  * {
+    -ms-overflow-style: none;
+  }
+  *::-webkit-scrollbar {
+    display: none;
+  }
 `;
 
 const DesktopNavigatorButtonContainer = styled.div`
