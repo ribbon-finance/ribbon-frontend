@@ -172,7 +172,6 @@ const EarnVaultActivity: React.FC<VaultActivityProps> = ({
         setPage={setPage}
         perPage={perPage}
       />
-      <PaginationContainer>{renderPagination()}</PaginationContainer>
     </>
   );
 };

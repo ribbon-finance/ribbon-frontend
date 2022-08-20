@@ -135,14 +135,14 @@ const StyledEarnInnerRing = styled(EarnInnerRing)`
 const StyledEarnMiddleRing = styled(EarnMiddleRing)`
   animation: ${rotateAnticlockwise} 60s linear infinite;
   @media (max-width: 700px) {
-    height: 60vh;
+    height: 500px;
   }
 `;
 
 const StyledEarnOuterRing = styled(EarnOuterRing)`
   animation: ${rotateClockwise} 60s linear infinite;
   @media (max-width: 700px) {
-    height: 78vh;
+    height: 650px;
   }
 `;
 

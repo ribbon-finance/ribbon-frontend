@@ -117,6 +117,7 @@ const AllVaultOptions = [
 
 export type VaultOptions = typeof AllVaultOptions[number];
 const ProdExcludeVault: VaultOptions[] = [];
+const EarnVault: VaultOptions[] = ["rEARN"];
 const PutThetaVault: VaultOptions[] = [
   "rUSDC-ETH-P-THETA",
   "ryvUSDC-ETH-P-THETA",
@@ -347,6 +348,9 @@ export const VaultLiquidityMiningMap: {
 
 export const isPutVault = (vault: VaultOptions): boolean =>
   PutThetaVault.includes(vault);
+
+export const isEarnVault = (vault: VaultOptions): boolean =>
+  EarnVault.includes(vault);
 
 export const EarnAddresses: { [key: string]: string } = {
   RibbonDiversifiedWeek1: v2deployment.mainnet.RibbonEarnRibbonDiversifiedWeek1,
