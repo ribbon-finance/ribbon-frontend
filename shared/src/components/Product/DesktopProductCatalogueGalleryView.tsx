@@ -190,29 +190,43 @@ const DesktopProductCatalogueGalleryView: React.FC<
           {/* Description */}
           <SecondaryText className="mt-3">{renderDescription()}</SecondaryText>
 
-          {active && (
-            <div className="mt-4">
-              <YourPosition
-                vault={{
-                  vaultOption: currentVault,
-                  vaultVersion: vaultsDisplayVersion[currentVault],
-                }}
-                variant="desktop"
-                alwaysShowPosition
-              />
-            </div>
-          )}
+          {active &&
+            (currentVault === "rEARN" ? (
+              <div className="mt-4">
+                <YourPosition
+                  vault={{
+                    vaultOption: currentVault,
+                    vaultVersion: vaultsDisplayVersion[currentVault],
+                  }}
+                  variant="desktop"
+                  alwaysShowPosition
+                  onVaultPress={onVaultPress}
+                />
+              </div>
+            ) : (
+              <div className="mt-4">
+                <YourPosition
+                  vault={{
+                    vaultOption: currentVault,
+                    vaultVersion: vaultsDisplayVersion[currentVault],
+                  }}
+                  variant="desktop"
+                  alwaysShowPosition
+                />
+              </div>
+            ))}
         </VaultSecondaryInfo>
       </VaultInfo>
     );
   }, [
-    active,
     currentVault,
     t,
+    renderDescription,
+    active,
+    vaultsDisplayVersion,
+    onVaultPress,
     setFilterAssets,
     setFilterStrategies,
-    vaultsDisplayVersion,
-    renderDescription,
   ]);
 
   return (

@@ -443,7 +443,7 @@ const EarnPage = () => {
                       ).toFixed(2)
                     : "0.00"}
                 </HeroText>
-                <Subtitle color={yieldColor}>+{roi.toFixed(2)}%</Subtitle>
+                <Subtitle color={yieldColor}>+{roi.toFixed(4)}%</Subtitle>
                 <ViewDetailsButton
                   role="button"
                   onClick={() => {
