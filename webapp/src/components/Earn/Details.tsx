@@ -233,7 +233,7 @@ export const HistoricalPerformance = () => {
       </ParagraphText>
       <PrimaryText className="d-block mt-3">
         <Link
-          href="https://www.research.ribbon.finance/blog/theta-vault-backtest-results"
+          href="https://www.research.ribbon.finance/blog/introducing-ribbon-earn"
           target="_blank"
           rel="noreferrer noopener"
           className="d-flex"
