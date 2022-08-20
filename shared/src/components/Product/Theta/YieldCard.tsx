@@ -62,6 +62,17 @@ const CardContainer = styled.div`
   perspective: 2000px;
 `;
 
+const BoostLogoContainer = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 32px;
+  width: 32px;
+  margin-top: calc(-32px / 2);
+  border-radius: 50%;
+  position: relative;
+`;
+
 const ProductAssetLogoContainer = styled.div<{ color: string }>`
   display: flex;
   align-items: center;
@@ -624,7 +635,9 @@ const YieldCard: React.FC<YieldCardProps> = ({
         <BoostWrapper>
           {totalProjectedYield}{" "}
           {baseAPY > 0 && vaultVersion === "v2" && (
-            <BoostIcon color={color} backgroundColor={`${color}25`} />
+            <BoostLogoContainer>
+              <BoostIcon color={color} backgroundColor={`${color}25`} />
+            </BoostLogoContainer>
           )}
         </BoostWrapper>
         <StrikeWidget />

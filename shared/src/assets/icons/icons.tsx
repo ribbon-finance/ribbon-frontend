@@ -1240,21 +1240,16 @@ export const BoostIcon: React.FC<SVGPropsWithColor> = ({
   ...props
 }) => (
   <svg
-    width="16"
-    height="16"
-    viewBox="0 0 16 16"
-    fill="none"
+    width="400"
+    height="400"
+    viewBox="0 0 400 400"
+    fill={backgroundColor}
     xmlns="http://www.w3.org/2000/svg"
+    {...props}
   >
-    <rect
-      width="16"
-      height="16"
-      rx="8"
-      fill={backgroundColor}
-      fillOpacity="0.75"
-    />
+    <rect width="400" height="400" rx="200" fill={backgroundColor} />
     <path
-      d="M0 13.28V11.94L7.98 3.45996L12.62 8.25996L7.94 13.28L7.22 12.6L11.24 8.25996L7.98 4.87996L0 13.28Z"
+      d="M199.5 122L28 302C28 302 24.1853 295.687 22 291.5C19.8985 287.474 17 281 17 281L199.5 86.5L315.5 206.5L198.5 332L180.5 315L281 206.5L199.5 122Z"
       fill={color}
     />
   </svg>
