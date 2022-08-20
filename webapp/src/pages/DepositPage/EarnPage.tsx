@@ -208,7 +208,7 @@ const EarnPage = () => {
   const { vaultOption, vaultVersion } = useVaultOption();
   const { active, account, chainId } = useWeb3Wallet();
 
-  const { expectedYield } = useAirtable();
+  const { maxYield } = useAirtable();
 
   useRedirectOnWrongChain(vaultOption, chainId);
   usePullUp();
@@ -502,7 +502,7 @@ const EarnPage = () => {
                 ease: "easeInOut",
               }}
             >
-              <EarnStrategyExplainer expectedYield={expectedYield} />
+              <EarnStrategyExplainer maxYield={maxYield} />
             </motion.div>
           )}
         </AnimatePresence>

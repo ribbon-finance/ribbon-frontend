@@ -22,8 +22,9 @@ const BASE_NAME = "Earn";
 const base = Airtable.base("appkUHzxJ1lehQTIt");
 
 export const useAirtable = () => {
-  const [schedules, setSchedule] = useState<ScheduleItem[]>();
-  const [error, setError] = useState<string>();
+  const [schedules, setSchedules] = useState<ScheduleItem[]>();
+  const [schedule, setSchedule] = useState<ScheduleItem>();
+  const [, setError] = useState<string>();
 
   const { price: ETHPrice, loading: assetPriceLoading } = useAssetPrice({
     asset: "WETH",
@@ -42,11 +43,12 @@ export const useAirtable = () => {
           s.push(item);
         });
         if (!assetPriceLoading) {
-          setSchedule(s);
+          setSchedules(s);
+          setSchedule(s[s.length - 1]);
         }
       })
       .catch((e) => {
-        setSchedule([]);
+        setSchedules([]);
         setError("ERROR FETCHING");
       });
   }, [assetPriceLoading]);
@@ -59,28 +61,26 @@ export const useAirtable = () => {
   // (Absolute perf * participation rate * 4 + 1)^(365/28) -1
   const [absolutePerformance, performance, expectedYield, maxYield] =
     useMemo(() => {
-      if (!schedules) {
+      if (!schedule) {
         return [0, 0, 0, 0];
       }
       const absolutePerformance =
-        Math.abs(ETHPrice - schedules[0].strikePrice) /
-        schedules[0].strikePrice;
+        Math.abs(ETHPrice - schedule.strikePrice) / schedule.strikePrice;
 
       const performance =
-        (ETHPrice - schedules[0].strikePrice) / schedules[0].strikePrice;
+        (ETHPrice - schedule.strikePrice) / schedule.strikePrice;
 
       const calculateMaxYield =
-        schedules[0].baseYield +
-        (schedules[0].barrierPercentage * schedules[0].participationRate * 4 +
-          1) **
+        schedule.baseYield +
+        (schedule.barrierPercentage * schedule.participationRate * 4 + 1) **
           (365 / 28) -
         1;
 
       const calculateExpectedYield =
-        absolutePerformance > schedules[0].barrierPercentage
-          ? schedules[0].baseYield
-          : schedules[0].baseYield +
-            (absolutePerformance * schedules[0].participationRate * 4 + 1) **
+        absolutePerformance > schedule.barrierPercentage
+          ? schedule.baseYield
+          : schedule.baseYield +
+            (absolutePerformance * schedule.participationRate * 4 + 1) **
               (365 / 28) -
             1;
       return [
@@ -89,9 +89,9 @@ export const useAirtable = () => {
         calculateExpectedYield,
         calculateMaxYield,
       ];
-    }, [schedules, ETHPrice]);
+    }, [schedule, ETHPrice]);
 
-  if (loading || !schedules) {
+  if (loading || !schedule) {
     return {
       loading,
       strikePrice: 2000,
@@ -106,10 +106,10 @@ export const useAirtable = () => {
   }
   return {
     loading,
-    strikePrice: schedules[0].strikePrice,
-    baseYield: schedules[0].baseYield,
-    participationRate: schedules[0].participationRate,
-    barrierPercentage: schedules[0].barrierPercentage,
+    strikePrice: schedule.strikePrice,
+    baseYield: schedule.baseYield,
+    participationRate: schedule.participationRate,
+    barrierPercentage: schedule.barrierPercentage,
     absolutePerformance: absolutePerformance,
     performance: performance,
     expectedYield: expectedYield,

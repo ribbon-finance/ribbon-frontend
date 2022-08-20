@@ -1,32 +1,10 @@
-import React, {
-  useCallback,
-  useEffect,
-  useMemo,
-  useRef,
-  useState,
-} from "react";
-import styled from "styled-components";
+import React, { useEffect, useMemo, useRef, useState } from "react";
 
 import useVaultActivity from "shared/lib/hooks/useVaultActivity";
 import { ActivityFilter, activityFilters, SortBy, sortByList } from "./types";
 import EarnVaultActivityList from "./EarnVaultActivityList";
-import useScreenSize from "shared/lib/hooks/useScreenSize";
-import sizes from "shared/lib/designSystem/sizes";
-import { Title } from "shared/lib/designSystem";
-import useLoadingText from "shared/lib/hooks/useLoadingText";
 import { VaultOptions, VaultVersion } from "shared/lib/constants/constants";
-import EarnPagination from "shared/lib/components/Common/EarnPagination";
 import { useLocation } from "react-router-dom";
-
-const PaginationContainer = styled.div`
-  display: flex;
-  justify-content: center;
-  align-items: center;
-`;
-
-const ActivityTitle = styled(Title)`
-  margin: auto;
-`;
 
 const perPage = 6;
 
@@ -44,9 +22,7 @@ const EarnVaultActivity: React.FC<VaultActivityProps> = ({
   const { activities, loading } = useVaultActivity(vaultOption, vaultVersion);
   const [activityFilter] = useState<ActivityFilter>(activityFilters[0]);
   const [sortBy] = useState<SortBy>(sortByList[0]);
-  const { width } = useScreenSize();
   const [page, setPage] = useState(1);
-  const loadingText = useLoadingText();
 
   /**
    * Default to initial state and process initial state
@@ -129,39 +105,6 @@ const EarnVaultActivity: React.FC<VaultActivityProps> = ({
       setPage(maxNumPages > 0 ? maxNumPages : 1);
     }
   }, [page, filteredActivities]);
-
-  /**
-   * TODO: Currently Table with Fixed Header component that comes with pagination only has desktop support, to be expenad in the future with mobile table
-   */
-  const renderPagination = useCallback(() => {
-    if (loading) {
-      return (
-        <Title fontSize={12} lineHeight={16}>
-          {loadingText}
-        </Title>
-      );
-    }
-
-    if (filteredActivities.length <= 0) {
-      return (
-        <ActivityTitle fontSize={12} lineHeight={16}>
-          There is currently no vault activity
-        </ActivityTitle>
-      );
-    }
-
-    if (width > sizes.md) {
-      return <></>;
-    }
-
-    return (
-      <EarnPagination
-        page={page} //2
-        total={Math.ceil(filteredActivities.length / perPage)} //1
-        setPage={setPage}
-      />
-    );
-  }, [loading, filteredActivities, width, loadingText, page]);
 
   return (
     <>

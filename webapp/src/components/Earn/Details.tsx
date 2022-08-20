@@ -4,7 +4,11 @@ import { Title, SecondaryText, PrimaryText } from "shared/lib/designSystem";
 import colors from "shared/lib/designSystem/colors";
 import { ExternalIcon } from "shared/lib/assets/icons/icons";
 import { useAirtable } from "shared/lib/hooks/useAirtable";
+import { SubgraphDataContext } from "shared/lib/hooks/subgraphDataContext";
 import currency from "currency.js";
+import { useContext, useMemo } from "react";
+import { formatUnits } from "ethers/lib/utils";
+import { BigNumber } from "ethers/lib/ethers";
 const ExplainerTitle = styled.div<{ color: string }>`
   display: flex;
   font-size: 12px;
@@ -45,6 +49,17 @@ const StyledTitle = styled(Title)<{ marginTop: number }>`
 
 export const Strategy = () => {
   const { strikePrice, barrierPercentage, baseYield, maxYield } = useAirtable();
+  const { vaultSubgraphData } = useContext(SubgraphDataContext);
+
+  const TVL = useMemo(() => {
+    if (!vaultSubgraphData.vaults.earn.rEARN) {
+      return BigNumber.from(0.0);
+    }
+    if (!vaultSubgraphData.vaults.earn.rEARN.totalNominalVolume) {
+      return BigNumber.from(0.0);
+    }
+    return vaultSubgraphData.vaults.earn.rEARN.totalNominalVolume;
+  }, [vaultSubgraphData.vaults.earn.rEARN]);
   return (
     <>
       <ParagraphText>
@@ -61,7 +76,8 @@ export const Strategy = () => {
         />{" "}
         strategy through which depositors can capitalise on the intra-week ETH
         movements in either direction while also ensuring their capital is
-        protected. The vault uses the funding to purchase{" "}
+        protected. The vault earns a base APY and uses the remaining funding to
+        purchase{" "}
         <TooltipExplanation
           title="weekly at-the-money knock-out barrier options"
           explanation={`The options bought are expiring every Friday, with a one week maturity and the strike price is set to the current underlying asset price. The knock-out barriers are used to define when the payoff is inactive, i.e. if the price of the underlying asset at maturity is below the lower barrier or greater than the upper barrier, the option is worthless.`}
@@ -72,7 +88,8 @@ export const Strategy = () => {
             </HighlightedText>
           )}
         />
-        .
+        . As the epoch of the vault is one month but the options purchased are
+        weekly options, 4 options are purchased within one epoch.
       </ParagraphText>
       <StyledTitle marginTop={24}>Key Conditions</StyledTitle>
       <ParagraphText marginTop={8}>
@@ -130,7 +147,9 @@ export const Strategy = () => {
       <ExplainerTitle color={colors.tertiaryText}>
         <span>TVL</span>
       </ExplainerTitle>
-      <StyledTitle marginTop={4}>$25,000,000.00</StyledTitle>
+      <StyledTitle marginTop={4}>
+        {<>${parseFloat(formatUnits(TVL, "6")).toFixed(2)}</>}
+      </StyledTitle>
     </>
   );
 };

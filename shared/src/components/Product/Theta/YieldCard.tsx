@@ -64,6 +64,17 @@ const CardContainer = styled.div`
   perspective: 2000px;
 `;
 
+const BoostLogoContainer = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 32px;
+  width: 32px;
+  margin-top: calc(-32px / 2);
+  border-radius: 50%;
+  position: relative;
+`;
+
 const ProductAssetLogoContainer = styled.div<{ color: string }>`
   display: flex;
   align-items: center;
@@ -425,7 +436,7 @@ const YieldCard: React.FC<YieldCardProps> = ({
   const { prices } = useAssetsPrice();
   const { account } = useWeb3Wallet();
   const loadingText = useLoadingText();
-  const { expectedYield } = useAirtable();
+  const { maxYield } = useAirtable();
   const baseAPY = useMemo(() => {
     if (!lg5Data) {
       return 0;
@@ -563,7 +574,7 @@ const YieldCard: React.FC<YieldCardProps> = ({
     const strike = strikePrice(false);
     const current = currentPrice(false);
 
-    if (strike === current || priceLoading) {
+    if (strike === current || priceLoading || !isActiveVault) {
       return colors.primaryText;
     } else {
       if (isPutVault(vault)) {
@@ -572,7 +583,7 @@ const YieldCard: React.FC<YieldCardProps> = ({
         return current < strike ? colors.green : colors.red;
       }
     }
-  }, [strikePrice, currentPrice, priceLoading, vault]);
+  }, [strikePrice, currentPrice, priceLoading, vault, isActiveVault]);
 
   const StrikeWidget = useCallback(() => {
     return (
@@ -596,7 +607,7 @@ const YieldCard: React.FC<YieldCardProps> = ({
           </div>
         </StrikeContainer>
         <RangeContainer>
-          <Range vault={vault} />
+          {isActiveVault && <Range vault={vault} />}
           <RangeCenter />
         </RangeContainer>
       </>
@@ -622,15 +633,13 @@ const YieldCard: React.FC<YieldCardProps> = ({
         <EarnCard color={color} height={!!account ? 447 : 504} />
         <ParagraphText>
           Earn up to{" "}
-          <HighlightedText>
-            {(expectedYield * 100).toFixed(2)}% APY
-          </HighlightedText>{" "}
+          <HighlightedText>{(maxYield * 100).toFixed(2)}% APY</HighlightedText>{" "}
           with a <HighlightedText>fully principal protected</HighlightedText>{" "}
           vault strategy
         </ParagraphText>
       </>
     );
-  }, [color, t, vault, expectedYield, account]);
+  }, [color, t, vault, maxYield, account]);
 
   const ProductInfoContent = useCallback(() => {
     const Logo = getAssetLogo(displayAsset);
@@ -685,7 +694,9 @@ const YieldCard: React.FC<YieldCardProps> = ({
         <BoostWrapper>
           {totalProjectedYield}{" "}
           {baseAPY > 0 && vaultVersion === "v2" && (
-            <BoostIcon color={color} backgroundColor={`${color}25`} />
+            <BoostLogoContainer>
+              <BoostIcon color={color} backgroundColor={`${color}25`} />
+            </BoostLogoContainer>
           )}
         </BoostWrapper>
         <StrikeWidget />

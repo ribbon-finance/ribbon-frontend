@@ -1,21 +1,29 @@
-import React, { useCallback, useContext, useState } from "react";
+import React, { useCallback, useContext, useMemo, useState } from "react";
 import styled from "styled-components";
 import { BaseButton, SecondaryText, Title } from "shared/lib/designSystem";
 import colors from "shared/lib/designSystem/colors";
 import theme from "shared/lib/designSystem/theme";
 import EarnFloatingMenu from "./FloatingMenu";
 import ButtonArrow from "shared/lib/components/Common/ButtonArrow";
-import Logo, {
+import {
   OrthogonalLogo,
   AlamedaResearchLogo,
   CitadelLogo,
 } from "shared/lib/assets/icons/logo";
+import { BoostIcon } from "shared/lib/assets/icons/icons";
 import { Counterparty } from "./Counterparties";
 import { SubgraphDataContext } from "shared/lib/hooks/subgraphDataContext";
-import useVaultOption from "../../hooks/useVaultOption";
-import { useV2VaultData } from "shared/lib/hooks/web3DataContext";
-import { BigNumber } from "ethers";
 import { formatUnits } from "ethers/lib/utils";
+
+const BoostLogoContainer = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 32px;
+  width: 32px;
+  border-radius: 50%;
+  position: relative;
+`;
 
 const ParagraphText = styled(SecondaryText)`
   color: rgba(255, 255, 255, 0.64);
@@ -31,7 +39,7 @@ const WalletContent = styled.div`
   flex-direction: column;
   align-items: left;
   width: 100%;
-  margin-left: 8px;
+  margin-left: 16px;
   &:hover {
     opacity: ${theme.hover.opacity};
   }
@@ -99,11 +107,16 @@ const CounterpartyDetail: React.FC<VaultStrategyExplainerProps> = ({
 }) => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const { vaultSubgraphData } = useContext(SubgraphDataContext);
-  const totalBorrowed = vaultSubgraphData.vaults.earn.rEARN?.totalBorrowed;
   const onToggleMenu = useCallback(() => {
     setIsMenuOpen((open) => !open);
   }, []);
 
+  const totalBorrowed = useMemo(() => {
+    if (!vaultSubgraphData.vaults.earn.rEARN) {
+      return 0;
+    }
+    return vaultSubgraphData.vaults.earn.rEARN.totalBorrowed;
+  }, [vaultSubgraphData.vaults.earn.rEARN]);
   const handleButtonClick = useCallback(async () => {
     onToggleMenu();
   }, [onToggleMenu]);
@@ -111,7 +124,14 @@ const CounterpartyDetail: React.FC<VaultStrategyExplainerProps> = ({
   const renderLogo = useCallback((s: Counterparty) => {
     switch (s) {
       case "R-EARN DIVERSIFIED":
-        return <Logo height="40px" width="40px" />;
+        return (
+          <BoostLogoContainer>
+            <BoostIcon
+              color={colors.primaryText}
+              backgroundColor={colors.red}
+            />
+          </BoostLogoContainer>
+        );
       case "ORTHOGONAL":
         return <OrthogonalLogo />;
       case "ALAMEDA RESEARCH":

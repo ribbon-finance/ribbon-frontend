@@ -1,12 +1,7 @@
-import React, { useMemo } from "react";
+import React from "react";
 import styled from "styled-components";
 import { SecondaryText } from "shared/lib/designSystem";
 import CounterpartyDetail from "./CounterpartyDetail";
-import useVaultAccounts from "shared/lib/hooks/useVaultAccounts";
-import { isPracticallyZero } from "shared/lib/utils/math";
-import { getAssetDecimals } from "shared/lib/utils/asset";
-import { useV2VaultData } from "shared/lib/hooks/web3DataContext";
-import useVaultOption from "../../hooks/useVaultOption";
 
 const ParagraphText = styled(SecondaryText)`
   color: rgba(255, 255, 255, 0.64);
@@ -30,7 +25,7 @@ export type Counterparty = typeof CounterpartyList[number];
 const CounterpartyListSubset: Counterparty[] = ["R-EARN DIVERSIFIED"];
 
 const Counterparties: React.FC = () => {
-  const { vaultAccounts } = useVaultAccounts("earn");
+  // const { vaultAccounts } = useVaultAccounts("earn");
   // const userCounterpartyList = useMemo(() => {
   //   let userCounterpartyList: Counterparty[] = [];
   //   for (const earnVault of EarnVaultList) {

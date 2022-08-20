@@ -256,7 +256,11 @@ const EarnChart: React.FC<ProfitChartProps> = ({
       green.addColorStop(1, `transparent`);
       green.addColorStop(0.9, `${colors.green}01`);
       green.addColorStop(0, `${colors.green}20`);
-
+      const performanceRounded =
+        performance < 0
+          ? Math.floor(performance * 100)
+          : Math.round(performance * 100);
+      console.log({ performanceRounded });
       return {
         labels: moneynessRange,
         datasets: [
@@ -293,8 +297,8 @@ const EarnChart: React.FC<ProfitChartProps> = ({
           {
             label: "defaultPoint",
             data: moneynessRange.map((price) => {
-              if (price === Math.round(-8)) {
-                return Math.abs(price);
+              if (price === performanceRounded) {
+                return yieldRange[price];
               } else {
                 return null;
               }
@@ -323,7 +327,14 @@ const EarnChart: React.FC<ProfitChartProps> = ({
         ],
       };
     },
-    [moneynessRange, yieldRange, hoveredIndex, barrierPercentage, maxYield]
+    [
+      performance,
+      moneynessRange,
+      yieldRange,
+      hoveredIndex,
+      barrierPercentage,
+      maxYield,
+    ]
   );
 
   const chart = useMemo(() => {

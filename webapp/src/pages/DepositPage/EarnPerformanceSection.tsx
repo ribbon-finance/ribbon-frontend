@@ -21,7 +21,6 @@ import useVaultPriceHistory from "shared/lib/hooks/useVaultPerformanceUpdate";
 import TooltipExplanation from "shared/lib/components/Common/TooltipExplanation";
 import HelpInfo from "shared/lib/components/Common/HelpInfo";
 import useLoadingText from "shared/lib/hooks/useLoadingText";
-import PerformanceScroller from "../../components/Earn/PerformanceScroller";
 import { HistoricalPerformance } from "../../components/Earn/Details";
 import SegmentControl from "shared/lib/components/Common/SegmentControl";
 
@@ -301,7 +300,7 @@ const EarnPerformanceSection: React.FC<EarnPerformanceSectionProps> = ({
           justifyContent: "center",
         }}
       >
-        <div style={{ width: "100%", padding: 16 }} className="">
+        <div style={{ width: "100%", padding: 16 }}>
           <SegmentControl
             segments={StepList.map((item) => ({
               value: item,
@@ -323,25 +322,6 @@ const EarnPerformanceSection: React.FC<EarnPerformanceSectionProps> = ({
             }}
           />
         </div>
-        {/* <EarnPerformanceControl
-          page={StepList.indexOf(step) + 1}
-          stepList={StepList as unknown as string[]}
-          step={step}
-          total={StepList.length}
-          onPageClick={(page) => {
-            setStep(StepList[page - 1]);
-          }}
-          config={{
-            theme: "outline",
-            color: colors.green,
-            button: {
-              px: 12,
-              py: 8,
-              fontSize: 12,
-              lineHeight: 16,
-            },
-          }}
-        /> */}
       </div>
     </>
   );

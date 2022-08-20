@@ -56,6 +56,7 @@ export const vaultGraphql = (version: VaultVersion, chain: Chains) =>
             totalBalance
             totalPremiumEarned
             totalFeeCollected
+            totalNominalVolume
             totalNotionalVolume
             ${version !== "earn" ? `underlyingAsset` : ``}
             ${version !== "earn" ? `underlyingSymbol` : ``}

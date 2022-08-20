@@ -82,7 +82,7 @@ const ActionSteps: React.FC<ActionStepsProps> = ({
 
   const [inputAmount, setInputAmount] = useState<number>(0);
   const [signature, setSignature] = useState<DepositSignature | undefined>();
-  console.log(signature);
+
   const amountStr = useMemo(() => {
     try {
       const amount = parseUnits(inputAmount.toString(), decimals);

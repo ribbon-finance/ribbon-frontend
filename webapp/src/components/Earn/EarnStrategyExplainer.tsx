@@ -76,10 +76,10 @@ const ExplanationStepList = ["step1", "step2", "step3"] as const;
 type ExplanationStep = typeof ExplanationStepList[number];
 
 interface EarnStrategyExplainerProps {
-  expectedYield: number;
+  maxYield: number;
 }
 const EarnStrategyExplainer: React.FC<EarnStrategyExplainerProps> = ({
-  expectedYield,
+  maxYield,
 }) => {
   const containerRef = useRef(null);
   const [, setShowEarnVault] = useGlobalState("showEarnVault");
@@ -110,8 +110,8 @@ const EarnStrategyExplainer: React.FC<EarnStrategyExplainerProps> = ({
         case "step1":
           return (
             <>
-              Earn {(expectedYield * 100).toFixed(2)}% yield with full principal
-              protection
+              Earn up to {(maxYield * 100).toFixed(2)}% yield with full
+              principal protection
             </>
           );
         case "step2":
@@ -127,7 +127,7 @@ const EarnStrategyExplainer: React.FC<EarnStrategyExplainerProps> = ({
           );
       }
     },
-    [expectedYield]
+    [maxYield]
   );
 
   const renderButton = useCallback(
@@ -161,7 +161,7 @@ const EarnStrategyExplainer: React.FC<EarnStrategyExplainerProps> = ({
   const infoSection = useMemo(() => {
     return (
       <ExplainerSection height={360}>
-        <HeroText>R-EARN</HeroText>
+        <HeroText>{renderTitle(step)}</HeroText>
         <AnimatePresence exitBeforeEnter initial={true}>
           <motion.div
             className="py-3"
@@ -200,7 +200,7 @@ const EarnStrategyExplainer: React.FC<EarnStrategyExplainerProps> = ({
         {renderButton(step)}
       </ExplainerSection>
     );
-  }, [step, renderButton, renderDescription]);
+  }, [renderTitle, step, renderDescription, renderButton]);
 
   return (
     <ExplainerContainer ref={containerRef}>

@@ -75,6 +75,7 @@ interface ProfitCalculatorProps {}
 const Payoff: React.FC<ProfitCalculatorProps> = () => {
   const {
     maxYield,
+    expectedYield,
     baseYield,
     performance,
     absolutePerformance,
@@ -83,7 +84,6 @@ const Payoff: React.FC<ProfitCalculatorProps> = () => {
   } = useAirtable();
   const loadingText = useLoadingText();
 
-  const [input, setInput] = useState<string>("");
   const [hoverPrice, setHoverPrice] = useState<number>();
   const [hoverPercentage, setHoverPercentage] = useState<number>();
   const [, setChartHovering] = useState(false);
@@ -98,8 +98,6 @@ const Payoff: React.FC<ProfitCalculatorProps> = () => {
       : performance;
   }, [absolutePerformance, performance, barrierPercentage, hoverPercentage]);
 
-  console.log({ optionMoneyness });
-  console.log(Math.round(optionMoneyness * 100));
   // x axis
   const moneynessRange = useMemo(() => {
     let leftArray = [];
@@ -159,23 +157,28 @@ const Payoff: React.FC<ProfitCalculatorProps> = () => {
     return [...leftArray, ...array, ...rightArray];
   }, [barrierPercentage, baseYield, maxYield]);
 
-  const defaultExpectedYield = useMemo(() => {
-    return yieldRange[
-      moneynessRange.indexOf(parseInt(Math.round(6).toFixed(2)))
-    ];
-  }, [performance, yieldRange, moneynessRange]);
-
   return (
     <>
-      <BaseModalContentColumn marginTop={-4}>
+      <BaseModalContentColumn marginTop={-2}>
         <CalculationContainer2>
-          <ParagraphText fontWeight={500}>Max Yield (APY)</ParagraphText>
+          <div className="d-flex flex-row ml-4 align-items-center">
+            <ParagraphText fontWeight={500}>Max Yield (APY) </ParagraphText>
+            <TooltipExplanation
+              title="MAX YIELD"
+              explanation="The max yield is defined as the max payout if the price of the underlying asset is at the barrier at expiry. The formula used to compute the max yield is as follows: BASE APY + (MAX PERF * 4 * PARTICIPATION RATE + 1)^(365 / 28) - 1"
+              renderContent={({ ref, ...triggerHandler }) => (
+                <HelpInfo containerRef={ref} {...triggerHandler}>
+                  i
+                </HelpInfo>
+              )}
+            />
+          </div>
           <CalculationData variant={"green"}>
             {loading ? "---" : `+${(maxYield * 100).toFixed(2)}%`}
           </CalculationData>
         </CalculationContainer2>
       </BaseModalContentColumn>
-      <BaseModalContentColumn marginTop={-16}>
+      <BaseModalContentColumn marginTop={-18}>
         <RelativeContainer>
           <ChartContainer
             onMouseEnter={() => setChartHovering(true)}
@@ -272,7 +275,7 @@ const Payoff: React.FC<ProfitCalculatorProps> = () => {
             </SecondaryText>
             <div className="mr-auto">
               <TooltipExplanation
-                title="MAX YIELD"
+                title="EXPECTED YIELD"
                 explanation="The max yield is defined as the max payout if the price of the underlying asset is at the barrier at expiry. The formula used to compute the max yield is as follows: BASE APY + (MAX PERF * 4 * PARTICIPATION RATE + 1)^(365 / 28) - 1"
                 renderContent={({ ref, ...triggerHandler }) => (
                   <HelpInfo containerRef={ref} {...triggerHandler}>
@@ -287,7 +290,7 @@ const Payoff: React.FC<ProfitCalculatorProps> = () => {
                 : `+${
                     hoverPrice
                       ? hoverPrice.toFixed(2)
-                      : defaultExpectedYield?.toFixed(2)
+                      : (expectedYield * 100).toFixed(2)
                   }%`}
             </CalculationData>
           </CalculationColumn>
