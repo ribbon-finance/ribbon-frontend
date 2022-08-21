@@ -438,13 +438,16 @@ const EarnPage = () => {
                   {isLoading
                     ? "---"
                     : vaultAccount
-                    ? parseFloat(
-                        formatBigNumber(investedInStrategy, decimals)
-                      ).toFixed(2)
-                    : "0.00"}
+                    ? "$" +
+                      formatBigNumber(
+                        BigNumber.from(investedInStrategy),
+                        decimals,
+                        2
+                      )
+                    : "$0.00"}
                 </HeroText>
                 <Subtitle color={yieldColor}>
-                  +{isLoading ? "0.00" : roi.toFixed(4)}%
+                  +{isLoading || roi === 0 ? "0.00" : roi.toFixed(4)}%
                 </Subtitle>
                 <ViewDetailsButton
                   role="button"
