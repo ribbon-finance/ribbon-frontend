@@ -13,7 +13,7 @@ import {
 } from "shared/lib/designSystem";
 import { ActionButton } from "shared/lib/components/Common/buttons";
 import { ActionType } from "./types";
-import { formatBigNumber } from "shared/lib/utils/math";
+import { formatBigNumber, formatBigNumberAmount } from "shared/lib/utils/math";
 import { getAssetDisplay } from "shared/lib/utils/asset";
 import { Assets } from "shared/lib/store/types";
 import {
@@ -29,7 +29,7 @@ import {
   useAssetBalance,
   useV2VaultData,
 } from "shared/lib/hooks/web3DataContext";
-import { parseUnits } from "ethers/lib/utils";
+import { formatUnits, parseUnits } from "ethers/lib/utils";
 import HelpInfo from "shared/lib/components/Common/HelpInfo";
 import TooltipExplanation from "shared/lib/components/Common/TooltipExplanation";
 import useWeb3Wallet from "shared/lib/hooks/useWeb3Wallet";
@@ -271,9 +271,7 @@ const DepositFormStep: React.FC<{
     []
   );
   const handleMaxClick = useCallback(() => {
-    changeInputAmount(
-      parseFloat(formatBigNumber(userAssetBalance, decimals, 6))
-    );
+    changeInputAmount(parseFloat(formatUnits(userAssetBalance, decimals)));
   }, [userAssetBalance, decimals]);
 
   /**
