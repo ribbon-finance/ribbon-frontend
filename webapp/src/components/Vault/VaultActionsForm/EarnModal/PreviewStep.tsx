@@ -84,25 +84,25 @@ const PreviewStep: React.FC<{
     tooltip?: Tooltip;
   }
 
-  const [toDepositTime, withdrawalDate] = useMemo(() => {
+  const [strategyStartTime, withdrawalDate] = useMemo(() => {
     let firstOpenLoanTime = moment.utc("2022-09-02").set("hour", 17);
 
-    let toDepositTime;
+    let strategyStartTime;
 
-    while (!toDepositTime) {
-      let toDepositTimeTemp = moment.duration(
+    while (!strategyStartTime) {
+      let strategyStartTimeTemp = moment.duration(
         firstOpenLoanTime.diff(moment()),
         "milliseconds"
       );
-      if (toDepositTimeTemp.asMilliseconds() <= 0) {
+      if (strategyStartTimeTemp.asMilliseconds() <= 0) {
         firstOpenLoanTime.add(28, "days");
       } else {
-        toDepositTime = toDepositTimeTemp;
+        strategyStartTime = strategyStartTimeTemp;
       }
     }
 
     return [
-      `${toDepositTime.days()}D ${toDepositTime.hours()}H ${toDepositTime.minutes()}M`,
+      `${strategyStartTime.days()}D ${strategyStartTime.hours()}H ${strategyStartTime.minutes()}M`,
       firstOpenLoanTime.add(28, "days").format("Do MMMM, YYYY"),
     ];
   }, []);
@@ -114,11 +114,12 @@ const PreviewStep: React.FC<{
     const actionDetails: ActionDetail[] = [];
 
     actionDetails.push({
-      key: "Deposit Time",
-      value: `${toDepositTime}`,
+      key: "Strategy Start Time",
+      value: `${strategyStartTime}`,
       tooltip: {
-        title: "Deposit Time",
-        explanation: "Something Something deposit",
+        title: "Strategy Start Time",
+        explanation:
+          "Time until the next epoch is started and funds are deployed.",
       },
     });
 
@@ -132,9 +133,9 @@ const PreviewStep: React.FC<{
     });
 
     return actionDetails;
-  }, [toDepositTime]);
+  }, [strategyStartTime]);
 
-  const handle = useCallback(async () => {
+  const handleApprove = useCallback(async () => {
     setWaitingApproval(true);
     try {
       const approveToAddress = VaultAddressMap[vaultOption]["earn"];
@@ -225,7 +226,7 @@ const PreviewStep: React.FC<{
         </div>
       ))}
       <ActionButton
-        onClick={handle}
+        onClick={handleApprove}
         disabled={!(depositSignature === undefined)}
         className="btn py-3 mt-4 mb-3"
         color={color}

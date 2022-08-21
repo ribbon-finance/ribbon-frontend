@@ -220,7 +220,7 @@ const Payoff: React.FC<ProfitCalculatorProps> = () => {
             <div className="mr-auto">
               <TooltipExplanation
                 title="BASE YIELD"
-                explanation="Base Yield is good"
+                explanation="The base yield is the yield depositors will get regardless of where the underlying asset price is at expiry. As such, the base yield is earned even if one of the barrier is breached."
                 renderContent={({ ref, ...triggerHandler }) => (
                   <HelpInfo containerRef={ref} {...triggerHandler}>
                     i
@@ -276,7 +276,7 @@ const Payoff: React.FC<ProfitCalculatorProps> = () => {
             <div className="mr-auto">
               <TooltipExplanation
                 title="EXPECTED YIELD"
-                explanation="The max yield is defined as the max payout if the price of the underlying asset is at the barrier at expiry. The formula used to compute the max yield is as follows: BASE APY + (MAX PERF * 4 * PARTICIPATION RATE + 1)^(365 / 28) - 1"
+                explanation="The expected yield is computed using the current moneyness. The formula used to compute the expected yield is as follows: BASE APY + (CURRENT PERF * 4 * PARTICIPATION RATE + 1)^(365 / 28) - 1"
                 renderContent={({ ref, ...triggerHandler }) => (
                   <HelpInfo containerRef={ref} {...triggerHandler}>
                     i

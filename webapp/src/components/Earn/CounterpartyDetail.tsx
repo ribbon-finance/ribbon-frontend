@@ -1,6 +1,12 @@
 import React, { useCallback, useContext, useMemo, useState } from "react";
 import styled from "styled-components";
-import { BaseButton, SecondaryText, Title } from "shared/lib/designSystem";
+import {
+  BaseButton,
+  SecondaryText,
+  Title,
+  BaseLink,
+  PrimaryText,
+} from "shared/lib/designSystem";
 import colors from "shared/lib/designSystem/colors";
 import theme from "shared/lib/designSystem/theme";
 import EarnFloatingMenu from "./FloatingMenu";
@@ -14,7 +20,6 @@ import { BoostIcon } from "shared/lib/assets/icons/icons";
 import { Counterparty } from "./Counterparties";
 import { SubgraphDataContext } from "shared/lib/hooks/subgraphDataContext";
 import { formatUnits } from "ethers/lib/utils";
-
 const BoostLogoContainer = styled.div`
   display: flex;
   align-items: center;
@@ -159,11 +164,33 @@ const CounterpartyDetail: React.FC<VaultStrategyExplainerProps> = ({
       case "R-EARN DIVERSIFIED":
         return (
           <>
-            Orthogonal Trading is a multi-strategy cryptocurrency trading firm
-            focused solely on the digital asset markets. The team bring
-            experience in portfolio and risk management, auditing, quantitative
-            trading, and blockchain system development from Goldman Sachs,
-            Morgan Stanley, B2C2 and more.
+            R-Earn diversified is a pool of leading accredited crypto market
+            makers whose credit assessment passed strict requirements set by
+            Credora. Their teams have experience in deploying a wide array of
+            strategies and strict risk management. 50% of the capital assigned
+            to this pool is lent to{" "}
+            <BaseLink
+              color="white"
+              target="_blank"
+              rel="noreferrer noopener"
+              to="https://genesistrading.com"
+            >
+              <PrimaryText lineHeight={20} fontSize={14}>
+                Genesis
+              </PrimaryText>
+            </BaseLink>{" "}
+            and 50% is lent to{" "}
+            <BaseLink
+              color="white"
+              target="_blank"
+              rel="noreferrer noopener"
+              to="https://www.wintermute.com/"
+            >
+              <PrimaryText lineHeight={20} fontSize={14}>
+                Wintermute
+              </PrimaryText>
+            </BaseLink>
+            .
           </>
         );
       case "ORTHOGONAL":

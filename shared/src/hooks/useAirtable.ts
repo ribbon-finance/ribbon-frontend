@@ -101,7 +101,7 @@ export const useAirtable = () => {
       absolutePerformance: 0.06,
       performance: 0.0,
       expectedYield: 0.0,
-      maxYield: 0.17,
+      maxYield: 0.1037,
     };
   }
   return {

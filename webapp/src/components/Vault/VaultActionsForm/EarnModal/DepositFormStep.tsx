@@ -180,25 +180,25 @@ const DepositFormStep: React.FC<{
     }
   }, []);
 
-  const [toDepositTime, withdrawalDate] = useMemo(() => {
+  const [strategyStartTime, withdrawalDate] = useMemo(() => {
     let firstOpenLoanTime = moment.utc("2022-09-02").set("hour", 17);
 
-    let toDepositTime;
+    let strategyStartTime;
 
-    while (!toDepositTime) {
-      let toDepositTimeTemp = moment.duration(
+    while (!strategyStartTime) {
+      let strategyStartTimeTemp = moment.duration(
         firstOpenLoanTime.diff(moment()),
         "milliseconds"
       );
-      if (toDepositTimeTemp.asMilliseconds() <= 0) {
+      if (strategyStartTimeTemp.asMilliseconds() <= 0) {
         firstOpenLoanTime.add(28, "days");
       } else {
-        toDepositTime = toDepositTimeTemp;
+        strategyStartTime = strategyStartTimeTemp;
       }
     }
 
     return [
-      `${toDepositTime.days()}D ${toDepositTime.hours()}H ${toDepositTime.minutes()}M`,
+      `${strategyStartTime.days()}D ${strategyStartTime.hours()}H ${strategyStartTime.minutes()}M`,
       firstOpenLoanTime.add(28, "days").format("Do MMMM, YYYY"),
     ];
   }, []);
@@ -213,7 +213,8 @@ const DepositFormStep: React.FC<{
       })} USDC`,
       tooltip: {
         title: "Current Position",
-        explanation: "Something Something current position",
+        explanation:
+          "Current amount of USDC deposited by your address in the vault.",
       },
     });
 
@@ -222,6 +223,10 @@ const DepositFormStep: React.FC<{
       value: `${currency(formatBigNumber(userAssetBalance, decimals), {
         symbol: "",
       }).format()} USDC`,
+      tooltip: {
+        title: "Wallet Balance",
+        explanation: "Current amount of USDC available in your wallet.",
+      },
       error: "insufficientBalance",
     });
 
@@ -233,16 +238,18 @@ const DepositFormStep: React.FC<{
       error: "capacityOverflow",
       tooltip: {
         title: "Vault Capacity",
-        explanation: "Something Something current position",
+        explanation:
+          "Total capacity of the vault in USDC. Once this amount is filled, no additional deposit can be made",
       },
     });
 
     actionDetails.push({
-      key: "Deposit Time",
-      value: `${toDepositTime}`,
+      key: "Strategy Start Time",
+      value: `${strategyStartTime}`,
       tooltip: {
-        title: "Deposit Time",
-        explanation: "Something Something current position",
+        title: "Strategy Start Time",
+        explanation:
+          "Time until the next epoch is started and funds are deployed.",
       },
     });
 
@@ -253,7 +260,7 @@ const DepositFormStep: React.FC<{
     userAssetBalance,
     cap,
     totalBalance,
-    toDepositTime,
+    strategyStartTime,
   ]);
 
   const handleInputChange = useCallback(

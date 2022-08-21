@@ -171,8 +171,7 @@ export const Risk = () => {
         In the situation that the knock-out options expire{" "}
         <TooltipExplanation
           title="IN-THE-MONEY"
-          explanation={`An option is in-the-money (ITM) if the strike price is below or above
-              the market price of ETH`}
+          explanation={`The option payout will be positive as the underlying spot is within the barriers range and as such, a bonus coupon will be paid.`}
           learnMoreURL="https://www.investopedia.com/terms/i/inthemoney.asp"
           renderContent={({ ref, ...triggerHandler }) => (
             <HighlightedText ref={ref} {...triggerHandler}>
@@ -189,8 +188,7 @@ export const Risk = () => {
         during the week, the vault's knock-out options will expire{" "}
         <TooltipExplanation
           title="OUT-THE-MONEY"
-          explanation={`An option is out-the-money (ITM) if the strike price is below or above
-              the market price of ETH`}
+          explanation={`The option payout will be zero as the underlying spot is breaching a barrier and as such, the bonus coupon will be zero.`}
           learnMoreURL="https://www.investopedia.com/terms/i/outthemoney.asp"
           renderContent={({ ref, ...triggerHandler }) => (
             <HighlightedText ref={ref} {...triggerHandler}>
@@ -206,7 +204,7 @@ export const Risk = () => {
         The Ribbon Earn smart contracts have been{" "}
         <TooltipExplanation
           title="Veridise"
-          explanation={`something something veridise`}
+          explanation={`Hardening Blockchain Security with Formal Methods`}
           learnMoreURL="https://www.veridise.com/"
           renderContent={({ ref, ...triggerHandler }) => (
             <HighlightedText ref={ref} {...triggerHandler}>
@@ -227,7 +225,7 @@ export const HistoricalPerformance = () => {
       <ParagraphText>
         R-Earn was backtested since January 2021, and the cumulative yield over
         the period between January 1st, 2021 and July 22th, 2022 generated
-        13.67%. The trade had a positive payout 51.25% of the time over the
+        10.37%. The trade had a positive payout 51.80% of the time over the
         backtested period (assuming product was traded every Friday, assuming
         constant parameters).
       </ParagraphText>
