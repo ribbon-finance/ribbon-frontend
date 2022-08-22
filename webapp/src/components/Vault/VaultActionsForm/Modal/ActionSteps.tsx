@@ -16,7 +16,7 @@ import {
   getSolanaVaultInstance,
   isSolanaVault,
 } from "shared/lib/constants/constants";
-import { isETHVault } from "shared/lib/utils/vault";
+import { getSOLPricePerShare, isETHVault } from "shared/lib/utils/vault";
 import { usePendingTransactions } from "shared/lib/hooks/pendingTransactionsContext";
 import useVaultActionForm from "../../../../hooks/useVaultActionForm";
 import { parseUnits } from "@ethersproject/units";
@@ -37,7 +37,8 @@ import {
   RibbonV2ThetaVault,
 } from "shared/lib/codegen";
 import useLoadingText from "shared/lib/hooks/useLoadingText";
-
+import { PublicKey } from "@solana/web3.js";
+import { vaultTypes } from "@zetamarkets/flex-sdk";
 export interface ActionStepsProps {
   vault: {
     vaultOption: VaultOptions;
@@ -59,7 +60,7 @@ const ActionSteps: React.FC<ActionStepsProps> = ({
   skipToPreview = false,
 }) => {
   const { ethereumProvider } = useWeb3Wallet();
-  const { client } = useFlexVault();
+  const { client, vault: flexVault } = useFlexVault();
   const { vaultActionForm, resetActionForm, withdrawMetadata } =
     useVaultActionForm(vaultOption);
   const { data: priceHistories } = useVaultsPriceHistory();
@@ -111,6 +112,7 @@ const ActionSteps: React.FC<ActionStepsProps> = ({
     },
   } = useV2VaultData(vaultOption);
   const { vaultAccounts: v1VaultAccounts } = useVaultAccounts("v1");
+  const { account } = useWeb3Wallet();
 
   const asset = useMemo(() => {
     switch (vaultActionForm.actionType) {
@@ -243,6 +245,7 @@ const ActionSteps: React.FC<ActionStepsProps> = ({
     if (vault !== null || (isSolanaVault(vaultOption) && client !== null)) {
       // check illegal state transition
       if (step !== STEPS.confirmationStep - 1) return;
+
       onChangeStep(STEPS.confirmationStep);
       try {
         let res: any;
@@ -329,9 +332,18 @@ const ActionSteps: React.FC<ActionStepsProps> = ({
                     switch (vaultActionForm.vaultOption) {
                       case "rSOL-THETA":
                         if (client) {
+                          const pricePerShare = await getSOLPricePerShare();
+
+                          console.log(
+                            new anchor.BN(amountStr)
+                              .div(new anchor.BN(pricePerShare))
+                              .toString()
+                          );
+
+                          const pps = new anchor.BN(pricePerShare);
                           const txhash = await client.withdrawVault(
                             getSolanaVaultInstance(vaultOption),
-                            new anchor.BN(amountStr)
+                            new anchor.BN(amountStr).div(pps)
                           );
 
                           res = { hash: txhash };
