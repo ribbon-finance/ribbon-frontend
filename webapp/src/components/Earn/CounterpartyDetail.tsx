@@ -116,11 +116,11 @@ const CounterpartyDetail: React.FC<VaultStrategyExplainerProps> = ({
     setIsMenuOpen((open) => !open);
   }, []);
 
-  const totalBorrowed = useMemo(() => {
+  const principalOutstanding = useMemo(() => {
     if (!vaultSubgraphData.vaults.earn.rEARN) {
       return 0;
     }
-    return vaultSubgraphData.vaults.earn.rEARN.totalBorrowed;
+    return vaultSubgraphData.vaults.earn.rEARN.principalOutstanding;
   }, [vaultSubgraphData.vaults.earn.rEARN]);
   const handleButtonClick = useCallback(async () => {
     onToggleMenu();
@@ -239,8 +239,10 @@ const CounterpartyDetail: React.FC<VaultStrategyExplainerProps> = ({
     (s: Counterparty) => {
       switch (s) {
         case "R-EARN DIVERSIFIED":
-          return totalBorrowed ? (
-            <>${parseFloat(formatUnits(totalBorrowed, "6")).toFixed(2)}</>
+          return principalOutstanding ? (
+            <>
+              ${parseFloat(formatUnits(principalOutstanding, "6")).toFixed(2)}
+            </>
           ) : (
             <>---</>
           );
@@ -252,7 +254,7 @@ const CounterpartyDetail: React.FC<VaultStrategyExplainerProps> = ({
           return <>$15.00M</>;
       }
     },
-    [totalBorrowed]
+    [principalOutstanding]
   );
 
   const renderBorrowRate = useCallback((s: Counterparty) => {
