@@ -6,7 +6,7 @@ import { Title } from "shared/lib/designSystem";
 import ActionSteps from "./ActionSteps";
 import { Steps, STEPS } from "./types";
 import sizes from "shared/lib/designSystem/sizes";
-import { BackIcon, CloseIcon } from "shared/lib/assets/icons/icons";
+import { ThinBackIcon, CloseIcon } from "shared/lib/assets/icons/icons";
 import { VaultOptions, VaultVersion } from "shared/lib/constants/constants";
 import theme from "shared/lib/designSystem/theme";
 import useVaultActionForm from "../../../../hooks/useVaultActionForm";
@@ -204,7 +204,7 @@ const ActionModal: React.FC<ActionModalProps> = ({
 
     return (
       <ModalHeaderBackButton onClick={() => setStep(STEPS.formStep)}>
-        <BackIcon />
+        <ThinBackIcon />
       </ModalHeaderBackButton>
     );
   }, [isDesktop]);

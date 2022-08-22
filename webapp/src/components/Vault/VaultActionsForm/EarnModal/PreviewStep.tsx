@@ -15,23 +15,13 @@ import {
 } from "shared/lib/constants/constants";
 import { getVaultColor } from "shared/lib/utils/vault";
 import { capitalize } from "shared/lib/utils/text";
-import { DepositIcon } from "shared/lib/assets/icons/icons";
+import { DepositGlowIcon } from "shared/lib/assets/icons/icons";
 import theme from "shared/lib/designSystem/theme";
 import HelpInfo from "shared/lib/components/Common/HelpInfo";
 import TooltipExplanation from "shared/lib/components/Common/TooltipExplanation";
 import moment from "moment";
 import useLoadingText from "shared/lib/hooks/useLoadingText";
-import USDCSign from "../../../../hooks/useUSDC";
-
-const ActionLogoContainer = styled.div<{ color: string }>`
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 64px;
-  height: 64px;
-  border-radius: 100px;
-  background: ${(props) => props.color}14;
-`;
+import USDCSign, { DepositSignature } from "../../../../hooks/useUSDC";
 
 const FormTitle = styled(Title)`
   font-size: 22px;
@@ -44,13 +34,6 @@ const WarningContainer = styled.div<{ color: string }>`
   background: ${(props) => props.color}14;
   border-radius: ${theme.border.radiusSmall};
 `;
-
-export interface DepositSignature {
-  deadline: number;
-  v: number;
-  r: string;
-  s: string;
-}
 
 const PreviewStep: React.FC<{
   actionType: ActionType;
@@ -143,7 +126,6 @@ const PreviewStep: React.FC<{
         return;
       }
       const deadline = Math.round(Date.now() / 1000 + 60 * 60);
-      console.log(amount.toString());
       const signature = await usdc.showApproveAssetSignature(
         approveToAddress,
         amount.toString(),
@@ -170,7 +152,7 @@ const PreviewStep: React.FC<{
   let actionLogo = <></>;
   let warning = <></>;
 
-  actionLogo = <DepositIcon color={color} width={32} />;
+  actionLogo = <DepositGlowIcon color={color} width={176} />;
 
   warning = (
     <WarningContainer className="mb-4 w-100 text-center" color={color}>
@@ -184,10 +166,10 @@ const PreviewStep: React.FC<{
   return (
     <div className="d-flex flex-column align-items-center">
       {/* Logo */}
-      <ActionLogoContainer color={color}>{actionLogo}</ActionLogoContainer>
+      <div style={{ marginTop: -40, marginBottom: -40 }}>{actionLogo}</div>
 
       {/* Title */}
-      <FormTitle className="mt-3 text-center">{actionWord} PREVIEW</FormTitle>
+      <FormTitle className=" text-center">{actionWord} PREVIEW</FormTitle>
 
       {/* Info Preview */}
 

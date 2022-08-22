@@ -1,7 +1,7 @@
 import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { BigNumber } from "ethers";
 import { Steps, STEPS } from "./types";
-import PreviewStep, { DepositSignature } from "./PreviewStep";
+import PreviewStep from "./PreviewStep";
 import TransactionStep from "./TransactionStep";
 import {
   getAssets,
@@ -17,7 +17,7 @@ import { getAssetColor, getAssetDecimals } from "shared/lib/utils/asset";
 import { RibbonEarnVault } from "shared/lib/codegen";
 import DepositFormStep from "./DepositFormStep";
 import useEarnVaultContract from "shared/lib/hooks/useEarnVaultContract";
-
+import { DepositSignature } from "../../../../hooks/useUSDC";
 export interface ActionStepsProps {
   vault: {
     vaultOption: VaultOptions;
@@ -188,7 +188,7 @@ const ActionSteps: React.FC<ActionStepsProps> = ({
     1: (
       <PreviewStep
         actionType={"deposit"}
-        amount={BigNumber.from(inputAmount * 10 ** 6)}
+        amount={BigNumber.from(amountStr)}
         positionAmount={vaultBalanceInAsset}
         onClickConfirmButton={handleClickConfirmButton}
         asset={asset}

@@ -277,6 +277,100 @@ export const DepositIcon: React.FC<SVGPropsWithColor> = ({
   </svg>
 );
 
+export const DepositGlowIcon: React.FC<SVGPropsWithColor> = ({
+  color,
+  ...props
+}) => (
+  <svg
+    width="176"
+    height="164"
+    viewBox="0 0 176 164"
+    fill="none"
+    xmlns="http://www.w3.org/2000/svg"
+    {...props}
+  >
+    <g filter="url(#filter0_d_1767_6244)">
+      <rect
+        x="54"
+        y="40"
+        width="64"
+        height="64"
+        rx="32"
+        fill="#3E73C4"
+        fill-opacity="0.12"
+        shape-rendering="crispEdges"
+      />
+      <path
+        d="M86 62.6667V81.3334"
+        stroke={color || "white"}
+        stroke-width="2"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+      />
+      <path
+        d="M95.3337 72L86.0003 81.3333L76.667 72"
+        stroke={color || "white"}
+        stroke-width="2"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+      />
+      <rect
+        x="55"
+        y="41"
+        width="62"
+        height="62"
+        rx="31"
+        stroke={color || "white"}
+        stroke-width="2"
+        shape-rendering="crispEdges"
+      />
+    </g>
+    <defs>
+      <filter
+        id="filter0_d_1767_6244"
+        x="0"
+        y="-12"
+        width="176"
+        height="176"
+        filterUnits="userSpaceOnUse"
+        color-interpolation-filters="sRGB"
+      >
+        <feFlood flood-opacity="0" result="BackgroundImageFix" />
+        <feColorMatrix
+          in="SourceAlpha"
+          type="matrix"
+          values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0"
+          result="hardAlpha"
+        />
+        <feMorphology
+          radius="16"
+          operator="dilate"
+          in="SourceAlpha"
+          result="effect1_dropShadow_1767_6244"
+        />
+        <feOffset dx="2" dy="4" />
+        <feGaussianBlur stdDeviation="20" />
+        <feComposite in2="hardAlpha" operator="out" />
+        <feColorMatrix
+          type="matrix"
+          values="0 0 0 0 0.243137 0 0 0 0 0.45098 0 0 0 0 0.768627 0 0 0 0.16 0"
+        />
+        <feBlend
+          mode="normal"
+          in2="BackgroundImageFix"
+          result="effect1_dropShadow_1767_6244"
+        />
+        <feBlend
+          mode="normal"
+          in="SourceGraphic"
+          in2="effect1_dropShadow_1767_6244"
+          result="shape"
+        />
+      </filter>
+    </defs>
+  </svg>
+);
+
 export const WithdrawIcon: React.FC<SVGPropsWithColor> = ({
   color,
   ...props
@@ -1389,6 +1483,34 @@ export const BackIcon: React.FC<SVGPropsWithColor> = ({ color, ...props }) => (
       strokeWidth="2"
       strokeLinecap="round"
       strokeLinejoin="round"
+    />
+  </svg>
+);
+
+export const ThinBackIcon: React.FC<SVGPropsWithColor> = ({
+  color,
+  ...props
+}) => (
+  <svg
+    width="40"
+    height="40"
+    viewBox="0 0 40 40"
+    fill="none"
+    xmlns="http://www.w3.org/2000/svg"
+  >
+    <path
+      d="M27 20H13"
+      stroke={color || "white"}
+      stroke-width="1"
+      stroke-linecap="round"
+      stroke-linejoin="round"
+    />
+    <path
+      d="M20 27.0003L13 20.0003L20 13.0003"
+      stroke={color || "white"}
+      stroke-width="1"
+      stroke-linecap="round"
+      stroke-linejoin="round"
     />
   </svg>
 );

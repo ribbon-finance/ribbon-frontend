@@ -22,7 +22,7 @@ import {
   VaultMaxDeposit,
 } from "shared/lib/constants/constants";
 import { getVaultColor } from "shared/lib/utils/vault";
-import { DepositIcon } from "shared/lib/assets/icons/icons";
+import { DepositGlowIcon } from "shared/lib/assets/icons/icons";
 import colors from "shared/lib/designSystem/colors";
 import theme from "shared/lib/designSystem/theme";
 import {
@@ -36,16 +36,6 @@ import useWeb3Wallet from "shared/lib/hooks/useWeb3Wallet";
 import useVaultAccounts from "shared/lib/hooks/useVaultAccounts";
 import currency from "currency.js";
 import moment from "moment";
-
-const ActionLogoContainer = styled.div<{ color: string }>`
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 64px;
-  height: 64px;
-  border-radius: 100px;
-  background: ${(props) => props.color}14;
-`;
 
 const StyledBaseInputLabel = styled(BaseInputLabel)`
   margin-top: 24px;
@@ -283,7 +273,7 @@ const DepositFormStep: React.FC<{
   let actionLogo = <></>;
   let warning = <></>;
 
-  actionLogo = <DepositIcon color={color} width={32} />;
+  actionLogo = <DepositGlowIcon color={color} width={176} />;
 
   warning = (
     <WarningContainer className="mt-2 mb-3 w-100 text-center" color={color}>
@@ -300,10 +290,9 @@ const DepositFormStep: React.FC<{
   return (
     <div className="d-flex flex-column align-items-center">
       {/* Logo */}
-      <ActionLogoContainer color={color}>{actionLogo}</ActionLogoContainer>
-
+      <div style={{ marginTop: -40, marginBottom: -40 }}>{actionLogo}</div>
       {/* Title */}
-      <FormTitle className="mt-3 text-center">DEPOSIT</FormTitle>
+      <FormTitle className=" text-center">DEPOSIT</FormTitle>
       <StyledBaseInputLabel>
         AMOUNT ({getAssetDisplay(asset)})
       </StyledBaseInputLabel>

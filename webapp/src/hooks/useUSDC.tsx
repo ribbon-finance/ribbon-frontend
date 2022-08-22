@@ -8,6 +8,13 @@ import { getERC20Token } from "shared/lib/hooks/useERC20Token";
 import { ERC20Token } from "shared/lib/models/eth";
 import { splitSignature } from "shared/lib/utils/signing";
 
+export interface DepositSignature {
+  deadline: number;
+  v: number;
+  r: string;
+  s: string;
+}
+
 const EIP2612_TYPE = [
   { name: "owner", type: "address" },
   { name: "spender", type: "address" },
