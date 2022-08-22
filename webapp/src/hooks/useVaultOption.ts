@@ -16,9 +16,7 @@ const useVaultOption = () => {
     "/v2/theta-vault/:vaultSymbol"
   );
 
-  const matchearn = useRouteMatch<{ vaultSymbol: string }>(
-    "/ribbon-earn/:vaultSymbol"
-  );
+  const matchearn = useRouteMatch<{ vaultSymbol: string }>("/:vaultSymbol");
 
   const [vaultOption, vaultVersion] = useMemo((): [
     VaultOptions | undefined,

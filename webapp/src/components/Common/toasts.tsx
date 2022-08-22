@@ -345,7 +345,7 @@ export const WithdrawReminderToast = () => {
       onClose();
       if (version === "earn") {
         const vaultName = vaultOptionToName(option);
-        const route = `/ribbon-earn/${vaultName}`;
+        const route = `/${vaultName}`;
         history.push(route);
       } else {
         const versionRoute = version === "v1" ? "" : `${version}/`;
