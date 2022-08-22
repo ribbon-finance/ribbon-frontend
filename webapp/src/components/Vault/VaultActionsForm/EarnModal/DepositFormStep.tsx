@@ -13,7 +13,7 @@ import {
 } from "shared/lib/designSystem";
 import { ActionButton } from "shared/lib/components/Common/buttons";
 import { ActionType } from "./types";
-import { formatBigNumber, formatBigNumberAmount } from "shared/lib/utils/math";
+import { formatBigNumber } from "shared/lib/utils/math";
 import { getAssetDisplay } from "shared/lib/utils/asset";
 import { Assets } from "shared/lib/store/types";
 import {

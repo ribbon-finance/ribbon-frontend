@@ -1,7 +1,6 @@
 import React, { useCallback, useEffect, useMemo, useState } from "react";
 import styled from "styled-components";
 import { formatUnits } from "@ethersproject/units";
-import { AnimatePresence, motion } from "framer-motion";
 
 import { SecondaryText, Title } from "shared/lib/designSystem";
 import colors from "shared/lib/designSystem/colors";
@@ -28,6 +27,7 @@ const VaultPerformanceChartContainer = styled.div`
   display: flex;
   flex-direction: column;
   background: ${colors.background.two};
+  height: 310px;
   border-radius: ${theme.border.radiusSmall} ${theme.border.radiusSmall} 0px 0px;
   padding-bottom: 30px;
 `;
@@ -220,108 +220,84 @@ const EarnPerformanceSection: React.FC<EarnPerformanceSectionProps> = ({
 
   return (
     <>
-      <AnimatePresence exitBeforeEnter>
-        <motion.div
-          key={step}
-          transition={{
-            type: "keyframes",
-
-            duration: 0.125,
-          }}
-          initial={{
-            opacity: 0,
-            x: step === "historical" ? 50 : -50,
-          }}
-          animate={{
-            opacity: 1,
-            x: 0,
-          }}
-          exit={{
-            opacity: 0,
-            x: step === "historical" ? 50 : -50,
-          }}
-        >
-          {step === "current" ? (
-            <VaultPerformanceChartContainer>
-              <PerformanceChart
-                earn={true}
-                dataset={yields}
-                labels={timestamps}
-                onChartHover={handleChartHover}
-                extras={
-                  <div className="d-flex align-items-center justify-content-between">
-                    <div>
-                      <div className="d-flex align-items-center">
-                        <SecondaryText fontSize={12} className="d-block">
-                          Cumulative Yield
-                        </SecondaryText>
-                        <TooltipExplanation
-                          title="CUMULATIVE YIELD"
-                          explanation="The sum of the vault’s weekly yield."
-                          renderContent={({ ref, ...triggerHandler }) => (
-                            <HelpInfo containerRef={ref} {...triggerHandler}>
-                              i
-                            </HelpInfo>
-                          )}
-                        />
-                      </div>
-                      <Title fontSize={28} lineHeight={36}>
-                        {yields.length
-                          ? `${(yields[chartIndex] || 0.0).toFixed(2)}%`
-                          : loadingText}
-                      </Title>
-                    </div>
-                    <div>
-                      <DateFilter
-                        active={!monthFilter}
-                        onClick={() => setMonthFilter(false)}
-                      >
-                        All
-                      </DateFilter>
-                    </div>
+      <VaultPerformanceChartContainer>
+        {step === "current" ? (
+          <PerformanceChart
+            earn={true}
+            dataset={yields}
+            labels={timestamps}
+            onChartHover={handleChartHover}
+            extras={
+              <div className="d-flex align-items-center justify-content-between">
+                <div>
+                  <div className="d-flex align-items-center">
+                    <SecondaryText fontSize={12} className="d-block">
+                      Cumulative Yield
+                    </SecondaryText>
+                    <TooltipExplanation
+                      title="CUMULATIVE YIELD"
+                      explanation="The sum of the vault’s weekly yield."
+                      renderContent={({ ref, ...triggerHandler }) => (
+                        <HelpInfo containerRef={ref} {...triggerHandler}>
+                          i
+                        </HelpInfo>
+                      )}
+                    />
                   </div>
-                }
-                themeColor={termThemeColor[vaultPerformanceTerm]}
-              />
-            </VaultPerformanceChartContainer>
-          ) : (
-            <HistoricalPerformance />
-          )}
-        </motion.div>
-      </AnimatePresence>
+                  <Title fontSize={28} lineHeight={36}>
+                    {yields.length
+                      ? `${(yields[chartIndex] || 0.0).toFixed(2)}%`
+                      : loadingText}
+                  </Title>
+                </div>
+                <div>
+                  <DateFilter
+                    active={!monthFilter}
+                    onClick={() => setMonthFilter(false)}
+                  >
+                    All
+                  </DateFilter>
+                </div>
+              </div>
+            }
+            themeColor={termThemeColor[vaultPerformanceTerm]}
+          />
+        ) : (
+          <HistoricalPerformance />
+        )}
+      </VaultPerformanceChartContainer>
       <div
         style={{
           display: "flex",
-          position: "absolute",
-          left: "0",
-          right: "0",
-          bottom: "0",
           alignItems: "center",
           justifyContent: "center",
+          position: "absolute",
+          bottom: "0",
+          left: "0",
+          right: "0",
+          padding: 16,
         }}
       >
-        <div style={{ width: "100%", padding: 16 }}>
-          <SegmentControl
-            segments={StepList.map((item) => ({
-              value: item,
-              display: item,
-            }))}
-            value={step}
-            onSelect={(page) => setStep(page as Step)}
-            config={{
-              theme: "outline",
-              widthType: "fullWidth",
-              backgroundColor: "rgba(22, 206, 185, 0.08)",
-              color: "#16CEB9",
-              button: {
-                px: 16,
-                py: 12,
-                fontSize: 14,
-                lineHeight: 16,
-              },
-            }}
-          />
-        </div>
+        <SegmentControl
+          segments={StepList.map((item) => ({
+            value: item,
+            display: item,
+          }))}
+          value={step}
+          onSelect={(page) => setStep(page as Step)}
+          config={{
+            theme: "outline",
+            widthType: "fullWidth",
+            backgroundColor: "rgba(22, 206, 185, 0.08)",
+            color: "#16CEB9",
+            button: {
+              px: 16,
+              py: 12,
+              fontSize: 14,
+              lineHeight: 16,
+            },
+          }}
+        />
       </div>
     </>
   );

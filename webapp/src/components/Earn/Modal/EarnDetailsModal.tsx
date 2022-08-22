@@ -22,6 +22,7 @@ const Container = styled(motion.div)`
   z-index: 2;
   text-align: left;
   overflow: auto;
+  width: 100%;
 `;
 
 const ModalColumnScroll = styled(BaseModalContentColumn)`
