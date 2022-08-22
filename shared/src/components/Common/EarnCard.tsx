@@ -54,8 +54,8 @@ const markerBlink = keyframes`
   }
 `;
 
-const blink = css<any>`
-  ${markerBlink} ${(props) => props.delay}s infinite;
+const blink = (interval: number) => css`
+  ${markerBlink} ${interval}s infinite;
 `;
 
 const Marker = styled.div<{
@@ -70,7 +70,7 @@ const Marker = styled.div<{
   border-radius: 1000px;
   margin-left: ${(props) =>
     props.marginLeft ? `${props.marginLeft}px` : `0px`};
-  animation: ${({ delay }) => (delay ? blink : null)};
+  animation: ${({ delay }) => (delay ? blink(delay) : null)};
 
   ${({ delay }) => delay && `animation-delay: ${delay}s`}
 `;
