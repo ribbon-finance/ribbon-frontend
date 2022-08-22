@@ -182,7 +182,7 @@ export const Risk = () => {
         sellers of the knock-out options structure may be unable to fulfill part
         of their obligations to the vault.
       </ParagraphText>
-      <StyledTitle marginTop={24}>Equity Upside Risk</StyledTitle>
+      <StyledTitle marginTop={24}>Equity Risk</StyledTitle>
       <ParagraphText marginTop={8}>
         During periods of high market volatility, where ETH gains or loses 8%
         during the week, the vault's knock-out options will expire{" "}

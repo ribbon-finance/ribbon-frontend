@@ -156,7 +156,7 @@ const DesktopProductCatalogueGalleryView: React.FC<
       return (
         "Earn up to " +
         (maxYield * 100).toFixed(2) +
-        "% APY with a fully principal protected vault strategy"
+        "% APY with a principal protected vault strategy"
       );
     } else {
       const asset = getAssets(currentVault!);

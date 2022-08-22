@@ -634,8 +634,8 @@ const YieldCard: React.FC<YieldCardProps> = ({
         <ParagraphText>
           Earn up to{" "}
           <HighlightedText>{(maxYield * 100).toFixed(2)}% APY</HighlightedText>{" "}
-          with a <HighlightedText>fully principal protected</HighlightedText>{" "}
-          vault strategy
+          with a <HighlightedText>principal protected</HighlightedText> vault
+          strategy
         </ParagraphText>
       </>
     );

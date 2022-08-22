@@ -235,20 +235,7 @@ const CounterpartyDetail: React.FC<VaultStrategyExplainerProps> = ({
     }
   }, []);
 
-  const renderPrincipleOutstanding = useCallback((s: Counterparty) => {
-    switch (s) {
-      case "R-EARN DIVERSIFIED":
-        return <>$15.00M</>;
-      case "ORTHOGONAL":
-        return <>$15.00M</>;
-      case "ALAMEDA RESEARCH":
-        return <>$15.00M</>;
-      case "CITADEL":
-        return <>$15.00M</>;
-    }
-  }, []);
-
-  const renderTotalBorrowed = useCallback(
+  const renderPrincipleOutstanding = useCallback(
     (s: Counterparty) => {
       switch (s) {
         case "R-EARN DIVERSIFIED":
@@ -321,23 +308,15 @@ const CounterpartyDetail: React.FC<VaultStrategyExplainerProps> = ({
                 fontSize={12}
                 marginTop={16}
               >
-                Total Borrowed
+                Credit Rating
               </WalletContentText>
-              <Title>{renderTotalBorrowed(counterparty)}</Title>
+              <Title>{renderCreditRating(counterparty)}</Title>
             </Part>
             <Part>
               <WalletContentText color={colors.tertiaryText} fontSize={12}>
                 Borrow Rate (APY)
               </WalletContentText>
               <Title>{renderBorrowRate(counterparty)}</Title>
-              <WalletContentText
-                color={colors.tertiaryText}
-                fontSize={12}
-                marginTop={16}
-              >
-                Credit Rating
-              </WalletContentText>
-              <Title>{renderCreditRating(counterparty)}</Title>
             </Part>
           </Details>
         </EarnFloatingMenu>

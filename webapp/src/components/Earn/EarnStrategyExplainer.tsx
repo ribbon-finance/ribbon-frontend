@@ -122,7 +122,7 @@ const EarnStrategyExplainer: React.FC<EarnStrategyExplainerProps> = ({
           return (
             <>
               Set it and forget it - deposit and start earning a base APY of 4%
-              with full principal protection
+              with principal protection
             </>
           );
       }
