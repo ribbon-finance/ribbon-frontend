@@ -25,6 +25,7 @@ export type Counterparty = typeof CounterpartyList[number];
 const CounterpartyListSubset: Counterparty[] = ["R-EARN DIVERSIFIED"];
 
 const Counterparties: React.FC = () => {
+  // WIP: for querying user deposited counterparties
   // const { vaultAccounts } = useVaultAccounts("earn");
   // const userCounterpartyList = useMemo(() => {
   //   let userCounterpartyList: Counterparty[] = [];

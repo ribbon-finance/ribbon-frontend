@@ -146,7 +146,7 @@ const BalanceTitle = styled.div`
   color: ${colors.primaryText}7A;
 `;
 
-const VaultContainer = styled.div<{ offset: number }>`
+const PageContainer = styled.div<{ offset: number }>`
   display: flex;
   text-align: center;
   justify-content: center;
@@ -157,7 +157,7 @@ const VaultContainer = styled.div<{ offset: number }>`
   height: calc(100vh - ${({ offset }) => offset}px);
 `;
 
-const MainContainer = styled.div`
+const VaultContainer = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
@@ -316,6 +316,7 @@ const EarnPage = () => {
     ];
   }, [vaultAccount, decimals]);
 
+  // WIP
   // const [investedInStrategy] = useMemo(() => {
   //   let totalBalance = BigNumber.from(0);
   //   let totalPendingDeposit = BigNumber.from(0);
@@ -393,7 +394,7 @@ const EarnPage = () => {
           <StyledEarnInnerRing deposited={isDepositSuccess} />
         </FadeInDiv>
       </CirclesContainer>
-      <VaultContainer offset={pageOffset}>
+      <PageContainer offset={pageOffset}>
         <AnimatePresence exitBeforeEnter>
           {showVault.show ? (
             <motion.div
@@ -413,21 +414,23 @@ const EarnPage = () => {
                 ease: "easeInOut",
               }}
             >
-              <MainContainer>
+              <VaultContainer>
                 {hasPendingDeposits ? (
                   <PendingDepositsContainer>
-                    <ProductAssetLogoContainer color={"blue"}>
+                    <ProductAssetLogoContainer color={color}>
                       {logo}
                     </ProductAssetLogoContainer>
                     <TextContainer>
                       <p>
                         Your deposit will deployed in the vault in{" "}
-                        <span style={{ color: "white" }}>{toDepositTime}</span>
+                        <span style={{ color: colors.primaryText }}>
+                          {toDepositTime}
+                        </span>
                       </p>
                     </TextContainer>
                   </PendingDepositsContainer>
                 ) : (
-                  <ProductAssetLogoContainer color={"blue"}>
+                  <ProductAssetLogoContainer color={color}>
                     {logo}
                   </ProductAssetLogoContainer>
                 )}
@@ -469,7 +472,7 @@ const EarnPage = () => {
                       >
                         Deposit
                       </StyledActionButton>
-                      {/* <StyledActionButton
+                      {/* WIP <StyledActionButton
                         disabled={true}
                         className={`py-3 mb-1 w-100`}
                         color={"white"}
@@ -487,7 +490,7 @@ const EarnPage = () => {
                     </StyledActionButton>
                   )}
                 </ButtonContainer>
-              </MainContainer>
+              </VaultContainer>
             </motion.div>
           ) : (
             <motion.div
@@ -511,7 +514,7 @@ const EarnPage = () => {
             </motion.div>
           )}
         </AnimatePresence>
-      </VaultContainer>
+      </PageContainer>
       <EarnDetailsModal
         show={showDetailsModal}
         onClose={() => setShowDetailsModal(false)}

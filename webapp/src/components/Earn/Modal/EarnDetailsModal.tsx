@@ -22,18 +22,11 @@ const Container = styled(motion.div)`
   z-index: 2;
   text-align: left;
   overflow: auto;
-  width: 100%;
 `;
 
 const ModalColumnScroll = styled(BaseModalContentColumn)`
   flex: 1;
   overflow: hidden;
-  * {
-    -ms-overflow-style: none;
-  }
-  *::-webkit-scrollbar {
-    display: none;
-  }
 `;
 
 const DesktopNavigatorButtonContainer = styled.div`
@@ -112,7 +105,8 @@ type Step =
   | "risk"
   | "counterparties"
   | "activity"
-  | "fees"; //| "transaction";
+  | "fees";
+
 const StepList = [
   "strategy",
   "payoff",

@@ -113,6 +113,6 @@ export const useAirtable = () => {
     absolutePerformance: absolutePerformance,
     performance: performance,
     expectedYield: expectedYield,
-    maxYield: 0.1037, //temporary
+    maxYield: 0.1037, //temporary will be changed near 1st sept
   };
 };
