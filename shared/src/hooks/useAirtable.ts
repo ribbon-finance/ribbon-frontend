@@ -91,25 +91,26 @@ export const useAirtable = () => {
   if (loading || !schedule) {
     return {
       loading,
-      strikePrice: 2000,
+      strikePrice: ETHPrice,
       baseYield: 0.04,
-      participationRate: 0.03,
+      participationRate: 0.04,
       barrierPercentage: 0.08,
       absolutePerformance: 0.06,
       performance: 0.0,
       expectedYield: 0.0,
-      maxYield: 0.1037,
+      maxYield: 0.1633,
     };
   }
   return {
+    //placeholder values for some of them before 1st sept
     loading,
-    strikePrice: schedule.strikePrice,
+    strikePrice: ETHPrice,
     baseYield: schedule.baseYield,
     participationRate: schedule.participationRate,
     barrierPercentage: schedule.barrierPercentage,
-    absolutePerformance: absolutePerformance,
-    performance: performance,
-    expectedYield: expectedYield,
-    maxYield: 0.1037, //temporary will be changed near 1st sept
+    absolutePerformance: 0,
+    performance: 0,
+    expectedYield: 0.04,
+    maxYield: 0.1633,
   };
 };

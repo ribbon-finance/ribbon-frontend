@@ -182,23 +182,6 @@ export const Risk = () => {
         sellers of the knock-out options structure may be unable to fulfill part
         of their obligations to the vault.
       </ParagraphText>
-      <StyledTitle marginTop={24}>Equity Risk</StyledTitle>
-      <ParagraphText marginTop={8}>
-        During periods of high market volatility, where ETH gains or loses 8%
-        during the week, the vault's knock-out options will expire{" "}
-        <TooltipExplanation
-          title="OUT-THE-MONEY"
-          explanation={`The option payout will be zero as the underlying spot is breaching a barrier and as such, the bonus coupon will be zero.`}
-          learnMoreURL="https://www.investopedia.com/terms/o/outofthemoney.asp"
-          renderContent={({ ref, ...triggerHandler }) => (
-            <HighlightedText ref={ref} {...triggerHandler}>
-              out-the-money
-            </HighlightedText>
-          )}
-        />{" "}
-        and users may not fully capture the downside/upside performance of the
-        underlying asset due to the knock-out barriers.
-      </ParagraphText>
       <StyledTitle marginTop={24}>Smart Contract Risk</StyledTitle>
       <ParagraphText marginTop={8}>
         The Ribbon Earn smart contracts have been{" "}

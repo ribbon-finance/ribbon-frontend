@@ -16,7 +16,7 @@ import {
   AlamedaResearchLogo,
   CitadelLogo,
 } from "shared/lib/assets/icons/logo";
-import { BoostIcon } from "shared/lib/assets/icons/icons";
+import { BoostIcon, ExternalIcon } from "shared/lib/assets/icons/icons";
 import { Counterparty } from "./Counterparties";
 import { SubgraphDataContext } from "shared/lib/hooks/subgraphDataContext";
 import { formatUnits } from "ethers/lib/utils";
@@ -146,10 +146,10 @@ const CounterpartyDetail: React.FC<VaultStrategyExplainerProps> = ({
     }
   }, []);
 
-  const renderAPY = useCallback((s: Counterparty) => {
+  const renderAPR = useCallback((s: Counterparty) => {
     switch (s) {
       case "R-EARN DIVERSIFIED":
-        return <>7.00</>;
+        return <>---</>;
       case "ORTHOGONAL":
         return <>7.01</>;
       case "ALAMEDA RESEARCH":
@@ -164,11 +164,8 @@ const CounterpartyDetail: React.FC<VaultStrategyExplainerProps> = ({
       case "R-EARN DIVERSIFIED":
         return (
           <>
-            R-Earn diversified is a pool of leading accredited crypto market
-            makers whose credit assessment passed strict requirements set by
-            Credora. Their teams have experience in deploying a wide array of
-            strategies and strict risk management. 50% of the capital assigned
-            to this pool is lent to{" "}
+            R-Earn diversified is a basket of leading accredited crypto market
+            makers whose credit assessment passed strict requirements set by{" "}
             <BaseLink
               color="white"
               target="_blank"
@@ -176,10 +173,11 @@ const CounterpartyDetail: React.FC<VaultStrategyExplainerProps> = ({
               to="https://genesistrading.com"
             >
               <PrimaryText lineHeight={20} fontSize={14}>
-                Genesis
+                Credora
               </PrimaryText>
-            </BaseLink>{" "}
-            and 50% is lent to{" "}
+            </BaseLink>
+            , the leading real-time credit underwriter in crypto. 50% of the
+            capital assigned to this pool is lent to{" "}
             <BaseLink
               color="white"
               target="_blank"
@@ -188,6 +186,17 @@ const CounterpartyDetail: React.FC<VaultStrategyExplainerProps> = ({
             >
               <PrimaryText lineHeight={20} fontSize={14}>
                 Wintermute
+              </PrimaryText>
+            </BaseLink>{" "}
+            and 50% is lent to{" "}
+            <BaseLink
+              color="white"
+              target="_blank"
+              rel="noreferrer noopener"
+              to="https://www.alameda-research.com/"
+            >
+              <PrimaryText lineHeight={20} fontSize={14}>
+                Alameda
               </PrimaryText>
             </BaseLink>
             .
@@ -290,7 +299,7 @@ const CounterpartyDetail: React.FC<VaultStrategyExplainerProps> = ({
           <WalletContent>
             <StyledTitle>{counterparty}</StyledTitle>
             <WalletContentText>
-              {renderAPY(counterparty)}% Borrow Rate (APY)
+              {renderAPR(counterparty)} Borrow Rate (APR)
             </WalletContentText>
           </WalletContent>
           <ButtonArrow isOpen={isMenuOpen} color="white"></ButtonArrow>
@@ -304,21 +313,50 @@ const CounterpartyDetail: React.FC<VaultStrategyExplainerProps> = ({
               <WalletContentText color={colors.tertiaryText} fontSize={12}>
                 Principal Outstanding
               </WalletContentText>
-              <Title>{renderPrincipleOutstanding(counterparty)}</Title>
+              <Title>---</Title>
+              {/* <Title>{renderPrincipleOutstanding(counterparty)}</Title> */}
               <WalletContentText
                 color={colors.tertiaryText}
                 fontSize={12}
                 marginTop={16}
               >
-                Credit Rating
+                Market Maker
               </WalletContentText>
-              <Title>{renderCreditRating(counterparty)}</Title>
+              <Title>{"Wintermute"}</Title>
+              <Title>{"Alameda"}</Title>
             </Part>
             <Part>
               <WalletContentText color={colors.tertiaryText} fontSize={12}>
-                Borrow Rate (APY)
+                Borrow Rate (APR)
               </WalletContentText>
-              <Title>{renderBorrowRate(counterparty)}</Title>
+              <Title>---</Title>
+              {/* <Title>{renderBorrowRate(counterparty)}</Title> */}
+              <WalletContentText
+                color={colors.tertiaryText}
+                fontSize={12}
+                marginTop={16}
+              >
+                <div className="d-flex flex-row">
+                  Credit Rating
+                  <div className="ml-1">
+                    <BaseLink
+                      color="white"
+                      target="_blank"
+                      rel="noreferrer noopener"
+                      to="https://credora.gitbook.io/credit-methodology/SbLmTxogePkrzsF4z9IK/credit-evaluation/credit-score"
+                    >
+                      <ExternalIcon
+                        width={16}
+                        containerStyle={{ display: "flex" }}
+                        color="white"
+                      />
+                    </BaseLink>
+                  </div>
+                </div>
+              </WalletContentText>
+              {/* <Title>{renderCreditRating(counterparty)}</Title> */}
+              <Title>AA</Title>
+              <Title>AA</Title>
             </Part>
           </Details>
         </EarnFloatingMenu>
