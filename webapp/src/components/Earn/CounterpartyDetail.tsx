@@ -208,22 +208,28 @@ const CounterpartyDetail: React.FC<VaultStrategyExplainerProps> = ({
         return (
           <>
             {" "}
-            Orthogonal Trading is a multi-strategy cryptocurrency trading firm
-            focused solely on the digital asset markets. The team bring
-            experience in portfolio and risk management, auditing, quantitative
-            trading, and blockchain system development from Goldman Sachs,
-            Morgan Stanley, B2C2 and more.
+            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Curabitur
+            ultrices ac tortor in convallis. Cras sed euismod enim. Vestibulum
+            semper viverra dolor, ut dignissim quam suscipit convallis. Vivamus
+            non pretium felis. Nam a tellus nisl. Lorem ipsum dolor sit amet,
+            consectetur adipiscing elit. Duis tincidunt gravida finibus. Nullam
+            neque tellus, dignissim ut mi pellentesque, facilisis aliquet
+            lectus. Nunc convallis elit ac nulla blandit, eu ultrices ipsum
+            accumsan.
           </>
         );
       case "CITADEL":
         return (
           <>
             {" "}
-            Orthogonal Trading is a multi-strategy cryptocurrency trading firm
-            focused solely on the digital asset markets. The team bring
-            experience in portfolio and risk management, auditing, quantitative
-            trading, and blockchain system development from Goldman Sachs,
-            Morgan Stanley, B2C2 and more.
+            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Curabitur
+            ultrices ac tortor in convallis. Cras sed euismod enim. Vestibulum
+            semper viverra dolor, ut dignissim quam suscipit convallis. Vivamus
+            non pretium felis. Nam a tellus nisl. Lorem ipsum dolor sit amet,
+            consectetur adipiscing elit. Duis tincidunt gravida finibus. Nullam
+            neque tellus, dignissim ut mi pellentesque, facilisis aliquet
+            lectus. Nunc convallis elit ac nulla blandit, eu ultrices ipsum
+            accumsan.
           </>
         );
     }
@@ -249,7 +255,7 @@ const CounterpartyDetail: React.FC<VaultStrategyExplainerProps> = ({
           return totalBorrowed ? (
             <>${parseFloat(formatUnits(totalBorrowed, "6")).toFixed(2)}</>
           ) : (
-            <>-</>
+            <>---</>
           );
         case "ORTHOGONAL":
           return <>$15.00M</>;
@@ -265,26 +271,26 @@ const CounterpartyDetail: React.FC<VaultStrategyExplainerProps> = ({
   const renderBorrowRate = useCallback((s: Counterparty) => {
     switch (s) {
       case "R-EARN DIVERSIFIED":
-        return <>$15.00M</>;
+        return <>7.00%</>;
       case "ORTHOGONAL":
-        return <>$15.00M</>;
+        return <>7.00%</>;
       case "ALAMEDA RESEARCH":
-        return <>$15.00M</>;
+        return <>7.00%</>;
       case "CITADEL":
-        return <>$15.00M</>;
+        return <>7.00%</>;
     }
   }, []);
 
   const renderCreditRating = useCallback((s: Counterparty) => {
     switch (s) {
       case "R-EARN DIVERSIFIED":
-        return <>100</>;
+        return <>---</>;
       case "ORTHOGONAL":
-        return <>100</>;
+        return <>---</>;
       case "ALAMEDA RESEARCH":
-        return <>100</>;
+        return <>---</>;
       case "CITADEL":
-        return <>100</>;
+        return <>---</>;
     }
   }, []);
   return (

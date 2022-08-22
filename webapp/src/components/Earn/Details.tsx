@@ -189,7 +189,7 @@ export const Risk = () => {
         <TooltipExplanation
           title="OUT-THE-MONEY"
           explanation={`The option payout will be zero as the underlying spot is breaching a barrier and as such, the bonus coupon will be zero.`}
-          learnMoreURL="https://www.investopedia.com/terms/i/outthemoney.asp"
+          learnMoreURL="https://www.investopedia.com/terms/o/outofthemoney.asp"
           renderContent={({ ref, ...triggerHandler }) => (
             <HighlightedText ref={ref} {...triggerHandler}>
               out-the-money

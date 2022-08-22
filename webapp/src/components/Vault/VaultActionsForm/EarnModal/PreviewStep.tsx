@@ -88,7 +88,8 @@ const PreviewStep: React.FC<{
       value: "Ribbon Diverisified",
       tooltip: {
         title: "Counterparty",
-        explanation: "Something Something counterparty",
+        explanation:
+          "The counterpary selected will be the one to which the funds will be lent during the epoch.",
       },
     });
 

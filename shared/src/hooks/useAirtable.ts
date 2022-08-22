@@ -22,7 +22,6 @@ const BASE_NAME = "Earn";
 const base = Airtable.base("appkUHzxJ1lehQTIt");
 
 export const useAirtable = () => {
-  const [schedules, setSchedules] = useState<ScheduleItem[]>();
   const [schedule, setSchedule] = useState<ScheduleItem>();
   const [, setError] = useState<string>();
 
@@ -43,19 +42,17 @@ export const useAirtable = () => {
           s.push(item);
         });
         if (!assetPriceLoading) {
-          setSchedules(s);
           setSchedule(s[s.length - 1]);
         }
       })
       .catch((e) => {
-        setSchedules([]);
         setError("ERROR FETCHING");
       });
   }, [assetPriceLoading]);
 
   const loading = useMemo(() => {
-    return assetPriceLoading || !schedules;
-  }, [assetPriceLoading, schedules]);
+    return assetPriceLoading || !schedule;
+  }, [assetPriceLoading, schedule]);
 
   //   Absolute perf = abs(spot - strike) / strike
   // (Absolute perf * participation rate * 4 + 1)^(365/28) -1
