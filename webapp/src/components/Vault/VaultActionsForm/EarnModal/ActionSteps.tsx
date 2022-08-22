@@ -80,12 +80,12 @@ const ActionSteps: React.FC<ActionStepsProps> = ({
     withdrawals,
   ]);
 
-  const [inputAmount, setInputAmount] = useState<number>(0);
+  const [inputAmount, setInputAmount] = useState<string>("");
   const [signature, setSignature] = useState<DepositSignature | undefined>();
 
   const amountStr = useMemo(() => {
     try {
-      const amount = parseUnits(inputAmount.toString(), decimals);
+      const amount = parseUnits(inputAmount, decimals);
       return amount.toString();
     } catch (err) {
       return "0";

@@ -35,8 +35,7 @@ import TooltipExplanation from "shared/lib/components/Common/TooltipExplanation"
 import useWeb3Wallet from "shared/lib/hooks/useWeb3Wallet";
 import useVaultAccounts from "shared/lib/hooks/useVaultAccounts";
 import currency from "currency.js";
-import moment from "moment";
-
+import useEarnStrategyTime from "../../../../hooks/useEarnStrategyTime";
 const StyledBaseInputLabel = styled(BaseInputLabel)`
   margin-top: 24px;
   width: 100%;
@@ -59,7 +58,7 @@ const WarningContainer = styled.div<{ color: string }>`
 `;
 
 const DepositFormStep: React.FC<{
-  onClickUpdateInput: (amount: number) => void;
+  onClickUpdateInput: (amount: string) => void;
   actionType: ActionType;
   onClickConfirmButton: () => Promise<void>;
   asset: Assets;
@@ -85,23 +84,24 @@ const DepositFormStep: React.FC<{
     loading,
   } = useV2VaultData(vaultOption);
 
-  const [inputAmount, changeInputAmount] = useState<number>(0);
+  const [inputAmount, changeInputAmount] = useState<string>("");
   const { balance: userAssetBalance } = useAssetBalance(asset);
   const vaultBalanceInAsset = depositBalanceInAsset.add(lockedBalanceInAsset);
   const { active } = useWeb3Wallet();
   const vaultMaxDepositAmount = VaultMaxDeposit[vaultOption];
   const { vaultAccounts } = useVaultAccounts(vaultVersion);
   const vaultAccount = vaultAccounts["rEARN"];
+  const { strategyStartTime, withdrawalDate } = useEarnStrategyTime();
 
   const isInputNonZero = useMemo((): boolean => {
-    return inputAmount > 0;
+    return parseFloat(inputAmount) > 0;
   }, [inputAmount]);
 
   const error = useMemo((): string | undefined => {
     try {
       /** Check block with input requirement */
       if (isInputNonZero && !loading && active) {
-        const amountBigNumber = parseUnits(inputAmount.toString(), decimals);
+        const amountBigNumber = parseUnits(inputAmount, decimals);
 
         if (amountBigNumber.gt(userAssetBalance)) {
           return "insufficientBalance";
@@ -170,29 +170,6 @@ const DepositFormStep: React.FC<{
     }
   }, []);
 
-  const [strategyStartTime, withdrawalDate] = useMemo(() => {
-    let firstOpenLoanTime = moment.utc("2022-09-02").set("hour", 17);
-
-    let strategyStartTime;
-
-    while (!strategyStartTime) {
-      let strategyStartTimeTemp = moment.duration(
-        firstOpenLoanTime.diff(moment()),
-        "milliseconds"
-      );
-      if (strategyStartTimeTemp.asMilliseconds() <= 0) {
-        firstOpenLoanTime.add(28, "days");
-      } else {
-        strategyStartTime = strategyStartTimeTemp;
-      }
-    }
-
-    return [
-      `${strategyStartTime.days()}D ${strategyStartTime.hours()}H ${strategyStartTime.minutes()}M`,
-      firstOpenLoanTime.add(28, "days").format("Do MMMM, YYYY"),
-    ];
-  }, []);
-
   const detailRows: ActionDetail[] = useMemo(() => {
     const actionDetails: ActionDetail[] = [];
 
@@ -256,12 +233,12 @@ const DepositFormStep: React.FC<{
   const handleInputChange = useCallback(
     (e: React.ChangeEvent<HTMLInputElement>) => {
       const rawInput = e.target.value;
-      changeInputAmount(parseFloat(parseFloat(rawInput).toFixed(6)));
+      changeInputAmount(rawInput);
     },
     []
   );
   const handleMaxClick = useCallback(() => {
-    changeInputAmount(parseFloat(formatUnits(userAssetBalance, decimals)));
+    changeInputAmount(formatUnits(userAssetBalance, decimals));
   }, [userAssetBalance, decimals]);
 
   /**

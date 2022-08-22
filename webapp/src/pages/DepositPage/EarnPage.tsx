@@ -31,7 +31,7 @@ import {
 import { useAirtable } from "shared/lib/hooks/useAirtable";
 import ActionModal from "../../components/Vault/VaultActionsForm/EarnModal/ActionModal";
 import { usePendingTransactions } from "shared/lib/hooks/pendingTransactionsContext";
-import moment from "moment";
+import useEarnStrategyTime from "../../hooks/useEarnStrategyTime";
 
 const { formatUnits } = ethers.utils;
 
@@ -209,6 +209,7 @@ const EarnPage = () => {
   const { active, account, chainId } = useWeb3Wallet();
 
   const { maxYield } = useAirtable();
+  const { strategyStartTime } = useEarnStrategyTime();
 
   useRedirectOnWrongChain(vaultOption, chainId);
   usePullUp();
@@ -242,26 +243,6 @@ const EarnPage = () => {
   useRedirectOnSwitchChain(getChainByVaultOption(vaultOption as VaultOptions));
 
   let logo = <Logo height="100%" />;
-
-  const toDepositTime = useMemo(() => {
-    let firstOpenLoanTime = moment.utc("2022-09-02").set("hour", 17);
-
-    let toDepositTime;
-
-    while (!toDepositTime) {
-      let toDepositTimeTemp = moment.duration(
-        firstOpenLoanTime.diff(moment()),
-        "milliseconds"
-      );
-      if (toDepositTimeTemp.asMilliseconds() <= 0) {
-        firstOpenLoanTime.add(28, "days");
-      } else {
-        toDepositTime = toDepositTimeTemp;
-      }
-    }
-
-    return `${toDepositTime.days()}D ${toDepositTime.hours()}H ${toDepositTime.minutes()}M`;
-  }, []);
 
   const color = useMemo(() => {
     if (vaultOption) {
@@ -424,7 +405,7 @@ const EarnPage = () => {
                       <p>
                         Your deposit will deployed in the vault in{" "}
                         <span style={{ color: colors.primaryText }}>
-                          {toDepositTime}
+                          {strategyStartTime}
                         </span>
                       </p>
                     </TextContainer>

@@ -19,9 +19,9 @@ import { DepositGlowIcon } from "shared/lib/assets/icons/icons";
 import theme from "shared/lib/designSystem/theme";
 import HelpInfo from "shared/lib/components/Common/HelpInfo";
 import TooltipExplanation from "shared/lib/components/Common/TooltipExplanation";
-import moment from "moment";
 import useLoadingText from "shared/lib/hooks/useLoadingText";
 import USDCSign, { DepositSignature } from "../../../../hooks/useUSDC";
+import useEarnStrategyTime from "../../../../hooks/useEarnStrategyTime";
 
 const FormTitle = styled(Title)`
   font-size: 22px;
@@ -54,7 +54,8 @@ const PreviewStep: React.FC<{
 }) => {
   const color = getVaultColor(vaultOption);
   const usdc = USDCSign();
-
+  const { strategyStartTime, withdrawalDate } = useEarnStrategyTime();
+  const loadingText = useLoadingText("permitting");
   const [depositSignature, setDepositSignature] = useState<DepositSignature>();
 
   interface Tooltip {
@@ -67,32 +68,8 @@ const PreviewStep: React.FC<{
     tooltip?: Tooltip;
   }
 
-  const [strategyStartTime, withdrawalDate] = useMemo(() => {
-    let firstOpenLoanTime = moment.utc("2022-09-02").set("hour", 17);
-
-    let strategyStartTime;
-
-    while (!strategyStartTime) {
-      let strategyStartTimeTemp = moment.duration(
-        firstOpenLoanTime.diff(moment()),
-        "milliseconds"
-      );
-      if (strategyStartTimeTemp.asMilliseconds() <= 0) {
-        firstOpenLoanTime.add(28, "days");
-      } else {
-        strategyStartTime = strategyStartTimeTemp;
-      }
-    }
-
-    return [
-      `${strategyStartTime.days()}D ${strategyStartTime.hours()}H ${strategyStartTime.minutes()}M`,
-      firstOpenLoanTime.add(28, "days").format("Do MMMM, YYYY"),
-    ];
-  }, []);
-
   const [waitingApproval, setWaitingApproval] = useState(false);
 
-  const loadingText = useLoadingText("permitting");
   const detailRows: ActionDetail[] = useMemo(() => {
     const actionDetails: ActionDetail[] = [];
 
