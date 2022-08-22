@@ -260,7 +260,6 @@ const EarnChart: React.FC<ProfitChartProps> = ({
         performance < 0
           ? Math.floor(performance * 100)
           : Math.round(performance * 100);
-      console.log({ performanceRounded });
       return {
         labels: moneynessRange,
         datasets: [
