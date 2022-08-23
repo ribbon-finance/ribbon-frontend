@@ -193,10 +193,10 @@ const CounterpartyDetail: React.FC<VaultStrategyExplainerProps> = ({
               color="white"
               target="_blank"
               rel="noreferrer noopener"
-              to="https://www.alameda-research.com/"
+              to="https://folkvang.io/"
             >
               <PrimaryText lineHeight={20} fontSize={14}>
-                Alameda
+                Folkvang
               </PrimaryText>
             </BaseLink>
             .
@@ -323,7 +323,7 @@ const CounterpartyDetail: React.FC<VaultStrategyExplainerProps> = ({
                 Market Maker
               </WalletContentText>
               <Title>{"Wintermute"}</Title>
-              <Title>{"Alameda"}</Title>
+              <Title>{"Folkvang"}</Title>
             </Part>
             <Part>
               <WalletContentText color={colors.tertiaryText} fontSize={12}>
