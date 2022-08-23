@@ -20,7 +20,7 @@ import theme from "shared/lib/designSystem/theme";
 import HelpInfo from "shared/lib/components/Common/HelpInfo";
 import TooltipExplanation from "shared/lib/components/Common/TooltipExplanation";
 import useLoadingText from "shared/lib/hooks/useLoadingText";
-import USDCSign, { DepositSignature } from "../../../../hooks/useUSDC";
+import useUSDC, { DepositSignature } from "../../../../hooks/useUSDC";
 import useEarnStrategyTime from "../../../../hooks/useEarnStrategyTime";
 
 const FormTitle = styled(Title)`
@@ -53,7 +53,7 @@ const PreviewStep: React.FC<{
   onSignatureMade,
 }) => {
   const color = getVaultColor(vaultOption);
-  const usdc = USDCSign();
+  const usdc = useUSDC();
   const { strategyStartTime, withdrawalDate } = useEarnStrategyTime();
   const loadingText = useLoadingText("permitting");
   const [depositSignature, setDepositSignature] = useState<DepositSignature>();
@@ -185,19 +185,6 @@ const PreviewStep: React.FC<{
           <Title className="text-right">{detail.value}</Title>
         </div>
       ))}
-      {/* <ActionButton
-        onClick={handleApprove}
-        disabled={depositSignature !== undefined}
-        className="btn py-3 mt-4 mb-3"
-        color={color}
-        variant={depositSignature === undefined ? "primary" : "earn"}
-      >
-        {waitingApproval
-          ? loadingText
-          : depositSignature === undefined
-          ? `PERMIT VAULT TO USE YOUR USDC`
-          : `USDC READY TO DEPOSIT`}
-      </ActionButton> */}
       {depositSignature !== undefined ? (
         <ActionButton
           className="btn py-3 mt-4 mb-3"

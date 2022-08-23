@@ -170,7 +170,7 @@ const CounterpartyDetail: React.FC<VaultStrategyExplainerProps> = ({
               color="white"
               target="_blank"
               rel="noreferrer noopener"
-              to="https://genesistrading.com"
+              to="https://credora.io/"
             >
               <PrimaryText lineHeight={20} fontSize={14}>
                 Credora

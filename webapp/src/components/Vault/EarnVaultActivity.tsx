@@ -1,11 +1,28 @@
-import React, { useEffect, useMemo, useRef, useState } from "react";
-
+import React, {
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
+import styled from "styled-components";
 import useVaultActivity from "shared/lib/hooks/useVaultActivity";
 import { ActivityFilter, activityFilters, SortBy, sortByList } from "./types";
 import EarnVaultActivityList from "./EarnVaultActivityList";
 import { VaultOptions, VaultVersion } from "shared/lib/constants/constants";
+import { Title } from "shared/lib/designSystem";
 import { useLocation } from "react-router-dom";
+import useLoadingText from "shared/lib/hooks/useLoadingText";
 
+const PaginationContainer = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+`;
+
+const ActivityTitle = styled(Title)`
+  margin: auto;
+`;
 const perPage = 6;
 
 interface VaultActivityProps {
@@ -23,7 +40,7 @@ const EarnVaultActivity: React.FC<VaultActivityProps> = ({
   const [activityFilter] = useState<ActivityFilter>(activityFilters[0]);
   const [sortBy] = useState<SortBy>(sortByList[0]);
   const [page, setPage] = useState(1);
-
+  const loadingText = useLoadingText();
   /**
    * Default to initial state and process initial state
    */
@@ -106,6 +123,26 @@ const EarnVaultActivity: React.FC<VaultActivityProps> = ({
     }
   }, [page, filteredActivities]);
 
+  const renderPagination = useCallback(() => {
+    if (loading) {
+      return (
+        <Title fontSize={12} lineHeight={16}>
+          {loadingText}
+        </Title>
+      );
+    }
+
+    if (filteredActivities.length <= 0) {
+      return (
+        <ActivityTitle fontSize={12} lineHeight={16}>
+          There is currently no vault activity
+        </ActivityTitle>
+      );
+    }
+
+    return <></>;
+  }, [loading, filteredActivities, loadingText]);
+
   return (
     <>
       <EarnVaultActivityList
@@ -115,6 +152,7 @@ const EarnVaultActivity: React.FC<VaultActivityProps> = ({
         setPage={setPage}
         perPage={perPage}
       />
+      <PaginationContainer>{renderPagination()}</PaginationContainer>
     </>
   );
 };

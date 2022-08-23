@@ -23,7 +23,7 @@ const EIP2612_TYPE = [
   { name: "deadline", type: "uint256" },
 ];
 
-const USDCSign = () => {
+const useUSDC = () => {
   const depositAsset = getAssets("rEARN");
 
   const { chainId, ethereumProvider, account } = useWeb3Wallet();
@@ -84,4 +84,4 @@ const USDCSign = () => {
   };
 };
 
-export default USDCSign;
+export default useUSDC;

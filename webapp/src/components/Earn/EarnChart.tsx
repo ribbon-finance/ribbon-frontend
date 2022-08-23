@@ -54,7 +54,7 @@ const EarnChart: React.FC<ProfitChartProps> = ({
        */
       const priceElement = meta.data[drawIndex];
       const priceX = priceElement._view.x;
-
+      ctx.globalCompositeOperation = "source-over";
       ctx.save();
       ctx.beginPath();
       ctx.moveTo(priceX, topY - 25);
@@ -110,7 +110,7 @@ const EarnChart: React.FC<ProfitChartProps> = ({
       );
       const meta = chart.chart.getDatasetMeta(datasetIndex);
       // draw line behind dot
-      ctx.globalCompositeOperation = "destination-over";
+      ctx.globalCompositeOperation = "source-over";
       const leftX = chart.chart.scales["x-axis-0"].left;
       const rightX = chart.chart.scales["x-axis-0"].right;
       const topY = chart.chart.scales["y-axis-0"].top;

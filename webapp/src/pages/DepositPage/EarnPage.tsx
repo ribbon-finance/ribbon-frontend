@@ -460,16 +460,14 @@ const EarnPage = () => {
                   Your Balance
                 </BalanceTitle>
                 <HeroText>
-                  {isLoading
+                  {isLoading || !account
                     ? "---"
-                    : vaultAccount
-                    ? "$" +
+                    : "$" +
                       formatBigNumber(
                         BigNumber.from(investedInStrategy),
                         decimals,
                         2
-                      )
-                    : "$0.00"}
+                      )}
                 </HeroText>
                 <Subtitle color={yieldColor}>
                   +{isLoading || roi === 0 ? "0.00" : roi.toFixed(4)}%
