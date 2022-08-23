@@ -85,11 +85,11 @@ const PreviewStep: React.FC<{
 
     actionDetails.push({
       key: "Counterparty",
-      value: "Ribbon Diverisified",
+      value: "Ribbon Diversified",
       tooltip: {
         title: "Counterparty",
         explanation:
-          "The counterpary selected will be the one to which the funds will be lent during the epoch.",
+          "The counterparty selected will be the one to which the funds will be lent during the epoch.",
       },
     });
 

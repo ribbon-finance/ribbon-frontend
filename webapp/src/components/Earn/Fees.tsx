@@ -14,8 +14,8 @@ const Fees: React.FC = () => {
   return (
     <>
       <ParagraphText>
-        The vault fee structure consists of a 15% performance fee on the yield
-        earned between epochs.
+        The vault fee structure consists of a 15% flat fee on the yield earned
+        between epochs.
       </ParagraphText>
     </>
   );
