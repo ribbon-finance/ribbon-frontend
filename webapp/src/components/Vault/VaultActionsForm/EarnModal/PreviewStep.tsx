@@ -185,9 +185,9 @@ const PreviewStep: React.FC<{
           <Title className="text-right">{detail.value}</Title>
         </div>
       ))}
-      <ActionButton
+      {/* <ActionButton
         onClick={handleApprove}
-        disabled={!(depositSignature === undefined)}
+        disabled={depositSignature !== undefined}
         className="btn py-3 mt-4 mb-3"
         color={color}
         variant={depositSignature === undefined ? "primary" : "earn"}
@@ -197,12 +197,32 @@ const PreviewStep: React.FC<{
           : depositSignature === undefined
           ? `PERMIT VAULT TO USE YOUR USDC`
           : `USDC READY TO DEPOSIT`}
-      </ActionButton>
+      </ActionButton> */}
+      {depositSignature !== undefined ? (
+        <ActionButton
+          className="btn py-3 mt-4 mb-3"
+          color={color}
+          variant={"earn"}
+        >
+          USDC READY TO DEPOSIT
+        </ActionButton>
+      ) : (
+        <ActionButton
+          onClick={handleApprove}
+          className="btn py-3 mt-4 mb-3"
+          color={color}
+          variant={"primary"}
+        >
+          {waitingApproval ? loadingText : `PERMIT VAULT TO USE YOUR USDC`}
+        </ActionButton>
+      )}
+
       <ActionButton
         onClick={onClickConfirmButton}
         disabled={depositSignature === undefined}
         className="btn py-3 mb-3"
         color={color}
+        variant={depositSignature === undefined ? "earnDisabled" : "primary"}
       >
         {actionWord} Now
       </ActionButton>

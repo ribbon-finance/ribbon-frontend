@@ -19,7 +19,11 @@ import useLatestAPY from "../../../hooks/useLatestAPY";
 import useLoadingText from "../../../hooks/useLoadingText";
 import { useV2VaultData, useVaultData } from "../../../hooks/web3DataContext";
 import { getAssetLogo } from "../../../utils/asset";
-import { formatSignificantDecimals } from "../../../utils/math";
+import {
+  formatAmount,
+  formatSignificantDecimals,
+  isPracticallyZero,
+} from "../../../utils/math";
 import { getVaultColor } from "../../../utils/vault";
 import CapBar from "../../Deposit/CapBar";
 import EarnCard from "../../Common/EarnCard";
@@ -95,6 +99,22 @@ const ProductInfoEarn = styled.div`
   overflow: hidden;
 `;
 
+const EarnCapacityText = styled(Title)`
+  color: ${colors.tertiaryText};
+  font-style: normal;
+  font-weight: 400;
+  font-size: 14px;
+  line-height: 20px;
+  text-align: center;
+  height: 20px;
+  margin-bottom: 24px;
+`;
+
+const VaultFullText = styled(SecondaryText)`
+  color: ${colors.red};
+  text-transform: none;
+`;
+
 interface YieldFrameProps {
   vault: VaultOptions;
   vaultVersion: VaultVersion;
@@ -111,9 +131,10 @@ const YieldFrame: React.FC<YieldFrameProps> = ({
   const { status, deposits, vaultLimit, asset, displayAsset, decimals } =
     useVaultData(vault);
   const {
-    data: { totalBalance: v2Deposits, cap: v2VaultLimit },
+    data: { totalBalance: v2Deposits, cap: v2VaultLimit, decimals: v2Decimals },
     loading: v2DataLoading,
   } = useV2VaultData(vault);
+
   const isLoading = useMemo(
     () => status === "loading" || v2DataLoading,
     [status, v2DataLoading]
@@ -125,6 +146,13 @@ const YieldFrame: React.FC<YieldFrameProps> = ({
     : loadingText;
   const color = getVaultColor(vault);
   const Logo = getAssetLogo(displayAsset);
+
+  const isVaultMaxCapacity = useMemo(() => {
+    if (v2DataLoading) {
+      return undefined;
+    }
+    return isPracticallyZero(v2VaultLimit.sub(v2Deposits), v2Decimals);
+  }, [v2DataLoading, v2Decimals, v2Deposits, v2VaultLimit]);
 
   const [totalDepositStr, depositLimitStr] = useMemo(() => {
     switch (vaultVersion) {
@@ -218,6 +246,18 @@ const YieldFrame: React.FC<YieldFrameProps> = ({
       {vault === "rEARN" ? (
         <ProductCard color={color} vault={vault}>
           <ProductInfoEarn>
+            <EarnCapacityText>
+              {v2DataLoading || isVaultMaxCapacity === undefined ? (
+                loadingText
+              ) : isVaultMaxCapacity ? (
+                <VaultFullText>Vault is currently full</VaultFullText>
+              ) : (
+                formatAmount(totalDepositStr) +
+                " USDC / " +
+                formatAmount(depositLimitStr) +
+                " USDC"
+              )}
+            </EarnCapacityText>
             <EarnCard color={color} height={429} />
           </ProductInfoEarn>
         </ProductCard>

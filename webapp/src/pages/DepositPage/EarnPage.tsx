@@ -3,11 +3,16 @@ import { BigNumber, ethers } from "ethers";
 import { useWeb3Wallet } from "shared/lib/hooks/useWeb3Wallet";
 import styled, { keyframes } from "styled-components";
 import { Redirect } from "react-router-dom";
-import { Title } from "shared/lib/designSystem";
+import { SecondaryText, Title } from "shared/lib/designSystem";
 import colors from "shared/lib/designSystem/colors";
 import { AnimatePresence, motion } from "framer-motion";
 import { useV2VaultData, useVaultData } from "shared/lib/hooks/web3DataContext";
-import { formatBigNumber, isPracticallyZero } from "shared/lib/utils/math";
+import {
+  formatAmount,
+  formatBigNumber,
+  formatSignificantDecimals,
+  isPracticallyZero,
+} from "shared/lib/utils/math";
 import usePullUp from "../../hooks/usePullUp";
 import { VaultList, VaultOptions } from "shared/lib/constants/constants";
 import { Subtitle } from "shared/lib/designSystem";
@@ -32,6 +37,7 @@ import { useAirtable } from "shared/lib/hooks/useAirtable";
 import ActionModal from "../../components/Vault/VaultActionsForm/EarnModal/ActionModal";
 import { usePendingTransactions } from "shared/lib/hooks/pendingTransactionsContext";
 import useEarnStrategyTime from "../../hooks/useEarnStrategyTime";
+import useLoadingText from "shared/lib/hooks/useLoadingText";
 
 const { formatUnits } = ethers.utils;
 
@@ -75,6 +81,17 @@ const PendingDepositsContainer = styled.div`
   position: relative;
   background: rgba(62, 115, 196, 0.08);
   backdrop-filter: blur(16px);
+`;
+
+const EarnCapacityText = styled(Title)`
+  color: ${colors.tertiaryText};
+  font-style: normal;
+  font-weight: 400;
+  font-size: 14px;
+  line-height: 20px;
+  text-align: center;
+  margin-top: 32px;
+  height: 20px;
 `;
 
 const TextContainer = styled.div`
@@ -165,6 +182,11 @@ const VaultContainer = styled.div`
   min-width: 240px;
 `;
 
+const VaultFullText = styled(SecondaryText)`
+  color: ${colors.red};
+  text-transform: none;
+`;
+
 const HeroText = styled(Title)`
   font-size: 56px;
   line-height: 64px;
@@ -207,7 +229,7 @@ const StyledActionButton = styled(ActionButton)`
 const EarnPage = () => {
   const { vaultOption, vaultVersion } = useVaultOption();
   const { active, account, chainId } = useWeb3Wallet();
-
+  const loadingText = useLoadingText();
   const { maxYield } = useAirtable();
   const { strategyStartTime } = useEarnStrategyTime();
 
@@ -232,9 +254,10 @@ const EarnPage = () => {
   const [componentRefs] = useGlobalState("componentRefs");
   const { status } = useVaultData(vaultOption || VaultList[0]);
   const {
-    data: { asset, decimals },
+    data: { asset, decimals, totalBalance: v2Deposits, cap: v2VaultLimit },
     loading,
   } = useV2VaultData(vaultOption || VaultList[0]);
+
   const { vaultAccounts } = useVaultAccounts(vaultVersion);
   const vaultAccount = vaultAccounts[vaultOption || VaultList[0]];
   const Logo = getAssetLogo(asset);
@@ -257,6 +280,24 @@ const EarnPage = () => {
     }
     return [vaultAccount.totalBalance];
   }, [vaultAccount]);
+
+  const isVaultMaxCapacity = useMemo(() => {
+    if (isLoading) {
+      return undefined;
+    }
+    return isPracticallyZero(v2VaultLimit.sub(v2Deposits), decimals);
+  }, [decimals, isLoading, v2Deposits, v2VaultLimit]);
+
+  const [totalDepositStr, depositLimitStr] = useMemo(() => {
+    return [
+      parseFloat(
+        formatSignificantDecimals(formatUnits(v2Deposits, decimals), 2)
+      ),
+      parseFloat(
+        formatSignificantDecimals(formatUnits(v2VaultLimit, decimals))
+      ),
+    ];
+  }, [decimals, v2Deposits, v2VaultLimit]);
 
   const hasPendingDeposits = useMemo(() => {
     if (!vaultAccount) {
@@ -471,6 +512,18 @@ const EarnPage = () => {
                     </StyledActionButton>
                   )}
                 </ButtonContainer>
+                <EarnCapacityText>
+                  {isLoading || isVaultMaxCapacity === undefined ? (
+                    loadingText
+                  ) : isVaultMaxCapacity ? (
+                    <VaultFullText>Vault is currently full</VaultFullText>
+                  ) : (
+                    formatAmount(totalDepositStr) +
+                    " USDC / " +
+                    formatAmount(depositLimitStr) +
+                    " USDC"
+                  )}
+                </EarnCapacityText>
               </VaultContainer>
             </motion.div>
           ) : (

@@ -113,20 +113,22 @@ export const Strategy = () => {
         <span>Upside Barrier</span>
       </ExplainerTitle>
       <StyledTitle marginTop={4}>
-        108% ({currency(strikePrice * (1 + barrierPercentage)).format()})
+        {/* 108% ({currency(strikePrice * (1 + barrierPercentage)).format()}) */}
+        ---
       </StyledTitle>
       <ExplainerTitle color={colors.tertiaryText}>
         <span>Downside Barrier</span>
       </ExplainerTitle>
       <StyledTitle marginTop={4}>
-        {" "}
-        92% ({currency(strikePrice * (1 - barrierPercentage)).format()})
+        {/* 92% ({currency(strikePrice * (1 - barrierPercentage)).format()}) */}
+        ---
       </StyledTitle>
       <ExplainerTitle color={colors.tertiaryText}>
         <span>Strike</span>
       </ExplainerTitle>
       <StyledTitle marginTop={4}>
-        100% ({currency(strikePrice).format()})
+        {/* 100% ({currency(strikePrice).format()}) */}
+        ---
       </StyledTitle>{" "}
       <ExplainerTitle color={colors.tertiaryText}>
         <span>Capital Protection</span>
@@ -206,11 +208,23 @@ export const HistoricalPerformance = () => {
   return (
     <>
       <ParagraphText>
-        R-Earn was backtested since January 2021, and the cumulative yield over
-        the period between January 1st, 2021 and July 22th, 2022 generated
-        10.37%. The trade had a positive payout 51.80% of the time over the
-        backtested period (assuming product was traded every Friday, assuming
-        constant parameters).
+        R-Earn was{" "}
+        <TooltipExplanation
+          explanation={
+            "Source: Ribbon Finance, as of 17 Aug 2022. Data from 01/01/2021 to 12/08/2022. Backtesting analysis for illustrative purposes only. Ribbon Finance provides no assurance or guarantee that the strategy will operate or would have operated in the past in a manner consistent with the above backtesting analysis. Backtest and/or past performance figures are not a reliable indicator of future results. All data backtested over the entire range. The backtest period is going back to Jan21 only due to lack of options data prior to this date."
+          }
+          maxWidth={350}
+          renderContent={({ ref, ...triggerHandler }) => (
+            <HighlightedText ref={ref} {...triggerHandler}>
+              backtested
+            </HighlightedText>
+          )}
+        />{" "}
+        since January 2021, and the cumulative yield over the period between
+        January 1st, 2021 and August 18th, 2022 generated 17.23%, corresponding
+        to a realized APY of 10.37%. The vault earned more than the base coupon
+        51.80% of the time, and the option payoff was 4.05% on average in these
+        cases, corresponding to 12% bonus APY in addition to the 4% base APY.
       </ParagraphText>
       <PrimaryText className="d-block mt-3">
         <Link

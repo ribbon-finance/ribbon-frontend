@@ -14,6 +14,7 @@ import sizes from "../../../designSystem/sizes";
 import theme from "../../../designSystem/theme";
 import CapBar from "../../Deposit/CapBar";
 import {
+  formatAmount,
   formatBigNumber,
   formatSignificantDecimals,
   isPracticallyZero,
@@ -366,15 +367,30 @@ const StrikeDot = styled.div<{
         `}
 `;
 
+const EarnCapacityText = styled(Title)`
+  color: ${colors.tertiaryText};
+  font-weight: 400;
+  font-size: 14px;
+  line-height: 20px;
+  text-align: center;
+  height: 20px;
+  margin-bottom: 16px;
+`;
+
 const ParagraphText = styled(SecondaryText)`
   color: ${colors.secondaryText};
   font-weight: 400;
   font-size: 14px;
   line-height: 24px;
-  margin-top: 32px;
+  margin-top: 24px;
   margin-left: 32px;
   margin-right: 32px;
   text-align: center;
+`;
+
+const VaultFullText = styled(SecondaryText)`
+  color: ${colors.red};
+  text-transform: none;
 `;
 
 const HighlightedText = styled.span`
@@ -387,7 +403,7 @@ const HighlightedText = styled.span`
 `;
 
 const EarnTitle = styled(Title)`
-  margin-bottom: 24px;
+  margin-bottom: 8px;
 `;
 
 interface YieldCardProps {
@@ -415,7 +431,7 @@ const YieldCard: React.FC<YieldCardProps> = ({
     vaultBalanceInAsset,
   } = useVaultData(vault);
   const {
-    data: { totalBalance: v2Deposits, cap: v2VaultLimit },
+    data: { totalBalance: v2Deposits, cap: v2VaultLimit, pricePerShare },
     loading: v2DataLoading,
   } = useV2VaultData(vault);
   const { chainId } = useWeb3Wallet();
@@ -430,9 +446,6 @@ const YieldCard: React.FC<YieldCardProps> = ({
   const latestAPY = useLatestAPY(vault, vaultVersion);
   const { data: lg5Data, loading: lg5DataLoading } =
     useLiquidityGaugeV5PoolData(vault);
-  const {
-    data: { pricePerShare },
-  } = useV2VaultData(vault);
   const { prices } = useAssetsPrice();
   const { account } = useWeb3Wallet();
   const loadingText = useLoadingText();
@@ -471,6 +484,13 @@ const YieldCard: React.FC<YieldCardProps> = ({
       ? `${baseAPY.toFixed(2)}%`
       : "0%"
     : loadingText;
+
+  const isVaultMaxCapacity = useMemo(() => {
+    if (v2DataLoading) {
+      return undefined;
+    }
+    return isPracticallyZero(v2VaultLimit.sub(v2Deposits), decimals);
+  }, [decimals, v2DataLoading, v2Deposits, v2VaultLimit]);
 
   const [totalDepositStr, depositLimitStr] = useMemo(() => {
     switch (vaultVersion) {
@@ -629,7 +649,18 @@ const YieldCard: React.FC<YieldCardProps> = ({
         <EarnTitle fontSize={28} lineHeight={40}>
           {t(`shared:ProductCopies:${vault}:title`)}
         </EarnTitle>
-
+        <EarnCapacityText>
+          {v2DataLoading || isLoading || isVaultMaxCapacity === undefined ? (
+            loadingText
+          ) : isVaultMaxCapacity ? (
+            <VaultFullText>Vault is currently full</VaultFullText>
+          ) : (
+            formatAmount(totalDepositStr) +
+            " USDC / " +
+            formatAmount(depositLimitStr) +
+            " USDC"
+          )}
+        </EarnCapacityText>
         <EarnCard color={color} height={!!account ? 447 : 504} />
         <ParagraphText>
           Earn up to{" "}
@@ -639,7 +670,19 @@ const YieldCard: React.FC<YieldCardProps> = ({
         </ParagraphText>
       </>
     );
-  }, [color, t, vault, maxYield, account]);
+  }, [
+    t,
+    vault,
+    v2DataLoading,
+    isLoading,
+    isVaultMaxCapacity,
+    loadingText,
+    totalDepositStr,
+    depositLimitStr,
+    color,
+    account,
+    maxYield,
+  ]);
 
   const ProductInfoContent = useCallback(() => {
     const Logo = getAssetLogo(displayAsset);
