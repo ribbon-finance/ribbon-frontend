@@ -381,7 +381,7 @@ const ParagraphText = styled(SecondaryText)`
   color: ${colors.secondaryText};
   font-weight: 400;
   font-size: 14px;
-  line-height: 24px;
+  line-height: 20px;
   margin-top: 16px;
   margin-left: 32px;
   margin-right: 32px;

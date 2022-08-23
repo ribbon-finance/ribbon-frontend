@@ -42,7 +42,7 @@ const ModalBody = styled.div<ModalBodyProps>`
   background: ${colors.background.two};
   box-sizing: border-box;
   border-radius: 8px;
-  width: ${(props) => (props.variant === "desktop" ? "383px" : "375px")};
+  width: ${(props) => (props.variant === "desktop" ? "343px" : "375px")};
   max-width: 450px;
   min-height: ${(props) => {
     switch (props.steps) {
