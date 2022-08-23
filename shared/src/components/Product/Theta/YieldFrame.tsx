@@ -148,11 +148,11 @@ const YieldFrame: React.FC<YieldFrameProps> = ({
   const Logo = getAssetLogo(displayAsset);
 
   const isVaultMaxCapacity = useMemo(() => {
-    if (v2DataLoading) {
+    if (v2DataLoading || vault !== "rEARN") {
       return undefined;
     }
     return isPracticallyZero(v2VaultLimit.sub(v2Deposits), v2Decimals);
-  }, [v2DataLoading, v2Decimals, v2Deposits, v2VaultLimit]);
+  }, [v2DataLoading, v2Decimals, v2Deposits, v2VaultLimit, vault]);
 
   const [totalDepositStr, depositLimitStr] = useMemo(() => {
     switch (vaultVersion) {

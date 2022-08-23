@@ -431,7 +431,12 @@ const YieldCard: React.FC<YieldCardProps> = ({
     vaultBalanceInAsset,
   } = useVaultData(vault);
   const {
-    data: { totalBalance: v2Deposits, cap: v2VaultLimit, pricePerShare },
+    data: {
+      totalBalance: v2Deposits,
+      cap: v2VaultLimit,
+      decimals: v2Decimals,
+      pricePerShare,
+    },
     loading: v2DataLoading,
   } = useV2VaultData(vault);
   const { chainId } = useWeb3Wallet();
@@ -486,11 +491,11 @@ const YieldCard: React.FC<YieldCardProps> = ({
     : loadingText;
 
   const isVaultMaxCapacity = useMemo(() => {
-    if (v2DataLoading) {
+    if (v2DataLoading || vault !== "rEARN") {
       return undefined;
     }
-    return isPracticallyZero(v2VaultLimit.sub(v2Deposits), decimals);
-  }, [decimals, v2DataLoading, v2Deposits, v2VaultLimit]);
+    return isPracticallyZero(v2VaultLimit.sub(v2Deposits), v2Decimals);
+  }, [v2DataLoading, vault, v2VaultLimit, v2Deposits, v2Decimals]);
 
   const [totalDepositStr, depositLimitStr] = useMemo(() => {
     switch (vaultVersion) {
@@ -650,9 +655,9 @@ const YieldCard: React.FC<YieldCardProps> = ({
           {t(`shared:ProductCopies:${vault}:title`)}
         </EarnTitle>
         <EarnCapacityText>
-          {v2DataLoading || isLoading || isVaultMaxCapacity === undefined ? (
+          {v2DataLoading || isVaultMaxCapacity === undefined ? (
             loadingText
-          ) : isVaultMaxCapacity ? (
+          ) : isVaultMaxCapacity === true ? (
             <VaultFullText>Vault is currently full</VaultFullText>
           ) : (
             formatAmount(totalDepositStr) +
@@ -674,7 +679,6 @@ const YieldCard: React.FC<YieldCardProps> = ({
     t,
     vault,
     v2DataLoading,
-    isLoading,
     isVaultMaxCapacity,
     loadingText,
     totalDepositStr,

@@ -282,11 +282,11 @@ const EarnPage = () => {
   }, [vaultAccount]);
 
   const isVaultMaxCapacity = useMemo(() => {
-    if (isLoading) {
+    if (isLoading || vaultOption !== "rEARN") {
       return undefined;
     }
     return isPracticallyZero(v2VaultLimit.sub(v2Deposits), decimals);
-  }, [decimals, isLoading, v2Deposits, v2VaultLimit]);
+  }, [decimals, isLoading, v2Deposits, v2VaultLimit, vaultOption]);
 
   const [totalDepositStr, depositLimitStr] = useMemo(() => {
     return [
