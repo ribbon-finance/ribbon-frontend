@@ -143,7 +143,7 @@ const DepositFormStep: React.FC<{
     if (!vaultAccount) {
       return BigNumber.from(0.0);
     }
-    return vaultAccount.totalBalance.sub(vaultAccount.totalPendingDeposit);
+    return vaultAccount.totalBalance;
   }, [vaultAccount]);
 
   interface Tooltip {
