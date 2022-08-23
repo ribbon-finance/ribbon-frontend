@@ -38,6 +38,7 @@ import ActionModal from "../../components/Vault/VaultActionsForm/EarnModal/Actio
 import { usePendingTransactions } from "shared/lib/hooks/pendingTransactionsContext";
 import useEarnStrategyTime from "../../hooks/useEarnStrategyTime";
 import useLoadingText from "shared/lib/hooks/useLoadingText";
+import { ACTIONS } from "../../components/Vault/VaultActionsForm/EarnModal/types";
 
 const { formatUnits } = ethers.utils;
 
@@ -299,11 +300,17 @@ const EarnPage = () => {
     ];
   }, [decimals, v2Deposits, v2VaultLimit]);
 
-  const hasPendingDeposits = useMemo(() => {
+  const [hasPendingDeposits, hasLockedBalanceInAsset] = useMemo(() => {
     if (!vaultAccount) {
-      return false;
+      return [false, false];
     }
-    return !isPracticallyZero(vaultAccount.totalPendingDeposit, decimals);
+    return [
+      !isPracticallyZero(vaultAccount.totalPendingDeposit, decimals),
+      !isPracticallyZero(
+        vaultAccount.totalBalance.sub(vaultAccount.totalPendingDeposit),
+        decimals
+      ),
+    ];
   }, [vaultAccount, decimals]);
 
   const [roi, yieldColor] = useMemo(() => {
@@ -492,13 +499,17 @@ const EarnPage = () => {
                       >
                         Deposit
                       </StyledActionButton>
-                      {/* WIP <StyledActionButton
-                        disabled={true}
-                        className={`py-3 mb-1 w-100`}
-                        color={"white"}
-                      >
-                        Initiate Withdraw
-                      </StyledActionButton> */}
+                      {hasLockedBalanceInAsset && (
+                        <StyledActionButton
+                          className={`py-3 mb-1 w-100`}
+                          color={"white"}
+                          onClick={() => {
+                            setShowDepositModal(true);
+                          }}
+                        >
+                          Initiate Withdraw
+                        </StyledActionButton>
+                      )}
                     </>
                   ) : (
                     <StyledActionButton
@@ -559,6 +570,7 @@ const EarnPage = () => {
         }}
         variant={"desktop"}
         show={showDepositModal}
+        actionType={ACTIONS.withdraw}
         onClose={() => setShowDepositModal(false)}
       />
     </>

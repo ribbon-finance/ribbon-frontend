@@ -4,7 +4,7 @@ import MobileOverlayMenu from "shared/lib/components/Common/MobileOverlayMenu";
 import colors from "shared/lib/designSystem/colors";
 import { Title } from "shared/lib/designSystem";
 import ActionSteps from "./ActionSteps";
-import { Steps, STEPS } from "./types";
+import { ActionType, Steps, STEPS } from "./types";
 import sizes from "shared/lib/designSystem/sizes";
 import { ThinBackIcon, CloseIcon } from "shared/lib/assets/icons/icons";
 import { VaultOptions, VaultVersion } from "shared/lib/constants/constants";
@@ -150,6 +150,7 @@ interface ActionModalProps extends ModalProps {
   };
   show: boolean;
   onClose: () => void;
+  actionType: ActionType
 }
 
 const ActionModal: React.FC<ActionModalProps> = ({
@@ -157,10 +158,10 @@ const ActionModal: React.FC<ActionModalProps> = ({
   show,
   onClose,
   variant,
+  actionType
 }) => {
   const [step, setStep] = useState<Steps>(0);
   const isDesktop = variant === "desktop";
-  const { vaultActionForm } = useVaultActionForm(vault.vaultOption);
 
   const renderModalNavigationItem = useCallback(() => {
     if (isDesktop) {
@@ -226,7 +227,7 @@ const ActionModal: React.FC<ActionModalProps> = ({
       );
     }
 
-    const actionWord = capitalize(vaultActionForm.actionType);
+    const actionWord = capitalize(actionType);
     const titles = {
       [STEPS.formStep]: "Deposit",
       [STEPS.previewStep]: "Deposit Preview",
@@ -240,7 +241,7 @@ const ActionModal: React.FC<ActionModalProps> = ({
         {renderModalCloseButton()}
       </ModalHeaderWithBackground>
     );
-  }, [renderModalBackButton, renderModalCloseButton, step, vaultActionForm]);
+  }, [actionType, renderModalBackButton, renderModalCloseButton, step]);
 
   return (
     <div>
@@ -269,6 +270,7 @@ const ActionModal: React.FC<ActionModalProps> = ({
           <ModalContent className="position-relative">
             <StepsContainer variant={variant}>
               <ActionSteps
+                actionType={actionType}
                 vault={vault}
                 skipToPreview={isDesktop}
                 show={show}

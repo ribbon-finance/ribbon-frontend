@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { BigNumber } from "ethers";
-import { Steps, STEPS } from "./types";
+import { ActionType, Steps, STEPS } from "./types";
 import PreviewStep from "./PreviewStep";
 import TransactionStep from "./TransactionStep";
 import {
@@ -28,6 +28,7 @@ export interface ActionStepsProps {
   step: Steps;
   onChangeStep: (stepData: Steps) => void;
   skipToPreview?: boolean;
+  actionType: ActionType;
 }
 
 const ActionSteps: React.FC<ActionStepsProps> = ({
@@ -37,6 +38,7 @@ const ActionSteps: React.FC<ActionStepsProps> = ({
   step,
   onChangeStep,
   skipToPreview = false,
+  actionType,
 }) => {
   const { resetActionForm } = useVaultActionForm(vaultOption);
   const { data: priceHistories } = useVaultsPriceHistory();
@@ -177,7 +179,7 @@ const ActionSteps: React.FC<ActionStepsProps> = ({
   const stepComponents = {
     0: (
       <DepositFormStep
-        actionType={"deposit"}
+        actionType={actionType}
         onClickUpdateInput={setInputAmount}
         onClickConfirmButton={handleClickNextButton}
         asset={asset}
@@ -187,7 +189,7 @@ const ActionSteps: React.FC<ActionStepsProps> = ({
     ),
     1: (
       <PreviewStep
-        actionType={"deposit"}
+        actionType={actionType}
         amount={BigNumber.from(amountStr)}
         positionAmount={vaultBalanceInAsset}
         onClickConfirmButton={handleClickConfirmButton}

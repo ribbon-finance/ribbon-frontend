@@ -269,7 +269,9 @@ const DepositFormStep: React.FC<{
       {/* Logo */}
       <div style={{ marginTop: -40, marginBottom: -40 }}>{actionLogo}</div>
       {/* Title */}
-      <FormTitle className=" text-center">DEPOSIT</FormTitle>
+      <FormTitle className=" text-center">
+        {actionType === "deposit" ? "DEPOSIT" : "INITIATE WITHDRAW"}
+      </FormTitle>
       <StyledBaseInputLabel>
         AMOUNT ({getAssetDisplay(asset)})
       </StyledBaseInputLabel>
