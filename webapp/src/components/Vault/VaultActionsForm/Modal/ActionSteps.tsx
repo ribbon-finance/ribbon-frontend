@@ -16,7 +16,11 @@ import {
   getSolanaVaultInstance,
   isSolanaVault,
 } from "shared/lib/constants/constants";
-import { getSOLPricePerShare, isETHVault } from "shared/lib/utils/vault";
+import {
+  getSOLPricePerShare,
+  getSOLAmountByShares,
+  isETHVault,
+} from "shared/lib/utils/vault";
 import { usePendingTransactions } from "shared/lib/hooks/pendingTransactionsContext";
 import useVaultActionForm from "../../../../hooks/useVaultActionForm";
 import { parseUnits } from "@ethersproject/units";
@@ -331,15 +335,14 @@ const ActionSteps: React.FC<ActionStepsProps> = ({
                       case "rSOL-THETA":
                         if (client) {
                           const pricePerShare = await getSOLPricePerShare();
-                          const amountToRedeem = Math.floor(
-                            (Number(vaultActionForm.inputAmount) /
-                              Number(pricePerShare)) *
-                              Math.pow(10, decimals)
+                          const redeemableAmount = await getSOLAmountByShares(
+                            Number(vaultActionForm.inputAmount),
+                            Number(pricePerShare),
+                            decimals
                           );
-
                           const txhash = await client.withdrawVault(
                             getSolanaVaultInstance(vaultOption),
-                            new anchor.BN(amountToRedeem)
+                            new anchor.BN(redeemableAmount)
                           );
 
                           res = { hash: txhash };
