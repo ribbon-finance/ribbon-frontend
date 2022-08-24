@@ -331,10 +331,9 @@ const ActionSteps: React.FC<ActionStepsProps> = ({
                       case "rSOL-THETA":
                         if (client) {
                           const pricePerShare = await getSOLPricePerShare();
-                          const pps = pricePerShare;
                           const amountToRedeem = Math.floor(
                             (Number(vaultActionForm.inputAmount) /
-                              Number(pps)) *
+                              Number(pricePerShare)) *
                               Math.pow(10, decimals)
                           );
 
