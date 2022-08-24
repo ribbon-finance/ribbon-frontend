@@ -18,6 +18,9 @@ const ExplainerContainer = styled.div`
   flex-direction: column;
   overflow: hidden;
   width: 480px;
+  @media (max-width: 700px) {
+    width: 360px;
+  }
   z-index: 1;
 `;
 
@@ -27,7 +30,6 @@ const ExplainerSection = styled.div<{ height: number }>`
   overflow: show;
   align-items: center;
   height: fit-content;
-  width: 480px;
   z-index: 1;
 `;
 
@@ -92,7 +94,6 @@ const EarnStrategyExplainer: React.FC<EarnStrategyExplainerProps> = ({
 
   useEffect(() => {
     const skip = Boolean(localStorage.getItem("skipEARNExplanation"));
-    if (skip) setShowOnboardingCallback();
   }, [setShowOnboardingCallback]);
 
   const renderTitle = useCallback((s: ExplanationStep) => {
