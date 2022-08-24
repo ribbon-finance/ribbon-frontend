@@ -162,7 +162,6 @@ const FadeDiv = styled.div<{ delaySeconds?: number; show?: boolean }>`
 
 const StyledEarnInnerRing = styled(EarnInnerRing)`
   animation: ${rotateClockwise} 60s linear infinite;
-  transition: all 0.4s ease-in-out;
   @media (max-width: 700px) {
     display: none;
   }
@@ -170,7 +169,6 @@ const StyledEarnInnerRing = styled(EarnInnerRing)`
 
 const StyledEarnMiddleRing = styled(EarnMiddleRing)`
   animation: ${rotateAnticlockwise} 60s linear infinite;
-  transition: all 0.4s ease-in-out;
   @media (max-width: 700px) {
     height: 500px;
   }
@@ -178,7 +176,6 @@ const StyledEarnMiddleRing = styled(EarnMiddleRing)`
 
 const StyledEarnOuterRing = styled(EarnOuterRing)`
   animation: ${rotateClockwise} 60s linear infinite;
-  transition: all 0.4s ease-in-out;
   @media (max-width: 700px) {
     height: 650px;
   }
