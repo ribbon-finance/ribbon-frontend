@@ -431,11 +431,7 @@ const YieldCard: React.FC<YieldCardProps> = ({
     vaultBalanceInAsset,
   } = useVaultData(vault);
   const {
-    data: {
-      totalBalance: v2Deposits,
-      cap: v2VaultLimit,
-      pricePerShare,
-    },
+    data: { totalBalance: v2Deposits, cap: v2VaultLimit, pricePerShare },
     loading: v2DataLoading,
   } = useV2VaultData(vault);
   const { chainId } = useWeb3Wallet();
