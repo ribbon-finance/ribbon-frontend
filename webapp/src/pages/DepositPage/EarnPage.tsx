@@ -1,7 +1,7 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { BigNumber, ethers } from "ethers";
 import { useWeb3Wallet } from "shared/lib/hooks/useWeb3Wallet";
-import styled, { keyframes } from "styled-components";
+import styled, { css, keyframes } from "styled-components";
 import { Redirect } from "react-router-dom";
 import { SecondaryText, Title } from "shared/lib/designSystem";
 import colors from "shared/lib/designSystem/colors";
@@ -56,6 +56,15 @@ const fadeIn = keyframes`
   }
   to {
     opacity: 1;
+  }
+`;
+
+const fadeOut = keyframes`
+  from {
+    opacity: 1;
+  }
+  to {
+    opacity: 0;
   }
 `;
 
@@ -126,15 +135,34 @@ const CirclesContainer = styled.div<{ offset: number }>`
   justify-content: center;
 `;
 
-const FadeInDiv = styled.div<{ delaySeconds?: number }>`
+const FadeDiv = styled.div<{ delaySeconds?: number; show?: boolean }>`
   position: absolute;
-  opacity: 0;
-  animation: ${fadeIn} 4s ease-in-out forwards;
-  animation-delay: ${(delaySeconds) => `${delaySeconds || 0}s`};
+  ${(props) => {
+    if (props.show !== false) {
+      return css`
+        opacity: 0;
+      `;
+    }
+  }}
+  ${(props) => {
+    if (props.show === undefined) {
+      return ``;
+    }
+    if (props.show) {
+      return css`
+        animation: ${fadeIn} 4s ease-in-out forwards;
+      `;
+    }
+    return css`
+      animation: ${fadeOut} 4s ease-in-out forwards;
+    `;
+  }}
+  animation-delay: ${({ delaySeconds }) => `${delaySeconds || 0}s`};
 `;
 
 const StyledEarnInnerRing = styled(EarnInnerRing)`
   animation: ${rotateClockwise} 60s linear infinite;
+  transition: all 0.4s ease-in-out;
   @media (max-width: 700px) {
     display: none;
   }
@@ -142,6 +170,7 @@ const StyledEarnInnerRing = styled(EarnInnerRing)`
 
 const StyledEarnMiddleRing = styled(EarnMiddleRing)`
   animation: ${rotateAnticlockwise} 60s linear infinite;
+  transition: all 0.4s ease-in-out;
   @media (max-width: 700px) {
     height: 500px;
   }
@@ -149,6 +178,7 @@ const StyledEarnMiddleRing = styled(EarnMiddleRing)`
 
 const StyledEarnOuterRing = styled(EarnOuterRing)`
   animation: ${rotateClockwise} 60s linear infinite;
+  transition: all 0.4s ease-in-out;
   @media (max-width: 700px) {
     height: 650px;
   }
@@ -240,16 +270,24 @@ const EarnPage = () => {
   const [, setShowConnectModal] = useConnectWalletModal();
   const [showDetailsModal, setShowDetailsModal] = useState(false);
   const [showDepositModal, setShowDepositModal] = useState(false);
+  const [isDepositSuccess, setDepositSuccess] = useState<boolean>();
   const { pendingTransactions } = usePendingTransactions();
 
-  const isDepositSuccess = useMemo(() => {
-    return pendingTransactions.some((transaction) => {
-      return (
-        transaction.status === "success" &&
-        transaction.type === "deposit" &&
-        transaction.vault === vaultOption
-      );
-    });
+  useEffect(() => {
+    if (
+      pendingTransactions.some((transaction) => {
+        return (
+          transaction.status === "success" &&
+          transaction.type === "deposit" &&
+          transaction.vault === vaultOption
+        );
+      })
+    ) {
+      setDepositSuccess(true);
+      setTimeout(function () {
+        setDepositSuccess(false);
+      }, 5000);
+    }
   }, [pendingTransactions, vaultOption]);
   const [componentRefs] = useGlobalState("componentRefs");
   const { status } = useVaultData(vaultOption || VaultList[0]);
@@ -406,15 +444,24 @@ const EarnPage = () => {
   return (
     <>
       <CirclesContainer offset={pageOffset}>
-        <FadeInDiv delaySeconds={0.45}>
-          <StyledEarnOuterRing deposited={isDepositSuccess} />
-        </FadeInDiv>
-        <FadeInDiv delaySeconds={0.3}>
-          <StyledEarnMiddleRing deposited={isDepositSuccess} />
-        </FadeInDiv>
-        <FadeInDiv delaySeconds={0.15}>
-          <StyledEarnInnerRing deposited={isDepositSuccess} />
-        </FadeInDiv>
+        <FadeDiv delaySeconds={0.45} show={!isDepositSuccess}>
+          <StyledEarnOuterRing type={"blue"} />
+        </FadeDiv>
+        <FadeDiv delaySeconds={0.45} show={isDepositSuccess}>
+          <StyledEarnOuterRing type={"green"} />
+        </FadeDiv>
+        <FadeDiv delaySeconds={0.3} show={!isDepositSuccess}>
+          <StyledEarnMiddleRing type={"blue"} />
+        </FadeDiv>
+        <FadeDiv delaySeconds={0.3} show={isDepositSuccess}>
+          <StyledEarnMiddleRing type={"green"} />
+        </FadeDiv>
+        <FadeDiv delaySeconds={0.15} show={!isDepositSuccess}>
+          <StyledEarnInnerRing type={"blue"} />
+        </FadeDiv>
+        <FadeDiv delaySeconds={0.15} show={isDepositSuccess}>
+          <StyledEarnInnerRing type={"green"} />
+        </FadeDiv>
       </CirclesContainer>
       <PageContainer offset={pageOffset}>
         <AnimatePresence exitBeforeEnter>
