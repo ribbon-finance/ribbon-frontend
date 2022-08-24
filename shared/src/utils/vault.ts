@@ -101,11 +101,11 @@ export const getSOLPricePerShare = async (): Promise<number> => {
   return pricePerShare;
 };
 
-export const getSOLAmountByShares = (
+export const getSOLAmountByShares = async (
   amount: number,
-  pricePerShare: number,
   decimals: number
-) => {
+): Promise<number> => {
+  const pricePerShare = await getSOLPricePerShare();
   return Math.floor(
     (Number(amount) / Number(pricePerShare)) * Math.pow(10, decimals)
   );

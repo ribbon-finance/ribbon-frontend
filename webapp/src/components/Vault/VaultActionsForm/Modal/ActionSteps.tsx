@@ -334,10 +334,8 @@ const ActionSteps: React.FC<ActionStepsProps> = ({
                     switch (vaultActionForm.vaultOption) {
                       case "rSOL-THETA":
                         if (client) {
-                          const pricePerShare = await getSOLPricePerShare();
                           const redeemableAmount = await getSOLAmountByShares(
                             Number(vaultActionForm.inputAmount),
-                            Number(pricePerShare),
                             decimals
                           );
                           const txhash = await client.withdrawVault(
