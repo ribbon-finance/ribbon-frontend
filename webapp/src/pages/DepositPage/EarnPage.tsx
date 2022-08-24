@@ -135,7 +135,11 @@ const CirclesContainer = styled.div<{ offset: number }>`
   justify-content: center;
 `;
 
-const FadeDiv = styled.div<{ delaySeconds?: number; show?: boolean }>`
+const FadeDiv = styled.div<{
+  delaySeconds?: number;
+  show?: boolean;
+  fadeSeconds?: number;
+}>`
   position: absolute;
   ${(props) => {
     if (props.show !== false) {
@@ -283,7 +287,7 @@ const EarnPage = () => {
       setDepositSuccess(true);
       setTimeout(function () {
         setDepositSuccess(false);
-      }, 5000);
+      }, 9000);
     }
   }, [pendingTransactions, vaultOption]);
   const [componentRefs] = useGlobalState("componentRefs");
