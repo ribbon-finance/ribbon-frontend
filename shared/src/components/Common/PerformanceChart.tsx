@@ -17,8 +17,16 @@ export type HoverInfo =
     }
   | { focused: false };
 
-const PerformanceChartContainer = styled.div`
+const PerformanceChartContainer = styled.div<{ earn?: boolean }>`
+  position: ${(props) => (props.earn ? `absolute` : `relative`)};
+  left: 0;
+  right: 0;
   width: 100%;
+`;
+
+const ExtrasContainer = styled.div<{ earn?: boolean }>`
+  padding-left: ${(props) => (props.earn ? 16 : 0)}px;
+  padding-right: ${(props) => (props.earn ? 16 : 0)}px;
 `;
 
 interface PerformanceChartProps {
@@ -28,6 +36,7 @@ interface PerformanceChartProps {
   onChartHover: (hoverInfo: HoverInfo) => void;
   themeColor?: string;
   lineDecayAfterPointIndex?: number;
+  earn?: boolean;
 }
 
 const PerformanceChart: React.FC<PerformanceChartProps> = ({
@@ -37,6 +46,7 @@ const PerformanceChart: React.FC<PerformanceChartProps> = ({
   onChartHover,
   themeColor = colors.green,
   lineDecayAfterPointIndex,
+  earn,
 }) => {
   const [date, setDate] = useState<Date | null>(null);
   const [datePosition, setDatePosition] = useState(0);
@@ -87,12 +97,12 @@ const PerformanceChart: React.FC<PerformanceChartProps> = ({
   }
 
   return (
-    <PerformanceChartContainer className="position-relative">
-      {extras}
+    <PerformanceChartContainer earn={earn}>
+      <ExtrasContainer earn={earn}>{extras}</ExtrasContainer>
       <div
         style={{
           position: "relative",
-          height: "224px",
+          height: "240px",
           width: "100%",
         }}
       >

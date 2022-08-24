@@ -15,6 +15,7 @@ const FormStep: React.FC<FormStepProps & VaultVersionProps> = ({
   switch (vaultVersion) {
     case "v1":
       return <VaultV1ActionsForm variant="mobile" {...props} />;
+    case "earn":
     case "v2":
       return <VaultV2ActionsForm {...props} />;
   }

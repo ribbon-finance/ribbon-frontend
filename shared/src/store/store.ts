@@ -1,5 +1,4 @@
 import { createGlobalState } from "react-hooks-global-state";
-
 import { DesktopViewType } from "../components/Product/types";
 import { VaultOptions, VaultVersion } from "../constants/constants";
 import { PendingTransaction, AirdropInfoData } from "./types";
@@ -26,7 +25,14 @@ interface GlobalStore {
     vaultOption?: VaultOptions;
     vaultVersion: VaultVersion;
   };
+  showEarnVault: {
+    show: boolean;
+  };
   notificationLastReadTimestamp?: number;
+  componentRefs: {
+    header: HTMLDivElement | undefined;
+    footer: HTMLDivElement | undefined;
+  };
 }
 
 export const initialState: GlobalStore = {
@@ -47,7 +53,14 @@ export const initialState: GlobalStore = {
     show: false,
     vaultVersion: "v2" as VaultVersion,
   },
+  showEarnVault: {
+    show: false,
+  },
   notificationLastReadTimestamp: undefined,
+  componentRefs: {
+    header: undefined,
+    footer: undefined,
+  },
 };
 
 export const { useGlobalState } = createGlobalState(initialState);

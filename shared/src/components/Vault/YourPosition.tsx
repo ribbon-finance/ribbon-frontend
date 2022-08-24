@@ -163,6 +163,7 @@ interface YourPositionProps {
   };
   variant: "desktop" | "mobile";
   onShowHook?: (show: boolean) => void;
+  onVaultPress?: (vault: VaultOptions, vaultVersion: VaultVersion) => void;
   alwaysShowPosition?: boolean;
 }
 
@@ -170,6 +171,7 @@ const YourPosition: React.FC<YourPositionProps> = ({
   vault: { vaultOption, vaultVersion },
   variant,
   onShowHook,
+  onVaultPress,
   alwaysShowPosition = false,
 }) => {
   const color = getVaultColor(vaultOption);
@@ -278,12 +280,19 @@ const YourPosition: React.FC<YourPositionProps> = ({
   }, [decimals, onShowHook, vaultAccount]);
 
   const setShowPositionModal = useCallback(() => {
-    setVaultPositionModal({
-      show: true,
-      vaultOption,
-      vaultVersion,
-    });
-  }, [setVaultPositionModal, vaultOption, vaultVersion]);
+    if (vaultOption !== "rEARN") {
+      setVaultPositionModal({
+        show: true,
+        vaultOption,
+        vaultVersion,
+      });
+    } else {
+      if (!onVaultPress) {
+        return;
+      }
+      onVaultPress(vaultOption, vaultVersion);
+    }
+  }, [onVaultPress, setVaultPositionModal, vaultOption, vaultVersion]);
 
   const setShowPauseModal = useCallback(
     (e) => {
@@ -374,19 +383,25 @@ const YourPosition: React.FC<YourPositionProps> = ({
                           </div>
                         </div>
                       </PositionContainer>
-                      {canPause ? (
-                        <ActionButton
-                          color={color}
-                          show={true}
-                          role="button"
-                          onClick={(e) => {
-                            setShowPauseModal(e);
-                          }}
-                        >
-                          <ActionButtonText color={color} size={12}>
-                            PAUSE
-                          </ActionButtonText>
-                        </ActionButton>
+                      {vaultOption !== "rEARN" ? (
+                        canPause ? (
+                          <ActionButton
+                            color={color}
+                            show={true}
+                            role="button"
+                            onClick={(e) => {
+                              setShowPauseModal(e);
+                            }}
+                          >
+                            <ActionButtonText color={color} size={12}>
+                              PAUSE
+                            </ActionButtonText>
+                          </ActionButton>
+                        ) : (
+                          <div className="d-flex align-items-center ml-auto mr-3">
+                            <ButtonArrow isOpen={false} color={colors.text} />
+                          </div>
+                        )
                       ) : (
                         <div className="d-flex align-items-center ml-auto mr-3">
                           <ButtonArrow isOpen={false} color={colors.text} />
@@ -471,7 +486,7 @@ const YourPosition: React.FC<YourPositionProps> = ({
                           </div>
                         </div>
                       </PositionContainer>
-                      {canPause ? (
+                      {canPause && vaultOption !== "rEARN" ? (
                         <ActionButton
                           color={color}
                           show={true}
@@ -518,20 +533,22 @@ const YourPosition: React.FC<YourPositionProps> = ({
     }
     return <></>;
   }, [
+    alwaysShowPosition,
+    vaultAccount,
+    decimals,
+    variant,
+    color,
+    setShowPositionModal,
+    Logo,
+    asset,
+    pausedAmount,
+    roi,
+    vaultOption,
+    canPause,
     positionState,
     widgetState,
-    setWidgetStateHandler,
-    vaultAccount,
-    Logo,
-    alwaysShowPosition,
-    canPause,
-    asset,
-    color,
-    decimals,
-    roi,
     setShowPauseModal,
-    setShowPositionModal,
-    variant,
+    setWidgetStateHandler,
   ]);
 
   const pausedPositionWidget = useMemo(() => {

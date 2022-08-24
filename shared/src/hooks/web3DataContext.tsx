@@ -28,6 +28,7 @@ import useFetchAssetBalanceData, {
 } from "./useFetchAssetBalanceData";
 import useFetchLiquidityMiningData from "./useFetchLiquidityMiningData";
 import useFetchV2VaultData from "./useFetchV2VaultData";
+import useFetchEarnVaultData from "./useFetchEarnVaultData";
 import useFetchVaultData from "./useFetchVaultData";
 import {
   defaultLidoOracleData,
@@ -44,6 +45,7 @@ import useFetchSolVaultData from "./useFetchSolVaultData";
 export type Web3DataContextType = {
   v1: VaultData;
   v2: V2VaultData;
+  earn: V2VaultData;
   solana: SolanaVaultData;
   assetBalance: UserAssetBalanceData;
   liquidityMiningPool: LiquidityMiningPoolData;
@@ -55,6 +57,7 @@ export type Web3DataContextType = {
 export const Web3DataContext = React.createContext<Web3DataContextType>({
   v1: defaultVaultData,
   v2: defaultV2VaultData,
+  earn: defaultV2VaultData,
   solana: defaultSolanaVaultData,
   assetBalance: defaultUserAssetBalanceData,
   liquidityMiningPool: defaultLiquidityMiningPoolData,
@@ -90,19 +93,26 @@ export const useVaultData = (vault: VaultOptions) => {
 
 export const useV2VaultsData = () => {
   const contextData = useContext(Web3DataContext);
-
   const data = useMemo(
     () => ({
       ...contextData.v2.responses,
+      ...contextData.earn.responses,
       ...contextData.solana.responses,
     }),
-    [contextData.v2.responses, contextData.solana.responses]
+    [
+      contextData.v2.responses,
+      contextData.earn.responses,
+      contextData.solana.responses,
+    ]
   );
 
   return {
     data,
     // be pessimistic for loading, if one is still loading, all will be loading
-    loading: contextData.v2.loading || contextData.solana.loading,
+    loading:
+      contextData.v2.loading ||
+      contextData.earn.loading ||
+      contextData.solana.loading,
   };
 };
 
@@ -112,9 +122,14 @@ export const useV2VaultData = (vault: VaultOptions) => {
   const data = useMemo(
     () => ({
       ...contextData.v2.responses,
+      ...contextData.earn.responses,
       ...contextData.solana.responses,
     }),
-    [contextData.v2.responses, contextData.solana.responses]
+    [
+      contextData.v2.responses,
+      contextData.earn.responses,
+      contextData.solana.responses,
+    ]
   );
 
   const loading =
@@ -186,6 +201,7 @@ export const Web3DataContextProvider: React.FC<{ children: ReactElement }> = ({
 }) => {
   const vaultData = useFetchVaultData();
   const v2VaultData = useFetchV2VaultData();
+  const earnVaultData = useFetchEarnVaultData();
   const solVaultData = useFetchSolVaultData();
   const assetBalance = useFetchAssetBalanceData();
   const liquidityGaugeV5Pool = useFetchLiquidityGaugeV5Data();
@@ -198,6 +214,7 @@ export const Web3DataContextProvider: React.FC<{ children: ReactElement }> = ({
       value={{
         v1: vaultData,
         v2: v2VaultData,
+        earn: earnVaultData,
         solana: solVaultData,
         assetBalance,
         liquidityGaugeV5Pool,

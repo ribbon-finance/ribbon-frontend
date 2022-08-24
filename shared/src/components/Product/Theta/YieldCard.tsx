@@ -14,6 +14,7 @@ import sizes from "../../../designSystem/sizes";
 import theme from "../../../designSystem/theme";
 import CapBar from "../../Deposit/CapBar";
 import {
+  formatAmount,
   formatBigNumber,
   formatSignificantDecimals,
   isPracticallyZero,
@@ -55,11 +56,24 @@ import { useAssetsPrice } from "../../../hooks/useAssetPrice";
 import { RibbonVaultPauser } from "../../../codegen";
 import useVaultPauser from "../../../hooks/useV2VaultPauserContract";
 import { BigNumber } from "ethers";
+import EarnCard from "../../Common/EarnCard";
+import { useAirtable } from "../../../hooks/useAirtable";
 
 const { formatUnits } = ethers.utils;
 
 const CardContainer = styled.div`
   perspective: 2000px;
+`;
+
+const BoostLogoContainer = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 32px;
+  width: 32px;
+  margin-top: calc(-32px / 2);
+  border-radius: 50%;
+  position: relative;
 `;
 
 const ProductAssetLogoContainer = styled.div<{ color: string }>`
@@ -182,6 +196,20 @@ const ProductInfo = styled.div`
   flex-wrap: wrap;
   flex-direction: column;
   flex: 1;
+`;
+
+const ProductInfoEarn = styled.div<{ connected: boolean }>`
+  display: flex;
+  flex-direction: column;
+  height: ${(props) => `${props.connected ? `504px` : `447px`}`};
+  border-radius: ${theme.border.radius};
+  justify-content: center;
+  align-items: center;
+  padding: -16px;
+  margin: -16px;
+  background: #030309;
+  box-shadow: inset 0px 0px 24px rgba(255, 255, 255, 0.12);
+  overflow: hidden;
 `;
 
 const StrikeContainer = styled.div`
@@ -339,6 +367,45 @@ const StrikeDot = styled.div<{
         `}
 `;
 
+const EarnCapacityText = styled(Title)`
+  color: ${colors.tertiaryText};
+  font-weight: 400;
+  font-size: 14px;
+  line-height: 20px;
+  text-align: center;
+  height: 20px;
+  margin-bottom: 16px;
+`;
+
+const ParagraphText = styled(SecondaryText)`
+  color: ${colors.secondaryText};
+  font-weight: 400;
+  font-size: 14px;
+  line-height: 20px;
+  margin-top: 16px;
+  margin-left: 32px;
+  margin-right: 32px;
+  text-align: center;
+`;
+
+const VaultFullText = styled(SecondaryText)`
+  color: ${colors.red};
+  text-transform: none;
+`;
+
+const HighlightedText = styled.span`
+  color: ${colors.primaryText};
+  cursor: help;
+
+  poin &:hover {
+    color: ${colors.primaryText}CC;
+  }
+`;
+
+const EarnTitle = styled(Title)`
+  margin-bottom: 8px;
+`;
+
 interface YieldCardProps {
   vault: VaultOptions;
   vaultVersion: VaultVersion;
@@ -364,7 +431,7 @@ const YieldCard: React.FC<YieldCardProps> = ({
     vaultBalanceInAsset,
   } = useVaultData(vault);
   const {
-    data: { totalBalance: v2Deposits, cap: v2VaultLimit },
+    data: { totalBalance: v2Deposits, cap: v2VaultLimit, pricePerShare },
     loading: v2DataLoading,
   } = useV2VaultData(vault);
   const { chainId } = useWeb3Wallet();
@@ -379,13 +446,10 @@ const YieldCard: React.FC<YieldCardProps> = ({
   const latestAPY = useLatestAPY(vault, vaultVersion);
   const { data: lg5Data, loading: lg5DataLoading } =
     useLiquidityGaugeV5PoolData(vault);
-  const {
-    data: { pricePerShare },
-  } = useV2VaultData(vault);
   const { prices } = useAssetsPrice();
-
+  const { account } = useWeb3Wallet();
   const loadingText = useLoadingText();
-
+  const { maxYield } = useAirtable();
   const baseAPY = useMemo(() => {
     if (!lg5Data) {
       return 0;
@@ -421,6 +485,13 @@ const YieldCard: React.FC<YieldCardProps> = ({
       : "0%"
     : loadingText;
 
+  const isVaultMaxCapacity = useMemo(() => {
+    if (v2DataLoading || vault !== "rEARN") {
+      return undefined;
+    }
+    return isPracticallyZero(v2VaultLimit.sub(v2Deposits), 6);
+  }, [v2DataLoading, vault, v2VaultLimit, v2Deposits]);
+
   const [totalDepositStr, depositLimitStr] = useMemo(() => {
     switch (vaultVersion) {
       case "v1":
@@ -432,6 +503,7 @@ const YieldCard: React.FC<YieldCardProps> = ({
             formatSignificantDecimals(formatUnits(vaultLimit, decimals))
           ),
         ];
+      case "earn":
       case "v2":
         return [
           parseFloat(
@@ -522,7 +594,7 @@ const YieldCard: React.FC<YieldCardProps> = ({
     const strike = strikePrice(false);
     const current = currentPrice(false);
 
-    if (strike === current || priceLoading) {
+    if (strike === current || priceLoading || !isActiveVault) {
       return colors.primaryText;
     } else {
       if (isPutVault(vault)) {
@@ -531,7 +603,7 @@ const YieldCard: React.FC<YieldCardProps> = ({
         return current < strike ? colors.green : colors.red;
       }
     }
-  }, [strikePrice, currentPrice, priceLoading, vault]);
+  }, [strikePrice, currentPrice, priceLoading, vault, isActiveVault]);
 
   const StrikeWidget = useCallback(() => {
     return (
@@ -555,7 +627,7 @@ const YieldCard: React.FC<YieldCardProps> = ({
           </div>
         </StrikeContainer>
         <RangeContainer>
-          <Range vault={vault} />
+          {isActiveVault && <Range vault={vault} />}
           <RangeCenter />
         </RangeContainer>
       </>
@@ -569,6 +641,46 @@ const YieldCard: React.FC<YieldCardProps> = ({
     currentPrice,
     Range,
     vault,
+  ]);
+
+  const EarnContent = useCallback(() => {
+    return (
+      <>
+        <EarnTitle fontSize={28} lineHeight={40}>
+          {t(`shared:ProductCopies:${vault}:title`)}
+        </EarnTitle>
+        <EarnCapacityText>
+          {v2DataLoading || isVaultMaxCapacity === undefined ? (
+            loadingText
+          ) : isVaultMaxCapacity === true ? (
+            <VaultFullText>Vault is currently full</VaultFullText>
+          ) : (
+            formatAmount(totalDepositStr) +
+            " USDC / " +
+            formatAmount(depositLimitStr) +
+            " USDC"
+          )}
+        </EarnCapacityText>
+        <EarnCard color={color} height={!!account ? 447 : 504} />
+        <ParagraphText>
+          Earn up to{" "}
+          <HighlightedText>{(maxYield * 100).toFixed(2)}% APY</HighlightedText>{" "}
+          with a <HighlightedText>principal protected</HighlightedText> vault
+          strategy
+        </ParagraphText>
+      </>
+    );
+  }, [
+    t,
+    vault,
+    v2DataLoading,
+    isVaultMaxCapacity,
+    loadingText,
+    totalDepositStr,
+    depositLimitStr,
+    color,
+    account,
+    maxYield,
   ]);
 
   const ProductInfoContent = useCallback(() => {
@@ -624,7 +736,9 @@ const YieldCard: React.FC<YieldCardProps> = ({
         <BoostWrapper>
           {totalProjectedYield}{" "}
           {baseAPY > 0 && vaultVersion === "v2" && (
-            <BoostIcon color={color} backgroundColor={`${color}25`} />
+            <BoostLogoContainer>
+              <BoostIcon color={color} backgroundColor={`${color}25`} />
+            </BoostLogoContainer>
           )}
         </BoostWrapper>
         <StrikeWidget />
@@ -665,7 +779,6 @@ const YieldCard: React.FC<YieldCardProps> = ({
     asset,
   ]);
 
-  const { account } = useWeb3Wallet();
   const contract = useVaultPauser(chainId || 1) as RibbonVaultPauser;
   const vaultAddress = VaultAddressMap[vault][vaultVersion];
   const [pausedAmount, setPausedAmount] = useState(BigNumber.from(0));
@@ -802,40 +915,54 @@ const YieldCard: React.FC<YieldCardProps> = ({
           color={color}
           vault={vault}
         >
-          <TopContainer color={color}>
-            {/* Tags */}
-            <TagContainer>
-              {/* Product tags */}
-              <ProductTag color={color}>
-                <Subtitle>
-                  {isPutVault(vault) ? "PUT-SELLING" : "COVERED CALL"}
-                </Subtitle>
-              </ProductTag>
-              {vaultLogo}
-              <div className="d-flex">
-                {/* Version tags */}
-                {VaultVersionList.map((version) =>
-                  hasVaultVersion(vault, version) ? (
-                    <ProductVersionTag
-                      key={version}
-                      color={color}
-                      active={vaultVersion === version}
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        onVaultVersionChange(version);
-                      }}
-                    >
-                      <Subtitle>{version}</Subtitle>
-                    </ProductVersionTag>
-                  ) : null
-                )}
-              </div>
-            </TagContainer>
-          </TopContainer>
-          <ProductInfo>
-            <ProductInfoContent />
-          </ProductInfo>
-          {modalContentExtra}
+          {vault === "rEARN" ? (
+            <>
+              <ProductInfoEarn
+                connected={
+                  account === null || account === undefined ? false : true
+                }
+              >
+                <EarnContent />
+              </ProductInfoEarn>
+            </>
+          ) : (
+            <>
+              <TopContainer color={color}>
+                {/* Tags */}
+                <TagContainer>
+                  {/* Product tags */}
+                  <ProductTag color={color}>
+                    <Subtitle>
+                      {isPutVault(vault) ? "PUT-SELLING" : "COVERED CALL"}
+                    </Subtitle>
+                  </ProductTag>
+                  {vaultLogo}
+                  <div className="d-flex">
+                    {/* Version tags */}
+                    {VaultVersionList.map((version) =>
+                      hasVaultVersion(vault, version) ? (
+                        <ProductVersionTag
+                          key={version}
+                          color={color}
+                          active={vaultVersion === version}
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            onVaultVersionChange(version);
+                          }}
+                        >
+                          <Subtitle>{version}</Subtitle>
+                        </ProductVersionTag>
+                      ) : null
+                    )}
+                  </div>
+                </TagContainer>
+              </TopContainer>
+              <ProductInfo>
+                <ProductInfoContent />
+              </ProductInfo>
+              {modalContentExtra}
+            </>
+          )}
         </ProductCard>
       </AnimatePresence>
     </CardContainer>

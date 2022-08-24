@@ -167,6 +167,7 @@ const InvestButton = styled(ActionButton)`
   margin-left: ${investButtonMarginLeft}%;
   width: ${investButtonWidth}%;
   height: 48px;
+  justify-content: center;
   border-radius: ${theme.border.radius};
 `;
 
@@ -444,26 +445,27 @@ const AccountStatus: React.FC<AccountStatusProps> = ({
 
   return (
     <AccountStatusContainer variant={variant}>
-      {vault && (
+      {vault && vault.vaultOption !== "rEARN" && (
         <YourPosition
           vault={vault}
           variant="mobile"
           onShowHook={showVaultPositionHook}
         />
       )}
-
       {/* Main Button and Desktop Menu */}
       <WalletContainer variant={variant} ref={desktopMenuRef}>
         <WalletButton
           variant={variant}
-          showInvestButton={vault !== undefined}
+          showInvestButton={
+            vault !== undefined && vault.vaultOption !== "rEARN"
+          }
           connected={active}
           role="button"
           onClick={handleButtonClick}
         >
           {renderButtonContent()}
         </WalletButton>
-        {vault && (
+        {vault && vault.vaultOption !== "rEARN" && (
           <InvestButton
             onClick={handleInvestButtonClick}
             color={getVaultColor(vault.vaultOption)}

@@ -171,7 +171,7 @@ const VaultV2ActionsForm: React.FC<FormStepProps> = ({
 
           {/* Migrate button */}
           <ActionButton
-            color={color}
+            color={"red"}
             className="py-3 mt-4"
             onClick={() => {
               setHideCompleteWithdrawReminder(true);

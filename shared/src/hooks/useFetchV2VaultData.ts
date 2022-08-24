@@ -66,6 +66,7 @@ const useFetchV2VaultData = (): V2VaultData => {
           vault,
           active
         );
+
         if (!contract) {
           return { vault };
         }
@@ -85,7 +86,6 @@ const useFetchV2VaultData = (): V2VaultData => {
           contract.pricePerShare(),
           contract.vaultState(),
         ];
-
         /**
          * 1. Deposit receipts
          * 2. User asset balance
