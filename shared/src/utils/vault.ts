@@ -68,7 +68,7 @@ export const getUserWithdrawQueueAmount = (
   );
 };
 
-export const getSOLPricePerShare = async (): Promise<string> => {
+export const getSOLPricePerShare = async (): Promise<number> => {
   const connection = new Connection(
     process.env.REACT_APP_SOLANA_MAINNET_URI || ""
   );
@@ -94,16 +94,9 @@ export const getSOLPricePerShare = async (): Promise<string> => {
     connection,
     vaultInfo.redeemableMint
   );
-  const underlyingMint = await spl.getMint(
-    connection,
-    vaultInfo.underlyingMint
-  );
 
   // Price per share = total vault balance / redeemable mint supply
-  const pricePerShare =
-    (totalBalance / Number(redeemableMint.supply)) *
-    (10 ** redeemableMint.decimals / 10 ** underlyingMint.decimals);
+  const pricePerShare = totalBalance / Number(redeemableMint.supply);
 
-  console.log(pricePerShare.toString());
-  return pricePerShare.toString();
+  return pricePerShare;
 };

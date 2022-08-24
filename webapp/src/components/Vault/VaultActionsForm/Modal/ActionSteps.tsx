@@ -37,8 +37,7 @@ import {
   RibbonV2ThetaVault,
 } from "shared/lib/codegen";
 import useLoadingText from "shared/lib/hooks/useLoadingText";
-import { PublicKey } from "@solana/web3.js";
-import { vaultTypes } from "@zetamarkets/flex-sdk";
+
 export interface ActionStepsProps {
   vault: {
     vaultOption: VaultOptions;
@@ -60,7 +59,7 @@ const ActionSteps: React.FC<ActionStepsProps> = ({
   skipToPreview = false,
 }) => {
   const { ethereumProvider } = useWeb3Wallet();
-  const { client, vault: flexVault } = useFlexVault();
+  const { client } = useFlexVault();
   const { vaultActionForm, resetActionForm, withdrawMetadata } =
     useVaultActionForm(vaultOption);
   const { data: priceHistories } = useVaultsPriceHistory();
@@ -112,7 +111,6 @@ const ActionSteps: React.FC<ActionStepsProps> = ({
     },
   } = useV2VaultData(vaultOption);
   const { vaultAccounts: v1VaultAccounts } = useVaultAccounts("v1");
-  const { account } = useWeb3Wallet();
 
   const asset = useMemo(() => {
     switch (vaultActionForm.actionType) {
@@ -333,17 +331,16 @@ const ActionSteps: React.FC<ActionStepsProps> = ({
                       case "rSOL-THETA":
                         if (client) {
                           const pricePerShare = await getSOLPricePerShare();
-
-                          console.log(
-                            new anchor.BN(amountStr)
-                              .div(new anchor.BN(pricePerShare))
-                              .toString()
+                          const pps = pricePerShare;
+                          const amountToRedeem = Math.floor(
+                            (Number(vaultActionForm.inputAmount) /
+                              Number(pps)) *
+                              Math.pow(10, decimals)
                           );
 
-                          const pps = new anchor.BN(pricePerShare);
                           const txhash = await client.withdrawVault(
                             getSolanaVaultInstance(vaultOption),
-                            new anchor.BN(amountStr).div(pps)
+                            new anchor.BN(amountToRedeem)
                           );
 
                           res = { hash: txhash };
