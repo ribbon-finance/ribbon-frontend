@@ -320,8 +320,8 @@ const EarnPage = () => {
     if (isLoading || vaultOption !== "rEARN") {
       return undefined;
     }
-    return isPracticallyZero(v2VaultLimit.sub(v2Deposits), decimals);
-  }, [decimals, isLoading, v2Deposits, v2VaultLimit, vaultOption]);
+    return isPracticallyZero(v2VaultLimit.sub(v2Deposits), 6);
+  }, [isLoading, v2Deposits, v2VaultLimit, vaultOption]);
 
   const [totalDepositStr, depositLimitStr] = useMemo(() => {
     return [

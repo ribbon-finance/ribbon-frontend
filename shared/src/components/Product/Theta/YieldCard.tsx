@@ -434,7 +434,6 @@ const YieldCard: React.FC<YieldCardProps> = ({
     data: {
       totalBalance: v2Deposits,
       cap: v2VaultLimit,
-      decimals: v2Decimals,
       pricePerShare,
     },
     loading: v2DataLoading,
@@ -494,8 +493,8 @@ const YieldCard: React.FC<YieldCardProps> = ({
     if (v2DataLoading || vault !== "rEARN") {
       return undefined;
     }
-    return isPracticallyZero(v2VaultLimit.sub(v2Deposits), v2Decimals);
-  }, [v2DataLoading, vault, v2VaultLimit, v2Deposits, v2Decimals]);
+    return isPracticallyZero(v2VaultLimit.sub(v2Deposits), 6);
+  }, [v2DataLoading, vault, v2VaultLimit, v2Deposits]);
 
   const [totalDepositStr, depositLimitStr] = useMemo(() => {
     switch (vaultVersion) {
