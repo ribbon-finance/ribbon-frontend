@@ -1,5 +1,5 @@
 import React, { useCallback, useMemo, useState } from "react";
-import styled from "styled-components";
+import styled, { css } from "styled-components";
 import { BigNumber } from "ethers";
 
 import { SecondaryText, Title, PrimaryText } from "shared/lib/designSystem";
@@ -22,17 +22,105 @@ import TooltipExplanation from "shared/lib/components/Common/TooltipExplanation"
 import useLoadingText from "shared/lib/hooks/useLoadingText";
 import useUSDC, { DepositSignature } from "../../../../hooks/useUSDC";
 import useEarnStrategyTime from "../../../../hooks/useEarnStrategyTime";
+import { fadeIn } from "shared/lib/designSystem/keyframes";
 
-const FormTitle = styled(Title)`
+const Logo = styled.div<{ delay?: number; show?: boolean }>`
+  margin-top: -40px;
+  margin-bottom: -40px;
+
+  ${({ show, delay }) => {
+    return (
+      show &&
+      css`
+        opacity: 0;
+        animation: ${fadeIn} 1s ease-in-out forwards;
+        animation-delay: ${delay || 0}s;
+      `
+    );
+  }}
+`;
+
+const InfoPreview = styled.div<{ delay?: number; show?: boolean }>`
+  ${({ show, delay }) => {
+    return (
+      show &&
+      css`
+        opacity: 0;
+        animation: ${fadeIn} 1s ease-in-out forwards;
+        animation-delay: ${delay || 0}s;
+      `
+    );
+  }}
+`;
+
+const FormTitle = styled(Title)<{ delay?: number; show?: boolean }>`
   font-size: 22px;
   line-height: 28px;
   letter-spacing: 1px;
+  text-align: center;
+
+  ${({ show, delay }) => {
+    return (
+      show &&
+      css`
+        opacity: 0;
+        animation: ${fadeIn} 1s ease-in-out forwards;
+        animation-delay: ${delay || 0}s;
+      `
+    );
+  }}
 `;
 
-const WarningContainer = styled.div<{ color: string }>`
+const WarningContainer = styled.div<{
+  color: string;
+  delay?: number;
+  show?: boolean;
+}>`
   padding: 8px;
   background: ${(props) => props.color}14;
   border-radius: ${theme.border.radiusSmall};
+
+  ${({ show, delay }) => {
+    return (
+      show &&
+      css`
+        opacity: 0;
+        animation: ${fadeIn} 1s ease-in-out forwards;
+        animation-delay: ${delay || 0}s;
+      `
+    );
+  }}
+`;
+
+const DetailRow = styled.div<{ delay?: number; show?: boolean }>`
+  ${({ show, delay }) => {
+    return (
+      show &&
+      css`
+        opacity: 0;
+        animation: ${fadeIn} 1s ease-in-out forwards;
+        animation-delay: ${delay || 0}s;
+      `
+    );
+  }}
+`;
+
+const FormButton = styled(ActionButton)<{ delay?: number; show?: boolean }>`
+  ${({ show, delay }) => {
+    return (
+      show &&
+      css`
+        opacity: 0;
+
+        &:disabled {
+          opacity: 0;
+        }
+
+        animation: ${fadeIn} 1s ease-in-out forwards;
+        animation-delay: ${delay || 0}s;
+      `
+    );
+  }}
 `;
 
 const PreviewStep: React.FC<{
@@ -44,6 +132,7 @@ const PreviewStep: React.FC<{
   vaultOption: VaultOptions;
   vaultVersion: VaultVersion;
   onSignatureMade: (signature: DepositSignature) => void;
+  show: boolean;
 }> = ({
   actionType,
   amount,
@@ -51,6 +140,7 @@ const PreviewStep: React.FC<{
   asset,
   vaultOption,
   onSignatureMade,
+  show,
 }) => {
   const color = getVaultColor(vaultOption);
   const usdc = useUSDC();
@@ -133,7 +223,12 @@ const PreviewStep: React.FC<{
   actionLogo = <DepositGlowIcon color={color} width={176} />;
 
   warning = (
-    <WarningContainer className="mb-4 w-100 text-center" color={color}>
+    <WarningContainer
+      delay={0.6 + detailRows.length * 0.1}
+      show={show}
+      className="mb-4 w-100 text-center"
+      color={color}
+    >
       <PrimaryText fontSize={14} lineHeight={20} color={color}>
         IMPORTANT: Your funds will be available for withdrawal at 5pm UTC on{" "}
         {withdrawalDate}
@@ -144,25 +239,35 @@ const PreviewStep: React.FC<{
   return (
     <div className="d-flex flex-column align-items-center">
       {/* Logo */}
-      <div style={{ marginTop: -40, marginBottom: -40 }}>{actionLogo}</div>
+      <Logo delay={0.1} show={show}>
+        {actionLogo}
+      </Logo>
 
       {/* Title */}
-      <FormTitle className=" text-center">{actionWord} PREVIEW</FormTitle>
+      <FormTitle delay={0.2} show={show}>
+        {actionWord} PREVIEW
+      </FormTitle>
 
       {/* Info Preview */}
 
-      <div className="d-flex w-100 flex-row align-items-center justify-content-between mt-4">
+      <InfoPreview
+        delay={0.3}
+        show={show}
+        className="d-flex w-100 flex-row align-items-center justify-content-between mt-4"
+      >
         <SecondaryText>{actionWord} Amount</SecondaryText>
         <Title className="text-right">
           {formatBigNumber(amount, getAssetDecimals(asset))}{" "}
           {getAssetDisplay(asset)}
         </Title>
-      </div>
+      </InfoPreview>
 
       {detailRows.map((detail, index) => (
-        <div
+        <DetailRow
           className="d-flex w-100 flex-row align-items-center justify-content-between mt-4"
           key={index}
+          delay={0.3 + (index + 1) * 0.1}
+          show={show}
         >
           <div className="d-flex flex-row align-items-center">
             <SecondaryText>{detail.key}</SecondaryText>
@@ -183,28 +288,34 @@ const PreviewStep: React.FC<{
             )}
           </div>
           <Title className="text-right">{detail.value}</Title>
-        </div>
+        </DetailRow>
       ))}
       {depositSignature !== undefined ? (
-        <ActionButton
+        <FormButton
+          delay={0.4 + detailRows.length * 0.1}
+          show={show}
           className="btn py-3 mt-4 mb-3"
           color={color}
           variant={"earn"}
         >
           USDC READY TO DEPOSIT
-        </ActionButton>
+        </FormButton>
       ) : (
-        <ActionButton
+        <FormButton
+          delay={0.4 + detailRows.length * 0.1}
+          show={show}
           onClick={handleApprove}
           className="btn py-3 mt-4 mb-3"
           color={color}
           variant={"primary"}
         >
           {waitingApproval ? loadingText : `PERMIT VAULT TO USE YOUR USDC`}
-        </ActionButton>
+        </FormButton>
       )}
 
-      <ActionButton
+      <FormButton
+        delay={0.5 + detailRows.length * 0.1}
+        show={show}
         onClick={onClickConfirmButton}
         disabled={depositSignature === undefined}
         className="btn py-3 mb-3"
@@ -212,7 +323,7 @@ const PreviewStep: React.FC<{
         variant={depositSignature === undefined ? "earnDisabled" : "primary"}
       >
         {actionWord} Now
-      </ActionButton>
+      </FormButton>
       {warning}
     </div>
   );
