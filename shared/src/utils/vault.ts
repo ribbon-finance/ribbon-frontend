@@ -6,8 +6,9 @@ import {
   VaultOptions,
 } from "../constants/constants";
 import { getAssetColor } from "./asset";
-import { PublicKey } from "@solana/web3.js";
-import { vaultTypes } from "@zetamarkets/flex-sdk";
+import { Connection, PublicKey } from "@solana/web3.js";
+import { Vault, vaultTypes, vaultUtils } from "@zetamarkets/flex-sdk";
+import * as spl from "@solana/spl-token";
 
 export const isVaultFull = (
   deposits: BigNumber,
@@ -64,5 +65,48 @@ export const getUserWithdrawQueueAmount = (
   return withdrawalNodes.reduce(
     (acc, node) => acc.add(BigNumber.from(node.info.amount.toNumber())),
     BigNumber.from(0)
+  );
+};
+
+export const getSOLPricePerShare = async (): Promise<number> => {
+  const connection = new Connection(
+    process.env.REACT_APP_SOLANA_MAINNET_URI || ""
+  );
+  const vaultAddress = vaultUtils.getVaultAddress("rSOL-THETA")[0];
+  const vaultInfo = Vault.getVault(vaultAddress);
+  const vaultUnderlyingTokenAccount = await spl.getAccount(
+    connection,
+    vaultInfo.vaultUnderlyingTokenAccount
+  );
+
+  let totalBalance = Number(vaultUnderlyingTokenAccount.amount);
+
+  // If the option is initialized, we know that a portion of the vault balance is in the option collateral.
+  if (vaultInfo.option !== null) {
+    const optionVault = await spl.getAccount(
+      connection,
+      vaultInfo.option.vault
+    );
+    totalBalance += Number(optionVault.amount);
+  }
+
+  const redeemableMint = await spl.getMint(
+    connection,
+    vaultInfo.redeemableMint
+  );
+
+  // Price per share = total vault balance / redeemable mint supply
+  const pricePerShare = totalBalance / Number(redeemableMint.supply);
+
+  return pricePerShare;
+};
+
+export const getSOLAmountByShares = async (
+  amount: number,
+  decimals: number
+): Promise<number> => {
+  const pricePerShare = await getSOLPricePerShare();
+  return Math.floor(
+    (Number(amount) / Number(pricePerShare)) * Math.pow(10, decimals)
   );
 };

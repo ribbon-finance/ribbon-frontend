@@ -381,7 +381,7 @@ const ParagraphText = styled(SecondaryText)`
   color: ${colors.secondaryText};
   font-weight: 400;
   font-size: 14px;
-  line-height: 24px;
+  line-height: 20px;
   margin-top: 16px;
   margin-left: 32px;
   margin-right: 32px;
@@ -431,12 +431,7 @@ const YieldCard: React.FC<YieldCardProps> = ({
     vaultBalanceInAsset,
   } = useVaultData(vault);
   const {
-    data: {
-      totalBalance: v2Deposits,
-      cap: v2VaultLimit,
-      decimals: v2Decimals,
-      pricePerShare,
-    },
+    data: { totalBalance: v2Deposits, cap: v2VaultLimit, pricePerShare },
     loading: v2DataLoading,
   } = useV2VaultData(vault);
   const { chainId } = useWeb3Wallet();
@@ -494,8 +489,8 @@ const YieldCard: React.FC<YieldCardProps> = ({
     if (v2DataLoading || vault !== "rEARN") {
       return undefined;
     }
-    return isPracticallyZero(v2VaultLimit.sub(v2Deposits), v2Decimals);
-  }, [v2DataLoading, vault, v2VaultLimit, v2Deposits, v2Decimals]);
+    return isPracticallyZero(v2VaultLimit.sub(v2Deposits), 6);
+  }, [v2DataLoading, vault, v2VaultLimit, v2Deposits]);
 
   const [totalDepositStr, depositLimitStr] = useMemo(() => {
     switch (vaultVersion) {

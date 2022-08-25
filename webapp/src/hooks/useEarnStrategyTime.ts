@@ -21,7 +21,7 @@ const useEarnStrategyTime = () => {
 
     return [
       `${strategyStartTime.days()}D ${strategyStartTime.hours()}H ${strategyStartTime.minutes()}M`,
-      firstOpenLoanTime.add(28, "days").format("Do MMMM, YYYY"),
+      firstOpenLoanTime.add(28, "days").format("Do MMM, YYYY"),
     ];
   }, []);
 

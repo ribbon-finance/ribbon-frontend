@@ -1,7 +1,8 @@
-import { useMemo, useState } from "react";
+
+import { useEffect, useMemo, useState } from "react";
 import { BigNumber, ethers } from "ethers";
 import { useWeb3Wallet } from "shared/lib/hooks/useWeb3Wallet";
-import styled, { keyframes } from "styled-components";
+import styled, { css, keyframes } from "styled-components";
 import { Redirect } from "react-router-dom";
 import { SecondaryText, Title } from "shared/lib/designSystem";
 import colors from "shared/lib/designSystem/colors";
@@ -39,35 +40,15 @@ import { usePendingTransactions } from "shared/lib/hooks/pendingTransactionsCont
 import useEarnStrategyTime from "../../hooks/useEarnStrategyTime";
 import useLoadingText from "shared/lib/hooks/useLoadingText";
 import { ACTIONS } from "../../components/Vault/VaultActionsForm/EarnModal/types";
+import {
+  fadeIn,
+  fadeOut,
+  rotateClockwise,
+  rotateAnticlockwise,
+} from "shared/lib/designSystem/keyframes";
 
 const { formatUnits } = ethers.utils;
 
-const rotateClockwise = keyframes`
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
-`;
-
-const fadeIn = keyframes`
-  from {
-    opacity: 0;
-  }
-  to {
-    opacity: 1;
-  }
-`;
-
-const rotateAnticlockwise = keyframes`
-  from {
-    transform: rotate(360deg);
-  }
-  to {
-    transform: rotate(0deg);
-  }
-`;
 
 const PendingDepositsContainer = styled.div`
   display: flex;
@@ -84,7 +65,7 @@ const PendingDepositsContainer = styled.div`
   backdrop-filter: blur(16px);
 `;
 
-const EarnCapacityText = styled(Title)`
+const EarnCapacityText = styled(Title)<{ delay?: number }>`
   color: ${colors.tertiaryText};
   font-style: normal;
   font-weight: 400;
@@ -93,6 +74,9 @@ const EarnCapacityText = styled(Title)`
   text-align: center;
   margin-top: 32px;
   height: 20px;
+  opacity: 0;
+  animation: ${fadeIn} 1s ease-in-out forwards;
+  animation-delay: ${({ delay }) => `${delay || 0}s`};
 `;
 
 const TextContainer = styled.div`
@@ -106,7 +90,7 @@ const TextContainer = styled.div`
   margin-left: 8px;
 `;
 
-const ProductAssetLogoContainer = styled.div`
+const ProductAssetLogoContainer = styled.div<{ delay?: number }>`
   display: flex;
   align-items: center;
   justify-content: center;
@@ -115,6 +99,9 @@ const ProductAssetLogoContainer = styled.div`
   background-color: ${colors.background.one};
   border-radius: 50%;
   position: relative;
+  opacity: 0;
+  animation: ${fadeIn} 1s ease-in-out forwards;
+  animation-delay: ${({ delay }) => `${delay || 0}s`};
 `;
 
 const CirclesContainer = styled.div<{ offset: number }>`
@@ -127,11 +114,33 @@ const CirclesContainer = styled.div<{ offset: number }>`
   justify-content: center;
 `;
 
-const FadeInDiv = styled.div<{ delaySeconds?: number }>`
+const FadeDiv = styled.div<{
+  delaySeconds?: number;
+  show?: boolean;
+  fadeSeconds?: number;
+}>`
   position: absolute;
-  opacity: 0;
-  animation: ${fadeIn} 4s ease-in-out forwards;
-  animation-delay: ${(delaySeconds) => `${delaySeconds || 0}s`};
+  ${(props) => {
+    if (props.show !== false) {
+      return css`
+        opacity: 0;
+      `;
+    }
+  }}
+  ${(props) => {
+    if (props.show === undefined) {
+      return ``;
+    }
+    if (props.show) {
+      return css`
+        animation: ${fadeIn} 4s ease-in-out forwards;
+      `;
+    }
+    return css`
+      animation: ${fadeOut} 4s ease-in-out forwards;
+    `;
+  }}
+  animation-delay: ${({ delaySeconds }) => `${delaySeconds || 0}s`};
 `;
 
 const StyledEarnInnerRing = styled(EarnInnerRing)`
@@ -155,13 +164,16 @@ const StyledEarnOuterRing = styled(EarnOuterRing)`
   }
 `;
 
-const BalanceTitle = styled.div`
+const BalanceTitle = styled.div<{ delay?: number }>`
   font-size: 14px;
   font-family: VCR;
   text-transform: uppercase;
   text-align: center;
   letter-spacing: 1px;
   color: ${colors.primaryText}7A;
+  opacity: 0;
+  animation: ${fadeIn} 1s ease-in-out forwards;
+  animation-delay: ${({ delay }) => `${delay || 0}s`};
 `;
 
 const PageContainer = styled.div<{ offset: number }>`
@@ -188,13 +200,22 @@ const VaultFullText = styled(SecondaryText)`
   text-transform: none;
 `;
 
-const HeroText = styled(Title)`
+const HeroText = styled(Title)<{ delay?: number }>`
   font-size: 56px;
   line-height: 64px;
   margin-bottom: 16px;
+  opacity: 0;
+  animation: ${fadeIn} 1s ease-in-out forwards;
+  animation-delay: ${({ delay }) => `${delay || 0}s`};
 `;
 
-const ViewDetailsButton = styled.div`
+const HeroSubtitle = styled(Subtitle)<{ delay?: number }>`
+  opacity: 0;
+  animation: ${fadeIn} 1s ease-in-out forwards;
+  animation-delay: ${({ delay }) => `${delay || 0}s`};
+`;
+
+const ViewDetailsButton = styled.div<{ delay?: number }>`
   display: flex;
   flex-direction: column;
   width: 136px;
@@ -218,9 +239,13 @@ const ViewDetailsButton = styled.div`
   z-index: 1;
 `;
 
-const ButtonContainer = styled.div`
+const ButtonContainer = styled.div<{ delay?: number }>`
   z-index: 1;
   width: 240px;
+  opacity: 0;
+  animation: ${fadeIn} 1s ease-in-out forwards;
+  animation-delay: ${({ delay }) => `${delay || 0}s`};
+>>>>>>> master
 `;
 const StyledActionButton = styled(ActionButton)`
   font-size: 14px;
@@ -243,15 +268,23 @@ const EarnPage = () => {
   const [showDepositModal, setShowDepositModal] = useState(false);
   const [showWithdrawModal, setShowWithdrawModal] = useState(false);
   const { pendingTransactions } = usePendingTransactions();
+  const [isDepositSuccess, setDepositSuccess] = useState<boolean>();
 
-  const isDepositSuccess = useMemo(() => {
-    return pendingTransactions.some((transaction) => {
-      return (
-        transaction.status === "success" &&
-        transaction.type === "deposit" &&
-        transaction.vault === vaultOption
-      );
-    });
+  useEffect(() => {
+    if (
+      pendingTransactions.some((transaction) => {
+        return (
+          transaction.status === "success" &&
+          transaction.type === "deposit" &&
+          transaction.vault === vaultOption
+        );
+      })
+    ) {
+      setDepositSuccess(true);
+      setTimeout(function () {
+        setDepositSuccess(false);
+      }, 9000);
+    }
   }, [pendingTransactions, vaultOption]);
   const [componentRefs] = useGlobalState("componentRefs");
   const { status } = useVaultData(vaultOption || VaultList[0]);
@@ -287,8 +320,8 @@ const EarnPage = () => {
     if (isLoading || vaultOption !== "rEARN") {
       return undefined;
     }
-    return isPracticallyZero(v2VaultLimit.sub(v2Deposits), decimals);
-  }, [decimals, isLoading, v2Deposits, v2VaultLimit, vaultOption]);
+    return isPracticallyZero(v2VaultLimit.sub(v2Deposits), 6);
+  }, [isLoading, v2Deposits, v2VaultLimit, vaultOption]);
 
   const [totalDepositStr, depositLimitStr] = useMemo(() => {
     return [
@@ -312,7 +345,7 @@ const EarnPage = () => {
         decimals
       ),
     ];
-  }, [vaultAccount, decimals]);
+}, [vaultAccount, decimals]);
 
   const [roi, yieldColor] = useMemo(() => {
     if (
@@ -414,15 +447,24 @@ const EarnPage = () => {
   return (
     <>
       <CirclesContainer offset={pageOffset}>
-        <FadeInDiv delaySeconds={0.45}>
-          <StyledEarnOuterRing deposited={isDepositSuccess} />
-        </FadeInDiv>
-        <FadeInDiv delaySeconds={0.3}>
-          <StyledEarnMiddleRing deposited={isDepositSuccess} />
-        </FadeInDiv>
-        <FadeInDiv delaySeconds={0.15}>
-          <StyledEarnInnerRing deposited={isDepositSuccess} />
-        </FadeInDiv>
+        <FadeDiv delaySeconds={0.3} show={!isDepositSuccess}>
+          <StyledEarnOuterRing type={"blue"} />
+        </FadeDiv>
+        <FadeDiv delaySeconds={0.3} show={isDepositSuccess}>
+          <StyledEarnOuterRing type={"green"} />
+        </FadeDiv>
+        <FadeDiv delaySeconds={0.2} show={!isDepositSuccess}>
+          <StyledEarnMiddleRing type={"blue"} />
+        </FadeDiv>
+        <FadeDiv delaySeconds={0.2} show={isDepositSuccess}>
+          <StyledEarnMiddleRing type={"green"} />
+        </FadeDiv>
+        <FadeDiv delaySeconds={0.1} show={!isDepositSuccess}>
+          <StyledEarnInnerRing type={"blue"} />
+        </FadeDiv>
+        <FadeDiv delaySeconds={0.1} show={isDepositSuccess}>
+          <StyledEarnInnerRing type={"green"} />
+        </FadeDiv>
       </CirclesContainer>
       <PageContainer offset={pageOffset}>
         <AnimatePresence exitBeforeEnter>
@@ -447,7 +489,7 @@ const EarnPage = () => {
               <VaultContainer>
                 {hasPendingDeposits ? (
                   <PendingDepositsContainer>
-                    <ProductAssetLogoContainer color={color}>
+                    <ProductAssetLogoContainer color={color} delay={0.1}>
                       {logo}
                     </ProductAssetLogoContainer>
                     <TextContainer>
@@ -460,14 +502,14 @@ const EarnPage = () => {
                     </TextContainer>
                   </PendingDepositsContainer>
                 ) : (
-                  <ProductAssetLogoContainer color={color}>
+                  <ProductAssetLogoContainer color={color} delay={0.2}>
                     {logo}
                   </ProductAssetLogoContainer>
                 )}
-                <BalanceTitle className={`mt-1 py-3`}>
+                <BalanceTitle className={`mt-1 py-3`} delay={0.2}>
                   Your Balance
                 </BalanceTitle>
-                <HeroText>
+                <HeroText delay={0.3}>
                   {isLoading || !account
                     ? "---"
                     : "$" +
@@ -477,18 +519,19 @@ const EarnPage = () => {
                         2
                       )}
                 </HeroText>
-                <Subtitle color={yieldColor}>
+                <HeroSubtitle color={yieldColor} delay={0.4}>
                   +{isLoading || roi === 0 ? "0.00" : roi.toFixed(4)}%
-                </Subtitle>
+                </HeroSubtitle>
                 <ViewDetailsButton
                   role="button"
                   onClick={() => {
                     setShowDetailsModal(true);
                   }}
+                  delay={0.5}
                 >
                   View Details
                 </ViewDetailsButton>
-                <ButtonContainer>
+                <ButtonContainer delay={0.6}>
                   {active && account ? (
                     <>
                       <StyledActionButton
@@ -522,7 +565,7 @@ const EarnPage = () => {
                     </StyledActionButton>
                   )}
                 </ButtonContainer>
-                <EarnCapacityText>
+                <EarnCapacityText delay={0.7}>
                   {isLoading || isVaultMaxCapacity === undefined ? (
                     loadingText
                   ) : isVaultMaxCapacity ? (
@@ -564,7 +607,7 @@ const EarnPage = () => {
         onClose={() => setShowDetailsModal(false)}
         vaultOption={vaultOption}
       />
-            <ActionModal
+      <ActionModal
         vault={{
           vaultOption: vaultOption,
           vaultVersion: vaultVersion,

@@ -16,7 +16,11 @@ import {
   getSolanaVaultInstance,
   isSolanaVault,
 } from "shared/lib/constants/constants";
-import { isETHVault } from "shared/lib/utils/vault";
+import {
+  getSOLPricePerShare,
+  getSOLAmountByShares,
+  isETHVault,
+} from "shared/lib/utils/vault";
 import { usePendingTransactions } from "shared/lib/hooks/pendingTransactionsContext";
 import useVaultActionForm from "../../../../hooks/useVaultActionForm";
 import { parseUnits } from "@ethersproject/units";
@@ -244,6 +248,7 @@ const ActionSteps: React.FC<ActionStepsProps> = ({
     if (vault !== null || (isSolanaVault(vaultOption) && client !== null)) {
       // check illegal state transition
       if (step !== STEPS.confirmationStep - 1) return;
+
       onChangeStep(STEPS.confirmationStep);
       try {
         let res: any;
@@ -331,9 +336,13 @@ const ActionSteps: React.FC<ActionStepsProps> = ({
                     switch (vaultActionForm.vaultOption) {
                       case "rSOL-THETA":
                         if (client) {
+                          const redeemableAmount = await getSOLAmountByShares(
+                            Number(vaultActionForm.inputAmount),
+                            decimals
+                          );
                           const txhash = await client.withdrawVault(
                             getSolanaVaultInstance(vaultOption),
-                            new anchor.BN(amountStr)
+                            new anchor.BN(redeemableAmount)
                           );
 
                           res = { hash: txhash };

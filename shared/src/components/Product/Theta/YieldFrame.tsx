@@ -151,8 +151,8 @@ const YieldFrame: React.FC<YieldFrameProps> = ({
     if (v2DataLoading || vault !== "rEARN") {
       return undefined;
     }
-    return isPracticallyZero(v2VaultLimit.sub(v2Deposits), v2Decimals);
-  }, [v2DataLoading, v2Decimals, v2Deposits, v2VaultLimit, vault]);
+    return isPracticallyZero(v2VaultLimit.sub(v2Deposits), 6);
+  }, [v2DataLoading, v2Deposits, v2VaultLimit, vault]);
 
   const [totalDepositStr, depositLimitStr] = useMemo(() => {
     switch (vaultVersion) {

@@ -564,10 +564,7 @@ export const BellIcon: React.FC<SVGPropsWithColor> = ({ color, ...props }) => (
   </svg>
 );
 
-export const EarnInnerRing: React.FC<EarnRingProps> = ({
-  deposited,
-  ...props
-}) => (
+export const EarnInnerRing: React.FC<EarnRingProps> = ({ type, ...props }) => (
   <svg
     width="640"
     height="640"
@@ -581,16 +578,13 @@ export const EarnInnerRing: React.FC<EarnRingProps> = ({
       cx="320"
       cy="320"
       r="319.5"
-      stroke={deposited ? "#16CEB9" : "#3E73C4"}
+      stroke={type === "green" ? "#16CEB9" : "#3E73C4"}
       strokeDasharray="4 4"
     />
   </svg>
 );
 
-export const EarnMiddleRing: React.FC<EarnRingProps> = ({
-  deposited,
-  ...props
-}) => (
+export const EarnMiddleRing: React.FC<EarnRingProps> = ({ type, ...props }) => (
   <svg
     width="800"
     height="800"
@@ -604,14 +598,15 @@ export const EarnMiddleRing: React.FC<EarnRingProps> = ({
       cx="400"
       cy="400"
       r="399.5"
-      stroke={deposited ? "#16CEB9" : "#3E73C4"}
+      stroke={type === "green" ? "#16CEB9" : "#3E73C4"}
       strokeDasharray="4 4"
     />
   </svg>
 );
 
 export const EarnOuterRing: React.FC<EarnRingProps> = ({
-  deposited,
+  type,
+  color,
   ...props
 }) => (
   <svg
@@ -622,12 +617,12 @@ export const EarnOuterRing: React.FC<EarnRingProps> = ({
     xmlns="http://www.w3.org/2000/svg"
     {...props}
   >
-    <g filter="url(#filter0_d_623_1436)">
+    <g filter={`url(#filter0_d_623_1436_${type})`}>
       <circle
         cx="527"
         cy="527"
         r="478"
-        stroke={deposited ? "#16CEB9" : "#3E73C4"}
+        stroke={type === "green" ? "#16CEB9" : "#3E73C4"}
         strokeWidth="4"
         strokeDasharray="2 2"
         shapeRendering="crispEdges"
@@ -635,7 +630,7 @@ export const EarnOuterRing: React.FC<EarnRingProps> = ({
     </g>
     <defs>
       <filter
-        id="filter0_d_623_1436"
+        id={`filter0_d_623_1436_${type}`}
         x="0"
         y="0"
         width="1056"
@@ -662,7 +657,7 @@ export const EarnOuterRing: React.FC<EarnRingProps> = ({
         <feColorMatrix
           type="matrix"
           values={
-            deposited
+            type === "green"
               ? "0 0 0 0 0.0862745 0 0 0 0 0.807843 0 0 0 0 0.72549 0 0 0 0.25 0"
               : "0 0 0 0 0.243137 0 0 0 0 0.45098 0 0 0 0 0.768627 0 0 0 0.25 0"
           }

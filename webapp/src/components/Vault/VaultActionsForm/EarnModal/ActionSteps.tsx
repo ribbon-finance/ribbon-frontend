@@ -185,6 +185,7 @@ const ActionSteps: React.FC<ActionStepsProps> = ({
         asset={asset}
         vaultOption={vaultOption}
         vaultVersion={vaultVersion}
+        show={show}
       />
     ),
     1: (
@@ -197,6 +198,7 @@ const ActionSteps: React.FC<ActionStepsProps> = ({
         vaultOption={vaultOption}
         vaultVersion={vaultVersion}
         onSignatureMade={setSignature}
+        show={show}
       />
     ),
     2: <TransactionStep color={getAssetColor(asset)} />,
