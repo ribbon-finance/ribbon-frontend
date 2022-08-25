@@ -87,7 +87,7 @@ const TextContainer = styled.div`
   margin-left: 8px;
 `;
 
-const ProductAssetLogoContainer = styled(motion.div)<{ delay?: number }>`
+const ProductAssetLogoContainer = styled.div<{ delay?: number }>`
   display: flex;
   align-items: center;
   justify-content: center;
@@ -161,7 +161,7 @@ const StyledEarnOuterRing = styled(EarnOuterRing)`
   }
 `;
 
-const BalanceTitle = styled(motion.div)<{ delay?: number }>`
+const BalanceTitle = styled.div<{ delay?: number }>`
   font-size: 14px;
   font-family: VCR;
   text-transform: uppercase;
