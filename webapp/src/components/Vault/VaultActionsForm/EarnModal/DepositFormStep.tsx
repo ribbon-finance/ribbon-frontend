@@ -421,7 +421,7 @@ const DepositFormStep: React.FC<{
         <DetailRow
           className="d-flex w-100 flex-row align-items-center justify-content-between mt-4"
           key={index}
-          delay={0.2 + (index + 1) * 0.1}
+          delay={0.2 + (index + 1) * 0.05}
           show={show}
         >
           <div className="d-flex flex-row align-items-center">
