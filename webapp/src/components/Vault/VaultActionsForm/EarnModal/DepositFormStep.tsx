@@ -1,7 +1,6 @@
 import React, { useCallback, useMemo, useState } from "react";
-import styled from "styled-components";
+import styled, { css } from "styled-components";
 import { BigNumber } from "ethers";
-
 import {
   SecondaryText,
   Title,
@@ -36,25 +35,137 @@ import useWeb3Wallet from "shared/lib/hooks/useWeb3Wallet";
 import useVaultAccounts from "shared/lib/hooks/useVaultAccounts";
 import currency from "currency.js";
 import useEarnStrategyTime from "../../../../hooks/useEarnStrategyTime";
-const StyledBaseInputLabel = styled(BaseInputLabel)`
-  margin-top: 24px;
-  width: 100%;
+import { fadeIn } from "shared/lib/designSystem/keyframes";
+
+const Logo = styled.div<{ delay?: number; show?: boolean }>`
+  margin-top: -40px;
+  margin-bottom: -40px;
+
+  ${({ show, delay }) => {
+    return (
+      show &&
+      css`
+        opacity: 0;
+        animation: ${fadeIn} 1s ease-in-out forwards;
+        animation-delay: ${delay || 0}s;
+      `
+    );
+  }}
 `;
 
-const FormTitle = styled(Title)`
+const StyledBaseInputLabel = styled(BaseInputLabel)<{
+  delay?: number;
+  show?: boolean;
+}>`
+  margin-top: 24px;
+  width: 100%;
+
+  ${({ show, delay }) => {
+    return (
+      show &&
+      css`
+        opacity: 0;
+        animation: ${fadeIn} 1s ease-in-out forwards;
+        animation-delay: ${delay || 0}s;
+      `
+    );
+  }}
+`;
+
+const InputContainer = styled(BaseInputContainer)<{
+  delay?: number;
+  show?: boolean;
+}>`
+  ${({ show, delay }) => {
+    return (
+      show &&
+      css`
+        opacity: 0;
+        animation: ${fadeIn} 1s ease-in-out forwards;
+        animation-delay: ${delay || 0}s;
+      `
+    );
+  }}
+`;
+
+const FormTitle = styled(Title)<{ delay?: number; show?: boolean }>`
   font-size: 22px;
   line-height: 28px;
   letter-spacing: 1px;
+
+  ${({ show, delay }) => {
+    return (
+      show &&
+      css`
+        opacity: 0;
+        animation: ${fadeIn} 1s ease-in-out forwards;
+        animation-delay: ${delay || 0}s;
+      `
+    );
+  }}
 `;
 
 const StyledTitle = styled(Title)<{ color?: string }>`
   color: ${(props) => props.color};
 `;
 
-const WarningContainer = styled.div<{ color: string }>`
+const WarningContainer = styled.div<{
+  color: string;
+  delay?: number;
+  show?: boolean;
+}>`
   padding: 8px;
   background: ${(props) => props.color}14;
   border-radius: ${theme.border.radiusSmall};
+
+  ${({ show, delay }) => {
+    return (
+      show &&
+      css`
+        opacity: 0;
+        animation: ${fadeIn} 1s ease-in-out forwards;
+        animation-delay: ${delay || 0}s;
+      `
+    );
+  }}
+`;
+
+const ErrorText = styled(SecondaryText)`
+  color: ${colors.red};
+  width: 100%;
+`;
+
+const DetailRow = styled.div<{ delay?: number; show?: boolean }>`
+  ${({ show, delay }) => {
+    return (
+      show &&
+      css`
+        opacity: 0;
+        animation: ${fadeIn} 1s ease-in-out forwards;
+        animation-delay: ${delay || 0}s;
+      `
+    );
+  }}
+`;
+
+const NextButton = styled(ActionButton)<{ delay?: number; show?: boolean }>`
+  margin-top: 40px !important;
+
+  ${({ show, delay }) => {
+    return (
+      show &&
+      css`
+        opacity: 0;
+
+        &:disabled {
+          opacity: 0;
+        }
+
+        animation: ${fadeIn} 1s ease-in-out forwards;
+        animation-delay: ${delay || 0}s;
+      `
+    );
+  }}
 `;
 
 const DepositFormStep: React.FC<{
@@ -64,6 +175,7 @@ const DepositFormStep: React.FC<{
   asset: Assets;
   vaultOption: VaultOptions;
   vaultVersion: VaultVersion;
+  show: boolean;
 }> = ({
   onClickUpdateInput,
   actionType,
@@ -71,6 +183,7 @@ const DepositFormStep: React.FC<{
   asset,
   vaultOption,
   vaultVersion,
+  show,
 }) => {
   const color = getVaultColor(vaultOption);
   const {
@@ -253,7 +366,12 @@ const DepositFormStep: React.FC<{
   actionLogo = <DepositGlowIcon color={color} width={176} />;
 
   warning = (
-    <WarningContainer className="mt-2 mb-3 w-100 text-center" color={color}>
+    <WarningContainer
+      show={show}
+      delay={0.6 + detailRows.length * 0.1}
+      className="mt-2 mb-3 w-100 text-center"
+      color={color}
+    >
       <PrimaryText fontSize={14} lineHeight={20} color={color}>
         IMPORTANT: Your funds will be available for withdrawal at 5pm UTC on{" "}
         {withdrawalDate}
@@ -267,13 +385,22 @@ const DepositFormStep: React.FC<{
   return (
     <div className="d-flex flex-column align-items-center">
       {/* Logo */}
-      <div style={{ marginTop: -40, marginBottom: -40 }}>{actionLogo}</div>
+      <Logo delay={0.1} show={show}>
+        {actionLogo}
+      </Logo>
       {/* Title */}
-      <FormTitle className=" text-center">DEPOSIT</FormTitle>
-      <StyledBaseInputLabel>
+      <FormTitle delay={0.2} show={show} className="text-center">
+        DEPOSIT
+      </FormTitle>
+      <StyledBaseInputLabel delay={0.3} show={show}>
         AMOUNT ({getAssetDisplay(asset)})
       </StyledBaseInputLabel>
-      <BaseInputContainer className="mb-2" error={error ? true : false}>
+      <InputContainer
+        delay={0.4}
+        show={show}
+        className="mb-2"
+        error={error ? true : false}
+      >
         <BaseInput
           type="number"
           className="form-control"
@@ -287,16 +414,14 @@ const DepositFormStep: React.FC<{
         {active && (
           <BaseInputButton onClick={handleMaxClick}>MAX</BaseInputButton>
         )}
-      </BaseInputContainer>
-      {error && (
-        <SecondaryText style={{ width: "100%" }} color={colors.red}>
-          {renderErrorText(error)}
-        </SecondaryText>
-      )}
+      </InputContainer>
+      {error && <ErrorText>{renderErrorText(error)}</ErrorText>}
       {detailRows.map((detail, index) => (
-        <div
+        <DetailRow
           className="d-flex w-100 flex-row align-items-center justify-content-between mt-4"
           key={index}
+          delay={0.4 + (index + 1) * 0.1}
+          show={show}
         >
           <div className="d-flex flex-row align-items-center">
             <SecondaryText>{detail.key} </SecondaryText>
@@ -329,17 +454,18 @@ const DepositFormStep: React.FC<{
           >
             {detail.value}
           </StyledTitle>
-        </div>
+        </DetailRow>
       ))}
-      <div style={{ height: 40 }}> </div>
-      <ActionButton
+      <NextButton
+        delay={0.5 + detailRows.length * 0.1}
+        show={show}
         onClick={handleConfirm}
         disabled={isButtonDisabled}
         className="btn py-3 mt-2 mb-2"
         color={color}
       >
         Next
-      </ActionButton>
+      </NextButton>
 
       {warning}
     </div>

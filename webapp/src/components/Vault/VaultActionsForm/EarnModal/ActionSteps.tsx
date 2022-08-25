@@ -183,6 +183,7 @@ const ActionSteps: React.FC<ActionStepsProps> = ({
         asset={asset}
         vaultOption={vaultOption}
         vaultVersion={vaultVersion}
+        show={show}
       />
     ),
     1: (

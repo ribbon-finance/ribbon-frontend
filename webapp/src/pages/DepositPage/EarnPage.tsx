@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { BigNumber, ethers } from "ethers";
 import { useWeb3Wallet } from "shared/lib/hooks/useWeb3Wallet";
-import styled, { css, keyframes } from "styled-components";
+import styled, { css } from "styled-components";
 import { Redirect } from "react-router-dom";
 import { SecondaryText, Title } from "shared/lib/designSystem";
 import colors from "shared/lib/designSystem/colors";
@@ -38,44 +38,14 @@ import ActionModal from "../../components/Vault/VaultActionsForm/EarnModal/Actio
 import { usePendingTransactions } from "shared/lib/hooks/pendingTransactionsContext";
 import useEarnStrategyTime from "../../hooks/useEarnStrategyTime";
 import useLoadingText from "shared/lib/hooks/useLoadingText";
+import {
+  fadeIn,
+  fadeOut,
+  rotateClockwise,
+  rotateAnticlockwise,
+} from "shared/lib/designSystem/keyframes";
 
 const { formatUnits } = ethers.utils;
-
-const rotateClockwise = keyframes`
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
-`;
-
-const fadeIn = keyframes`
-  from {
-    opacity: 0;
-  }
-  to {
-    opacity: 1;
-  }
-`;
-
-const fadeOut = keyframes`
-  from {
-    opacity: 1;
-  }
-  to {
-    opacity: 0;
-  }
-`;
-
-const rotateAnticlockwise = keyframes`
-  from {
-    transform: rotate(360deg);
-  }
-  to {
-    transform: rotate(0deg);
-  }
-`;
 
 const PendingDepositsContainer = styled.div`
   display: flex;
@@ -468,22 +438,22 @@ const EarnPage = () => {
   return (
     <>
       <CirclesContainer offset={pageOffset}>
-        <FadeDiv delaySeconds={0.45} show={!isDepositSuccess}>
+        <FadeDiv delaySeconds={0.3} show={!isDepositSuccess}>
           <StyledEarnOuterRing type={"blue"} />
         </FadeDiv>
-        <FadeDiv delaySeconds={0.45} show={isDepositSuccess}>
+        <FadeDiv delaySeconds={0.3} show={isDepositSuccess}>
           <StyledEarnOuterRing type={"green"} />
         </FadeDiv>
-        <FadeDiv delaySeconds={0.3} show={!isDepositSuccess}>
+        <FadeDiv delaySeconds={0.2} show={!isDepositSuccess}>
           <StyledEarnMiddleRing type={"blue"} />
         </FadeDiv>
-        <FadeDiv delaySeconds={0.3} show={isDepositSuccess}>
+        <FadeDiv delaySeconds={0.2} show={isDepositSuccess}>
           <StyledEarnMiddleRing type={"green"} />
         </FadeDiv>
-        <FadeDiv delaySeconds={0.15} show={!isDepositSuccess}>
+        <FadeDiv delaySeconds={0.1} show={!isDepositSuccess}>
           <StyledEarnInnerRing type={"blue"} />
         </FadeDiv>
-        <FadeDiv delaySeconds={0.15} show={isDepositSuccess}>
+        <FadeDiv delaySeconds={0.1} show={isDepositSuccess}>
           <StyledEarnInnerRing type={"green"} />
         </FadeDiv>
       </CirclesContainer>
@@ -510,7 +480,7 @@ const EarnPage = () => {
               <VaultContainer>
                 {hasPendingDeposits ? (
                   <PendingDepositsContainer>
-                    <ProductAssetLogoContainer color={color} delay={0.15}>
+                    <ProductAssetLogoContainer color={color} delay={0.1}>
                       {logo}
                     </ProductAssetLogoContainer>
                     <TextContainer>
@@ -523,14 +493,14 @@ const EarnPage = () => {
                     </TextContainer>
                   </PendingDepositsContainer>
                 ) : (
-                  <ProductAssetLogoContainer color={color} delay={0.15}>
+                  <ProductAssetLogoContainer color={color} delay={0.2}>
                     {logo}
                   </ProductAssetLogoContainer>
                 )}
-                <BalanceTitle className={`mt-1 py-3`} delay={0.3}>
+                <BalanceTitle className={`mt-1 py-3`} delay={0.2}>
                   Your Balance
                 </BalanceTitle>
-                <HeroText delay={0.45}>
+                <HeroText delay={0.3}>
                   {isLoading || !account
                     ? "---"
                     : "$" +
@@ -540,7 +510,7 @@ const EarnPage = () => {
                         2
                       )}
                 </HeroText>
-                <HeroSubtitle color={yieldColor} delay={0.6}>
+                <HeroSubtitle color={yieldColor} delay={0.4}>
                   +{isLoading || roi === 0 ? "0.00" : roi.toFixed(4)}%
                 </HeroSubtitle>
                 <ViewDetailsButton
@@ -548,11 +518,11 @@ const EarnPage = () => {
                   onClick={() => {
                     setShowDetailsModal(true);
                   }}
-                  delay={0.75}
+                  delay={0.5}
                 >
                   View Details
                 </ViewDetailsButton>
-                <ButtonContainer delay={1}>
+                <ButtonContainer delay={0.6}>
                   {active && account ? (
                     <>
                       <StyledActionButton
@@ -582,7 +552,7 @@ const EarnPage = () => {
                     </StyledActionButton>
                   )}
                 </ButtonContainer>
-                <EarnCapacityText delay={1.15}>
+                <EarnCapacityText delay={0.7}>
                   {isLoading || isVaultMaxCapacity === undefined ? (
                     loadingText
                   ) : isVaultMaxCapacity ? (
