@@ -27,7 +27,7 @@ const TVLLeaderboard = () => {
   const containerRef = useRef<HTMLDivElement>(null);
   const { t } = useTranslation();
   const { width: containerWidth } = useElementSize(containerRef);
-  const { data, totalTVL, loading: TVLLoading } = useTVL();
+  const { data, totalTVL, loading } = useTVL();
   const loadingText = useLoadingText();
 
   const [page, setPage] = useState(1);
@@ -63,10 +63,10 @@ const TVLLeaderboard = () => {
         </Subtitle>
       </SectionLabel>
       <Title fontSize={56} lineHeight={64} letterSpacing={1} className="mt-3">
-        {TVLLoading ? loadingText : `$${formatAmount(totalTVL)}`}
+        {loading ? loadingText : `$${formatAmount(totalTVL)}`}
       </Title>
 
-      {!TVLLoading && (
+      {!loading && (
         <>
           {/* Bar chart */}
           <AnimatePresence exitBeforeEnter initial={false}>

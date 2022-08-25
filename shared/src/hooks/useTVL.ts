@@ -77,6 +77,7 @@ const useTVL = () => {
   return {
     data: vaultsTVL,
     totalTVL: vaultsTVL.reduce((acc, curr) => acc + curr.tvl, 0),
+    loading,
   };
 };
 

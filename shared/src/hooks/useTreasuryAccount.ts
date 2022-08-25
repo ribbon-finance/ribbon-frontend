@@ -34,6 +34,7 @@ const useTreasuryAccount = () => {
   return {
     accounts,
     total: accounts.reduce((acc, curr) => acc + curr.value, 0),
+    loading: balanceLoading,
   };
 };
 
