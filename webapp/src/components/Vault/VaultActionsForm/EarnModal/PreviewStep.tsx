@@ -224,7 +224,7 @@ const PreviewStep: React.FC<{
 
   warning = (
     <WarningContainer
-      delay={0.6 + detailRows.length * 0.1}
+      delay={0.3 + detailRows.length * 0.05}
       show={show}
       className="mb-4 w-100 text-center"
       color={color}
@@ -239,19 +239,19 @@ const PreviewStep: React.FC<{
   return (
     <div className="d-flex flex-column align-items-center">
       {/* Logo */}
-      <Logo delay={0.1} show={show}>
+      <Logo delay={0.05} show={show}>
         {actionLogo}
       </Logo>
 
       {/* Title */}
-      <FormTitle delay={0.2} show={show}>
+      <FormTitle delay={0.1} show={show}>
         {actionWord} PREVIEW
       </FormTitle>
 
       {/* Info Preview */}
 
       <InfoPreview
-        delay={0.3}
+        delay={0.15}
         show={show}
         className="d-flex w-100 flex-row align-items-center justify-content-between mt-4"
       >
@@ -266,7 +266,7 @@ const PreviewStep: React.FC<{
         <DetailRow
           className="d-flex w-100 flex-row align-items-center justify-content-between mt-4"
           key={index}
-          delay={0.3 + (index + 1) * 0.1}
+          delay={0.15 + (index + 1) * 0.05}
           show={show}
         >
           <div className="d-flex flex-row align-items-center">
@@ -292,7 +292,7 @@ const PreviewStep: React.FC<{
       ))}
       {depositSignature !== undefined ? (
         <FormButton
-          delay={0.4 + detailRows.length * 0.1}
+          delay={0.2 + detailRows.length * 0.05}
           show={show}
           className="btn py-3 mt-4 mb-3"
           color={color}
@@ -302,7 +302,7 @@ const PreviewStep: React.FC<{
         </FormButton>
       ) : (
         <FormButton
-          delay={0.4 + detailRows.length * 0.1}
+          delay={0.2 + detailRows.length * 0.05}
           show={show}
           onClick={handleApprove}
           className="btn py-3 mt-4 mb-3"
@@ -314,7 +314,7 @@ const PreviewStep: React.FC<{
       )}
 
       <FormButton
-        delay={0.5 + detailRows.length * 0.1}
+        delay={0.25 + detailRows.length * 0.05}
         show={show}
         onClick={onClickConfirmButton}
         disabled={depositSignature === undefined}
