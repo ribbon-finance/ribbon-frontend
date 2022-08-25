@@ -241,6 +241,7 @@ const EarnPage = () => {
   const [, setShowConnectModal] = useConnectWalletModal();
   const [showDetailsModal, setShowDetailsModal] = useState(false);
   const [showDepositModal, setShowDepositModal] = useState(false);
+  const [showWithdrawModal, setShowWithdrawModal] = useState(false);
   const { pendingTransactions } = usePendingTransactions();
 
   const isDepositSuccess = useMemo(() => {
@@ -504,7 +505,7 @@ const EarnPage = () => {
                           className={`py-3 mb-1 w-100`}
                           color={"white"}
                           onClick={() => {
-                            setShowDepositModal(true);
+                            setShowWithdrawModal(true);
                           }}
                         >
                           Initiate Withdraw
@@ -563,15 +564,25 @@ const EarnPage = () => {
         onClose={() => setShowDetailsModal(false)}
         vaultOption={vaultOption}
       />
-      <ActionModal
+            <ActionModal
         vault={{
           vaultOption: vaultOption,
           vaultVersion: vaultVersion,
         }}
         variant={"desktop"}
         show={showDepositModal}
-        actionType={ACTIONS.withdraw}
+        actionType={ACTIONS.deposit}
         onClose={() => setShowDepositModal(false)}
+      />
+      <ActionModal
+        vault={{
+          vaultOption: vaultOption,
+          vaultVersion: vaultVersion,
+        }}
+        variant={"desktop"}
+        show={showWithdrawModal}
+        actionType={ACTIONS.withdraw}
+        onClose={() => setShowWithdrawModal(false)}
       />
     </>
   );

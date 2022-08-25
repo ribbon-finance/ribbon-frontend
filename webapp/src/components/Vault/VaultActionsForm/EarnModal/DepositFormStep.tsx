@@ -36,6 +36,7 @@ import useWeb3Wallet from "shared/lib/hooks/useWeb3Wallet";
 import useVaultAccounts from "shared/lib/hooks/useVaultAccounts";
 import currency from "currency.js";
 import useEarnStrategyTime from "../../../../hooks/useEarnStrategyTime";
+import VaultEarnWithdrawForm from "../earn/VaultEarnWithdrawForm";
 const StyledBaseInputLabel = styled(BaseInputLabel)`
   margin-top: 24px;
   width: 100%;
@@ -272,78 +273,90 @@ const DepositFormStep: React.FC<{
       <FormTitle className=" text-center">
         {actionType === "deposit" ? "DEPOSIT" : "INITIATE WITHDRAW"}
       </FormTitle>
-      <StyledBaseInputLabel>
-        AMOUNT ({getAssetDisplay(asset)})
-      </StyledBaseInputLabel>
-      <BaseInputContainer className="mb-2" error={error ? true : false}>
-        <BaseInput
-          type="number"
-          className="form-control"
-          aria-label="USDC"
-          placeholder="0"
-          value={inputAmount}
-          onChange={handleInputChange}
-          inputWidth={"80%"}
-        />
-        {/* {renderDepositAssetButton} */}
-        {active && (
-          <BaseInputButton onClick={handleMaxClick}>MAX</BaseInputButton>
-        )}
-      </BaseInputContainer>
-      {error && (
-        <SecondaryText style={{ width: "100%" }} color={colors.red}>
-          {renderErrorText(error)}
-        </SecondaryText>
-      )}
-      {detailRows.map((detail, index) => (
-        <div
-          className="d-flex w-100 flex-row align-items-center justify-content-between mt-4"
-          key={index}
-        >
-          <div className="d-flex flex-row align-items-center">
-            <SecondaryText>{detail.key} </SecondaryText>
-            {detail.tooltip && (
-              <TooltipExplanation
-                title={detail.tooltip.title}
-                explanation={detail.tooltip.explanation}
-                renderContent={({ ref, ...triggerHandler }) => (
-                  <HelpInfo
-                    containerRef={ref}
-                    {...triggerHandler}
-                    style={{ marginLeft: "4px" }}
-                  >
-                    i
-                  </HelpInfo>
-                )}
-              />
+      {actionType === "deposit" ? (
+        <>
+          <StyledBaseInputLabel>
+            AMOUNT ({getAssetDisplay(asset)})
+          </StyledBaseInputLabel>
+          <BaseInputContainer className="mb-2" error={error ? true : false}>
+            <BaseInput
+              type="number"
+              className="form-control"
+              aria-label="USDC"
+              placeholder="0"
+              value={inputAmount}
+              onChange={handleInputChange}
+              inputWidth={"80%"}
+            />
+            {/* {renderDepositAssetButton} */}
+            {active && (
+              <BaseInputButton onClick={handleMaxClick}>MAX</BaseInputButton>
             )}
-          </div>
+          </BaseInputContainer>
+          {error && (
+            <SecondaryText style={{ width: "100%" }} color={colors.red}>
+              {renderErrorText(error)}
+            </SecondaryText>
+          )}
+          {detailRows.map((detail, index) => (
+            <div
+              className="d-flex w-100 flex-row align-items-center justify-content-between mt-4"
+              key={index}
+            >
+              <div className="d-flex flex-row align-items-center">
+                <SecondaryText>{detail.key} </SecondaryText>
+                {detail.tooltip && (
+                  <TooltipExplanation
+                    title={detail.tooltip.title}
+                    explanation={detail.tooltip.explanation}
+                    renderContent={({ ref, ...triggerHandler }) => (
+                      <HelpInfo
+                        containerRef={ref}
+                        {...triggerHandler}
+                        style={{ marginLeft: "4px" }}
+                      >
+                        i
+                      </HelpInfo>
+                    )}
+                  />
+                )}
+              </div>
 
-          <StyledTitle
-            color={
-              error && detail.error
-                ? error === detail.error
-                  ? colors.red
-                  : colors.primaryText
-                : colors.primaryText
-            }
-            className="text-right"
+              <StyledTitle
+                color={
+                  error && detail.error
+                    ? error === detail.error
+                      ? colors.red
+                      : colors.primaryText
+                    : colors.primaryText
+                }
+                className="text-right"
+              >
+                {detail.value}
+              </StyledTitle>
+            </div>
+          ))}
+          <div style={{ height: 40 }}> </div>
+          <ActionButton
+            onClick={handleConfirm}
+            disabled={isButtonDisabled}
+            className="btn py-3 mt-2 mb-2"
+            color={color}
           >
-            {detail.value}
-          </StyledTitle>
-        </div>
-      ))}
-      <div style={{ height: 40 }}> </div>
-      <ActionButton
-        onClick={handleConfirm}
-        disabled={isButtonDisabled}
-        className="btn py-3 mt-2 mb-2"
-        color={color}
-      >
-        Next
-      </ActionButton>
+            Next
+          </ActionButton>
 
-      {warning}
+          {warning}
+        </>
+      ) : (
+        <VaultEarnWithdrawForm
+          vaultOption={vaultOption}
+          error={error}
+          depositBalanceInAsset={depositBalanceInAsset}
+          lockedBalanceInAsset={lockedBalanceInAsset}
+          initiatedWithdrawAmount={lockedBalanceInAsset}
+        />
+      )}
     </div>
   );
 };
