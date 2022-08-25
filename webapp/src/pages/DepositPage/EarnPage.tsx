@@ -92,7 +92,7 @@ const PendingDepositsContainer = styled.div`
   backdrop-filter: blur(16px);
 `;
 
-const EarnCapacityText = styled(Title)`
+const EarnCapacityText = styled(Title)<{ delay?: number }>`
   color: ${colors.tertiaryText};
   font-style: normal;
   font-weight: 400;
@@ -101,6 +101,9 @@ const EarnCapacityText = styled(Title)`
   text-align: center;
   margin-top: 32px;
   height: 20px;
+  opacity: 0;
+  animation: ${fadeIn} 1s ease-in-out forwards;
+  animation-delay: ${({ delay }) => `${delay || 0}s`};
 `;
 
 const TextContainer = styled.div`
@@ -114,7 +117,7 @@ const TextContainer = styled.div`
   margin-left: 8px;
 `;
 
-const ProductAssetLogoContainer = styled.div`
+const ProductAssetLogoContainer = styled(motion.div)<{ delay?: number }>`
   display: flex;
   align-items: center;
   justify-content: center;
@@ -123,6 +126,9 @@ const ProductAssetLogoContainer = styled.div`
   background-color: ${colors.background.one};
   border-radius: 50%;
   position: relative;
+  opacity: 0;
+  animation: ${fadeIn} 1s ease-in-out forwards;
+  animation-delay: ${({ delay }) => `${delay || 0}s`};
 `;
 
 const CirclesContainer = styled.div<{ offset: number }>`
@@ -185,13 +191,16 @@ const StyledEarnOuterRing = styled(EarnOuterRing)`
   }
 `;
 
-const BalanceTitle = styled.div`
+const BalanceTitle = styled(motion.div)<{ delay?: number }>`
   font-size: 14px;
   font-family: VCR;
   text-transform: uppercase;
   text-align: center;
   letter-spacing: 1px;
   color: ${colors.primaryText}7A;
+  opacity: 0;
+  animation: ${fadeIn} 1s ease-in-out forwards;
+  animation-delay: ${({ delay }) => `${delay || 0}s`};
 `;
 
 const PageContainer = styled.div<{ offset: number }>`
@@ -218,13 +227,22 @@ const VaultFullText = styled(SecondaryText)`
   text-transform: none;
 `;
 
-const HeroText = styled(Title)`
+const HeroText = styled(Title)<{ delay?: number }>`
   font-size: 56px;
   line-height: 64px;
   margin-bottom: 16px;
+  opacity: 0;
+  animation: ${fadeIn} 1s ease-in-out forwards;
+  animation-delay: ${({ delay }) => `${delay || 0}s`};
 `;
 
-const ViewDetailsButton = styled.div`
+const HeroSubtitle = styled(Subtitle)<{ delay?: number }>`
+  opacity: 0;
+  animation: ${fadeIn} 1s ease-in-out forwards;
+  animation-delay: ${({ delay }) => `${delay || 0}s`};
+`;
+
+const ViewDetailsButton = styled.div<{ delay?: number }>`
   display: flex;
   flex-direction: column;
   width: 136px;
@@ -238,7 +256,6 @@ const ViewDetailsButton = styled.div`
   margin-right: auto;
   margin-left: auto;
   margin-top: 24px;
-  opacity: 0.8;
   &:hover {
     opacity: 1;
   }
@@ -246,11 +263,17 @@ const ViewDetailsButton = styled.div`
   line-height: 20px;
   font-size: 12px;
   z-index: 1;
+  opacity: 0;
+  animation: ${fadeIn} 1s ease-in-out forwards;
+  animation-delay: ${({ delay }) => `${delay || 0}s`};
 `;
 
-const ButtonContainer = styled.div`
+const ButtonContainer = styled.div<{ delay?: number }>`
   z-index: 1;
   width: 240px;
+  opacity: 0;
+  animation: ${fadeIn} 1s ease-in-out forwards;
+  animation-delay: ${({ delay }) => `${delay || 0}s`};
 `;
 const StyledActionButton = styled(ActionButton)`
   font-size: 14px;
@@ -487,7 +510,7 @@ const EarnPage = () => {
               <VaultContainer>
                 {hasPendingDeposits ? (
                   <PendingDepositsContainer>
-                    <ProductAssetLogoContainer color={color}>
+                    <ProductAssetLogoContainer color={color} delay={0.15}>
                       {logo}
                     </ProductAssetLogoContainer>
                     <TextContainer>
@@ -500,14 +523,14 @@ const EarnPage = () => {
                     </TextContainer>
                   </PendingDepositsContainer>
                 ) : (
-                  <ProductAssetLogoContainer color={color}>
+                  <ProductAssetLogoContainer color={color} delay={0.15}>
                     {logo}
                   </ProductAssetLogoContainer>
                 )}
-                <BalanceTitle className={`mt-1 py-3`}>
+                <BalanceTitle className={`mt-1 py-3`} delay={0.3}>
                   Your Balance
                 </BalanceTitle>
-                <HeroText>
+                <HeroText delay={0.45}>
                   {isLoading || !account
                     ? "---"
                     : "$" +
@@ -517,18 +540,19 @@ const EarnPage = () => {
                         2
                       )}
                 </HeroText>
-                <Subtitle color={yieldColor}>
+                <HeroSubtitle color={yieldColor} delay={0.6}>
                   +{isLoading || roi === 0 ? "0.00" : roi.toFixed(4)}%
-                </Subtitle>
+                </HeroSubtitle>
                 <ViewDetailsButton
                   role="button"
                   onClick={() => {
                     setShowDetailsModal(true);
                   }}
+                  delay={0.75}
                 >
                   View Details
                 </ViewDetailsButton>
-                <ButtonContainer>
+                <ButtonContainer delay={1}>
                   {active && account ? (
                     <>
                       <StyledActionButton
@@ -558,7 +582,7 @@ const EarnPage = () => {
                     </StyledActionButton>
                   )}
                 </ButtonContainer>
-                <EarnCapacityText>
+                <EarnCapacityText delay={1.15}>
                   {isLoading || isVaultMaxCapacity === undefined ? (
                     loadingText
                   ) : isVaultMaxCapacity ? (
