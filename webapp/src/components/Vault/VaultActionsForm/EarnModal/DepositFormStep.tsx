@@ -369,7 +369,7 @@ const DepositFormStep: React.FC<{
   warning = (
     <WarningContainer
       show={show}
-      delay={0.6 + detailRows.length * 0.1}
+      delay={0.3 + detailRows.length * 0.05}
       className="mt-2 mb-3 w-100 text-center"
       color={color}
     >
@@ -386,18 +386,18 @@ const DepositFormStep: React.FC<{
   return (
     <div className="d-flex flex-column align-items-center">
       {/* Logo */}
-      <Logo delay={0.1} show={show}>
+      <Logo delay={0.05} show={show}>
         {actionLogo}
       </Logo>
       {/* Title */}
-      <FormTitle delay={0.2} show={show}>
+      <FormTitle delay={0.1} show={show}>
         DEPOSIT
       </FormTitle>
-      <StyledBaseInputLabel delay={0.3} show={show}>
+      <StyledBaseInputLabel delay={0.15} show={show}>
         AMOUNT ({getAssetDisplay(asset)})
       </StyledBaseInputLabel>
       <InputContainer
-        delay={0.4}
+        delay={0.2}
         show={show}
         className="mb-2"
         error={error ? true : false}
@@ -421,7 +421,7 @@ const DepositFormStep: React.FC<{
         <DetailRow
           className="d-flex w-100 flex-row align-items-center justify-content-between mt-4"
           key={index}
-          delay={0.4 + (index + 1) * 0.1}
+          delay={0.2 + (index + 1) * 0.1}
           show={show}
         >
           <div className="d-flex flex-row align-items-center">
@@ -458,7 +458,7 @@ const DepositFormStep: React.FC<{
         </DetailRow>
       ))}
       <FormButton
-        delay={0.5 + detailRows.length * 0.1}
+        delay={0.25 + detailRows.length * 0.05}
         show={show}
         onClick={handleConfirm}
         disabled={isButtonDisabled}
