@@ -173,6 +173,7 @@ export const calculateAPYFromPriceHistory = (
                 ) + underlyingYieldAPR
               );
               break;
+            case "earn":
             case "v2":
               /**
                * We first calculate price per share after annualized management fees are charged
@@ -281,6 +282,7 @@ export const useLatestAPYs = () => {
               const { round, pricePerShare } = vaultsData[vaultOption];
 
               switch (version) {
+                case "earn":
                 case "v2":
                   switch (vaultOption) {
                   }

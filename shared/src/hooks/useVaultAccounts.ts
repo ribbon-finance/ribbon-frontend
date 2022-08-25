@@ -18,6 +18,7 @@ const getVaultAccountKey = (vault: VaultOptions) =>
 export const vaultAccountsGraphql = (_account: string, version: VaultVersion) =>
   VaultList.reduce((acc, vault) => {
     let vaultAddress = VaultAddressMap[vault][version];
+
     let account = `${_account}`;
 
     if (!vaultAddress) {
@@ -27,7 +28,6 @@ export const vaultAccountsGraphql = (_account: string, version: VaultVersion) =>
       vaultAddress = vaultAddress.toLowerCase();
       account = _account.toLowerCase();
     }
-
     return (
       acc +
       `
@@ -37,9 +37,9 @@ export const vaultAccountsGraphql = (_account: string, version: VaultVersion) =>
             totalDeposits
             totalYieldEarned
             totalBalance
-            totalStakedBalance
-            totalStakedShares
-            ${version === "v2" ? `totalPendingDeposit` : ``}
+            ${version !== "earn" ? `totalStakedBalance` : ``}
+            ${version !== "earn" ? `totalStakedShares` : ``}
+            ${version !== "v1" ? `totalPendingDeposit` : ``}
             vault {
               symbol
             }
@@ -77,12 +77,20 @@ export const resolveVaultAccountsSubgraphResponse = (responses: {
               totalBalance: BigNumber.from(
                 responses[version][getVaultAccountKey(vault)].totalBalance
               ),
-              totalStakedShares: BigNumber.from(
-                responses[version][getVaultAccountKey(vault)].totalStakedShares
-              ),
-              totalStakedBalance: BigNumber.from(
-                responses[version][getVaultAccountKey(vault)].totalStakedBalance
-              ),
+              totalStakedShares: responses[version][getVaultAccountKey(vault)]
+                .totalStakedShares
+                ? BigNumber.from(
+                    responses[version][getVaultAccountKey(vault)]
+                      .totalStakedShares
+                  )
+                : BigNumber.from(0),
+              totalStakedBalance: responses[version][getVaultAccountKey(vault)]
+                .totalStakedBalance
+                ? BigNumber.from(
+                    responses[version][getVaultAccountKey(vault)]
+                      .totalStakedBalance
+                  )
+                : BigNumber.from(0),
               totalPendingDeposit: responses[version][getVaultAccountKey(vault)]
                 .totalPendingDeposit
                 ? BigNumber.from(
@@ -99,7 +107,6 @@ export const resolveVaultAccountsSubgraphResponse = (responses: {
 
 export const useAllVaultAccounts = () => {
   const contextData = useContext(SubgraphDataContext);
-
   return {
     data: contextData.vaultSubgraphData.vaultAccounts,
     loading: contextData.vaultSubgraphData.loading,

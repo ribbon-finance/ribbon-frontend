@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useRef } from "react";
 import styled from "styled-components";
 
 import sizes from "shared/lib/designSystem/sizes";
@@ -8,6 +8,7 @@ import useVaultOption from "../../hooks/useVaultOption";
 import AccountStatus from "../Wallet/AccountStatus";
 import DesktopFooter from "./DesktopFooter";
 import { useState } from "react";
+import { useGlobalState } from "shared/lib/store/store";
 
 const FooterContainer = styled.div<{
   screenHeight: number;
@@ -59,10 +60,22 @@ const Footer = () => {
   const { height: screenHeight } = useScreenSize();
   const { vaultOption, vaultVersion } = useVaultOption();
   const [showVaultPosition, setShowVaultPosition] = useState(false);
+  const footerRef = useRef<HTMLDivElement>(null);
+  const [, setComponentRefs] = useGlobalState("componentRefs");
+
+  useEffect(() => {
+    if (footerRef.current) {
+      setComponentRefs((prev) => ({
+        ...prev,
+        footer: footerRef.current as HTMLDivElement,
+      }));
+    }
+  }, [footerRef, setComponentRefs]);
 
   return (
     <>
       <FooterContainer
+        ref={footerRef}
         screenHeight={screenHeight}
         showVaultPosition={showVaultPosition}
       >

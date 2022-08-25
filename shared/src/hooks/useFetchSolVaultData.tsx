@@ -8,6 +8,7 @@ import { getAssetDecimals } from "../utils/asset";
 import { useFlexVault } from "./useFlexVault";
 import { PublicKey } from "@solana/web3.js";
 import {
+  getSOLPricePerShare,
   getUserDepositQueueAmount,
   getUserWithdrawQueueAmount,
 } from "../utils/vault";
@@ -53,11 +54,15 @@ const useFetchSolVaultData = (): SolanaVaultData => {
         lockedBalanceInAsset = BigNumber.from(0);
 
         if (client) {
-          lockedBalanceInAsset = BigNumber.from(
-            client.getRedeemableTokenAmount(
+          const pricePerShare = await getSOLPricePerShare();
+
+          const balance = Math.round(
+            (client.getRedeemableTokenAmount(
               getSolanaVaultInstance("rSOL-THETA")
-            ) || 0
+            ) || 0) * Number(pricePerShare)
           );
+
+          lockedBalanceInAsset = BigNumber.from(balance);
         }
       }
 

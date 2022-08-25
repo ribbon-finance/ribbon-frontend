@@ -12,6 +12,7 @@ const StyledModal = styled(BaseModal)<{
   height: number;
   maxWidth: number;
   theme?: string;
+  overflow?: string;
 }>`
   .modal-dialog {
     width: 95vw;
@@ -23,7 +24,7 @@ const StyledModal = styled(BaseModal)<{
   .modal-content {
     transition: min-height 0.25s;
     min-height: ${(props) => props.height}px;
-    overflow: hidden;
+    overflow: ${(props) => (props.overflow ? `${props.overflow}` : `hidden`)};
     border: 1px solid ${colors.border};
     ${(props) => props.theme && `background-color: ${props.theme}0A;`}
 `;
@@ -79,6 +80,8 @@ const ModalHeaderBackground = styled.div`
   top: 0;
   left: 0;
   width: 100%;
+  border-top-left-radius: ${theme.border.radius};
+  border-top-right-radius: ${theme.border.radius};
 `;
 
 interface BasicModalProps {
@@ -87,6 +90,7 @@ interface BasicModalProps {
   maxWidth?: number;
   onClose: () => void;
   closeButton?: boolean;
+  theme?: string;
   backButton?: {
     onClick: () => void;
   };
@@ -94,7 +98,7 @@ interface BasicModalProps {
   animationProps?: HTMLMotionProps<"div"> & RefAttributes<HTMLDivElement>;
   headerBackground?: boolean;
   backgroundColor?: string;
-  theme?: string;
+  overflow?: string;
 }
 
 const BasicModal: React.FC<BasicModalProps> = ({
@@ -109,6 +113,7 @@ const BasicModal: React.FC<BasicModalProps> = ({
   headerBackground = false,
   backgroundColor,
   theme,
+  overflow,
 }) => {
   useEffect(() => {
     if (show) {
@@ -128,6 +133,7 @@ const BasicModal: React.FC<BasicModalProps> = ({
       backdrop
       theme={theme}
       backgroundColor={backgroundColor}
+      overflow={overflow}
     >
       <BaseModalHeader>
         {/* Back button */}

@@ -288,7 +288,6 @@ const DepositPage = () => {
   } = useV2VaultData(vaultOption || VaultList[0]);
   useRedirectOnSwitchChain(getChainByVaultOption(vaultOption as VaultOptions));
   const isLoading = status === "loading" || loading;
-
   const [totalDepositStr, depositLimitStr] = useMemo(() => {
     switch (vaultVersion) {
       case "v1":
@@ -300,6 +299,7 @@ const DepositPage = () => {
             formatSignificantDecimals(formatUnits(vaultLimit, decimals))
           ),
         ];
+      case "earn":
       case "v2":
         return [
           parseFloat(

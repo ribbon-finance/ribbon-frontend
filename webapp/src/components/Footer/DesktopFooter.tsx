@@ -40,7 +40,7 @@ const DesktopFooter = () => {
     (title: string, to: string) => (
       <BaseLink to={to} target="_blank" rel="noreferrer noopener">
         <LinkItem>
-          <Title fontSize={14} lineHeight={20}>
+          <Title fontSize={12} lineHeight={16}>
             {title}
           </Title>
         </LinkItem>

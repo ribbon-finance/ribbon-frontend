@@ -144,6 +144,7 @@ const useVaultActionForm = (vaultOption: VaultOptions) => {
 
   const withdrawMetadata = useMemo((): WithdrawMetadata => {
     switch (vaultActionForm.vaultVersion) {
+      case "earn":
       case "v2":
         switch (vaultOption) {
           case "rSOL-THETA":

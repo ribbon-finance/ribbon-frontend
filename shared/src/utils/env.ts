@@ -65,6 +65,10 @@ export const getSubgraphqlURI = () =>
     : process.env.REACT_APP_SUBGRAPHQL_URL) ||
   "https://api.thegraph.com/subgraphs/name/kenchangh/ribbon-finance-kovan";
 
+export const getSubgraphqlRearnURI = () =>
+  process.env.REACT_APP_SUBGRAPHQL_REARN_URL ||
+  "https://api.studio.thegraph.com/query/30834/ribbonearnvault/v0.0.2";
+
 export const supportedChainIds = isDevelopment()
   ? [CHAINID.ETH_KOVAN, CHAINID.AVAX_FUJI]
   : [CHAINID.ETH_MAINNET, CHAINID.AVAX_MAINNET];

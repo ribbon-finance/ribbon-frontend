@@ -62,7 +62,6 @@ export const PendingTransactionsContextProvider: React.FC<{
     pendingTransactions.forEach(async (transaction) => {
       if (!transaction.status) {
         let receipt: any;
-
         if (isEVMChain(chain)) {
           receipt = await (
             ethereumProvider as providers.Web3Provider

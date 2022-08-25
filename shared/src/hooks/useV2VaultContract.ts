@@ -21,7 +21,6 @@ export const getV2VaultContract = (
   if (!VaultAddressMap[vaultOption].v2) {
     return null;
   }
-
   const provider = useSigner ? library.getSigner() : library;
 
   switch (vaultOption) {

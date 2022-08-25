@@ -8,6 +8,7 @@ interface TooltipExplanationProps {
   title?: string;
   explanation: React.ReactNode;
   learnMoreURL?: string;
+  maxWidth?: number;
   renderContent: (
     props: OverlayTriggerRenderProps & React.HTMLAttributes<HTMLElement>
   ) => React.ReactNode;
@@ -17,6 +18,7 @@ const TooltipExplanation: React.FC<TooltipExplanationProps> = ({
   title,
   explanation,
   learnMoreURL,
+  maxWidth,
   renderContent,
 }) => {
   const [show, setShow] = useState(false);
@@ -29,6 +31,7 @@ const TooltipExplanation: React.FC<TooltipExplanationProps> = ({
           explanation={explanation}
           overlayInjectedProps={props}
           learnMoreURL={learnMoreURL}
+          maxWidth={maxWidth}
           setShow={setShow}
         />
       )}

@@ -121,6 +121,7 @@ const ExplanationStepMap: {
     "expiryB",
     "settlementB",
   ],
+  earn: [],
 };
 
 interface VaultStrategyExplainerProps {
@@ -363,6 +364,7 @@ const VaultStrategyExplainer: React.FC<VaultStrategyExplainerProps> = ({
         case "v1":
           optionBuyerParty = "market makers";
           break;
+        case "earn":
         case "v2":
         default:
           optionBuyerParty = "option buyers";
@@ -380,6 +382,7 @@ const VaultStrategyExplainer: React.FC<VaultStrategyExplainerProps> = ({
                   {assetUnit} from the vault.
                 </>
               );
+            case "earn":
             case "v2":
             default:
               return (
@@ -660,6 +663,7 @@ const VaultStrategyExplainer: React.FC<VaultStrategyExplainerProps> = ({
                   options.
                 </>
               );
+            case "earn":
             case "v2":
             default:
               switch (asset) {

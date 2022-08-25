@@ -20,14 +20,78 @@ import { TypedEventFilter, TypedEvent, TypedListener, OnEvent } from "./common";
 export interface IERC20Interface extends utils.Interface {
   contractName: "IERC20";
   functions: {
+    "CANCEL_AUTHORIZATION_TYPEHASH()": FunctionFragment;
+    "DOMAIN_SEPARATOR()": FunctionFragment;
+    "PERMIT_TYPEHASH()": FunctionFragment;
+    "RECEIVE_WITH_AUTHORIZATION_TYPEHASH()": FunctionFragment;
+    "TRANSFER_WITH_AUTHORIZATION_TYPEHASH()": FunctionFragment;
     "allowance(address,address)": FunctionFragment;
     "approve(address,uint256)": FunctionFragment;
+    "authorizationState(address,bytes32)": FunctionFragment;
     "balanceOf(address)": FunctionFragment;
+    "blacklist(address)": FunctionFragment;
+    "blacklister()": FunctionFragment;
+    "burn(uint256)": FunctionFragment;
+    "cancelAuthorization(address,bytes32,uint8,bytes32,bytes32)": FunctionFragment;
+    "configureMinter(address,uint256)": FunctionFragment;
+    "currency()": FunctionFragment;
+    "decimals()": FunctionFragment;
+    "decreaseAllowance(address,uint256)": FunctionFragment;
+    "increaseAllowance(address,uint256)": FunctionFragment;
+    "initialize(string,string,string,uint8,address,address,address,address)": FunctionFragment;
+    "initializeV2(string)": FunctionFragment;
+    "initializeV2_1(address)": FunctionFragment;
+    "isBlacklisted(address)": FunctionFragment;
+    "isMinter(address)": FunctionFragment;
+    "masterMinter()": FunctionFragment;
+    "mint(address,uint256)": FunctionFragment;
+    "minterAllowance(address)": FunctionFragment;
+    "name()": FunctionFragment;
+    "nonces(address)": FunctionFragment;
+    "owner()": FunctionFragment;
+    "pause()": FunctionFragment;
+    "paused()": FunctionFragment;
+    "pauser()": FunctionFragment;
+    "permit(address,address,uint256,uint256,uint8,bytes32,bytes32)": FunctionFragment;
+    "receiveWithAuthorization(address,address,uint256,uint256,uint256,bytes32,uint8,bytes32,bytes32)": FunctionFragment;
+    "removeMinter(address)": FunctionFragment;
+    "rescueERC20(address,address,uint256)": FunctionFragment;
+    "rescuer()": FunctionFragment;
+    "symbol()": FunctionFragment;
     "totalSupply()": FunctionFragment;
     "transfer(address,uint256)": FunctionFragment;
     "transferFrom(address,address,uint256)": FunctionFragment;
+    "transferOwnership(address)": FunctionFragment;
+    "transferWithAuthorization(address,address,uint256,uint256,uint256,bytes32,uint8,bytes32,bytes32)": FunctionFragment;
+    "unBlacklist(address)": FunctionFragment;
+    "unpause()": FunctionFragment;
+    "updateBlacklister(address)": FunctionFragment;
+    "updateMasterMinter(address)": FunctionFragment;
+    "updatePauser(address)": FunctionFragment;
+    "updateRescuer(address)": FunctionFragment;
+    "version()": FunctionFragment;
   };
 
+  encodeFunctionData(
+    functionFragment: "CANCEL_AUTHORIZATION_TYPEHASH",
+    values?: undefined
+  ): string;
+  encodeFunctionData(
+    functionFragment: "DOMAIN_SEPARATOR",
+    values?: undefined
+  ): string;
+  encodeFunctionData(
+    functionFragment: "PERMIT_TYPEHASH",
+    values?: undefined
+  ): string;
+  encodeFunctionData(
+    functionFragment: "RECEIVE_WITH_AUTHORIZATION_TYPEHASH",
+    values?: undefined
+  ): string;
+  encodeFunctionData(
+    functionFragment: "TRANSFER_WITH_AUTHORIZATION_TYPEHASH",
+    values?: undefined
+  ): string;
   encodeFunctionData(
     functionFragment: "allowance",
     values: [string, string]
@@ -36,7 +100,115 @@ export interface IERC20Interface extends utils.Interface {
     functionFragment: "approve",
     values: [string, BigNumberish]
   ): string;
+  encodeFunctionData(
+    functionFragment: "authorizationState",
+    values: [string, BytesLike]
+  ): string;
   encodeFunctionData(functionFragment: "balanceOf", values: [string]): string;
+  encodeFunctionData(functionFragment: "blacklist", values: [string]): string;
+  encodeFunctionData(
+    functionFragment: "blacklister",
+    values?: undefined
+  ): string;
+  encodeFunctionData(functionFragment: "burn", values: [BigNumberish]): string;
+  encodeFunctionData(
+    functionFragment: "cancelAuthorization",
+    values: [string, BytesLike, BigNumberish, BytesLike, BytesLike]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "configureMinter",
+    values: [string, BigNumberish]
+  ): string;
+  encodeFunctionData(functionFragment: "currency", values?: undefined): string;
+  encodeFunctionData(functionFragment: "decimals", values?: undefined): string;
+  encodeFunctionData(
+    functionFragment: "decreaseAllowance",
+    values: [string, BigNumberish]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "increaseAllowance",
+    values: [string, BigNumberish]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "initialize",
+    values: [
+      string,
+      string,
+      string,
+      BigNumberish,
+      string,
+      string,
+      string,
+      string
+    ]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "initializeV2",
+    values: [string]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "initializeV2_1",
+    values: [string]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "isBlacklisted",
+    values: [string]
+  ): string;
+  encodeFunctionData(functionFragment: "isMinter", values: [string]): string;
+  encodeFunctionData(
+    functionFragment: "masterMinter",
+    values?: undefined
+  ): string;
+  encodeFunctionData(
+    functionFragment: "mint",
+    values: [string, BigNumberish]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "minterAllowance",
+    values: [string]
+  ): string;
+  encodeFunctionData(functionFragment: "name", values?: undefined): string;
+  encodeFunctionData(functionFragment: "nonces", values: [string]): string;
+  encodeFunctionData(functionFragment: "owner", values?: undefined): string;
+  encodeFunctionData(functionFragment: "pause", values?: undefined): string;
+  encodeFunctionData(functionFragment: "paused", values?: undefined): string;
+  encodeFunctionData(functionFragment: "pauser", values?: undefined): string;
+  encodeFunctionData(
+    functionFragment: "permit",
+    values: [
+      string,
+      string,
+      BigNumberish,
+      BigNumberish,
+      BigNumberish,
+      BytesLike,
+      BytesLike
+    ]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "receiveWithAuthorization",
+    values: [
+      string,
+      string,
+      BigNumberish,
+      BigNumberish,
+      BigNumberish,
+      BytesLike,
+      BigNumberish,
+      BytesLike,
+      BytesLike
+    ]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "removeMinter",
+    values: [string]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "rescueERC20",
+    values: [string, string, BigNumberish]
+  ): string;
+  encodeFunctionData(functionFragment: "rescuer", values?: undefined): string;
+  encodeFunctionData(functionFragment: "symbol", values?: undefined): string;
   encodeFunctionData(
     functionFragment: "totalSupply",
     values?: undefined
@@ -49,10 +221,139 @@ export interface IERC20Interface extends utils.Interface {
     functionFragment: "transferFrom",
     values: [string, string, BigNumberish]
   ): string;
+  encodeFunctionData(
+    functionFragment: "transferOwnership",
+    values: [string]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "transferWithAuthorization",
+    values: [
+      string,
+      string,
+      BigNumberish,
+      BigNumberish,
+      BigNumberish,
+      BytesLike,
+      BigNumberish,
+      BytesLike,
+      BytesLike
+    ]
+  ): string;
+  encodeFunctionData(functionFragment: "unBlacklist", values: [string]): string;
+  encodeFunctionData(functionFragment: "unpause", values?: undefined): string;
+  encodeFunctionData(
+    functionFragment: "updateBlacklister",
+    values: [string]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "updateMasterMinter",
+    values: [string]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "updatePauser",
+    values: [string]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "updateRescuer",
+    values: [string]
+  ): string;
+  encodeFunctionData(functionFragment: "version", values?: undefined): string;
 
+  decodeFunctionResult(
+    functionFragment: "CANCEL_AUTHORIZATION_TYPEHASH",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "DOMAIN_SEPARATOR",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "PERMIT_TYPEHASH",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "RECEIVE_WITH_AUTHORIZATION_TYPEHASH",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "TRANSFER_WITH_AUTHORIZATION_TYPEHASH",
+    data: BytesLike
+  ): Result;
   decodeFunctionResult(functionFragment: "allowance", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "approve", data: BytesLike): Result;
+  decodeFunctionResult(
+    functionFragment: "authorizationState",
+    data: BytesLike
+  ): Result;
   decodeFunctionResult(functionFragment: "balanceOf", data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: "blacklist", data: BytesLike): Result;
+  decodeFunctionResult(
+    functionFragment: "blacklister",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(functionFragment: "burn", data: BytesLike): Result;
+  decodeFunctionResult(
+    functionFragment: "cancelAuthorization",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "configureMinter",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(functionFragment: "currency", data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: "decimals", data: BytesLike): Result;
+  decodeFunctionResult(
+    functionFragment: "decreaseAllowance",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "increaseAllowance",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(functionFragment: "initialize", data: BytesLike): Result;
+  decodeFunctionResult(
+    functionFragment: "initializeV2",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "initializeV2_1",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "isBlacklisted",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(functionFragment: "isMinter", data: BytesLike): Result;
+  decodeFunctionResult(
+    functionFragment: "masterMinter",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(functionFragment: "mint", data: BytesLike): Result;
+  decodeFunctionResult(
+    functionFragment: "minterAllowance",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(functionFragment: "name", data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: "nonces", data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: "owner", data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: "pause", data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: "paused", data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: "pauser", data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: "permit", data: BytesLike): Result;
+  decodeFunctionResult(
+    functionFragment: "receiveWithAuthorization",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "removeMinter",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "rescueERC20",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(functionFragment: "rescuer", data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: "symbol", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "totalSupply",
     data: BytesLike
@@ -62,14 +363,74 @@ export interface IERC20Interface extends utils.Interface {
     functionFragment: "transferFrom",
     data: BytesLike
   ): Result;
+  decodeFunctionResult(
+    functionFragment: "transferOwnership",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "transferWithAuthorization",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "unBlacklist",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(functionFragment: "unpause", data: BytesLike): Result;
+  decodeFunctionResult(
+    functionFragment: "updateBlacklister",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "updateMasterMinter",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "updatePauser",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "updateRescuer",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(functionFragment: "version", data: BytesLike): Result;
 
   events: {
     "Approval(address,address,uint256)": EventFragment;
+    "AuthorizationCanceled(address,bytes32)": EventFragment;
+    "AuthorizationUsed(address,bytes32)": EventFragment;
+    "Blacklisted(address)": EventFragment;
+    "BlacklisterChanged(address)": EventFragment;
+    "Burn(address,uint256)": EventFragment;
+    "MasterMinterChanged(address)": EventFragment;
+    "Mint(address,address,uint256)": EventFragment;
+    "MinterConfigured(address,uint256)": EventFragment;
+    "MinterRemoved(address)": EventFragment;
+    "OwnershipTransferred(address,address)": EventFragment;
+    "Pause()": EventFragment;
+    "PauserChanged(address)": EventFragment;
+    "RescuerChanged(address)": EventFragment;
     "Transfer(address,address,uint256)": EventFragment;
+    "UnBlacklisted(address)": EventFragment;
+    "Unpause()": EventFragment;
   };
 
   getEvent(nameOrSignatureOrTopic: "Approval"): EventFragment;
+  getEvent(nameOrSignatureOrTopic: "AuthorizationCanceled"): EventFragment;
+  getEvent(nameOrSignatureOrTopic: "AuthorizationUsed"): EventFragment;
+  getEvent(nameOrSignatureOrTopic: "Blacklisted"): EventFragment;
+  getEvent(nameOrSignatureOrTopic: "BlacklisterChanged"): EventFragment;
+  getEvent(nameOrSignatureOrTopic: "Burn"): EventFragment;
+  getEvent(nameOrSignatureOrTopic: "MasterMinterChanged"): EventFragment;
+  getEvent(nameOrSignatureOrTopic: "Mint"): EventFragment;
+  getEvent(nameOrSignatureOrTopic: "MinterConfigured"): EventFragment;
+  getEvent(nameOrSignatureOrTopic: "MinterRemoved"): EventFragment;
+  getEvent(nameOrSignatureOrTopic: "OwnershipTransferred"): EventFragment;
+  getEvent(nameOrSignatureOrTopic: "Pause"): EventFragment;
+  getEvent(nameOrSignatureOrTopic: "PauserChanged"): EventFragment;
+  getEvent(nameOrSignatureOrTopic: "RescuerChanged"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "Transfer"): EventFragment;
+  getEvent(nameOrSignatureOrTopic: "UnBlacklisted"): EventFragment;
+  getEvent(nameOrSignatureOrTopic: "Unpause"): EventFragment;
 }
 
 export type ApprovalEvent = TypedEvent<
@@ -79,12 +440,102 @@ export type ApprovalEvent = TypedEvent<
 
 export type ApprovalEventFilter = TypedEventFilter<ApprovalEvent>;
 
+export type AuthorizationCanceledEvent = TypedEvent<
+  [string, string],
+  { authorizer: string; nonce: string }
+>;
+
+export type AuthorizationCanceledEventFilter =
+  TypedEventFilter<AuthorizationCanceledEvent>;
+
+export type AuthorizationUsedEvent = TypedEvent<
+  [string, string],
+  { authorizer: string; nonce: string }
+>;
+
+export type AuthorizationUsedEventFilter =
+  TypedEventFilter<AuthorizationUsedEvent>;
+
+export type BlacklistedEvent = TypedEvent<[string], { _account: string }>;
+
+export type BlacklistedEventFilter = TypedEventFilter<BlacklistedEvent>;
+
+export type BlacklisterChangedEvent = TypedEvent<
+  [string],
+  { newBlacklister: string }
+>;
+
+export type BlacklisterChangedEventFilter =
+  TypedEventFilter<BlacklisterChangedEvent>;
+
+export type BurnEvent = TypedEvent<
+  [string, BigNumber],
+  { burner: string; amount: BigNumber }
+>;
+
+export type BurnEventFilter = TypedEventFilter<BurnEvent>;
+
+export type MasterMinterChangedEvent = TypedEvent<
+  [string],
+  { newMasterMinter: string }
+>;
+
+export type MasterMinterChangedEventFilter =
+  TypedEventFilter<MasterMinterChangedEvent>;
+
+export type MintEvent = TypedEvent<
+  [string, string, BigNumber],
+  { minter: string; to: string; amount: BigNumber }
+>;
+
+export type MintEventFilter = TypedEventFilter<MintEvent>;
+
+export type MinterConfiguredEvent = TypedEvent<
+  [string, BigNumber],
+  { minter: string; minterAllowedAmount: BigNumber }
+>;
+
+export type MinterConfiguredEventFilter =
+  TypedEventFilter<MinterConfiguredEvent>;
+
+export type MinterRemovedEvent = TypedEvent<[string], { oldMinter: string }>;
+
+export type MinterRemovedEventFilter = TypedEventFilter<MinterRemovedEvent>;
+
+export type OwnershipTransferredEvent = TypedEvent<
+  [string, string],
+  { previousOwner: string; newOwner: string }
+>;
+
+export type OwnershipTransferredEventFilter =
+  TypedEventFilter<OwnershipTransferredEvent>;
+
+export type PauseEvent = TypedEvent<[], {}>;
+
+export type PauseEventFilter = TypedEventFilter<PauseEvent>;
+
+export type PauserChangedEvent = TypedEvent<[string], { newAddress: string }>;
+
+export type PauserChangedEventFilter = TypedEventFilter<PauserChangedEvent>;
+
+export type RescuerChangedEvent = TypedEvent<[string], { newRescuer: string }>;
+
+export type RescuerChangedEventFilter = TypedEventFilter<RescuerChangedEvent>;
+
 export type TransferEvent = TypedEvent<
   [string, string, BigNumber],
   { from: string; to: string; value: BigNumber }
 >;
 
 export type TransferEventFilter = TypedEventFilter<TransferEvent>;
+
+export type UnBlacklistedEvent = TypedEvent<[string], { _account: string }>;
+
+export type UnBlacklistedEventFilter = TypedEventFilter<UnBlacklistedEvent>;
+
+export type UnpauseEvent = TypedEvent<[], {}>;
+
+export type UnpauseEventFilter = TypedEventFilter<UnpauseEvent>;
 
 export interface IERC20 extends BaseContract {
   contractName: "IERC20";
@@ -114,6 +565,20 @@ export interface IERC20 extends BaseContract {
   removeListener: OnEvent<this>;
 
   functions: {
+    CANCEL_AUTHORIZATION_TYPEHASH(overrides?: CallOverrides): Promise<[string]>;
+
+    DOMAIN_SEPARATOR(overrides?: CallOverrides): Promise<[string]>;
+
+    PERMIT_TYPEHASH(overrides?: CallOverrides): Promise<[string]>;
+
+    RECEIVE_WITH_AUTHORIZATION_TYPEHASH(
+      overrides?: CallOverrides
+    ): Promise<[string]>;
+
+    TRANSFER_WITH_AUTHORIZATION_TYPEHASH(
+      overrides?: CallOverrides
+    ): Promise<[string]>;
+
     allowance(
       owner: string,
       spender: string,
@@ -122,27 +587,235 @@ export interface IERC20 extends BaseContract {
 
     approve(
       spender: string,
+      value: BigNumberish,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<ContractTransaction>;
+
+    authorizationState(
+      authorizer: string,
+      nonce: BytesLike,
+      overrides?: CallOverrides
+    ): Promise<[boolean]>;
+
+    balanceOf(account: string, overrides?: CallOverrides): Promise<[BigNumber]>;
+
+    blacklist(
+      _account: string,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<ContractTransaction>;
+
+    blacklister(overrides?: CallOverrides): Promise<[string]>;
+
+    burn(
+      _amount: BigNumberish,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<ContractTransaction>;
+
+    cancelAuthorization(
+      authorizer: string,
+      nonce: BytesLike,
+      v: BigNumberish,
+      r: BytesLike,
+      s: BytesLike,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<ContractTransaction>;
+
+    configureMinter(
+      minter: string,
+      minterAllowedAmount: BigNumberish,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<ContractTransaction>;
+
+    currency(overrides?: CallOverrides): Promise<[string]>;
+
+    decimals(overrides?: CallOverrides): Promise<[number]>;
+
+    decreaseAllowance(
+      spender: string,
+      decrement: BigNumberish,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<ContractTransaction>;
+
+    increaseAllowance(
+      spender: string,
+      increment: BigNumberish,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<ContractTransaction>;
+
+    initialize(
+      tokenName: string,
+      tokenSymbol: string,
+      tokenCurrency: string,
+      tokenDecimals: BigNumberish,
+      newMasterMinter: string,
+      newPauser: string,
+      newBlacklister: string,
+      newOwner: string,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<ContractTransaction>;
+
+    initializeV2(
+      newName: string,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<ContractTransaction>;
+
+    initializeV2_1(
+      lostAndFound: string,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<ContractTransaction>;
+
+    isBlacklisted(
+      _account: string,
+      overrides?: CallOverrides
+    ): Promise<[boolean]>;
+
+    isMinter(account: string, overrides?: CallOverrides): Promise<[boolean]>;
+
+    masterMinter(overrides?: CallOverrides): Promise<[string]>;
+
+    mint(
+      _to: string,
+      _amount: BigNumberish,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<ContractTransaction>;
+
+    minterAllowance(
+      minter: string,
+      overrides?: CallOverrides
+    ): Promise<[BigNumber]>;
+
+    name(overrides?: CallOverrides): Promise<[string]>;
+
+    nonces(owner: string, overrides?: CallOverrides): Promise<[BigNumber]>;
+
+    owner(overrides?: CallOverrides): Promise<[string]>;
+
+    pause(
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<ContractTransaction>;
+
+    paused(overrides?: CallOverrides): Promise<[boolean]>;
+
+    pauser(overrides?: CallOverrides): Promise<[string]>;
+
+    permit(
+      owner: string,
+      spender: string,
+      value: BigNumberish,
+      deadline: BigNumberish,
+      v: BigNumberish,
+      r: BytesLike,
+      s: BytesLike,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<ContractTransaction>;
+
+    receiveWithAuthorization(
+      from: string,
+      to: string,
+      value: BigNumberish,
+      validAfter: BigNumberish,
+      validBefore: BigNumberish,
+      nonce: BytesLike,
+      v: BigNumberish,
+      r: BytesLike,
+      s: BytesLike,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<ContractTransaction>;
+
+    removeMinter(
+      minter: string,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<ContractTransaction>;
+
+    rescueERC20(
+      tokenContract: string,
+      to: string,
       amount: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
-    balanceOf(account: string, overrides?: CallOverrides): Promise<[BigNumber]>;
+    rescuer(overrides?: CallOverrides): Promise<[string]>;
+
+    symbol(overrides?: CallOverrides): Promise<[string]>;
 
     totalSupply(overrides?: CallOverrides): Promise<[BigNumber]>;
 
     transfer(
-      recipient: string,
-      amount: BigNumberish,
+      to: string,
+      value: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
     transferFrom(
-      sender: string,
-      recipient: string,
-      amount: BigNumberish,
+      from: string,
+      to: string,
+      value: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
+
+    transferOwnership(
+      newOwner: string,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<ContractTransaction>;
+
+    transferWithAuthorization(
+      from: string,
+      to: string,
+      value: BigNumberish,
+      validAfter: BigNumberish,
+      validBefore: BigNumberish,
+      nonce: BytesLike,
+      v: BigNumberish,
+      r: BytesLike,
+      s: BytesLike,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<ContractTransaction>;
+
+    unBlacklist(
+      _account: string,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<ContractTransaction>;
+
+    unpause(
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<ContractTransaction>;
+
+    updateBlacklister(
+      _newBlacklister: string,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<ContractTransaction>;
+
+    updateMasterMinter(
+      _newMasterMinter: string,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<ContractTransaction>;
+
+    updatePauser(
+      _newPauser: string,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<ContractTransaction>;
+
+    updateRescuer(
+      newRescuer: string,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<ContractTransaction>;
+
+    version(overrides?: CallOverrides): Promise<[string]>;
   };
+
+  CANCEL_AUTHORIZATION_TYPEHASH(overrides?: CallOverrides): Promise<string>;
+
+  DOMAIN_SEPARATOR(overrides?: CallOverrides): Promise<string>;
+
+  PERMIT_TYPEHASH(overrides?: CallOverrides): Promise<string>;
+
+  RECEIVE_WITH_AUTHORIZATION_TYPEHASH(
+    overrides?: CallOverrides
+  ): Promise<string>;
+
+  TRANSFER_WITH_AUTHORIZATION_TYPEHASH(
+    overrides?: CallOverrides
+  ): Promise<string>;
 
   allowance(
     owner: string,
@@ -152,28 +825,233 @@ export interface IERC20 extends BaseContract {
 
   approve(
     spender: string,
+    value: BigNumberish,
+    overrides?: Overrides & { from?: string | Promise<string> }
+  ): Promise<ContractTransaction>;
+
+  authorizationState(
+    authorizer: string,
+    nonce: BytesLike,
+    overrides?: CallOverrides
+  ): Promise<boolean>;
+
+  balanceOf(account: string, overrides?: CallOverrides): Promise<BigNumber>;
+
+  blacklist(
+    _account: string,
+    overrides?: Overrides & { from?: string | Promise<string> }
+  ): Promise<ContractTransaction>;
+
+  blacklister(overrides?: CallOverrides): Promise<string>;
+
+  burn(
+    _amount: BigNumberish,
+    overrides?: Overrides & { from?: string | Promise<string> }
+  ): Promise<ContractTransaction>;
+
+  cancelAuthorization(
+    authorizer: string,
+    nonce: BytesLike,
+    v: BigNumberish,
+    r: BytesLike,
+    s: BytesLike,
+    overrides?: Overrides & { from?: string | Promise<string> }
+  ): Promise<ContractTransaction>;
+
+  configureMinter(
+    minter: string,
+    minterAllowedAmount: BigNumberish,
+    overrides?: Overrides & { from?: string | Promise<string> }
+  ): Promise<ContractTransaction>;
+
+  currency(overrides?: CallOverrides): Promise<string>;
+
+  decimals(overrides?: CallOverrides): Promise<number>;
+
+  decreaseAllowance(
+    spender: string,
+    decrement: BigNumberish,
+    overrides?: Overrides & { from?: string | Promise<string> }
+  ): Promise<ContractTransaction>;
+
+  increaseAllowance(
+    spender: string,
+    increment: BigNumberish,
+    overrides?: Overrides & { from?: string | Promise<string> }
+  ): Promise<ContractTransaction>;
+
+  initialize(
+    tokenName: string,
+    tokenSymbol: string,
+    tokenCurrency: string,
+    tokenDecimals: BigNumberish,
+    newMasterMinter: string,
+    newPauser: string,
+    newBlacklister: string,
+    newOwner: string,
+    overrides?: Overrides & { from?: string | Promise<string> }
+  ): Promise<ContractTransaction>;
+
+  initializeV2(
+    newName: string,
+    overrides?: Overrides & { from?: string | Promise<string> }
+  ): Promise<ContractTransaction>;
+
+  initializeV2_1(
+    lostAndFound: string,
+    overrides?: Overrides & { from?: string | Promise<string> }
+  ): Promise<ContractTransaction>;
+
+  isBlacklisted(_account: string, overrides?: CallOverrides): Promise<boolean>;
+
+  isMinter(account: string, overrides?: CallOverrides): Promise<boolean>;
+
+  masterMinter(overrides?: CallOverrides): Promise<string>;
+
+  mint(
+    _to: string,
+    _amount: BigNumberish,
+    overrides?: Overrides & { from?: string | Promise<string> }
+  ): Promise<ContractTransaction>;
+
+  minterAllowance(
+    minter: string,
+    overrides?: CallOverrides
+  ): Promise<BigNumber>;
+
+  name(overrides?: CallOverrides): Promise<string>;
+
+  nonces(owner: string, overrides?: CallOverrides): Promise<BigNumber>;
+
+  owner(overrides?: CallOverrides): Promise<string>;
+
+  pause(
+    overrides?: Overrides & { from?: string | Promise<string> }
+  ): Promise<ContractTransaction>;
+
+  paused(overrides?: CallOverrides): Promise<boolean>;
+
+  pauser(overrides?: CallOverrides): Promise<string>;
+
+  permit(
+    owner: string,
+    spender: string,
+    value: BigNumberish,
+    deadline: BigNumberish,
+    v: BigNumberish,
+    r: BytesLike,
+    s: BytesLike,
+    overrides?: Overrides & { from?: string | Promise<string> }
+  ): Promise<ContractTransaction>;
+
+  receiveWithAuthorization(
+    from: string,
+    to: string,
+    value: BigNumberish,
+    validAfter: BigNumberish,
+    validBefore: BigNumberish,
+    nonce: BytesLike,
+    v: BigNumberish,
+    r: BytesLike,
+    s: BytesLike,
+    overrides?: Overrides & { from?: string | Promise<string> }
+  ): Promise<ContractTransaction>;
+
+  removeMinter(
+    minter: string,
+    overrides?: Overrides & { from?: string | Promise<string> }
+  ): Promise<ContractTransaction>;
+
+  rescueERC20(
+    tokenContract: string,
+    to: string,
     amount: BigNumberish,
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
-  balanceOf(account: string, overrides?: CallOverrides): Promise<BigNumber>;
+  rescuer(overrides?: CallOverrides): Promise<string>;
+
+  symbol(overrides?: CallOverrides): Promise<string>;
 
   totalSupply(overrides?: CallOverrides): Promise<BigNumber>;
 
   transfer(
-    recipient: string,
-    amount: BigNumberish,
+    to: string,
+    value: BigNumberish,
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
   transferFrom(
-    sender: string,
-    recipient: string,
-    amount: BigNumberish,
+    from: string,
+    to: string,
+    value: BigNumberish,
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
+  transferOwnership(
+    newOwner: string,
+    overrides?: Overrides & { from?: string | Promise<string> }
+  ): Promise<ContractTransaction>;
+
+  transferWithAuthorization(
+    from: string,
+    to: string,
+    value: BigNumberish,
+    validAfter: BigNumberish,
+    validBefore: BigNumberish,
+    nonce: BytesLike,
+    v: BigNumberish,
+    r: BytesLike,
+    s: BytesLike,
+    overrides?: Overrides & { from?: string | Promise<string> }
+  ): Promise<ContractTransaction>;
+
+  unBlacklist(
+    _account: string,
+    overrides?: Overrides & { from?: string | Promise<string> }
+  ): Promise<ContractTransaction>;
+
+  unpause(
+    overrides?: Overrides & { from?: string | Promise<string> }
+  ): Promise<ContractTransaction>;
+
+  updateBlacklister(
+    _newBlacklister: string,
+    overrides?: Overrides & { from?: string | Promise<string> }
+  ): Promise<ContractTransaction>;
+
+  updateMasterMinter(
+    _newMasterMinter: string,
+    overrides?: Overrides & { from?: string | Promise<string> }
+  ): Promise<ContractTransaction>;
+
+  updatePauser(
+    _newPauser: string,
+    overrides?: Overrides & { from?: string | Promise<string> }
+  ): Promise<ContractTransaction>;
+
+  updateRescuer(
+    newRescuer: string,
+    overrides?: Overrides & { from?: string | Promise<string> }
+  ): Promise<ContractTransaction>;
+
+  version(overrides?: CallOverrides): Promise<string>;
+
   callStatic: {
+    CANCEL_AUTHORIZATION_TYPEHASH(overrides?: CallOverrides): Promise<string>;
+
+    DOMAIN_SEPARATOR(overrides?: CallOverrides): Promise<string>;
+
+    PERMIT_TYPEHASH(overrides?: CallOverrides): Promise<string>;
+
+    RECEIVE_WITH_AUTHORIZATION_TYPEHASH(
+      overrides?: CallOverrides
+    ): Promise<string>;
+
+    TRANSFER_WITH_AUTHORIZATION_TYPEHASH(
+      overrides?: CallOverrides
+    ): Promise<string>;
+
     allowance(
       owner: string,
       spender: string,
@@ -182,26 +1060,195 @@ export interface IERC20 extends BaseContract {
 
     approve(
       spender: string,
-      amount: BigNumberish,
+      value: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<boolean>;
+
+    authorizationState(
+      authorizer: string,
+      nonce: BytesLike,
       overrides?: CallOverrides
     ): Promise<boolean>;
 
     balanceOf(account: string, overrides?: CallOverrides): Promise<BigNumber>;
 
+    blacklist(_account: string, overrides?: CallOverrides): Promise<void>;
+
+    blacklister(overrides?: CallOverrides): Promise<string>;
+
+    burn(_amount: BigNumberish, overrides?: CallOverrides): Promise<void>;
+
+    cancelAuthorization(
+      authorizer: string,
+      nonce: BytesLike,
+      v: BigNumberish,
+      r: BytesLike,
+      s: BytesLike,
+      overrides?: CallOverrides
+    ): Promise<void>;
+
+    configureMinter(
+      minter: string,
+      minterAllowedAmount: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<boolean>;
+
+    currency(overrides?: CallOverrides): Promise<string>;
+
+    decimals(overrides?: CallOverrides): Promise<number>;
+
+    decreaseAllowance(
+      spender: string,
+      decrement: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<boolean>;
+
+    increaseAllowance(
+      spender: string,
+      increment: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<boolean>;
+
+    initialize(
+      tokenName: string,
+      tokenSymbol: string,
+      tokenCurrency: string,
+      tokenDecimals: BigNumberish,
+      newMasterMinter: string,
+      newPauser: string,
+      newBlacklister: string,
+      newOwner: string,
+      overrides?: CallOverrides
+    ): Promise<void>;
+
+    initializeV2(newName: string, overrides?: CallOverrides): Promise<void>;
+
+    initializeV2_1(
+      lostAndFound: string,
+      overrides?: CallOverrides
+    ): Promise<void>;
+
+    isBlacklisted(
+      _account: string,
+      overrides?: CallOverrides
+    ): Promise<boolean>;
+
+    isMinter(account: string, overrides?: CallOverrides): Promise<boolean>;
+
+    masterMinter(overrides?: CallOverrides): Promise<string>;
+
+    mint(
+      _to: string,
+      _amount: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<boolean>;
+
+    minterAllowance(
+      minter: string,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
+    name(overrides?: CallOverrides): Promise<string>;
+
+    nonces(owner: string, overrides?: CallOverrides): Promise<BigNumber>;
+
+    owner(overrides?: CallOverrides): Promise<string>;
+
+    pause(overrides?: CallOverrides): Promise<void>;
+
+    paused(overrides?: CallOverrides): Promise<boolean>;
+
+    pauser(overrides?: CallOverrides): Promise<string>;
+
+    permit(
+      owner: string,
+      spender: string,
+      value: BigNumberish,
+      deadline: BigNumberish,
+      v: BigNumberish,
+      r: BytesLike,
+      s: BytesLike,
+      overrides?: CallOverrides
+    ): Promise<void>;
+
+    receiveWithAuthorization(
+      from: string,
+      to: string,
+      value: BigNumberish,
+      validAfter: BigNumberish,
+      validBefore: BigNumberish,
+      nonce: BytesLike,
+      v: BigNumberish,
+      r: BytesLike,
+      s: BytesLike,
+      overrides?: CallOverrides
+    ): Promise<void>;
+
+    removeMinter(minter: string, overrides?: CallOverrides): Promise<boolean>;
+
+    rescueERC20(
+      tokenContract: string,
+      to: string,
+      amount: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<void>;
+
+    rescuer(overrides?: CallOverrides): Promise<string>;
+
+    symbol(overrides?: CallOverrides): Promise<string>;
+
     totalSupply(overrides?: CallOverrides): Promise<BigNumber>;
 
     transfer(
-      recipient: string,
-      amount: BigNumberish,
+      to: string,
+      value: BigNumberish,
       overrides?: CallOverrides
     ): Promise<boolean>;
 
     transferFrom(
-      sender: string,
-      recipient: string,
-      amount: BigNumberish,
+      from: string,
+      to: string,
+      value: BigNumberish,
       overrides?: CallOverrides
     ): Promise<boolean>;
+
+    transferOwnership(
+      newOwner: string,
+      overrides?: CallOverrides
+    ): Promise<void>;
+
+    transferWithAuthorization(
+      from: string,
+      to: string,
+      value: BigNumberish,
+      validAfter: BigNumberish,
+      validBefore: BigNumberish,
+      nonce: BytesLike,
+      v: BigNumberish,
+      r: BytesLike,
+      s: BytesLike,
+      overrides?: CallOverrides
+    ): Promise<void>;
+
+    unBlacklist(_account: string, overrides?: CallOverrides): Promise<void>;
+
+    unpause(overrides?: CallOverrides): Promise<void>;
+
+    updateBlacklister(
+      _newBlacklister: string,
+      overrides?: CallOverrides
+    ): Promise<void>;
+
+    updateMasterMinter(
+      _newMasterMinter: string,
+      overrides?: CallOverrides
+    ): Promise<void>;
+
+    updatePauser(_newPauser: string, overrides?: CallOverrides): Promise<void>;
+
+    updateRescuer(newRescuer: string, overrides?: CallOverrides): Promise<void>;
+
+    version(overrides?: CallOverrides): Promise<string>;
   };
 
   filters: {
@@ -216,6 +1263,94 @@ export interface IERC20 extends BaseContract {
       value?: null
     ): ApprovalEventFilter;
 
+    "AuthorizationCanceled(address,bytes32)"(
+      authorizer?: string | null,
+      nonce?: BytesLike | null
+    ): AuthorizationCanceledEventFilter;
+    AuthorizationCanceled(
+      authorizer?: string | null,
+      nonce?: BytesLike | null
+    ): AuthorizationCanceledEventFilter;
+
+    "AuthorizationUsed(address,bytes32)"(
+      authorizer?: string | null,
+      nonce?: BytesLike | null
+    ): AuthorizationUsedEventFilter;
+    AuthorizationUsed(
+      authorizer?: string | null,
+      nonce?: BytesLike | null
+    ): AuthorizationUsedEventFilter;
+
+    "Blacklisted(address)"(_account?: string | null): BlacklistedEventFilter;
+    Blacklisted(_account?: string | null): BlacklistedEventFilter;
+
+    "BlacklisterChanged(address)"(
+      newBlacklister?: string | null
+    ): BlacklisterChangedEventFilter;
+    BlacklisterChanged(
+      newBlacklister?: string | null
+    ): BlacklisterChangedEventFilter;
+
+    "Burn(address,uint256)"(
+      burner?: string | null,
+      amount?: null
+    ): BurnEventFilter;
+    Burn(burner?: string | null, amount?: null): BurnEventFilter;
+
+    "MasterMinterChanged(address)"(
+      newMasterMinter?: string | null
+    ): MasterMinterChangedEventFilter;
+    MasterMinterChanged(
+      newMasterMinter?: string | null
+    ): MasterMinterChangedEventFilter;
+
+    "Mint(address,address,uint256)"(
+      minter?: string | null,
+      to?: string | null,
+      amount?: null
+    ): MintEventFilter;
+    Mint(
+      minter?: string | null,
+      to?: string | null,
+      amount?: null
+    ): MintEventFilter;
+
+    "MinterConfigured(address,uint256)"(
+      minter?: string | null,
+      minterAllowedAmount?: null
+    ): MinterConfiguredEventFilter;
+    MinterConfigured(
+      minter?: string | null,
+      minterAllowedAmount?: null
+    ): MinterConfiguredEventFilter;
+
+    "MinterRemoved(address)"(
+      oldMinter?: string | null
+    ): MinterRemovedEventFilter;
+    MinterRemoved(oldMinter?: string | null): MinterRemovedEventFilter;
+
+    "OwnershipTransferred(address,address)"(
+      previousOwner?: null,
+      newOwner?: null
+    ): OwnershipTransferredEventFilter;
+    OwnershipTransferred(
+      previousOwner?: null,
+      newOwner?: null
+    ): OwnershipTransferredEventFilter;
+
+    "Pause()"(): PauseEventFilter;
+    Pause(): PauseEventFilter;
+
+    "PauserChanged(address)"(
+      newAddress?: string | null
+    ): PauserChangedEventFilter;
+    PauserChanged(newAddress?: string | null): PauserChangedEventFilter;
+
+    "RescuerChanged(address)"(
+      newRescuer?: string | null
+    ): RescuerChangedEventFilter;
+    RescuerChanged(newRescuer?: string | null): RescuerChangedEventFilter;
+
     "Transfer(address,address,uint256)"(
       from?: string | null,
       to?: string | null,
@@ -226,9 +1361,33 @@ export interface IERC20 extends BaseContract {
       to?: string | null,
       value?: null
     ): TransferEventFilter;
+
+    "UnBlacklisted(address)"(
+      _account?: string | null
+    ): UnBlacklistedEventFilter;
+    UnBlacklisted(_account?: string | null): UnBlacklistedEventFilter;
+
+    "Unpause()"(): UnpauseEventFilter;
+    Unpause(): UnpauseEventFilter;
   };
 
   estimateGas: {
+    CANCEL_AUTHORIZATION_TYPEHASH(
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
+    DOMAIN_SEPARATOR(overrides?: CallOverrides): Promise<BigNumber>;
+
+    PERMIT_TYPEHASH(overrides?: CallOverrides): Promise<BigNumber>;
+
+    RECEIVE_WITH_AUTHORIZATION_TYPEHASH(
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
+    TRANSFER_WITH_AUTHORIZATION_TYPEHASH(
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
     allowance(
       owner: string,
       spender: string,
@@ -237,29 +1396,239 @@ export interface IERC20 extends BaseContract {
 
     approve(
       spender: string,
-      amount: BigNumberish,
+      value: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<BigNumber>;
+
+    authorizationState(
+      authorizer: string,
+      nonce: BytesLike,
+      overrides?: CallOverrides
     ): Promise<BigNumber>;
 
     balanceOf(account: string, overrides?: CallOverrides): Promise<BigNumber>;
 
+    blacklist(
+      _account: string,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<BigNumber>;
+
+    blacklister(overrides?: CallOverrides): Promise<BigNumber>;
+
+    burn(
+      _amount: BigNumberish,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<BigNumber>;
+
+    cancelAuthorization(
+      authorizer: string,
+      nonce: BytesLike,
+      v: BigNumberish,
+      r: BytesLike,
+      s: BytesLike,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<BigNumber>;
+
+    configureMinter(
+      minter: string,
+      minterAllowedAmount: BigNumberish,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<BigNumber>;
+
+    currency(overrides?: CallOverrides): Promise<BigNumber>;
+
+    decimals(overrides?: CallOverrides): Promise<BigNumber>;
+
+    decreaseAllowance(
+      spender: string,
+      decrement: BigNumberish,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<BigNumber>;
+
+    increaseAllowance(
+      spender: string,
+      increment: BigNumberish,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<BigNumber>;
+
+    initialize(
+      tokenName: string,
+      tokenSymbol: string,
+      tokenCurrency: string,
+      tokenDecimals: BigNumberish,
+      newMasterMinter: string,
+      newPauser: string,
+      newBlacklister: string,
+      newOwner: string,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<BigNumber>;
+
+    initializeV2(
+      newName: string,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<BigNumber>;
+
+    initializeV2_1(
+      lostAndFound: string,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<BigNumber>;
+
+    isBlacklisted(
+      _account: string,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
+    isMinter(account: string, overrides?: CallOverrides): Promise<BigNumber>;
+
+    masterMinter(overrides?: CallOverrides): Promise<BigNumber>;
+
+    mint(
+      _to: string,
+      _amount: BigNumberish,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<BigNumber>;
+
+    minterAllowance(
+      minter: string,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
+    name(overrides?: CallOverrides): Promise<BigNumber>;
+
+    nonces(owner: string, overrides?: CallOverrides): Promise<BigNumber>;
+
+    owner(overrides?: CallOverrides): Promise<BigNumber>;
+
+    pause(
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<BigNumber>;
+
+    paused(overrides?: CallOverrides): Promise<BigNumber>;
+
+    pauser(overrides?: CallOverrides): Promise<BigNumber>;
+
+    permit(
+      owner: string,
+      spender: string,
+      value: BigNumberish,
+      deadline: BigNumberish,
+      v: BigNumberish,
+      r: BytesLike,
+      s: BytesLike,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<BigNumber>;
+
+    receiveWithAuthorization(
+      from: string,
+      to: string,
+      value: BigNumberish,
+      validAfter: BigNumberish,
+      validBefore: BigNumberish,
+      nonce: BytesLike,
+      v: BigNumberish,
+      r: BytesLike,
+      s: BytesLike,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<BigNumber>;
+
+    removeMinter(
+      minter: string,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<BigNumber>;
+
+    rescueERC20(
+      tokenContract: string,
+      to: string,
+      amount: BigNumberish,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<BigNumber>;
+
+    rescuer(overrides?: CallOverrides): Promise<BigNumber>;
+
+    symbol(overrides?: CallOverrides): Promise<BigNumber>;
+
     totalSupply(overrides?: CallOverrides): Promise<BigNumber>;
 
     transfer(
-      recipient: string,
-      amount: BigNumberish,
+      to: string,
+      value: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
     transferFrom(
-      sender: string,
-      recipient: string,
-      amount: BigNumberish,
+      from: string,
+      to: string,
+      value: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
+
+    transferOwnership(
+      newOwner: string,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<BigNumber>;
+
+    transferWithAuthorization(
+      from: string,
+      to: string,
+      value: BigNumberish,
+      validAfter: BigNumberish,
+      validBefore: BigNumberish,
+      nonce: BytesLike,
+      v: BigNumberish,
+      r: BytesLike,
+      s: BytesLike,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<BigNumber>;
+
+    unBlacklist(
+      _account: string,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<BigNumber>;
+
+    unpause(
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<BigNumber>;
+
+    updateBlacklister(
+      _newBlacklister: string,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<BigNumber>;
+
+    updateMasterMinter(
+      _newMasterMinter: string,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<BigNumber>;
+
+    updatePauser(
+      _newPauser: string,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<BigNumber>;
+
+    updateRescuer(
+      newRescuer: string,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<BigNumber>;
+
+    version(overrides?: CallOverrides): Promise<BigNumber>;
   };
 
   populateTransaction: {
+    CANCEL_AUTHORIZATION_TYPEHASH(
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    DOMAIN_SEPARATOR(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
+    PERMIT_TYPEHASH(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
+    RECEIVE_WITH_AUTHORIZATION_TYPEHASH(
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    TRANSFER_WITH_AUTHORIZATION_TYPEHASH(
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
     allowance(
       owner: string,
       spender: string,
@@ -268,8 +1637,14 @@ export interface IERC20 extends BaseContract {
 
     approve(
       spender: string,
-      amount: BigNumberish,
+      value: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<PopulatedTransaction>;
+
+    authorizationState(
+      authorizer: string,
+      nonce: BytesLike,
+      overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
     balanceOf(
@@ -277,19 +1652,213 @@ export interface IERC20 extends BaseContract {
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
+    blacklist(
+      _account: string,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<PopulatedTransaction>;
+
+    blacklister(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
+    burn(
+      _amount: BigNumberish,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<PopulatedTransaction>;
+
+    cancelAuthorization(
+      authorizer: string,
+      nonce: BytesLike,
+      v: BigNumberish,
+      r: BytesLike,
+      s: BytesLike,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<PopulatedTransaction>;
+
+    configureMinter(
+      minter: string,
+      minterAllowedAmount: BigNumberish,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<PopulatedTransaction>;
+
+    currency(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
+    decimals(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
+    decreaseAllowance(
+      spender: string,
+      decrement: BigNumberish,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<PopulatedTransaction>;
+
+    increaseAllowance(
+      spender: string,
+      increment: BigNumberish,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<PopulatedTransaction>;
+
+    initialize(
+      tokenName: string,
+      tokenSymbol: string,
+      tokenCurrency: string,
+      tokenDecimals: BigNumberish,
+      newMasterMinter: string,
+      newPauser: string,
+      newBlacklister: string,
+      newOwner: string,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<PopulatedTransaction>;
+
+    initializeV2(
+      newName: string,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<PopulatedTransaction>;
+
+    initializeV2_1(
+      lostAndFound: string,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<PopulatedTransaction>;
+
+    isBlacklisted(
+      _account: string,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    isMinter(
+      account: string,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    masterMinter(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
+    mint(
+      _to: string,
+      _amount: BigNumberish,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<PopulatedTransaction>;
+
+    minterAllowance(
+      minter: string,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    name(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
+    nonces(
+      owner: string,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    owner(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
+    pause(
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<PopulatedTransaction>;
+
+    paused(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
+    pauser(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
+    permit(
+      owner: string,
+      spender: string,
+      value: BigNumberish,
+      deadline: BigNumberish,
+      v: BigNumberish,
+      r: BytesLike,
+      s: BytesLike,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<PopulatedTransaction>;
+
+    receiveWithAuthorization(
+      from: string,
+      to: string,
+      value: BigNumberish,
+      validAfter: BigNumberish,
+      validBefore: BigNumberish,
+      nonce: BytesLike,
+      v: BigNumberish,
+      r: BytesLike,
+      s: BytesLike,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<PopulatedTransaction>;
+
+    removeMinter(
+      minter: string,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<PopulatedTransaction>;
+
+    rescueERC20(
+      tokenContract: string,
+      to: string,
+      amount: BigNumberish,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<PopulatedTransaction>;
+
+    rescuer(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
+    symbol(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
     totalSupply(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     transfer(
-      recipient: string,
-      amount: BigNumberish,
+      to: string,
+      value: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 
     transferFrom(
-      sender: string,
-      recipient: string,
-      amount: BigNumberish,
+      from: string,
+      to: string,
+      value: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
+
+    transferOwnership(
+      newOwner: string,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<PopulatedTransaction>;
+
+    transferWithAuthorization(
+      from: string,
+      to: string,
+      value: BigNumberish,
+      validAfter: BigNumberish,
+      validBefore: BigNumberish,
+      nonce: BytesLike,
+      v: BigNumberish,
+      r: BytesLike,
+      s: BytesLike,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<PopulatedTransaction>;
+
+    unBlacklist(
+      _account: string,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<PopulatedTransaction>;
+
+    unpause(
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<PopulatedTransaction>;
+
+    updateBlacklister(
+      _newBlacklister: string,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<PopulatedTransaction>;
+
+    updateMasterMinter(
+      _newMasterMinter: string,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<PopulatedTransaction>;
+
+    updatePauser(
+      _newPauser: string,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<PopulatedTransaction>;
+
+    updateRescuer(
+      newRescuer: string,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<PopulatedTransaction>;
+
+    version(overrides?: CallOverrides): Promise<PopulatedTransaction>;
   };
 }

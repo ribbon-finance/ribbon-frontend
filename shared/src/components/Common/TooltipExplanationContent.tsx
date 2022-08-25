@@ -24,11 +24,12 @@ const Tooltip = styled.div`
 
 const ExplanationTitle = styled(Title)`
   text-transform: uppercase;
+  max-width: 240px;
 `;
 
-const Explanation = styled(SecondaryText)`
+const Explanation = styled(SecondaryText)<{ maxWidth: number }>`
   margin-top: 8px;
-  max-width: 240px;
+  max-width: ${(props) => (props.maxWidth ? `${props.maxWidth}px` : `240px`)};
 `;
 
 const LearnMoreLink = styled(BaseLink)`
@@ -41,6 +42,7 @@ interface OverlayTooltipExplanationProps {
   title?: string;
   explanation: React.ReactNode;
   learnMoreURL?: string;
+  maxWidth?: number;
   overlayInjectedProps: OverlayInjectedProps;
   setShow: React.Dispatch<React.SetStateAction<boolean>>;
 }
@@ -49,6 +51,7 @@ const OverlayTooltipExplanation: React.FC<OverlayTooltipExplanationProps> = ({
   title,
   explanation,
   learnMoreURL,
+  maxWidth,
   overlayInjectedProps,
   setShow,
 }) => (
@@ -58,7 +61,9 @@ const OverlayTooltipExplanation: React.FC<OverlayTooltipExplanationProps> = ({
     onMouseOut={() => setShow(false)}
   >
     {title && <ExplanationTitle>{title}</ExplanationTitle>}
-    <Explanation>{explanation}</Explanation>
+    <Explanation maxWidth={maxWidth ? maxWidth : 240}>
+      {explanation}
+    </Explanation>
     {learnMoreURL && (
       <LearnMoreLink
         to={learnMoreURL}

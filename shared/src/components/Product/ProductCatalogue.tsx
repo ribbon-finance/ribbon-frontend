@@ -10,6 +10,7 @@ import {
   VaultVersion,
   VaultVersionList,
   Chains,
+  isEarnVault,
 } from "../../constants/constants";
 import sizes from "../../designSystem/sizes";
 import { useLatestAPYs } from "../../hooks/useLatestAPY";
@@ -117,7 +118,11 @@ const ProductCatalogue: React.FC<ProductCatalogueProps> = ({
       if (
         filterStrategies.length &&
         !filterStrategies.includes(
-          isPutVault(vault) ? "PUT-SELLING" : "COVERED-CALL"
+          isPutVault(vault)
+            ? "PUT-SELLING"
+            : isEarnVault(vault)
+            ? "PRINCIPLE-PROTECTED"
+            : "COVERED-CALL"
         )
       ) {
         return false;

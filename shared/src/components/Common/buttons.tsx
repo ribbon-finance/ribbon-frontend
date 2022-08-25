@@ -24,7 +24,7 @@ export const Button = styled.button`
 export const BaseActionButton = styled(Button)<{
   error?: boolean;
   color?: string;
-  variant: "primary" | "secondary";
+  variant: "primary" | "secondary" | "earn" | "earnDisabled";
 }>`
   ${(props) => {
     if (props.error) {
@@ -81,6 +81,19 @@ export const BaseActionButton = styled(Button)<{
               opacity: ${theme.hover.opacity};
             }
           `;
+      case "earn":
+        return `
+          pointer-events: none;
+          color: ${colors.green};
+          &:hover {
+            color: ${colors.green};
+          }`;
+      case "earnDisabled":
+        return `
+          pointer-events: none;
+          color: ${colors.tertiaryText};
+          background: ${colors.background.three};
+          `;
     }
   }}
 `;
@@ -103,7 +116,7 @@ interface ActionButtonProps {
   color?: string;
   error?: boolean;
   children: ReactNode;
-  variant?: "primary" | "secondary";
+  variant?: "primary" | "secondary" | "earn" | "earnDisabled";
 }
 
 export const ActionButton: React.FC<ActionButtonProps> = ({

@@ -1,4 +1,3 @@
-import React from "react";
 import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
 import styled from "styled-components";
 
@@ -17,6 +16,7 @@ import colors from "shared/lib/designSystem/colors";
 import YourPositionModal from "./Vault/Modal/YourPositionModal";
 import PausePositionModal from "./Vault/Modal/PausePositionModal";
 import ResumePositionModal from "./Vault/Modal/ResumePositionModal";
+import EarnPage from "../pages/DepositPage/EarnPage";
 const Root = styled.div<{ screenHeight: number }>`
   background-color: ${colors.background.one};
   min-height: ${(props) =>
@@ -46,6 +46,9 @@ const RootApp = () => {
           </Route>
           <Route path="/v2/theta-vault/:vaultSymbol">
             <DepositPage />
+          </Route>
+          <Route path="/R-EARN">
+            <EarnPage />
           </Route>
           <Route path="/portfolio">
             <PortfolioPage />

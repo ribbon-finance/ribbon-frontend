@@ -70,6 +70,7 @@ export const BaseModalContentColumn = styled.div<{
     props.marginTop === "auto"
       ? props.marginTop
       : `${props.marginTop === undefined ? 24 : props.marginTop}px`};
+  border-radius: 8px;
 `;
 
 export const BaseModalWarning = styled.div<{

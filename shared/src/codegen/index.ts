@@ -13,6 +13,7 @@ export type { LiquidityTokenMinter } from "./LiquidityTokenMinter";
 export type { MerkleDistributor } from "./MerkleDistributor";
 export type { PenaltyRewards } from "./PenaltyRewards";
 export type { RibbonCoveredCall } from "./RibbonCoveredCall";
+export type { RibbonEarnVault } from "./RibbonEarnVault";
 export type { RibbonOG } from "./RibbonOG";
 export type { RibbonStakingRewards } from "./RibbonStakingRewards";
 export type { RibbonV2stETHThetaVault } from "./RibbonV2stETHThetaVault";
@@ -36,6 +37,7 @@ export { LiquidityTokenMinter__factory } from "./factories/LiquidityTokenMinter_
 export { MerkleDistributor__factory } from "./factories/MerkleDistributor__factory";
 export { PenaltyRewards__factory } from "./factories/PenaltyRewards__factory";
 export { RibbonCoveredCall__factory } from "./factories/RibbonCoveredCall__factory";
+export { RibbonEarnVault__factory } from "./factories/RibbonEarnVault__factory";
 export { RibbonOG__factory } from "./factories/RibbonOG__factory";
 export { RibbonStakingRewards__factory } from "./factories/RibbonStakingRewards__factory";
 export { RibbonV2stETHThetaVault__factory } from "./factories/RibbonV2stETHThetaVault__factory";

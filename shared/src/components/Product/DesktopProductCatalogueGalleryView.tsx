@@ -1,5 +1,5 @@
 import { AnimatePresence, motion } from "framer";
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useEffect, useMemo, useState, useCallback } from "react";
 import { Col, Container, Row } from "react-bootstrap";
 import styled from "styled-components";
 import Marquee from "react-fast-marquee/dist";
@@ -37,6 +37,7 @@ import {
 import YourPosition from "../Vault/YourPosition";
 import { useWeb3React } from "@web3-react/core";
 import { useChain } from "../../hooks/chainContext";
+import { useAirtable } from "../../hooks/useAirtable";
 
 const FullscreenContainer = styled(Container)<{ height: number }>`
   padding-top: 24px;
@@ -134,7 +135,7 @@ const DesktopProductCatalogueGalleryView: React.FC<
   const [currentVault, setCurrentVault] = useState<VaultOptions | undefined>(
     filteredProducts[page - 1]
   );
-
+  const { maxYield } = useAirtable();
   // Prevent page overflow
   useEffect(() => {
     if (filteredProducts.length <= 0) {
@@ -150,6 +151,22 @@ const DesktopProductCatalogueGalleryView: React.FC<
     setCurrentVault(filteredProducts[currPage - 1]);
   }, [page, filteredProducts]);
 
+  const renderDescription = useCallback(() => {
+    if (currentVault === "rEARN") {
+      return (
+        "Earn up to " +
+        (maxYield * 100).toFixed(2) +
+        "% APY with a principal protected vault strategy"
+      );
+    } else {
+      const asset = getAssets(currentVault!);
+      if (isPutVault(currentVault!)) {
+        return t("shared:ProductCopies:Put:description", { asset });
+      } else {
+        return t("shared:ProductCopies:Call:description", { asset });
+      }
+    }
+  }, [t, maxYield, currentVault]);
   const vaultInfo = useMemo(() => {
     if (!currentVault) {
       return (
@@ -162,8 +179,6 @@ const DesktopProductCatalogueGalleryView: React.FC<
       );
     }
 
-    const asset = getAssets(currentVault);
-
     return (
       <VaultInfo>
         {/* Title */}
@@ -173,34 +188,45 @@ const DesktopProductCatalogueGalleryView: React.FC<
 
         <VaultSecondaryInfo>
           {/* Description */}
-          <SecondaryText className="mt-3">
-            {isPutVault(currentVault)
-              ? t("shared:ProductCopies:Put:description", { asset })
-              : t("shared:ProductCopies:Call:description", { asset })}
-          </SecondaryText>
+          <SecondaryText className="mt-3">{renderDescription()}</SecondaryText>
 
-          {active && (
-            <div className="mt-4">
-              <YourPosition
-                vault={{
-                  vaultOption: currentVault,
-                  vaultVersion: vaultsDisplayVersion[currentVault],
-                }}
-                variant="desktop"
-                alwaysShowPosition
-              />
-            </div>
-          )}
+          {active &&
+            (currentVault === "rEARN" ? (
+              <div className="mt-4">
+                <YourPosition
+                  vault={{
+                    vaultOption: currentVault,
+                    vaultVersion: vaultsDisplayVersion[currentVault],
+                  }}
+                  variant="desktop"
+                  alwaysShowPosition
+                  onVaultPress={onVaultPress}
+                />
+              </div>
+            ) : (
+              <div className="mt-4">
+                <YourPosition
+                  vault={{
+                    vaultOption: currentVault,
+                    vaultVersion: vaultsDisplayVersion[currentVault],
+                  }}
+                  variant="desktop"
+                  alwaysShowPosition
+                />
+              </div>
+            ))}
         </VaultSecondaryInfo>
       </VaultInfo>
     );
   }, [
-    active,
     currentVault,
     t,
+    renderDescription,
+    active,
+    vaultsDisplayVersion,
+    onVaultPress,
     setFilterAssets,
     setFilterStrategies,
-    vaultsDisplayVersion,
   ]);
 
   return (

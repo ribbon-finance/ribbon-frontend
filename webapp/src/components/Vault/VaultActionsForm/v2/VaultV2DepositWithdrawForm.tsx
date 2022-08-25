@@ -173,16 +173,25 @@ const VaultV2DepositWithdrawForm: React.FC<VaultV2DepositWithdrawFormProps> = ({
       withdrawals.round !== round
     );
   }, [round, vaultActionForm.withdrawOption, withdrawals]);
-  const withdrawalAmount = useMemo(
-    () =>
-      withdrawals.shares
-        .mul(
-          priceHistory.find((history) => history.round === withdrawals.round)
-            ?.pricePerShare || BigNumber.from(0)
-        )
-        .div(parseUnits("1", decimals)),
-    [decimals, priceHistory, withdrawals.round, withdrawals.shares]
-  );
+
+  const withdrawalAmount = useMemo(() => {
+    return withdrawals.shares
+      .mul(
+        priceHistory.find((history) => {
+          if (vaultOption === "rSOL-THETA") {
+            return history.round === withdrawals.round - 1;
+          }
+          return history.round === withdrawals.round;
+        })?.pricePerShare || BigNumber.from(0)
+      )
+      .div(parseUnits("1", decimals));
+  }, [
+    decimals,
+    priceHistory,
+    withdrawals.round,
+    withdrawals.shares,
+    vaultOption,
+  ]);
 
   /**
    * Side hooks

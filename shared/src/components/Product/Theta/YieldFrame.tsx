@@ -19,9 +19,15 @@ import useLatestAPY from "../../../hooks/useLatestAPY";
 import useLoadingText from "../../../hooks/useLoadingText";
 import { useV2VaultData, useVaultData } from "../../../hooks/web3DataContext";
 import { getAssetLogo } from "../../../utils/asset";
-import { formatSignificantDecimals } from "../../../utils/math";
+import {
+  formatAmount,
+  formatSignificantDecimals,
+  isPracticallyZero,
+} from "../../../utils/math";
 import { getVaultColor } from "../../../utils/vault";
 import CapBar from "../../Deposit/CapBar";
+import EarnCard from "../../Common/EarnCard";
+import colors from "../../../designSystem/colors";
 
 const FrameContainer = styled.div`
   perspective: 2000px;
@@ -50,6 +56,24 @@ const Frame = styled(motion.div)<{ color: string }>`
   }
 `;
 
+const ProductCard = styled(motion.div)<{ color: string; vault: VaultOptions }>`
+  display: flex;
+  flex-direction: column;
+  flex-wrap: wrap;
+  border-radius: 10px;
+  border: 2px ${theme.border.style} ${colors.background.two};
+  transition: 0.25s box-shadow ease-out, 0.25s border ease-out;
+  width: 290px;
+  position: relative;
+  height: 100%;
+  padding: 16px;
+
+  &:hover {
+    box-shadow: ${(props) => props.color}66 0px 0px 70px;
+    border: 2px ${theme.border.style} ${(props) => props.color};
+  }
+`;
+
 const TagContainer = styled.div`
   z-index: 1;
   margin-right: auto;
@@ -59,6 +83,36 @@ const ProductTag = styled(BaseButton)<{ color: string }>`
   background: ${(props) => props.color}29;
   padding: 8px;
   margin-right: 4px;
+`;
+
+const ProductInfoEarn = styled.div`
+  display: flex;
+  flex-direction: column;
+  height: 429px;
+  border-radius: ${theme.border.radius};
+  justify-content: center;
+  align-items: center;
+  padding: -16px;
+  margin: -16px;
+  background: #030309;
+  box-shadow: inset 0px 0px 24px rgba(255, 255, 255, 0.12);
+  overflow: hidden;
+`;
+
+const EarnCapacityText = styled(Title)`
+  color: ${colors.tertiaryText};
+  font-style: normal;
+  font-weight: 400;
+  font-size: 14px;
+  line-height: 20px;
+  text-align: center;
+  height: 20px;
+  margin-bottom: 24px;
+`;
+
+const VaultFullText = styled(SecondaryText)`
+  color: ${colors.red};
+  text-transform: none;
 `;
 
 interface YieldFrameProps {
@@ -77,9 +131,10 @@ const YieldFrame: React.FC<YieldFrameProps> = ({
   const { status, deposits, vaultLimit, asset, displayAsset, decimals } =
     useVaultData(vault);
   const {
-    data: { totalBalance: v2Deposits, cap: v2VaultLimit },
+    data: { totalBalance: v2Deposits, cap: v2VaultLimit, decimals: v2Decimals },
     loading: v2DataLoading,
   } = useV2VaultData(vault);
+
   const isLoading = useMemo(
     () => status === "loading" || v2DataLoading,
     [status, v2DataLoading]
@@ -92,6 +147,13 @@ const YieldFrame: React.FC<YieldFrameProps> = ({
   const color = getVaultColor(vault);
   const Logo = getAssetLogo(displayAsset);
 
+  const isVaultMaxCapacity = useMemo(() => {
+    if (v2DataLoading || vault !== "rEARN") {
+      return undefined;
+    }
+    return isPracticallyZero(v2VaultLimit.sub(v2Deposits), 6);
+  }, [v2DataLoading, v2Deposits, v2VaultLimit, vault]);
+
   const [totalDepositStr, depositLimitStr] = useMemo(() => {
     switch (vaultVersion) {
       case "v1":
@@ -103,6 +165,7 @@ const YieldFrame: React.FC<YieldFrameProps> = ({
             formatSignificantDecimals(formatUnits(vaultLimit, decimals))
           ),
         ];
+      case "earn":
       case "v2":
         return [
           parseFloat(
@@ -180,37 +243,58 @@ const YieldFrame: React.FC<YieldFrameProps> = ({
       role="button"
       onClick={() => onVaultPress(vault, vaultVersion)}
     >
-      <AnimatePresence exitBeforeEnter initial={false}>
-        <Frame
-          transition={{
-            duration: 0.1,
-            type: "keyframes",
-            ease: "linear",
-          }}
-          initial={{
-            transform: "rotateY(90deg)",
-          }}
-          animate={{
-            transform: "rotateY(0deg)",
-          }}
-          exit={{
-            transform: "rotateY(-90deg)",
-          }}
-          color={color}
-        >
-          <div className="d-flex w-100">
-            {/* Tags */}
-            <TagContainer>
-              <ProductTag color={color}>
-                <Subtitle>
-                  {isPutVault(vault) ? "PUT-SELLING" : "COVERED CALL"}
-                </Subtitle>
-              </ProductTag>
-            </TagContainer>
-          </div>
-          {body}
-        </Frame>
-      </AnimatePresence>
+      {vault === "rEARN" ? (
+        <ProductCard color={color} vault={vault}>
+          <ProductInfoEarn>
+            <EarnCapacityText>
+              {v2DataLoading || isVaultMaxCapacity === undefined ? (
+                loadingText
+              ) : isVaultMaxCapacity ? (
+                <VaultFullText>Vault is currently full</VaultFullText>
+              ) : (
+                formatAmount(totalDepositStr) +
+                " USDC / " +
+                formatAmount(depositLimitStr) +
+                " USDC"
+              )}
+            </EarnCapacityText>
+            <EarnCard color={color} height={429} />
+          </ProductInfoEarn>
+        </ProductCard>
+      ) : (
+        <AnimatePresence exitBeforeEnter initial={false}>
+          <Frame
+            transition={{
+              duration: 0.1,
+              type: "keyframes",
+              ease: "linear",
+            }}
+            initial={{
+              transform: "rotateY(90deg)",
+            }}
+            animate={{
+              transform: "rotateY(0deg)",
+            }}
+            exit={{
+              transform: "rotateY(-90deg)",
+            }}
+            color={color}
+          >
+            <div className="d-flex w-100">
+              {/* Tags */}
+
+              <TagContainer>
+                <ProductTag color={color}>
+                  <Subtitle>
+                    {isPutVault(vault) ? "PUT-SELLING" : "COVERED CALL"}
+                  </Subtitle>
+                </ProductTag>
+              </TagContainer>
+            </div>
+            {body}
+          </Frame>
+        </AnimatePresence>
+      )}
     </FrameContainer>
   );
 };

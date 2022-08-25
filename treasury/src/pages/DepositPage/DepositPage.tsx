@@ -169,6 +169,7 @@ const DepositPage = () => {
   const { status, deposits, vaultLimit } = useVaultData(
     vaultOption || VaultList[0]
   );
+
   const {
     data: { asset, cap, decimals, totalBalance },
     loading,
@@ -188,6 +189,7 @@ const DepositPage = () => {
             formatSignificantDecimals(formatUnits(vaultLimit, decimals))
           ),
         ];
+      case "earn":
       case "v2":
         return [
           parseFloat(

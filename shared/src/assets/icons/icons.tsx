@@ -8,6 +8,10 @@ export interface SVGPropsWithColor extends SVGProps {
   color?: string;
   backgroundColor?: string;
 }
+
+export interface EarnRingProps extends SVGPropsWithColor {
+  deposited?: boolean;
+}
 export interface IconProps extends SVGPropsWithColor {
   containerStyle?: React.CSSProperties;
 }
@@ -273,6 +277,100 @@ export const DepositIcon: React.FC<SVGPropsWithColor> = ({
   </svg>
 );
 
+export const DepositGlowIcon: React.FC<SVGPropsWithColor> = ({
+  color,
+  ...props
+}) => (
+  <svg
+    width="176"
+    height="164"
+    viewBox="0 0 176 164"
+    fill="none"
+    xmlns="http://www.w3.org/2000/svg"
+    {...props}
+  >
+    <g filter="url(#filter0_d_1767_6244)">
+      <rect
+        x="54"
+        y="40"
+        width="64"
+        height="64"
+        rx="32"
+        fill="#3E73C4"
+        fill-opacity="0.12"
+        shape-rendering="crispEdges"
+      />
+      <path
+        d="M86 62.6667V81.3334"
+        stroke={color || "white"}
+        stroke-width="2"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+      />
+      <path
+        d="M95.3337 72L86.0003 81.3333L76.667 72"
+        stroke={color || "white"}
+        stroke-width="2"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+      />
+      <rect
+        x="55"
+        y="41"
+        width="62"
+        height="62"
+        rx="31"
+        stroke={color || "white"}
+        stroke-width="2"
+        shape-rendering="crispEdges"
+      />
+    </g>
+    <defs>
+      <filter
+        id="filter0_d_1767_6244"
+        x="0"
+        y="-12"
+        width="176"
+        height="176"
+        filterUnits="userSpaceOnUse"
+        color-interpolation-filters="sRGB"
+      >
+        <feFlood flood-opacity="0" result="BackgroundImageFix" />
+        <feColorMatrix
+          in="SourceAlpha"
+          type="matrix"
+          values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0"
+          result="hardAlpha"
+        />
+        <feMorphology
+          radius="16"
+          operator="dilate"
+          in="SourceAlpha"
+          result="effect1_dropShadow_1767_6244"
+        />
+        <feOffset dx="2" dy="4" />
+        <feGaussianBlur stdDeviation="20" />
+        <feComposite in2="hardAlpha" operator="out" />
+        <feColorMatrix
+          type="matrix"
+          values="0 0 0 0 0.243137 0 0 0 0 0.45098 0 0 0 0 0.768627 0 0 0 0.16 0"
+        />
+        <feBlend
+          mode="normal"
+          in2="BackgroundImageFix"
+          result="effect1_dropShadow_1767_6244"
+        />
+        <feBlend
+          mode="normal"
+          in="SourceGraphic"
+          in2="effect1_dropShadow_1767_6244"
+          result="shape"
+        />
+      </filter>
+    </defs>
+  </svg>
+);
+
 export const WithdrawIcon: React.FC<SVGPropsWithColor> = ({
   color,
   ...props
@@ -462,6 +560,316 @@ export const BellIcon: React.FC<SVGPropsWithColor> = ({ color, ...props }) => (
       strokeWidth="1.5"
       strokeLinecap="round"
       strokeLinejoin="round"
+    />
+  </svg>
+);
+
+export const EarnInnerRing: React.FC<EarnRingProps> = ({ type, ...props }) => (
+  <svg
+    width="640"
+    height="640"
+    viewBox="0 0 640 640"
+    fill="none"
+    xmlns="http://www.w3.org/2000/svg"
+    {...props}
+  >
+    <circle
+      opacity="0.24"
+      cx="320"
+      cy="320"
+      r="319.5"
+      stroke={type === "green" ? "#16CEB9" : "#3E73C4"}
+      strokeDasharray="4 4"
+    />
+  </svg>
+);
+
+export const EarnMiddleRing: React.FC<EarnRingProps> = ({ type, ...props }) => (
+  <svg
+    width="800"
+    height="800"
+    viewBox="0 0 800 800"
+    fill="none"
+    xmlns="http://www.w3.org/2000/svg"
+    {...props}
+  >
+    <circle
+      opacity="0.24"
+      cx="400"
+      cy="400"
+      r="399.5"
+      stroke={type === "green" ? "#16CEB9" : "#3E73C4"}
+      strokeDasharray="4 4"
+    />
+  </svg>
+);
+
+export const EarnOuterRing: React.FC<EarnRingProps> = ({
+  type,
+  color,
+  ...props
+}) => (
+  <svg
+    width="1056"
+    height="1056"
+    viewBox="0 0 1056 1056"
+    fill="none"
+    xmlns="http://www.w3.org/2000/svg"
+    {...props}
+  >
+    <g filter={`url(#filter0_d_623_1436_${type})`}>
+      <circle
+        cx="527"
+        cy="527"
+        r="478"
+        stroke={type === "green" ? "#16CEB9" : "#3E73C4"}
+        strokeWidth="4"
+        strokeDasharray="2 2"
+        shapeRendering="crispEdges"
+      />
+    </g>
+    <defs>
+      <filter
+        id={`filter0_d_623_1436_${type}`}
+        x="0"
+        y="0"
+        width="1056"
+        height="1056"
+        filterUnits="userSpaceOnUse"
+        colorInterpolationFilters="sRGB"
+      >
+        <feFlood floodOpacity="0" result="BackgroundImageFix" />
+        <feColorMatrix
+          in="SourceAlpha"
+          type="matrix"
+          values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0"
+          result="hardAlpha"
+        />
+        <feMorphology
+          radius="8"
+          operator="dilate"
+          in="SourceAlpha"
+          result="effect1_dropShadow_623_1436"
+        />
+        <feOffset dx="1" dy="2" />
+        <feGaussianBlur stdDeviation="20" />
+        <feComposite in2="hardAlpha" operator="out" />
+        <feColorMatrix
+          type="matrix"
+          values={
+            type === "green"
+              ? "0 0 0 0 0.0862745 0 0 0 0 0.807843 0 0 0 0 0.72549 0 0 0 0.25 0"
+              : "0 0 0 0 0.243137 0 0 0 0 0.45098 0 0 0 0 0.768627 0 0 0 0.25 0"
+          }
+        />
+        <feBlend
+          mode="normal"
+          in2="BackgroundImageFix"
+          result="effect1_dropShadow_623_1436"
+        />
+        <feBlend
+          mode="normal"
+          in="SourceGraphic"
+          in2="effect1_dropShadow_623_1436"
+          result="shape"
+        />
+      </filter>
+    </defs>
+  </svg>
+);
+
+export const EarnCardMiddleCircle: React.FC<SVGPropsWithColor> = (props) => (
+  <svg
+    width="160"
+    height="160"
+    viewBox="0 0 160 160"
+    fill="none"
+    xmlns="http://www.w3.org/2000/svg"
+    {...props}
+  >
+    <circle
+      opacity="0.24"
+      cx="80"
+      cy="80"
+      r="79.5"
+      stroke="#3E73C4"
+      strokeDasharray="4 4"
+    />
+  </svg>
+);
+
+export const EarnCardOuterCircle: React.FC<SVGPropsWithColor> = (props) => (
+  <svg
+    width="290"
+    height="304"
+    viewBox="0 0 290 304"
+    fill="none"
+    xmlns="http://www.w3.org/2000/svg"
+    {...props}
+  >
+    <g filter="url(#filter0_d_1082_3282)">
+      <circle
+        cx="145"
+        cy="150"
+        r="118"
+        stroke="#3E73C4"
+        strokeWidth="4"
+        strokeDasharray="2 2"
+        shapeRendering="crispEdges"
+      />
+    </g>
+    <defs>
+      <filter
+        id="filter0_d_1082_3282"
+        x="-6"
+        y="0"
+        width="304"
+        height="304"
+        filterUnits="userSpaceOnUse"
+        colorInterpolationFilters="sRGB"
+      >
+        <feFlood floodOpacity="0" result="BackgroundImageFix" />
+        <feColorMatrix
+          in="SourceAlpha"
+          type="matrix"
+          values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0"
+          result="hardAlpha"
+        />
+        <feMorphology
+          radius="8"
+          operator="dilate"
+          in="SourceAlpha"
+          result="effect1_dropShadow_1082_3282"
+        />
+        <feOffset dx="1" dy="2" />
+        <feGaussianBlur stdDeviation="12" />
+        <feComposite in2="hardAlpha" operator="out" />
+        <feColorMatrix
+          type="matrix"
+          values="0 0 0 0 0.243137 0 0 0 0 0.45098 0 0 0 0 0.768627 0 0 0 0.25 0"
+        />
+        <feBlend
+          mode="normal"
+          in2="BackgroundImageFix"
+          result="effect1_dropShadow_1082_3282"
+        />
+        <feBlend
+          mode="normal"
+          in="SourceGraphic"
+          in2="effect1_dropShadow_1082_3282"
+          result="shape"
+        />
+      </filter>
+    </defs>
+  </svg>
+);
+
+export const OpenLoanIcon: React.FC<SVGPropsWithColor> = (props) => (
+  <svg
+    width="40"
+    height="40"
+    viewBox="0 0 40 40"
+    fill="none"
+    xmlns="http://www.w3.org/2000/svg"
+  >
+    <rect width="40" height="40" rx="20" fill="#3E73C4" fill-opacity="0.12" />
+    <path
+      d="M20 27V13"
+      stroke="#3E73C4"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    />
+    <path
+      d="M12.9996 20L19.9996 13L26.9996 20"
+      stroke="#3E73C4"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    />
+  </svg>
+);
+
+export const CloseLoanIcon: React.FC<SVGPropsWithColor> = (props) => (
+  <svg
+    width="40"
+    height="40"
+    viewBox="0 0 40 40"
+    fill="none"
+    xmlns="http://www.w3.org/2000/svg"
+  >
+    <rect width="40" height="40" rx="20" fill="#3E73C4" fill-opacity="0.08" />
+    <path
+      d="M20 10.8333V29.1667"
+      stroke="#3E73C4"
+      strokeWidth="1.5"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    />
+    <path
+      d="M24.1667 14.1667H17.9167C17.1431 14.1667 16.4013 14.474 15.8543 15.021C15.3073 15.5679 15 16.3098 15 17.0834C15 17.8569 15.3073 18.5988 15.8543 19.1457C16.4013 19.6927 17.1431 20 17.9167 20H22.0833C22.8569 20 23.5987 20.3073 24.1457 20.8543C24.6927 21.4013 25 22.1431 25 22.9167C25 23.6902 24.6927 24.4321 24.1457 24.9791C23.5987 25.5261 22.8569 25.8334 22.0833 25.8334H15"
+      stroke="#3E73C4"
+      strokeWidth="1.5"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    />
+  </svg>
+);
+
+export const OptionsBoughtIcon: React.FC<SVGPropsWithColor> = (props) => (
+  <svg
+    width="40"
+    height="40"
+    viewBox="0 0 40 40"
+    fill="none"
+    xmlns="http://www.w3.org/2000/svg"
+  >
+    <rect width="40" height="40" rx="20" fill="#3E73C4" fill-opacity="0.08" />
+    <circle cx="20" cy="20" r="11" stroke="#3E73C4" strokeWidth="2" />
+  </svg>
+);
+
+export const OptionsRepaidIcon: React.FC<SVGPropsWithColor> = (props) => (
+  <svg
+    width="40"
+    height="40"
+    viewBox="0 0 40 40"
+    fill="none"
+    xmlns="http://www.w3.org/2000/svg"
+  >
+    <rect width="40" height="40" rx="20" fill="#16CEB9" fill-opacity="0.08" />
+    <path
+      d="M20 10.8333V29.1667"
+      stroke="#16CEB9"
+      strokeWidth="1.5"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    />
+    <path
+      d="M24.1667 14.1667H17.9167C17.1431 14.1667 16.4013 14.4739 15.8543 15.0209C15.3073 15.5679 15 16.3098 15 17.0833C15 17.8569 15.3073 18.5987 15.8543 19.1457C16.4013 19.6927 17.1431 20 17.9167 20H22.0833C22.8569 20 23.5987 20.3073 24.1457 20.8543C24.6927 21.4012 25 22.1431 25 22.9167C25 23.6902 24.6927 24.4321 24.1457 24.9791C23.5987 25.526 22.8569 25.8333 22.0833 25.8333H15"
+      stroke="#16CEB9"
+      strokeWidth="1.5"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    />
+  </svg>
+);
+
+export const Grid: React.FC<SVGPropsWithColor> = (props) => (
+  <svg
+    width="290"
+    height={props.height}
+    viewBox={"0 0 290 " + props.height}
+    fill="none"
+    xmlns="http://www.w3.org/2000/svg"
+    {...props}
+  >
+    <path
+      fill-rule="evenodd"
+      clip-rule="evenodd"
+      d="M-0.5 516V0H0.5V23.5H23.5V0H24.5V23.5H47.5V0H48.5V23.5H71.5V0H72.5V23.5H95.5V0H96.5V23.5H119.5V0H120.5V23.5H143.5V0H144.5V23.5H167.5V0H168.5V23.5H191.5V0H192.5V23.5H215.5V0H216.5V23.5H239.5V0H240.5V23.5H263.5V0H264.5V23.5H287.5V0H288.5V23.5H290V24.5H288.5V47.5H290V48.5H288.5V71.5H290V72.5H288.5V95.5H290V96.5H288.5V119.5H290V120.5H288.5V143.5H290V144.5H288.5V167.5H290V168.5H288.5V191.5H290V192.5H288.5V215.5H290V216.5H288.5V239.5H290V240.5H288.5V263.5H290V264.5H288.5V287.5H290V288.5H288.5V311.5H290V312.5H288.5V335.5H290V336.5H288.5V359.5H290V360.5H288.5V383.5H290V384.5H288.5V407.5H290V408.5H288.5V431.5H290V432.5H288.5V455.5H290V456.5H288.5V479.5H290V480.5H288.5V503.5H290V504.5H288.5V516H287.5V504.5H264.5V516H263.5V504.5H240.5V516H239.5V504.5H216.5V516H215.5V504.5H192.5V516H191.5V504.5H168.5V516H167.5V504.5H144.5V516H143.5V504.5H120.5V516H119.5V504.5H96.5V516H95.5V504.5H72.5V516H71.5V504.5H48.5V516H47.5V504.5H24.5V516H23.5V504.5H0.5V516H-0.5ZM287.5 503.5V480.5H264.5V503.5H287.5ZM287.5 479.5V456.5H264.5V479.5H287.5ZM287.5 455.5V432.5H264.5V455.5H287.5ZM287.5 431.5V408.5H264.5V431.5H287.5ZM287.5 407.5V384.5H264.5V407.5H287.5ZM287.5 383.5V360.5H264.5V383.5H287.5ZM287.5 359.5V336.5H264.5V359.5H287.5ZM287.5 335.5V312.5H264.5V335.5H287.5ZM287.5 311.5V288.5H264.5V311.5H287.5ZM287.5 287.5V264.5H264.5V287.5H287.5ZM287.5 263.5V240.5H264.5V263.5H287.5ZM287.5 239.5V216.5H264.5V239.5H287.5ZM287.5 215.5V192.5H264.5V215.5H287.5ZM287.5 191.5V168.5H264.5V191.5H287.5ZM287.5 167.5V144.5H264.5V167.5H287.5ZM287.5 143.5V120.5H264.5V143.5H287.5ZM287.5 119.5V96.5H264.5V119.5H287.5ZM287.5 95.5V72.5H264.5V95.5H287.5ZM287.5 71.5V48.5H264.5V71.5H287.5ZM287.5 47.5V24.5H264.5V47.5H287.5ZM240.5 24.5H263.5V47.5H240.5V24.5ZM240.5 48.5H263.5V71.5H240.5V48.5ZM240.5 72.5H263.5V95.5H240.5V72.5ZM240.5 96.5H263.5V119.5H240.5V96.5ZM240.5 120.5H263.5V143.5H240.5V120.5ZM240.5 144.5H263.5V167.5H240.5V144.5ZM240.5 168.5H263.5V191.5H240.5V168.5ZM240.5 192.5H263.5V215.5H240.5V192.5ZM240.5 216.5H263.5V239.5H240.5V216.5ZM240.5 240.5H263.5V263.5H240.5V240.5ZM240.5 264.5H263.5V287.5H240.5V264.5ZM240.5 288.5H263.5V311.5H240.5V288.5ZM240.5 312.5H263.5V335.5H240.5V312.5ZM240.5 336.5H263.5V359.5H240.5V336.5ZM240.5 360.5H263.5V383.5H240.5V360.5ZM240.5 384.5H263.5V407.5H240.5V384.5ZM240.5 408.5H263.5V431.5H240.5V408.5ZM240.5 432.5H263.5V455.5H240.5V432.5ZM240.5 456.5H263.5V479.5H240.5V456.5ZM240.5 480.5H263.5V503.5H240.5V480.5ZM239.5 503.5V480.5H216.5V503.5H239.5ZM239.5 479.5V456.5H216.5V479.5H239.5ZM239.5 455.5V432.5H216.5V455.5H239.5ZM239.5 431.5V408.5H216.5V431.5H239.5ZM239.5 407.5V384.5H216.5V407.5H239.5ZM239.5 383.5V360.5H216.5V383.5H239.5ZM239.5 359.5V336.5H216.5V359.5H239.5ZM239.5 335.5V312.5H216.5V335.5H239.5ZM239.5 311.5V288.5H216.5V311.5H239.5ZM239.5 287.5V264.5H216.5V287.5H239.5ZM239.5 263.5V240.5H216.5V263.5H239.5ZM239.5 239.5V216.5H216.5V239.5H239.5ZM239.5 215.5V192.5H216.5V215.5H239.5ZM239.5 191.5V168.5H216.5V191.5H239.5ZM239.5 167.5V144.5H216.5V167.5H239.5ZM239.5 143.5V120.5H216.5V143.5H239.5ZM239.5 119.5V96.5H216.5V119.5H239.5ZM239.5 95.5V72.5H216.5V95.5H239.5ZM239.5 71.5V48.5H216.5V71.5H239.5ZM239.5 47.5V24.5H216.5V47.5H239.5ZM192.5 24.5H215.5V47.5H192.5V24.5ZM192.5 48.5H215.5V71.5H192.5V48.5ZM192.5 72.5H215.5V95.5H192.5V72.5ZM192.5 96.5H215.5V119.5H192.5V96.5ZM192.5 120.5H215.5V143.5H192.5V120.5ZM192.5 144.5H215.5V167.5H192.5V144.5ZM192.5 168.5H215.5V191.5H192.5V168.5ZM192.5 192.5H215.5V215.5H192.5V192.5ZM192.5 216.5H215.5V239.5H192.5V216.5ZM192.5 240.5H215.5V263.5H192.5V240.5ZM192.5 264.5H215.5V287.5H192.5V264.5ZM192.5 288.5H215.5V311.5H192.5V288.5ZM192.5 312.5H215.5V335.5H192.5V312.5ZM192.5 336.5H215.5V359.5H192.5V336.5ZM192.5 360.5H215.5V383.5H192.5V360.5ZM192.5 384.5H215.5V407.5H192.5V384.5ZM192.5 408.5H215.5V431.5H192.5V408.5ZM192.5 432.5H215.5V455.5H192.5V432.5ZM192.5 456.5H215.5V479.5H192.5V456.5ZM192.5 480.5H215.5V503.5H192.5V480.5ZM191.5 503.5V480.5H168.5V503.5H191.5ZM191.5 479.5V456.5H168.5V479.5H191.5ZM191.5 455.5V432.5H168.5V455.5H191.5ZM191.5 431.5V408.5H168.5V431.5H191.5ZM191.5 407.5V384.5H168.5V407.5H191.5ZM191.5 383.5V360.5H168.5V383.5H191.5ZM191.5 359.5V336.5H168.5V359.5H191.5ZM191.5 335.5V312.5H168.5V335.5H191.5ZM191.5 311.5V288.5H168.5V311.5H191.5ZM191.5 287.5V264.5H168.5V287.5H191.5ZM191.5 263.5V240.5H168.5V263.5H191.5ZM191.5 239.5V216.5H168.5V239.5H191.5ZM191.5 215.5V192.5H168.5V215.5H191.5ZM191.5 191.5V168.5H168.5V191.5H191.5ZM191.5 167.5V144.5H168.5V167.5H191.5ZM191.5 143.5V120.5H168.5V143.5H191.5ZM191.5 119.5V96.5H168.5V119.5H191.5ZM191.5 95.5V72.5H168.5V95.5H191.5ZM191.5 71.5V48.5H168.5V71.5H191.5ZM191.5 47.5V24.5H168.5V47.5H191.5ZM144.5 24.5H167.5V47.5H144.5V24.5ZM144.5 48.5H167.5V71.5H144.5V48.5ZM144.5 72.5H167.5V95.5H144.5V72.5ZM144.5 96.5H167.5V119.5H144.5V96.5ZM144.5 120.5H167.5V143.5H144.5V120.5ZM144.5 144.5H167.5V167.5H144.5V144.5ZM144.5 168.5H167.5V191.5H144.5V168.5ZM144.5 192.5H167.5V215.5H144.5V192.5ZM144.5 216.5H167.5V239.5H144.5V216.5ZM144.5 240.5H167.5V263.5H144.5V240.5ZM144.5 264.5H167.5V287.5H144.5V264.5ZM144.5 288.5H167.5V311.5H144.5V288.5ZM144.5 312.5H167.5V335.5H144.5V312.5ZM144.5 336.5H167.5V359.5H144.5V336.5ZM144.5 360.5H167.5V383.5H144.5V360.5ZM144.5 384.5H167.5V407.5H144.5V384.5ZM144.5 408.5H167.5V431.5H144.5V408.5ZM144.5 432.5H167.5V455.5H144.5V432.5ZM144.5 456.5H167.5V479.5H144.5V456.5ZM144.5 480.5H167.5V503.5H144.5V480.5ZM143.5 503.5V480.5H120.5V503.5H143.5ZM143.5 479.5V456.5H120.5V479.5H143.5ZM143.5 455.5V432.5H120.5V455.5H143.5ZM143.5 431.5V408.5H120.5V431.5H143.5ZM143.5 407.5V384.5H120.5V407.5H143.5ZM143.5 383.5V360.5H120.5V383.5H143.5ZM143.5 359.5V336.5H120.5V359.5H143.5ZM143.5 335.5V312.5H120.5V335.5H143.5ZM143.5 311.5V288.5H120.5V311.5H143.5ZM143.5 287.5V264.5H120.5V287.5H143.5ZM143.5 263.5V240.5H120.5V263.5H143.5ZM143.5 239.5V216.5H120.5V239.5H143.5ZM143.5 215.5V192.5H120.5V215.5H143.5ZM143.5 191.5V168.5H120.5V191.5H143.5ZM143.5 167.5V144.5H120.5V167.5H143.5ZM143.5 143.5V120.5H120.5V143.5H143.5ZM143.5 119.5V96.5H120.5V119.5H143.5ZM143.5 95.5V72.5H120.5V95.5H143.5ZM143.5 71.5V48.5H120.5V71.5H143.5ZM143.5 47.5V24.5H120.5V47.5H143.5ZM96.5 24.5H119.5V47.5H96.5V24.5ZM96.5 48.5H119.5V71.5H96.5V48.5ZM96.5 72.5H119.5V95.5H96.5V72.5ZM96.5 96.5H119.5V119.5H96.5V96.5ZM96.5 120.5H119.5V143.5H96.5V120.5ZM96.5 144.5H119.5V167.5H96.5V144.5ZM96.5 168.5H119.5V191.5H96.5V168.5ZM96.5 192.5H119.5V215.5H96.5V192.5ZM96.5 216.5H119.5V239.5H96.5V216.5ZM96.5 240.5H119.5V263.5H96.5V240.5ZM96.5 264.5H119.5V287.5H96.5V264.5ZM96.5 288.5H119.5V311.5H96.5V288.5ZM96.5 312.5H119.5V335.5H96.5V312.5ZM96.5 336.5H119.5V359.5H96.5V336.5ZM96.5 360.5H119.5V383.5H96.5V360.5ZM96.5 384.5H119.5V407.5H96.5V384.5ZM96.5 408.5H119.5V431.5H96.5V408.5ZM96.5 432.5H119.5V455.5H96.5V432.5ZM96.5 456.5H119.5V479.5H96.5V456.5ZM96.5 480.5H119.5V503.5H96.5V480.5ZM95.5 503.5V480.5H72.5V503.5H95.5ZM95.5 479.5V456.5H72.5V479.5H95.5ZM95.5 455.5V432.5H72.5V455.5H95.5ZM95.5 431.5V408.5H72.5V431.5H95.5ZM95.5 407.5V384.5H72.5V407.5H95.5ZM95.5 383.5V360.5H72.5V383.5H95.5ZM95.5 359.5V336.5H72.5V359.5H95.5ZM95.5 335.5V312.5H72.5V335.5H95.5ZM95.5 311.5V288.5H72.5V311.5H95.5ZM95.5 287.5V264.5H72.5V287.5H95.5ZM95.5 263.5V240.5H72.5V263.5H95.5ZM95.5 239.5V216.5H72.5V239.5H95.5ZM95.5 215.5V192.5H72.5V215.5H95.5ZM95.5 191.5V168.5H72.5V191.5H95.5ZM95.5 167.5V144.5H72.5V167.5H95.5ZM95.5 143.5V120.5H72.5V143.5H95.5ZM95.5 119.5V96.5H72.5V119.5H95.5ZM95.5 95.5V72.5H72.5V95.5H95.5ZM95.5 71.5V48.5H72.5V71.5H95.5ZM95.5 47.5V24.5H72.5V47.5H95.5ZM48.5 24.5H71.5V47.5H48.5V24.5ZM48.5 48.5H71.5V71.5H48.5V48.5ZM48.5 72.5H71.5V95.5H48.5V72.5ZM48.5 96.5H71.5V119.5H48.5V96.5ZM48.5 120.5H71.5V143.5H48.5V120.5ZM48.5 144.5H71.5V167.5H48.5V144.5ZM48.5 168.5H71.5V191.5H48.5V168.5ZM48.5 192.5H71.5V215.5H48.5V192.5ZM48.5 216.5H71.5V239.5H48.5V216.5ZM48.5 240.5H71.5V263.5H48.5V240.5ZM48.5 264.5H71.5V287.5H48.5V264.5ZM48.5 288.5H71.5V311.5H48.5V288.5ZM48.5 312.5H71.5V335.5H48.5V312.5ZM48.5 336.5H71.5V359.5H48.5V336.5ZM48.5 360.5H71.5V383.5H48.5V360.5ZM48.5 384.5H71.5V407.5H48.5V384.5ZM48.5 408.5H71.5V431.5H48.5V408.5ZM48.5 432.5H71.5V455.5H48.5V432.5ZM48.5 456.5H71.5V479.5H48.5V456.5ZM48.5 480.5H71.5V503.5H48.5V480.5ZM47.5 503.5V480.5H24.5V503.5H47.5ZM47.5 479.5V456.5H24.5V479.5H47.5ZM47.5 455.5V432.5H24.5V455.5H47.5ZM47.5 431.5V408.5H24.5V431.5H47.5ZM47.5 407.5V384.5H24.5V407.5H47.5ZM47.5 383.5V360.5H24.5V383.5H47.5ZM47.5 359.5V336.5H24.5V359.5H47.5ZM47.5 335.5V312.5H24.5V335.5H47.5ZM47.5 311.5V288.5H24.5V311.5H47.5ZM47.5 287.5V264.5H24.5V287.5H47.5ZM47.5 263.5V240.5H24.5V263.5H47.5ZM47.5 239.5V216.5H24.5V239.5H47.5ZM47.5 215.5V192.5H24.5V215.5H47.5ZM47.5 191.5V168.5H24.5V191.5H47.5ZM47.5 167.5V144.5H24.5V167.5H47.5ZM47.5 143.5V120.5H24.5V143.5H47.5ZM47.5 119.5V96.5H24.5V119.5H47.5ZM47.5 95.5V72.5H24.5V95.5H47.5ZM47.5 71.5V48.5H24.5V71.5H47.5ZM47.5 47.5V24.5H24.5V47.5H47.5ZM0.5 47.5V24.5H23.5V47.5H0.5ZM0.5 71.5V48.5H23.5V71.5H0.5ZM0.5 95.5V72.5H23.5V95.5H0.5ZM0.5 119.5V96.5H23.5V119.5H0.5ZM0.5 143.5V120.5H23.5V143.5H0.5ZM0.5 167.5V144.5H23.5V167.5H0.5ZM0.5 191.5V168.5H23.5V191.5H0.5ZM0.5 215.5V192.5H23.5V215.5H0.5ZM0.5 239.5V216.5H23.5V239.5H0.5ZM0.5 263.5V240.5H23.5V263.5H0.5ZM0.5 287.5V264.5H23.5V287.5H0.5ZM0.5 311.5V288.5H23.5V311.5H0.5ZM0.5 335.5V312.5H23.5V335.5H0.5ZM0.5 359.5V336.5H23.5V359.5H0.5ZM0.5 383.5V360.5H23.5V383.5H0.5ZM0.5 407.5V384.5H23.5V407.5H0.5ZM0.5 431.5V408.5H23.5V431.5H0.5ZM0.5 455.5V432.5H23.5V455.5H0.5ZM0.5 479.5V456.5H23.5V479.5H0.5ZM0.5 503.5V480.5H23.5V503.5H0.5Z"
+      fill="white"
+      fill-opacity="0.02"
     />
   </svg>
 );
@@ -1034,14 +1442,14 @@ export const WhitelistIcon: React.FC<SVGPropsWithColor> = ({
     <path
       d="M36 24H38C38.5304 24 39.0391 24.2107 39.4142 24.5858C39.7893 24.9609 40 25.4696 40 26V40C40 40.5304 39.7893 41.0391 39.4142 41.4142C39.0391 41.7893 38.5304 42 38 42H26C25.4696 42 24.9609 41.7893 24.5858 41.4142C24.2107 41.0391 24 40.5304 24 40V26C24 25.4696 24.2107 24.9609 24.5858 24.5858C24.9609 24.2107 25.4696 24 26 24H28"
       stroke={color || "white"}
-      stroke-width="2"
+      strokeWidth="2"
       strokeLinecap="round"
       strokeLinejoin="round"
     />
     <path
       d="M35 22H29C28.4477 22 28 22.4477 28 23V25C28 25.5523 28.4477 26 29 26H35C35.5523 26 36 25.5523 36 25V23C36 22.4477 35.5523 22 35 22Z"
       stroke={color || "white"}
-      stroke-width="2"
+      strokeWidth="2"
       strokeLinecap="round"
       strokeLinejoin="round"
     />
@@ -1059,14 +1467,43 @@ export const BackIcon: React.FC<SVGPropsWithColor> = ({ color, ...props }) => (
     <path
       d="M19 12H5"
       stroke={color || "white"}
-      stroke-width="2"
-      stroke-linecap="round"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
       stroke-linejoin="round"
     />
     <path
       d="M12 19L5 12L12 5"
       stroke={color || "white"}
-      stroke-width="2"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    />
+  </svg>
+);
+
+export const ThinBackIcon: React.FC<SVGPropsWithColor> = ({
+  color,
+  ...props
+}) => (
+  <svg
+    width="40"
+    height="40"
+    viewBox="0 0 40 40"
+    fill="none"
+    xmlns="http://www.w3.org/2000/svg"
+  >
+    <path
+      d="M27 20H13"
+      stroke={color || "white"}
+      stroke-width="1"
+      stroke-linecap="round"
+      stroke-linejoin="round"
+    />
+    <path
+      d="M20 27.0003L13 20.0003L20 13.0003"
+      stroke={color || "white"}
+      stroke-width="1"
       stroke-linecap="round"
       stroke-linejoin="round"
     />
@@ -1102,7 +1539,7 @@ export const VeRBNIcon: React.FC<SVGPropsWithColor> = () => (
         height="72"
         rx="36"
         stroke="#FC0A54"
-        stroke-width="2"
+        strokeWidth="2"
       />
     </g>
     <g opacity="0.12" filter="url(#filter1_d_1293_32)">
@@ -1113,7 +1550,7 @@ export const VeRBNIcon: React.FC<SVGPropsWithColor> = () => (
         height="80"
         rx="40"
         stroke="#FC0A54"
-        stroke-width="2"
+        strokeWidth="2"
       />
     </g>
     <g filter="url(#filter2_d_1293_32)">
@@ -1124,7 +1561,7 @@ export const VeRBNIcon: React.FC<SVGPropsWithColor> = () => (
         height="64"
         rx="32"
         stroke="#FC0A54"
-        stroke-width="2"
+        strokeWidth="2"
       />
     </g>
     <defs>
@@ -1135,9 +1572,9 @@ export const VeRBNIcon: React.FC<SVGPropsWithColor> = () => (
         width="106"
         height="106"
         filterUnits="userSpaceOnUse"
-        color-interpolation-filters="sRGB"
+        colorInterpolationFilters="sRGB"
       >
-        <feFlood flood-opacity="0" result="BackgroundImageFix" />
+        <feFlood floodOpacity="0" result="BackgroundImageFix" />
         <feColorMatrix
           in="SourceAlpha"
           type="matrix"
@@ -1169,9 +1606,9 @@ export const VeRBNIcon: React.FC<SVGPropsWithColor> = () => (
         width="114"
         height="114"
         filterUnits="userSpaceOnUse"
-        color-interpolation-filters="sRGB"
+        colorInterpolationFilters="sRGB"
       >
-        <feFlood flood-opacity="0" result="BackgroundImageFix" />
+        <feFlood floodOpacity="0" result="BackgroundImageFix" />
         <feColorMatrix
           in="SourceAlpha"
           type="matrix"
@@ -1203,9 +1640,9 @@ export const VeRBNIcon: React.FC<SVGPropsWithColor> = () => (
         width="98"
         height="98"
         filterUnits="userSpaceOnUse"
-        color-interpolation-filters="sRGB"
+        colorInterpolationFilters="sRGB"
       >
-        <feFlood flood-opacity="0" result="BackgroundImageFix" />
+        <feFlood floodOpacity="0" result="BackgroundImageFix" />
         <feColorMatrix
           in="SourceAlpha"
           type="matrix"
@@ -1240,13 +1677,17 @@ export const BoostIcon: React.FC<SVGPropsWithColor> = ({
   ...props
 }) => (
   <svg
-    width="24"
-    height="24"
-    viewBox="0 0 24 24"
-    fill="none"
+    width="400"
+    height="400"
+    viewBox="0 0 400 400"
+    fill={backgroundColor}
     xmlns="http://www.w3.org/2000/svg"
+    {...props}
   >
-    <rect width="24" height="24" rx="12" fill={backgroundColor} />
-    <path d="M13 6L7 13.2H12.4L11.8 18L17.8 10.8H12.4L13 6Z" fill={color} />
+    <rect width="400" height="400" rx="200" fill={backgroundColor} />
+    <path
+      d="M199.5 122L28 302C28 302 24.1853 295.687 22 291.5C19.8985 287.474 17 281 17 281L199.5 86.5L315.5 206.5L198.5 332L180.5 315L281 206.5L199.5 122Z"
+      fill={color}
+    />
   </svg>
 );

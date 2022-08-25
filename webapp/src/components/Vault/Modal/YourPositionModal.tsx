@@ -113,13 +113,14 @@ const YourPositionModal: React.FC = () => {
     switch (vaultVersion) {
       case "v1":
         if (!vaultAccount) {
-          return [BigNumber.from(0), undefined, BigNumber.from(0)];
+          return [BigNumber.from(0), BigNumber.from(0), BigNumber.from(0)];
         }
         return [
           vaultAccount.totalBalance,
-          undefined,
+          BigNumber.from(0),
           vaultAccount.totalYieldEarned,
         ];
+      case "earn":
       case "v2":
         if (!vaultAccount) {
           return [BigNumber.from(0), BigNumber.from(0), BigNumber.from(0)];

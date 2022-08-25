@@ -38,7 +38,11 @@ export interface ProductCatalogueProps {
 
 export type DesktopViewType = "grid" | "gallery";
 
-export const VaultStrategyList = ["COVERED-CALL", "PUT-SELLING"] as const;
+export const VaultStrategyList = [
+  "COVERED-CALL",
+  "PUT-SELLING",
+  "PRINCIPLE-PROTECTED",
+] as const;
 export type VaultStrategy = typeof VaultStrategyList[number];
 
 export const VaultSortByList = [

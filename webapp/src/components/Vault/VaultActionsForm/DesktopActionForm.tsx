@@ -50,6 +50,7 @@ const DesktopActionForm: React.FC<DesktopActionFormProps> = ({ vault }) => {
             onFormSubmit={() => setShowActionModal(true)}
           />
         );
+      case "earn":
       case "v2":
         return (
           <VaultV2ActionsForm
