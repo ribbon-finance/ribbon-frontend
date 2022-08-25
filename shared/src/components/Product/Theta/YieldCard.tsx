@@ -459,8 +459,8 @@ const YieldCard: React.FC<YieldCardProps> = ({
       poolReward: lg5Data.poolRewardForDuration,
       pricePerShare,
       decimals,
-      assetPrice: prices[asset],
-      rbnPrice: prices["RBN"],
+      assetPrice: prices[asset].price,
+      rbnPrice: prices["RBN"].price,
     });
 
     return rewards;

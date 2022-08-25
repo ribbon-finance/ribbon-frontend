@@ -133,7 +133,7 @@ const RewardsCalculatorModal: React.FC<RewardsCalculatorModalProps> = ({
   // Current Gauge
   const [currentGauge, setCurrentGauge] = useState(stakingPools[0]);
 
-  const { prices, loading: assetPricesLoading } = useAssetsPrice();
+  const { prices } = useAssetsPrice();
   const { data: lg5Data, loading: lg5DataLoading } =
     useLiquidityGaugeV5PoolData(currentGauge);
   const {
@@ -238,6 +238,8 @@ const RewardsCalculatorModal: React.FC<RewardsCalculatorModalProps> = ({
     let boostedRewards: JSX.Element | string;
     let rewardsBooster: JSX.Element | string;
 
+    const assetPricesLoading = prices["RBN"].loading || prices[asset].loading;
+
     if (stakeInputHasError) {
       totalAPY = "---";
       baseRewards = "---";
@@ -267,8 +269,8 @@ const RewardsCalculatorModal: React.FC<RewardsCalculatorModalProps> = ({
           poolReward: lg5Data.poolRewardForDuration,
           pricePerShare,
           decimals,
-          assetPrice: prices[asset],
-          rbnPrice: prices["RBN"],
+          assetPrice: prices[asset].price,
+          rbnPrice: prices["RBN"].price,
         });
       }
       const boosterMultiplier = getRewardsBooster();
@@ -293,7 +295,6 @@ const RewardsCalculatorModal: React.FC<RewardsCalculatorModalProps> = ({
     prices,
     stakeInputHasError,
     lg5DataLoading,
-    assetPricesLoading,
     vaultDataLoading,
     loadingText,
     getRewardsBooster,

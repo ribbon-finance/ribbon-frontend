@@ -88,8 +88,7 @@ const DesktopVaultActivityList: React.FC<DesktopVaultActivityListProps> = ({
       decimals: getAssetDecimals(asset),
     };
   }, [vaultOption]);
-  const { searchAssetPriceFromTimestamp, loading: assetPriceLoading } =
-    useAssetsPriceHistory();
+  const { searchAssetPriceFromTimestamp, histories } = useAssetsPriceHistory();
 
   const { width: screenWidth } = useScreenSize();
   const loadingText = useLoadingText();
@@ -103,6 +102,8 @@ const DesktopVaultActivityList: React.FC<DesktopVaultActivityListProps> = ({
           return `${getEtherscanURI(chainId || 1)}/tx/${activity.openTxhash}`;
         case "sales":
           return `${getEtherscanURI(chainId || 1)}/tx/${activity.txhash}`;
+        default:
+          return "";
       }
     },
     [chainId]
@@ -177,7 +178,7 @@ const DesktopVaultActivityList: React.FC<DesktopVaultActivityListProps> = ({
                 {getAssetDisplay("USDC")}
               </VaultPrimaryText>
               <VaultSecondaryText fontFamily="VCR">
-                {assetPriceLoading
+                {histories["USDC"].loading
                   ? loadingText
                   : `+${assetToUSD(
                       activity.premium,
@@ -187,10 +188,11 @@ const DesktopVaultActivityList: React.FC<DesktopVaultActivityListProps> = ({
               </VaultSecondaryText>
             </>,
           ];
+        default:
+          return [];
       }
     },
     [
-      assetPriceLoading,
       screenWidth,
       loadingText,
       asset,
@@ -198,6 +200,7 @@ const DesktopVaultActivityList: React.FC<DesktopVaultActivityListProps> = ({
       premiumDecimals,
       searchAssetPriceFromTimestamp,
       vaultOption,
+      histories,
     ]
   );
 
@@ -215,6 +218,8 @@ const DesktopVaultActivityList: React.FC<DesktopVaultActivityListProps> = ({
             <i className="fas fa-dollar-sign" />
           </VaultActivityIcon>
         );
+      default:
+        return <></>;
     }
   }, []);
 

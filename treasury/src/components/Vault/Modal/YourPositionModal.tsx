@@ -97,6 +97,8 @@ const YourPositionModal: React.FC = () => {
           vaultAccount.totalPendingDeposit,
           vaultAccount.totalYieldEarned,
         ];
+      default:
+        return [BigNumber.from(0), BigNumber.from(0), BigNumber.from(0)];
     }
   }, [vaultAccount, vaultVersion]);
 

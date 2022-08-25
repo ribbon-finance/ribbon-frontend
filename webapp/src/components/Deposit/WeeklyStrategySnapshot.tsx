@@ -25,6 +25,7 @@ import { formatUnits } from "@ethersproject/units";
 import { useLatestOption } from "shared/lib/hooks/useLatestOption";
 import TooltipExplanation from "shared/lib/components/Common/TooltipExplanation";
 import HelpInfo from "shared/lib/components/Common/HelpInfo";
+import { Assets } from "shared/lib/store/types";
 
 const VaultPerformanceChartContainer = styled.div`
   display: flex;
@@ -111,31 +112,30 @@ const WeeklyStrategySnapshot: React.FC<WeeklyStrategySnapshotProps> = ({
   vault,
 }) => {
   const { vaultOption, vaultVersion } = vault;
-  const { option: currentOption, loading: optionLoading } = useLatestOption(
-    vaultOption,
-    vaultVersion
-  );
+  const { option: currentOption } = useLatestOption(vaultOption, vaultVersion);
   const asset = getAssets(vaultOption);
   const optionAsset = getOptionAssets(vaultOption);
-  const { prices, loading: priceLoading } = useAssetsPrice();
-  const loading = priceLoading || optionLoading;
+  const { prices } = useAssetsPrice();
+
+  const loading = useMemo(() => {
+    return prices[optionAsset].loading || currentOption?.loading;
+  }, [currentOption?.loading, optionAsset, prices]);
+
   const [showCalculator, setShowCalculator] = useState(false);
   const chain = getVaultChain(vaultOption);
 
   const loadingText = useLoadingText();
 
   const strikeAPRText = useMemo(() => {
-    if (optionLoading) return loadingText;
-
     if (!currentOption) return "---";
+    if (currentOption.loading) return loadingText;
 
     return currency(formatOptionStrike(currentOption.strike, chain)).format();
-  }, [chain, currentOption, loadingText, optionLoading]);
+  }, [chain, currentOption, loadingText]);
 
   const toExpiryText = useMemo(() => {
-    if (optionLoading) return loadingText;
-
     if (!currentOption) return "---";
+    if (currentOption.loading) return loadingText;
 
     const toExpiryDuration = moment.duration(
       currentOption.expiry.diff(moment()),
@@ -147,7 +147,7 @@ const WeeklyStrategySnapshot: React.FC<WeeklyStrategySnapshotProps> = ({
     }
 
     return `${toExpiryDuration.days()}D ${toExpiryDuration.hours()}H ${toExpiryDuration.minutes()}M`;
-  }, [currentOption, loadingText, optionLoading]);
+  }, [currentOption, loadingText]);
 
   const KPI = useMemo(() => {
     if (loading || !currentOption) {
@@ -155,7 +155,8 @@ const WeeklyStrategySnapshot: React.FC<WeeklyStrategySnapshotProps> = ({
     }
 
     const higherStrike =
-      formatOptionStrike(currentOption.strike, chain) > prices[optionAsset]!;
+      formatOptionStrike(currentOption.strike, chain) >
+      prices[optionAsset].price;
     const isExercisedRange = currentOption.isPut ? higherStrike : !higherStrike;
     const assetDecimals = getAssetDecimals(asset);
 
@@ -165,7 +166,8 @@ const WeeklyStrategySnapshot: React.FC<WeeklyStrategySnapshotProps> = ({
       profit = parseFloat(formatUnits(currentOption.premium, assetDecimals));
     } else if (currentOption.isPut) {
       const exerciseCost =
-        formatOptionStrike(currentOption.strike, chain) - prices[optionAsset]!;
+        formatOptionStrike(currentOption.strike, chain) -
+        prices[optionAsset].price;
 
       profit =
         parseFloat(formatUnits(currentOption.premium, assetDecimals)) -
@@ -174,7 +176,7 @@ const WeeklyStrategySnapshot: React.FC<WeeklyStrategySnapshotProps> = ({
       profit =
         (currentOption.amount *
           formatOptionStrike(currentOption.strike, chain)) /
-          prices[optionAsset]! -
+          prices[optionAsset].price -
         currentOption.amount +
         parseFloat(formatUnits(currentOption.premium, assetDecimals));
     }
@@ -208,7 +210,7 @@ const WeeklyStrategySnapshot: React.FC<WeeklyStrategySnapshotProps> = ({
 
     return (
       <StrikeChart
-        current={prices[optionAsset] || 0}
+        current={prices[optionAsset].price || 0}
         strike={formatOptionStrike(currentOption.strike, chain)}
         profitable={KPI ? KPI.isProfit : true}
       />
@@ -229,9 +231,9 @@ const WeeklyStrategySnapshot: React.FC<WeeklyStrategySnapshotProps> = ({
             <DataNumber
               variant={KPI ? (KPI.isProfit ? "green" : "red") : undefined}
             >
-              {priceLoading
+              {prices[optionAsset].loading
                 ? loadingText
-                : currency(prices[optionAsset]!).format()}
+                : currency(prices[optionAsset].price).format()}
             </DataNumber>
           </DataCol>
           <DataCol xs="6">
@@ -296,7 +298,12 @@ const WeeklyStrategySnapshot: React.FC<WeeklyStrategySnapshotProps> = ({
             vault={vault}
             show={showCalculator}
             onClose={() => setShowCalculator(false)}
-            prices={prices}
+            prices={Object.fromEntries(
+              Object.keys(prices).map((key) => {
+                return [key, prices[key as Assets].price];
+              })
+              // Object.values(prices).map((data) => data.price)
+            )}
             asset={asset}
             optionAsset={optionAsset}
             currentOption={currentOption}
