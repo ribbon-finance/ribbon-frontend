@@ -92,6 +92,7 @@ const FormTitle = styled(Title)<{ delay?: number; show?: boolean }>`
   font-size: 22px;
   line-height: 28px;
   letter-spacing: 1px;
+  text-align: center;
 
   ${({ show, delay }) => {
     return (
@@ -148,7 +149,7 @@ const DetailRow = styled.div<{ delay?: number; show?: boolean }>`
   }}
 `;
 
-const NextButton = styled(ActionButton)<{ delay?: number; show?: boolean }>`
+const FormButton = styled(ActionButton)<{ delay?: number; show?: boolean }>`
   margin-top: 40px !important;
 
   ${({ show, delay }) => {
@@ -389,7 +390,7 @@ const DepositFormStep: React.FC<{
         {actionLogo}
       </Logo>
       {/* Title */}
-      <FormTitle delay={0.2} show={show} className="text-center">
+      <FormTitle delay={0.2} show={show}>
         DEPOSIT
       </FormTitle>
       <StyledBaseInputLabel delay={0.3} show={show}>
@@ -456,7 +457,7 @@ const DepositFormStep: React.FC<{
           </StyledTitle>
         </DetailRow>
       ))}
-      <NextButton
+      <FormButton
         delay={0.5 + detailRows.length * 0.1}
         show={show}
         onClick={handleConfirm}
@@ -465,7 +466,7 @@ const DepositFormStep: React.FC<{
         color={color}
       >
         Next
-      </NextButton>
+      </FormButton>
 
       {warning}
     </div>
