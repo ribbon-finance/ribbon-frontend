@@ -264,6 +264,8 @@ export const getAssetLogo: (asset: Assets) =>
       return SolanaLogo;
     case "APE":
       return APELogo;
+    case "LDO":
+      return LidoThemedETHLogo;
     default:
       return Logo;
   }
