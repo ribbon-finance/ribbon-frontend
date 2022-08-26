@@ -16,21 +16,17 @@ const useStrikePrice = (
   vaultVersion: VaultVersion
 ) => {
   const loadingText = useLoadingText();
-  const { option: currentOption, loading: optionLoading } = useLatestOption(
-    vaultOption,
-    vaultVersion
-  );
+  const { option: currentOption } = useLatestOption(vaultOption, vaultVersion);
 
-  const { prices, loading: priceLoading } = useAssetsPrice();
+  const { prices } = useAssetsPrice();
   const optionAsset = getOptionAssets(vaultOption);
 
   const strikePrice = useCallback(
     (formatted: boolean = true) => {
       const chain = getVaultChain(vaultOption);
 
-      if (optionLoading) return loadingText;
-
       if (!currentOption) return "---";
+      if (currentOption.loading) return loadingText;
 
       if (formatted) {
         return currency(
@@ -40,26 +36,26 @@ const useStrikePrice = (
         return formatOptionStrike(currentOption.strike, chain);
       }
     },
-    [currentOption, loadingText, optionLoading, vaultOption]
+    [currentOption, loadingText, vaultOption]
   );
 
   const currentPrice = useCallback(
     (formatted: boolean = true) => {
-      if (priceLoading) return loadingText;
+      if (prices[optionAsset].loading) return loadingText;
 
       if (formatted) {
-        return currency(prices[optionAsset]!).format();
+        return currency(prices[optionAsset].price!).format();
       } else {
-        return Number(prices[optionAsset].toFixed(2));
+        return Number(prices[optionAsset].price.toFixed(2));
       }
     },
-    [priceLoading, loadingText, optionAsset, prices]
+    [loadingText, optionAsset, prices]
   );
 
   return {
     strikePrice,
     currentPrice,
-    isLoading: optionLoading || priceLoading,
+    isLoading: currentOption?.loading || prices[optionAsset].loading,
   };
 };
 

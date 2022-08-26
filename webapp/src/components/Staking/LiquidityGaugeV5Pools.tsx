@@ -180,7 +180,7 @@ const LiquidityGaugeV5Pool: React.FC<LiquidityGaugeV5PoolProps> = ({
   const { data: lg5Data, loading: lg5DataLoading } =
     useLiquidityGaugeV5PoolData(vaultOption);
 
-  const { prices, loading: assetPricesLoading } = useAssetsPrice();
+  const { prices } = useAssetsPrice();
   const {
     data: { asset, decimals, pricePerShare },
     loading: vaultDataLoading,
@@ -190,7 +190,8 @@ const LiquidityGaugeV5Pool: React.FC<LiquidityGaugeV5PoolProps> = ({
 
   const isAllLoading =
     lg5DataLoading ||
-    assetPricesLoading ||
+    prices[asset].loading ||
+    prices["RBN"].loading ||
     vaultDataLoading ||
     votingPowerLoading;
   const loadingText = useLoadingText();
@@ -288,8 +289,8 @@ const LiquidityGaugeV5Pool: React.FC<LiquidityGaugeV5PoolProps> = ({
       poolReward: lg5Data.poolRewardForDuration,
       pricePerShare,
       decimals,
-      assetPrice: prices[asset],
-      rbnPrice: prices["RBN"],
+      assetPrice: prices[asset].price,
+      rbnPrice: prices["RBN"].price,
     });
 
     return rewards;

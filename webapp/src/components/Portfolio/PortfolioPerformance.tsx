@@ -154,7 +154,7 @@ type dateFilterType = typeof dateFilterOptions[number];
 
 const PortfolioPerformance = () => {
   const { active } = useWeb3Wallet();
-  const { prices: assetsPrice, loading: assetsPriceLoading } = useAssetsPrice();
+  const { prices: assetsPrice } = useAssetsPrice();
   const { searchAssetPriceFromTimestamp } = useAssetsPriceHistory();
   const [hoveredBalanceUpdateIndex, setHoveredBalanceUpdateIndex] =
     useState<number>();
@@ -175,8 +175,7 @@ const PortfolioPerformance = () => {
   // Fetch balances update
   const { balances: subgraphBalanceUpdates, loading: balanceUpdatesLoading } =
     useBalances();
-  const loading =
-    assetsPriceLoading || balanceUpdatesLoading || RBNTokenAccountLoading;
+  const loading = balanceUpdatesLoading || RBNTokenAccountLoading;
   const animatedLoadingText = useLoadingText();
 
   /**
@@ -359,7 +358,7 @@ const PortfolioPerformance = () => {
           parseFloat(
             assetToFiat(
               vaultLastBalance.balance,
-              assetsPrice[vaultLastBalance.asset],
+              assetsPrice[vaultLastBalance.asset].price,
               getAssetDecimals(vaultLastBalance.asset)
             )
           )

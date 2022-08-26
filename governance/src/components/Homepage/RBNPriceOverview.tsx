@@ -65,7 +65,7 @@ const RBNPriceOverview = () => {
 
       return {
         timestamp: timestamp,
-        price: histories["RBN"][timestamp],
+        price: histories["RBN"].history[timestamp],
       };
     });
 

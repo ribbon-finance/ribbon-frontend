@@ -108,8 +108,7 @@ const EarnVaultActivityList: React.FC<DesktopVaultActivityListProps> = ({
   }, [vaultOption]);
   const chain = getVaultChain(vaultOption);
 
-  const { searchAssetPriceFromTimestamp, loading: assetPriceLoading } =
-    useAssetsPriceHistory();
+  const { searchAssetPriceFromTimestamp, histories } = useAssetsPriceHistory();
 
   const { width: screenWidth } = useScreenSize();
   const loadingText = useLoadingText();
@@ -296,7 +295,7 @@ const EarnVaultActivityList: React.FC<DesktopVaultActivityListProps> = ({
                 {getAssetDisplay(asset)}
               </VaultPrimaryText>
               <VaultSecondaryText fontFamily="VCR">
-                {assetPriceLoading
+                {histories[asset].loading
                   ? loadingText
                   : `+${assetToUSD(
                       activity.premium,
@@ -310,7 +309,7 @@ const EarnVaultActivityList: React.FC<DesktopVaultActivityListProps> = ({
     },
     [
       chain,
-      assetPriceLoading,
+      histories,
       screenWidth,
       loadingText,
       asset,

@@ -131,6 +131,8 @@ const ActionSteps: React.FC<ActionStepsProps> = ({
               )
               .div(parseUnits("1", getAssetDecimals(getAssets(vaultOption))))
           );
+      default:
+        return BigNumber.from(0);
     }
   }, [
     depositBalanceInAsset,

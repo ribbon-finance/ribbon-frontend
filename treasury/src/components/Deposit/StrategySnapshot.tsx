@@ -84,14 +84,11 @@ interface StrategySnapshotProps {
 
 const StrategySnapshot: React.FC<StrategySnapshotProps> = ({ vault }) => {
   const { vaultOption, vaultVersion } = vault;
-  const { option: currentOption, loading: optionLoading } = useLatestOption(
-    vaultOption,
-    vaultVersion
-  );
+  const { option: currentOption } = useLatestOption(vaultOption, vaultVersion);
 
   const optionAsset = getOptionAssets(vaultOption);
-  const { prices, loading: priceLoading } = useAssetsPrice();
-  const loading = priceLoading || optionLoading;
+  const { prices } = useAssetsPrice();
+
   const { activities, loading: activitiesLoading } = useVaultActivity(
     vaultOption!,
     vaultVersion
@@ -109,17 +106,15 @@ const StrategySnapshot: React.FC<StrategySnapshotProps> = ({ vault }) => {
   }, [activitiesLoading, loadingText, activities]);
 
   const strikeAPRText = useMemo(() => {
-    if (optionLoading) return loadingText;
-
     if (!currentOption) return "---";
+    if (currentOption.loading) return loadingText;
 
     return currency(formatOption(currentOption.strike)).format();
-  }, [currentOption, loadingText, optionLoading]);
+  }, [currentOption, loadingText]);
 
   const toExpiryText = useMemo(() => {
-    if (optionLoading) return loadingText;
-
     if (!currentOption) return "---";
+    if (currentOption.loading) return loadingText;
 
     const toExpiryDuration = moment.duration(
       currentOption.expiry.diff(moment()),
@@ -131,25 +126,26 @@ const StrategySnapshot: React.FC<StrategySnapshotProps> = ({ vault }) => {
     }
 
     return `${toExpiryDuration.days()}D ${toExpiryDuration.hours()}H ${toExpiryDuration.minutes()}M`;
-  }, [currentOption, loadingText, optionLoading]);
+  }, [currentOption, loadingText]);
 
   const strikeChart = useMemo(() => {
-    if (loading || !prices[optionAsset]) {
-      return <Title>{loadingText}</Title>;
-    }
-
     if (!currentOption) {
       return <Title>No strike chosen</Title>;
     }
 
+    const loading = prices[optionAsset].loading || currentOption.loading;
+    if (loading) {
+      return <Title>{loadingText}</Title>;
+    }
+
     return (
       <StrikeChart
-        current={prices[optionAsset] || 0}
+        current={prices[optionAsset].price || 0}
         strike={formatOption(currentOption.strike)}
         profitable={true}
       />
     );
-  }, [prices, currentOption, optionAsset, loading, loadingText]);
+  }, [prices, currentOption, optionAsset, loadingText]);
 
   return (
     <>
@@ -163,9 +159,11 @@ const StrategySnapshot: React.FC<StrategySnapshotProps> = ({ vault }) => {
               Current {getAssetDisplay(optionAsset)} Price
             </DataLabel>
             <DataNumber variant={undefined}>
-              {priceLoading
+              {prices[optionAsset].loading
                 ? loadingText
-                : currency(prices[optionAsset]!, { precision: 4 }).format()}
+                : currency(prices[optionAsset].price, {
+                    precision: 4,
+                  }).format()}
             </DataNumber>
           </DataCol>
           <DataCol xs="6">

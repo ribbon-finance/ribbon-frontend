@@ -120,9 +120,19 @@ const StakingSummary = () => {
     const totalDatapoints = 100;
     let dataset: number[] = [];
     let labels: Date[] = [];
-    const totalDurationMillis =
+    let totalDurationMillis =
       (rbnTokenAccount.lockEndTimestamp - rbnTokenAccount.lockStartTimestamp) *
       1000;
+    let newLockStartTimestamp = rbnTokenAccount.lockStartTimestamp;
+
+    // Cannot exceed 2 years
+    const twoYears = 63120000000;
+    if (totalDurationMillis > twoYears) {
+      totalDurationMillis = twoYears;
+      newLockStartTimestamp =
+        rbnTokenAccount.lockEndTimestamp - twoYears / 1000;
+    }
+
     for (let i = 0; i <= totalDatapoints; i++) {
       // Split total duration into chunks of totalDatapoints
       const incrementDurationMillis =
@@ -130,9 +140,10 @@ const StakingSummary = () => {
 
       // New start timestamp and duration
       const startTimestampMillis =
-        rbnTokenAccount.lockStartTimestamp * 1000 + incrementDurationMillis;
+        newLockStartTimestamp * 1000 + incrementDurationMillis;
       const duration =
         rbnTokenAccount.lockEndTimestamp * 1000 - startTimestampMillis;
+
       const veRbnAmount = calculateInitialveRBNAmount(
         rbnTokenAccount.lockedBalance,
         moment.duration(duration)

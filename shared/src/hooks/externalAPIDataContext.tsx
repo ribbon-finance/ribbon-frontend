@@ -7,6 +7,7 @@ import { useTickerData } from "./useTickerData";
 
 export type AssetsPriceData = {
   [asset in Assets]: {
+    loading: boolean;
     latestPrice: number;
     history: { [timestamp: number]: number };
   };
@@ -39,13 +40,20 @@ export type YearnAPIData = Array<{
 }>;
 
 export type ExternalAPIDataContextType = {
-  assetsPrice: { data: AssetsPriceData; loading: boolean };
+  assetsPrice: { data: AssetsPriceData };
   yearnAPIData: { data: YearnAPIData; loading: boolean };
   tickerData: { data: AssetsTickerData; loading: boolean };
 };
 
 export const defaultAssetsPriceData = Object.fromEntries(
-  AssetsList.map((asset) => [asset, { latestPrice: 0, history: {} }])
+  AssetsList.map((asset) => [
+    asset,
+    {
+      loading: true,
+      latestPrice: 0,
+      history: {},
+    },
+  ])
 ) as AssetsPriceData;
 
 export const defaultAssetTickerData = Object.fromEntries(
@@ -60,7 +68,7 @@ export const defaultAssetTickerData = Object.fromEntries(
 ) as AssetsTickerData;
 
 export const defaultExternalAPIData: ExternalAPIDataContextType = {
-  assetsPrice: { data: defaultAssetsPriceData, loading: true },
+  assetsPrice: { data: defaultAssetsPriceData },
   yearnAPIData: { data: [], loading: true },
   tickerData: { data: defaultAssetTickerData, loading: true },
 };
