@@ -67,12 +67,31 @@ const useTVL = () => {
           loading: loading || prices[asset].loading,
         });
       }
+
+      // REARN
+      const earnVault = data.earn[vaultOption];
+      if (earnVault && !earnVault.totalBalance.isZero()) {
+        vaultTVLs.push({
+          vault: {
+            option: vaultOption,
+            version: "earn",
+          },
+          tvl: parseFloat(
+            assetToFiat(
+              earnVault.totalBalance,
+              prices[asset].price,
+              getAssetDecimals(asset)
+            )
+          ),
+          loading: loading || prices[asset].loading,
+        });
+      }
     });
 
     // Sort it from highest tvl to lowest
     vaultTVLs.sort((a, b) => (a.tvl < b.tvl ? 1 : -1));
     return vaultTVLs;
-  }, [data.v1, data.v2, prices, loading]);
+  }, [data.v1, data.v2, data.earn, prices, loading]);
 
   return {
     data: vaultsTVL,
