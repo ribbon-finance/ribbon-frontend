@@ -60,14 +60,16 @@ const RBNPriceOverview = () => {
         break;
     }
 
-    let transformedHistories = Object.keys(histories["RBN"]).map((key) => {
-      const timestamp = parseInt(key);
+    let transformedHistories = Object.keys(histories["RBN"].history).map(
+      (key) => {
+        const timestamp = parseInt(key);
 
-      return {
-        timestamp: timestamp,
-        price: histories["RBN"].history[timestamp],
-      };
-    });
+        return {
+          timestamp: timestamp,
+          price: histories["RBN"].history[timestamp],
+        };
+      }
+    );
 
     switch (range) {
       case "ALL":

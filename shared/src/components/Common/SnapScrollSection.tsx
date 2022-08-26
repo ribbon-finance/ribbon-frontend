@@ -82,6 +82,10 @@ const SnapScrollSection: React.FC<
     [items.length]
   );
 
+  const allowPagination = useMemo(() => {
+    return width > sizes.lg;
+  }, [width]);
+
   const [itemIndex, setItemIndex] = useState(0);
   const [scrollEvent, setScrollEvent] = useState<{
     timestamp: number;
@@ -93,13 +97,17 @@ const SnapScrollSection: React.FC<
    * Scroll to item index
    */
   useEffect(() => {
-    containerRef.current?.scrollTo({
-      top: itemRefs[itemIndex].current?.offsetTop,
-      behavior: "smooth",
-    });
+    if (containerRef.current) {
+      containerRef.current.scrollTo({
+        top: itemRefs[itemIndex].current?.offsetTop,
+        behavior: "smooth",
+      });
+    }
   }, [itemIndex, itemRefs]);
 
   const handleScrollUp = useCallback(() => {
+    if (!allowPagination) return;
+
     setItemIndex((curr) => {
       // Unable to scroll further to the top
       if (curr <= 0) {
@@ -108,9 +116,11 @@ const SnapScrollSection: React.FC<
 
       return curr - 1;
     });
-  }, []);
+  }, [allowPagination]);
 
   const handleScrollDown = useCallback(() => {
+    if (!allowPagination) return;
+
     setItemIndex((curr) => {
       // Unable to scroll further to the bottom
       if (curr + 1 >= Object.keys(itemRefs).length) {
@@ -119,7 +129,7 @@ const SnapScrollSection: React.FC<
 
       return curr + 1;
     });
-  }, [itemRefs]);
+  }, [allowPagination, itemRefs]);
 
   /**
    * Handle mobile swipe
@@ -213,9 +223,9 @@ const SnapScrollSection: React.FC<
     <div
       {...props}
       ref={refPassthrough}
-      className={`d-flex flex-wrap overflow-hidden w-100 position-fixed ${
-        className || ""
-      }`}
+      className={`d-flex flex-wrap w-100 ${
+        allowPagination ? "position-fixed overflow-hidden" : ""
+      } ${className || ""}`}
       style={{ height, top: 0, left: 0 }}
     >
       {width > sizes.xl ? (
