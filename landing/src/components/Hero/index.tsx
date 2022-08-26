@@ -1,4 +1,4 @@
-import React, { useContext } from "react";
+import React from "react";
 import styled from "styled-components";
 import { Row, Col } from "react-bootstrap";
 import { Title, PrimaryText, Button } from "../../designSystem";
@@ -6,9 +6,9 @@ import { Container } from "react-bootstrap";
 import { AnimatePresence, motion } from "framer";
 import Marquee from "react-fast-marquee/dist";
 import useScreenSize from "shared/lib/hooks/useScreenSize";
+import { useAssetsPrice } from "shared/lib/hooks/useAssetPrice";
 import sizes from "../../designSystem/sizes";
 import colors from "shared/lib/designSystem/colors";
-import { ExternalAPIDataContext } from "shared/lib/hooks/externalAPIDataContext";
 import { getAssetLogo } from "shared/lib/utils/asset";
 import { Assets } from "shared/lib/store/types";
 import ReactPlayer from "react-player";
@@ -105,6 +105,7 @@ const Ticker = styled.div`
 const LogoContainer = styled.div`
   display: flex;
   height: 24px;
+  width: 24px;
 
   > svg {
     height: 24px;
@@ -237,7 +238,7 @@ const Hero = () => {
 };
 
 const PriceTicker = () => {
-  const { tickerData } = useContext(ExternalAPIDataContext);
+  const { prices } = useAssetsPrice();
 
   return (
     <Ticker>
@@ -260,19 +261,20 @@ const PriceTicker = () => {
           }}
         >
           <Marquee pauseOnHover gradient={false} speed={75} delay={1}>
-            {Object.values(tickerData.data).map((token, i) => {
-              const Logo = getAssetLogo(token.asset as Assets);
+            {Object.keys(prices).map((asset) => {
+              const Logo = getAssetLogo(asset as Assets);
+              const { price, dailyChange } = prices[asset as Assets];
               return (
-                <div key={i}>
+                <div key={asset}>
                   <TickerContainer>
                     <LogoContainer>
                       <Logo showBackground />
                     </LogoContainer>
-                    <TickerTitle>{token.asset}</TickerTitle>
-                    <TickerPrice>${token.price.toFixed(2)}</TickerPrice>
-                    <TickerChange percentage={token.dailyChange}>
-                      {token.dailyChange > 0 && "+"}
-                      {token.dailyChange.toFixed(2)}%
+                    <TickerTitle>{asset}</TickerTitle>
+                    <TickerPrice>${price.toFixed(2)}</TickerPrice>
+                    <TickerChange percentage={dailyChange}>
+                      {dailyChange > 0 && "+"}
+                      {dailyChange.toFixed(2)}%
                     </TickerChange>
                   </TickerContainer>
                   <TickerDivider />
