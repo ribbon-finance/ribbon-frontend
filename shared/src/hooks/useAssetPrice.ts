@@ -93,7 +93,9 @@ export const useFetchAssetsPrice = (
     const chunkSize = 4;
     for (let i = 0; i < assetsBarUSDC.length; i += chunkSize) {
       const assetsChunk = assetsBarUSDC.slice(i, i + chunkSize);
-      console.log("LOADING CHUNK PRICE", assetsChunk);
+      if (!isProduction()) {
+        console.log("LOADING CHUNK PRICE", assetsChunk);
+      }
 
       assetsChunk.forEach((asset) => {
         const coinId = COINGECKO_CURRENCIES[asset];
@@ -120,8 +122,8 @@ export const useFetchAssetsPrice = (
         }
       });
 
-      // Waits 1 second before proceeding to next chunk
-      await new Promise((resolve) => setTimeout(resolve, 1000));
+      // Waits 2 seconds before proceeding to next chunk
+      await new Promise((resolve) => setTimeout(resolve, 2000));
     }
 
     if (!isProduction()) {
