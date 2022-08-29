@@ -3,9 +3,14 @@ import Row from "react-bootstrap/Row";
 import { Container } from "react-bootstrap";
 
 import ProductCatalogue from "shared/lib/components/Product/ProductCatalogue";
-import { VaultNameOptionMap } from "shared/lib/constants/constants";
+import {
+  VaultNameOptionMap,
+  VaultOptions,
+  VaultVersion,
+} from "shared/lib/constants/constants";
 
 import { Title } from "../../designSystem";
+import { useCallback } from "react";
 
 const MainContainer = styled(Container)`
   padding-top: 80px;
@@ -19,6 +24,28 @@ const CarouselTitle = styled(Title)`
 `;
 
 const ProductCarousel = () => {
+  const getVaultUrl = useCallback(
+    (vault: VaultOptions, version: VaultVersion) => {
+      const base = "https://app.ribbon.finance";
+      const vaultName =
+        Object.keys(VaultNameOptionMap)[
+          Object.values(VaultNameOptionMap).indexOf(vault)
+        ];
+      switch (version) {
+        case "v1":
+        case "v2":
+          return `${base}/${
+            version === "v1" ? "" : version
+          }/theta-vault/${vaultName}`;
+        case "earn":
+          return `${base}/${vaultName}`;
+        default:
+          break;
+      }
+    },
+    []
+  );
+
   return (
     <MainContainer fluid>
       <Row className="d-flex justify-content-center w-100 mx-0">
@@ -26,15 +53,7 @@ const ProductCarousel = () => {
         <ProductCatalogue
           variant="landing"
           onVaultPress={(vault, version) =>
-            window.open(
-              `https://app.ribbon.finance/${
-                version === "v1" ? "" : `${version}/`
-              }theta-vault/${
-                Object.keys(VaultNameOptionMap)[
-                  Object.values(VaultNameOptionMap).indexOf(vault)
-                ]
-              }`
-            )
+            window.open(getVaultUrl(vault, version))
           }
         />
       </Row>
