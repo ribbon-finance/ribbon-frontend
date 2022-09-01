@@ -12,13 +12,17 @@ import { useAssetsPrice } from "./useAssetPrice";
 import { useVaultsSubgraphData } from "./useVaultData";
 
 interface VaultTVLs {
-  vault: { option: VaultOptions; version: VaultVersion };
+  vault: {
+    option: VaultOptions;
+    version: VaultVersion;
+  };
   tvl: number;
+  loading: boolean;
 }
 
 const useTVL = () => {
   const { data, loading } = useVaultsSubgraphData();
-  const { prices, loading: pricesLoading } = useAssetsPrice();
+  const { prices } = useAssetsPrice();
 
   const vaultsTVL = useMemo(() => {
     const vaultTVLs: VaultTVLs[] = [];
@@ -37,10 +41,11 @@ const useTVL = () => {
           tvl: parseFloat(
             assetToFiat(
               v1Vault.totalBalance,
-              prices[asset],
+              prices[asset].price,
               getAssetDecimals(asset)
             )
           ),
+          loading: loading || prices[asset].loading,
         });
       }
 
@@ -55,10 +60,30 @@ const useTVL = () => {
           tvl: parseFloat(
             assetToFiat(
               v2Vault.totalBalance,
-              prices[asset],
+              prices[asset].price,
               getAssetDecimals(asset)
             )
           ),
+          loading: loading || prices[asset].loading,
+        });
+      }
+
+      // REARN
+      const earnVault = data.earn[vaultOption];
+      if (earnVault && !earnVault.totalBalance.isZero()) {
+        vaultTVLs.push({
+          vault: {
+            option: vaultOption,
+            version: "earn",
+          },
+          tvl: parseFloat(
+            assetToFiat(
+              earnVault.totalBalance,
+              prices[asset].price,
+              getAssetDecimals(asset)
+            )
+          ),
+          loading: loading || prices[asset].loading,
         });
       }
     });
@@ -66,12 +91,12 @@ const useTVL = () => {
     // Sort it from highest tvl to lowest
     vaultTVLs.sort((a, b) => (a.tvl < b.tvl ? 1 : -1));
     return vaultTVLs;
-  }, [prices, data]);
+  }, [data.v1, data.v2, data.earn, prices, loading]);
 
   return {
     data: vaultsTVL,
     totalTVL: vaultsTVL.reduce((acc, curr) => acc + curr.tvl, 0),
-    loading: loading || pricesLoading,
+    loading,
   };
 };
 

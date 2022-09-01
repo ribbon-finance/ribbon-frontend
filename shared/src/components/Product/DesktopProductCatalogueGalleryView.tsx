@@ -167,6 +167,7 @@ const DesktopProductCatalogueGalleryView: React.FC<
       }
     }
   }, [t, maxYield, currentVault]);
+
   const vaultInfo = useMemo(() => {
     if (!currentVault) {
       return (
@@ -386,6 +387,7 @@ const DesktopProductCatalogueGalleryView: React.FC<
           </Col>
         </Row>
       </FullscreenContainer>
+
       <BackgroundContainer>
         <AnimatePresence exitBeforeEnter>
           <motion.div

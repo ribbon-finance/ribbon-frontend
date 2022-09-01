@@ -176,9 +176,7 @@ const perPage = 6;
 const PortfolioTransactions = () => {
   const { transactions, loading } = useTransactions();
   const { active, chainId } = useWeb3Wallet();
-  // const { prices: assetPrices, loading: assetPricesLoading } = useAssetsPrice();
-  const { searchAssetPriceFromTimestamp, loading: assetPricesLoading } =
-    useAssetsPriceHistory();
+  const { searchAssetPriceFromTimestamp, histories } = useAssetsPriceHistory();
   const animatedLoadingText = useLoadingText();
   const [page, setPage] = useState(1);
   const [sortBy, setSortBy] = useState<PortfolioTransactionSortBy>(
@@ -276,7 +274,7 @@ const PortfolioTransactions = () => {
 
       switch (currency) {
         case "usd":
-          return assetPricesLoading
+          return histories[asset].loading
             ? animatedLoadingText
             : `${prependSymbol}${assetToUSD(
                 amount,
@@ -290,7 +288,7 @@ const PortfolioTransactions = () => {
           )} `;
       }
     },
-    [assetPricesLoading, animatedLoadingText, searchAssetPriceFromTimestamp]
+    [animatedLoadingText, searchAssetPriceFromTimestamp, histories]
   );
 
   const renderTransactionSymbol = useCallback((type: VaultTransactionType) => {

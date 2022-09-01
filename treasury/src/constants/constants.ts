@@ -45,5 +45,7 @@ export const getVaultURI = (
           Object.values(VaultNameOptionMap).indexOf(vaultOption)
         ]
       }`;
+    default:
+      return "";
   }
 };
