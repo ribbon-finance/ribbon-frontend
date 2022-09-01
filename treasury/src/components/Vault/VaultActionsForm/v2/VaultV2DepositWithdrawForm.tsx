@@ -285,7 +285,7 @@ const VaultV2DepositWithdrawForm: React.FC<VaultV2DepositWithdrawFormProps> = ({
                 }
 
                 if (canCompleteWithdraw) {
-                  return "eixstingWithdraw";
+                  return "existingWithdraw";
                 }
 
                 break;

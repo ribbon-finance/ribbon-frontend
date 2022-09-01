@@ -9,7 +9,6 @@ import {
   VaultVersion,
 } from "shared/lib/constants/constants";
 import { usePendingTransactions } from "shared/lib/hooks/pendingTransactionsContext";
-import useVaultActionForm from "../../../../hooks/useVaultActionForm";
 import { parseUnits } from "@ethersproject/units";
 import { useV2VaultData } from "shared/lib/hooks/web3DataContext";
 import { useVaultsPriceHistory } from "shared/lib/hooks/useVaultPerformanceUpdate";
@@ -40,7 +39,6 @@ const ActionSteps: React.FC<ActionStepsProps> = ({
   skipToPreview = false,
   actionType,
 }) => {
-  const { resetActionForm } = useVaultActionForm(vaultOption);
   const { data: priceHistories } = useVaultsPriceHistory();
 
   const firstStep = useMemo(() => {
@@ -99,12 +97,8 @@ const ActionSteps: React.FC<ActionStepsProps> = ({
 
   const cleanupEffects = useCallback(() => {
     setTxhash("");
-
-    if (step === STEPS.submittedStep) {
-      resetActionForm();
-    }
     setInputAmount("");
-  }, [resetActionForm, step]);
+  }, []);
 
   const handleClose = useCallback(() => {
     cleanupEffects();

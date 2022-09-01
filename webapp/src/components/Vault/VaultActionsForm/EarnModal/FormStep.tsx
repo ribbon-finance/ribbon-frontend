@@ -41,6 +41,7 @@ import currency from "currency.js";
 import useEarnStrategyTime from "../../../../hooks/useEarnStrategyTime";
 import { fadeIn } from "shared/lib/designSystem/keyframes";
 import useVaultPriceHistory from "shared/lib/hooks/useVaultPerformanceUpdate";
+import { VaultValidationErrors } from "../types";
 
 const Logo = styled.div<{ delay?: number; show?: boolean }>`
   margin-top: -40px;
@@ -267,16 +268,20 @@ const DepositFormStep: React.FC<{
     loading,
   } = useV2VaultData(vaultOption);
 
-  // const [inputAmount, changeInputAmount] = useState<string>("");
-  const [hasShown, setHasShown] = useState<boolean>(false);
   const { balance: userAssetBalance } = useAssetBalance(asset);
   const vaultBalanceInAsset = depositBalanceInAsset.add(lockedBalanceInAsset);
   const { active } = useWeb3Wallet();
   const vaultMaxDepositAmount = VaultMaxDeposit[vaultOption];
   const { vaultAccounts } = useVaultAccounts(vaultVersion);
-  const vaultAccount = vaultAccounts["rEARN"];
+  const vaultAccount = vaultAccounts[vaultOption];
   const { strategyStartTime, withdrawalDate } = useEarnStrategyTime();
   const assetDisplay = getAssetDisplay(asset);
+  const [withdrawOption, setWithdrawOption] =
+    useState<V2WithdrawOption>("standard");
+  const [activeBackgroundState, setActiveBackgroundState] =
+    useState<TargetAndTransition>();
+  const { priceHistory } = useVaultPriceHistory(vaultOption, "earn");
+
   const withdrawOptionRefs = useMemo(
     () =>
       V2WithdrawOptionList.reduce<any>((acc, curr) => {
@@ -285,13 +290,6 @@ const DepositFormStep: React.FC<{
       }, {}),
     []
   );
-
-  const [withdrawOption, setWithdrawOption] =
-    useState<V2WithdrawOption>("standard");
-  const [activeBackgroundState, setActiveBackgroundState] =
-    useState<TargetAndTransition>();
-
-  const { priceHistory } = useVaultPriceHistory(vaultOption, "earn");
 
   const withdrawalAmount = useMemo(
     () =>
@@ -310,9 +308,9 @@ const DepositFormStep: React.FC<{
     }
     return !isPracticallyZero(
       vaultAccount.totalDeposits.sub(vaultAccount.totalPendingDeposit),
-      6
+      decimals
     );
-  }, [vaultAccount]);
+  }, [decimals, vaultAccount]);
 
   useEffect(() => {
     let currentRef = withdrawOptionRefs[withdrawOption]?.current;
@@ -340,6 +338,17 @@ const DepositFormStep: React.FC<{
       window.removeEventListener("resize", handleResize);
     };
   }, [canStandardWithdraw, withdrawOption, withdrawOptionRefs]);
+
+  const investedInStrategy = useMemo(() => {
+    if (!vaultAccount) {
+      return BigNumber.from(0.0);
+    }
+    return vaultAccount.totalBalance;
+  }, [vaultAccount]);
+
+  const isInputNonZero = useMemo((): boolean => {
+    return parseFloat(inputAmount) > 0;
+  }, [inputAmount]);
 
   const renderWithdrawOptionExplanation = useCallback(
     (withdrawOption: V2WithdrawOption, active: boolean) => {
@@ -400,11 +409,7 @@ const DepositFormStep: React.FC<{
     [withdrawalDate]
   );
 
-  const isInputNonZero = useMemo((): boolean => {
-    return parseFloat(inputAmount) > 0;
-  }, [inputAmount]);
-
-  const error = useMemo((): string | undefined => {
+  const error = useMemo((): VaultValidationErrors | undefined => {
     try {
       /** Check block with input requirement */
       if (isInputNonZero && !loading && active) {
@@ -470,13 +475,6 @@ const DepositFormStep: React.FC<{
     onClickUpdateInput(inputAmount);
   };
 
-  const investedInStrategy = useMemo(() => {
-    if (!vaultAccount) {
-      return BigNumber.from(0.0);
-    }
-    return vaultAccount.totalBalance;
-  }, [vaultAccount]);
-
   const detailRows: ActionDetail[] = useMemo(() => {
     const actionDetails: ActionDetail[] = [];
 
@@ -540,7 +538,7 @@ const DepositFormStep: React.FC<{
             )} ${assetDisplay}`,
             error: "withdrawLimitExceeded",
             tooltip: {
-              title: "PENDING WITHDRAWALS",
+              title: "AVAILABLE LIMIT",
               explanation:
                 "This is equal to the value of your funds currently deployed in the weekly strategy minus the funds you have already initiated for withdrawal.",
             },
@@ -565,7 +563,7 @@ const DepositFormStep: React.FC<{
             )} ${assetDisplay}`,
             error: "withdrawLimitExceeded",
             tooltip: {
-              title: "Strategy Start Time",
+              title: "INSTANT WITHDRAW LIMIT",
               explanation:
                 "This is equal to the value of your funds that are currently not invested in the vault’s weekly strategy. These funds can withdrawn from the vault immediately.",
             },
@@ -578,17 +576,10 @@ const DepositFormStep: React.FC<{
         }
         break;
     }
-    // to fix: the second row keeps rerendering when switching segment control
-    if (show) {
-      setTimeout(function () {
-        setHasShown(true);
-      }, 1500);
-    }
     return actionDetails;
   }, [
     asset,
     actionType,
-    show,
     investedInStrategy,
     userAssetBalance,
     cap,
@@ -642,11 +633,11 @@ const DepositFormStep: React.FC<{
   interface ActionDetail {
     key: string;
     value: string;
-    error?: string;
+    error?: VaultValidationErrors;
     tooltip?: Tooltip;
   }
 
-  const renderErrorText = useCallback((_error: string) => {
+  const renderErrorText = useCallback((_error: VaultValidationErrors) => {
     switch (_error) {
       case "insufficientBalance":
         return "Insufficient balance";
@@ -731,7 +722,7 @@ const DepositFormStep: React.FC<{
           if (canStandardWithdraw) {
             return (
               <WarningContainer
-                show={!hasShown ? show : false}
+                show={show}
                 delay={0.7 + detailRows.length * 0.1}
                 className="mb-4 w-100 text-center"
                 color={color}
@@ -756,7 +747,6 @@ const DepositFormStep: React.FC<{
     decimals,
     depositBalanceInAsset,
     detailRows.length,
-    hasShown,
     show,
     withdrawOption,
     withdrawalDate,
@@ -960,7 +950,6 @@ const DepositFormStep: React.FC<{
             </DetailRow>
           ))}
           {renderButton()}
-          {warning}
         </div>
       )}
     </div>

@@ -8,7 +8,7 @@ export const VaultValidationErrorList = [
   "maxDeposited",
   "allBalanceStaked",
   "withdrawLimitReached",
-  "eixstingWithdraw",
+  "existingWithdraw",
   "minNotReached",
 ] as const;
 
@@ -20,6 +20,6 @@ export const VaultInputValidationErrorList: Array<VaultValidationErrors> = [
   "capacityOverflow",
   "withdrawLimitExceeded",
   "withdrawAmountStaked",
-  "eixstingWithdraw",
+  "existingWithdraw",
   "minNotReached",
 ];

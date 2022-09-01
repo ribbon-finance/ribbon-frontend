@@ -9,7 +9,6 @@ import sizes from "shared/lib/designSystem/sizes";
 import { ThinBackIcon, CloseIcon } from "shared/lib/assets/icons/icons";
 import { VaultOptions, VaultVersion } from "shared/lib/constants/constants";
 import theme from "shared/lib/designSystem/theme";
-import useVaultActionForm from "../../../../hooks/useVaultActionForm";
 
 import { capitalize } from "shared/lib/utils/text";
 
