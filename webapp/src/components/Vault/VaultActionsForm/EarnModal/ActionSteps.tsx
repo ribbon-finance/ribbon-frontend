@@ -15,7 +15,7 @@ import { useV2VaultData } from "shared/lib/hooks/web3DataContext";
 import { useVaultsPriceHistory } from "shared/lib/hooks/useVaultPerformanceUpdate";
 import { getAssetColor, getAssetDecimals } from "shared/lib/utils/asset";
 import { RibbonEarnVault } from "shared/lib/codegen";
-import DepositFormStep from "./DepositFormStep";
+import DepositFormStep from "./FormStep";
 import useEarnVaultContract from "shared/lib/hooks/useEarnVaultContract";
 import { DepositSignature } from "../../../../hooks/useUSDC";
 export interface ActionStepsProps {
