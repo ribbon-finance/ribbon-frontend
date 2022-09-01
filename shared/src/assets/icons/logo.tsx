@@ -8,25 +8,16 @@ const Logo: React.FC<SVGProps & { archColor?: string }> = ({
   ...props
 }) => (
   <svg
-    viewBox="0 0 96 96"
+    viewBox="0 0 400 400"
     fill="none"
     xmlns="http://www.w3.org/2000/svg"
     {...props}
   >
-    <g clipPath="url(#clip0)">
-      <circle cx="48" cy="48" r="48" fill={color || "#FC0A54"} />
-      <path
-        d="M3 71.9068L47.8065 25L71.61 49.5036L47.5 75.5"
-        stroke={archColor || "white"}
-        strokeWidth="6"
-        strokeLinecap="square"
-      />
-    </g>
-    <defs>
-      <clipPath id="clip0">
-        <rect width="96" height="96" rx="48" fill={archColor || "white"} />
-      </clipPath>
-    </defs>
+    <rect width="400" height="400" rx="200" fill={color || "#FC0A54"} />
+    <path
+      d="M199.5 122L28 302C28 302 24.1853 295.687 22 291.5C19.8985 287.474 17 281 17 281L199.5 86.5L315.5 206.5L198.5 332L180.5 315L281 206.5L199.5 122Z"
+      fill="white"
+    />
   </svg>
 );
 
