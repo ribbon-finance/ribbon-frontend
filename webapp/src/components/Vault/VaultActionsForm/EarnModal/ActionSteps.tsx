@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { BigNumber } from "ethers";
-import { ActionType, Steps, STEPS } from "./types";
+import { ActionType, Steps, STEPS, V2WithdrawOption } from "./types";
 import PreviewStep from "./PreviewStep";
 import TransactionStep from "./TransactionStep";
 import {
@@ -60,6 +60,7 @@ const ActionSteps: React.FC<ActionStepsProps> = ({
       lockedBalanceInAsset,
       depositBalanceInAsset,
       withdrawals,
+      pricePerShare,
     },
   } = useV2VaultData(vaultOption);
 
@@ -83,6 +84,8 @@ const ActionSteps: React.FC<ActionStepsProps> = ({
   ]);
 
   const [inputAmount, setInputAmount] = useState<string>("");
+  const [withdrawOption, setWithdrawOption] =
+    useState<V2WithdrawOption>("standard");
   const [signature, setSignature] = useState<DepositSignature | undefined>();
 
   const amountStr = useMemo(() => {
@@ -100,6 +103,7 @@ const ActionSteps: React.FC<ActionStepsProps> = ({
     if (step === STEPS.submittedStep) {
       resetActionForm();
     }
+    setInputAmount("");
   }, [resetActionForm, step]);
 
   const handleClose = useCallback(() => {
@@ -147,28 +151,60 @@ const ActionSteps: React.FC<ActionStepsProps> = ({
       onChangeStep(STEPS.confirmationStep);
       try {
         let res: any;
-        if (!signature) {
-          return;
+        switch (actionType) {
+          case "deposit":
+            if (!signature) {
+              return;
+            }
+
+            res = await vault.depositWithPermit(
+              amountStr,
+              signature.deadline,
+              signature.v,
+              signature.r,
+              signature.s
+            );
+
+            addPendingTransaction({
+              txhash: res.hash,
+              type: "deposit",
+              amount: amountStr,
+              vault: vaultOption,
+              asset: asset,
+            });
+
+            setTxhash(res.hash);
+            onChangeStep(STEPS.submittedStep);
+            break;
+          case "withdraw":
+            if (withdrawOption === "standard") {
+              const shares = BigNumber.from(amountStr)
+                .mul(BigNumber.from(10).pow(decimals))
+                .div(pricePerShare);
+              res = await vault.initiateWithdraw(shares);
+              addPendingTransaction({
+                txhash: res.hash,
+                type: "withdrawInitiation",
+                amount: amountStr,
+                vault: vaultOption,
+              });
+
+              setTxhash(res.hash);
+              onChangeStep(STEPS.submittedStep);
+            } else {
+              res = await vault.withdrawInstantly(amountStr);
+              addPendingTransaction({
+                txhash: res.hash,
+                type: "withdraw",
+                amount: amountStr,
+                vault: vaultOption,
+              });
+
+              setTxhash(res.hash);
+              onChangeStep(STEPS.submittedStep);
+            }
+            break;
         }
-
-        res = await vault.depositWithPermit(
-          amountStr,
-          signature.deadline,
-          signature.v,
-          signature.r,
-          signature.s
-        );
-
-        addPendingTransaction({
-          txhash: res.hash,
-          type: "deposit",
-          amount: amountStr,
-          vault: vaultOption,
-          asset: asset,
-        });
-
-        setTxhash(res.hash);
-        onChangeStep(STEPS.submittedStep);
       } catch (e) {
         console.error(e);
         handleClose();
@@ -180,7 +216,9 @@ const ActionSteps: React.FC<ActionStepsProps> = ({
     0: (
       <DepositFormStep
         actionType={actionType}
+        inputAmount={inputAmount}
         onClickUpdateInput={setInputAmount}
+        onClickUpdateWithdrawOption={setWithdrawOption}
         onClickConfirmButton={handleClickNextButton}
         asset={asset}
         vaultOption={vaultOption}
@@ -195,6 +233,7 @@ const ActionSteps: React.FC<ActionStepsProps> = ({
         positionAmount={vaultBalanceInAsset}
         onClickConfirmButton={handleClickConfirmButton}
         asset={asset}
+        withdrawOption={withdrawOption}
         vaultOption={vaultOption}
         vaultVersion={vaultVersion}
         onSignatureMade={setSignature}

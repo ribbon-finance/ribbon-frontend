@@ -1,4 +1,3 @@
-
 import { useEffect, useMemo, useState } from "react";
 import { BigNumber, ethers } from "ethers";
 import { useWeb3Wallet } from "shared/lib/hooks/useWeb3Wallet";
@@ -48,7 +47,6 @@ import {
 } from "shared/lib/designSystem/keyframes";
 
 const { formatUnits } = ethers.utils;
-
 
 const PendingDepositsContainer = styled.div`
   display: flex;
@@ -229,7 +227,6 @@ const ViewDetailsButton = styled.div<{ delay?: number }>`
   margin-right: auto;
   margin-left: auto;
   margin-top: 24px;
-  opacity: 0.8;
   &:hover {
     opacity: 1;
   }
@@ -237,6 +234,9 @@ const ViewDetailsButton = styled.div<{ delay?: number }>`
   line-height: 20px;
   font-size: 12px;
   z-index: 1;
+  opacity: 0;
+  animation: ${fadeIn} 1s ease-in-out forwards;
+  animation-delay: ${({ delay }) => `${delay || 0}s`};
 `;
 
 const ButtonContainer = styled.div<{ delay?: number }>`
@@ -275,7 +275,9 @@ const EarnPage = () => {
       pendingTransactions.some((transaction) => {
         return (
           transaction.status === "success" &&
-          transaction.type === "deposit" &&
+          (transaction.type === "deposit" ||
+            transaction.type === "withdraw" ||
+            transaction.type === "withdrawInitiation") &&
           transaction.vault === vaultOption
         );
       })
@@ -345,7 +347,7 @@ const EarnPage = () => {
         decimals
       ),
     ];
-}, [vaultAccount, decimals]);
+  }, [vaultAccount, decimals]);
 
   const [roi, yieldColor] = useMemo(() => {
     if (
@@ -543,17 +545,18 @@ const EarnPage = () => {
                       >
                         Deposit
                       </StyledActionButton>
-                      {hasLockedBalanceInAsset && (
-                        <StyledActionButton
-                          className={`py-3 mb-1 w-100`}
-                          color={"white"}
-                          onClick={() => {
-                            setShowWithdrawModal(true);
-                          }}
-                        >
-                          Initiate Withdraw
-                        </StyledActionButton>
-                      )}
+                      <StyledActionButton
+                        className={`py-3 mb-1 w-100`}
+                        color={"white"}
+                        disabled={
+                          !hasLockedBalanceInAsset && !hasPendingDeposits
+                        }
+                        onClick={() => {
+                          setShowWithdrawModal(true);
+                        }}
+                      >
+                        Withdraw
+                      </StyledActionButton>
                     </>
                   ) : (
                     <StyledActionButton

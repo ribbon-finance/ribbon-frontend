@@ -4,7 +4,7 @@ import { BigNumber } from "ethers";
 
 import { SecondaryText, Title, PrimaryText } from "shared/lib/designSystem";
 import { ActionButton } from "shared/lib/components/Common/buttons";
-import { ActionType } from "./types";
+import { ActionType, V2WithdrawOption } from "./types";
 import { formatBigNumber } from "shared/lib/utils/math";
 import { getAssetDecimals, getAssetDisplay } from "shared/lib/utils/asset";
 import { Assets } from "shared/lib/store/types";
@@ -15,7 +15,10 @@ import {
 } from "shared/lib/constants/constants";
 import { getVaultColor } from "shared/lib/utils/vault";
 import { capitalize } from "shared/lib/utils/text";
-import { DepositGlowIcon } from "shared/lib/assets/icons/icons";
+import {
+  DepositGlowIcon,
+  WithdrawGlowIcon,
+} from "shared/lib/assets/icons/icons";
 import theme from "shared/lib/designSystem/theme";
 import HelpInfo from "shared/lib/components/Common/HelpInfo";
 import TooltipExplanation from "shared/lib/components/Common/TooltipExplanation";
@@ -23,6 +26,7 @@ import useLoadingText from "shared/lib/hooks/useLoadingText";
 import useUSDC, { DepositSignature } from "../../../../hooks/useUSDC";
 import useEarnStrategyTime from "../../../../hooks/useEarnStrategyTime";
 import { fadeIn } from "shared/lib/designSystem/keyframes";
+import colors from "shared/lib/designSystem/colors";
 
 const Logo = styled.div<{ delay?: number; show?: boolean }>`
   margin-top: -40px;
@@ -105,6 +109,43 @@ const DetailRow = styled.div<{ delay?: number; show?: boolean }>`
   }}
 `;
 
+const WithdrawalSteps = styled.div<{ delay?: number; show?: boolean }>`
+  ${({ show, delay }) => {
+    return (
+      show &&
+      css`
+        opacity: 0;
+        animation: ${fadeIn} 1s ease-in-out forwards;
+        animation-delay: ${delay || 0}s;
+      `
+    );
+  }}
+`;
+
+const WithdrawalStepsCircle = styled.div<{ active: boolean; color: string }>`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 32px;
+  width: 32px;
+  border-radius: 32px;
+  background: ${(props) => props.color}14;
+
+  ${(props) =>
+    props.active
+      ? `
+          border: ${theme.border.width} ${theme.border.style} ${props.color};
+        `
+      : ``}
+`;
+
+const WithdrawalStepsDividerLine = styled.div<{ color: string }>`
+  width: 40px;
+  height: 1px;
+  background: ${(props) => props.color}3D;
+  margin-top: calc((32px - 1px) / 2);
+`;
+
 const FormButton = styled(ActionButton)<{ delay?: number; show?: boolean }>`
   ${({ show, delay }) => {
     return (
@@ -127,6 +168,7 @@ const PreviewStep: React.FC<{
   actionType: ActionType;
   amount: BigNumber;
   positionAmount: BigNumber;
+  withdrawOption: V2WithdrawOption;
   onClickConfirmButton: () => Promise<void>;
   asset: Assets;
   vaultOption: VaultOptions;
@@ -136,6 +178,7 @@ const PreviewStep: React.FC<{
 }> = ({
   actionType,
   amount,
+  withdrawOption,
   onClickConfirmButton,
   asset,
   vaultOption,
@@ -163,28 +206,125 @@ const PreviewStep: React.FC<{
   const detailRows: ActionDetail[] = useMemo(() => {
     const actionDetails: ActionDetail[] = [];
 
-    actionDetails.push({
-      key: "Strategy Start Time",
-      value: `${strategyStartTime}`,
-      tooltip: {
-        title: "Strategy Start Time",
-        explanation:
-          "Time until the next epoch is started and funds are deployed.",
-      },
-    });
+    switch (actionType) {
+      case "deposit":
+        actionDetails.push({
+          key: "Strategy Start Time",
+          value: `${strategyStartTime}`,
+          tooltip: {
+            title: "Strategy Start Time",
+            explanation:
+              "Time until the next epoch is started and funds are deployed.",
+          },
+        });
 
-    actionDetails.push({
-      key: "Counterparty",
-      value: "Ribbon Diversified",
-      tooltip: {
-        title: "Counterparty",
-        explanation:
-          "The counterparty selected will be the one to which the funds will be lent during the epoch.",
-      },
-    });
+        actionDetails.push({
+          key: "Counterparty",
+          value: "Ribbon Diversified",
+          tooltip: {
+            title: "Counterparty",
+            explanation:
+              "The counterparty selected will be the one to which the funds will be lent during the epoch.",
+          },
+        });
+        break;
+      case "withdraw":
+        if (withdrawOption === "standard") {
+          actionDetails.push({
+            key: "Withdraw Time",
+            value: `${withdrawalDate}`,
+            tooltip: {
+              title: "Withdraw Time",
+              explanation:
+                "Time until the next epoch is started and funds are deployed.",
+            },
+          });
+        } else {
+          actionDetails.push({
+            key: "Withdraw Time",
+            value: "Immediate",
+            tooltip: {
+              title: "Withdraw Time",
+              explanation:
+                "Time until the next epoch is started and funds are deployed.",
+            },
+          });
+        }
+        break;
+    }
 
     return actionDetails;
-  }, [strategyStartTime]);
+  }, [actionType, strategyStartTime, withdrawOption, withdrawalDate]);
+
+  const renderWithdrawalSteps = useCallback(() => {
+    if (withdrawOption === "instant") {
+      return <></>;
+    }
+
+    return (
+      <WithdrawalSteps
+        delay={0.6 + detailRows.length * 0.1}
+        show={show}
+        className="d-flex justify-content-center mt-2"
+      >
+        <div className="d-flex flex-column align-items-center">
+          <WithdrawalStepsCircle
+            active={withdrawOption === "standard"}
+            color={color}
+          >
+            <Title
+              fontSize={14}
+              lineHeight={20}
+              color={
+                withdrawOption === "standard" ? color : colors.quaternaryText
+              }
+            >
+              1
+            </Title>
+          </WithdrawalStepsCircle>
+          <PrimaryText
+            fontSize={11}
+            lineHeight={12}
+            color={
+              withdrawOption === "standard" ? color : colors.quaternaryText
+            }
+            className="mt-2 text-center"
+            style={{ maxWidth: 60 }}
+          >
+            Initiate Withdrawal
+          </PrimaryText>
+        </div>
+        <WithdrawalStepsDividerLine color={color} />
+        <div className="d-flex flex-column align-items-center">
+          <WithdrawalStepsCircle
+            active={withdrawOption === "complete"}
+            color={color}
+          >
+            <Title
+              fontSize={14}
+              lineHeight={20}
+              color={
+                withdrawOption === "complete" ? color : colors.quaternaryText
+              }
+            >
+              2
+            </Title>
+          </WithdrawalStepsCircle>
+          <PrimaryText
+            fontSize={11}
+            lineHeight={12}
+            color={
+              withdrawOption === "complete" ? color : colors.quaternaryText
+            }
+            className="mt-2 text-center mb-4"
+            style={{ maxWidth: 60 }}
+          >
+            Complete Withdrawal
+          </PrimaryText>
+        </div>
+      </WithdrawalSteps>
+    );
+  }, [withdrawOption, color, detailRows.length, show]);
 
   const handleApprove = useCallback(async () => {
     setWaitingApproval(true);
@@ -217,24 +357,52 @@ const PreviewStep: React.FC<{
   }, [amount, onSignatureMade, usdc, vaultOption]);
 
   const actionWord = capitalize(actionType);
-  let actionLogo = <></>;
+
   let warning = <></>;
 
-  actionLogo = <DepositGlowIcon color={color} width={176} />;
+  const actionLogo = useMemo(() => {
+    switch (actionType) {
+      case "deposit":
+        return <DepositGlowIcon color={color} width={176} />;
+      case "withdraw":
+        return <WithdrawGlowIcon color={color} width={176} />;
+    }
+  }, [actionType, color]);
 
-  warning = (
-    <WarningContainer
-      delay={0.6 + detailRows.length * 0.1}
-      show={show}
-      className="mb-4 w-100 text-center"
-      color={color}
-    >
-      <PrimaryText fontSize={14} lineHeight={20} color={color}>
-        IMPORTANT: Your funds will be available for withdrawal at 5pm UTC on{" "}
-        {withdrawalDate}
-      </PrimaryText>
-    </WarningContainer>
-  );
+  switch (actionType) {
+    case "deposit":
+      warning = (
+        <WarningContainer
+          delay={0.6 + detailRows.length * 0.1}
+          show={show}
+          className="mb-4 w-100 text-center"
+          color={color}
+        >
+          <PrimaryText fontSize={14} lineHeight={20} color={color}>
+            IMPORTANT: Your funds will be available for withdrawal at 12pm UTC
+            on {withdrawalDate}
+          </PrimaryText>
+        </WarningContainer>
+      );
+      break;
+    case "withdraw":
+      if (withdrawOption === "standard") {
+        warning = (
+          <WarningContainer
+            delay={0.7 + detailRows.length * 0.1}
+            show={show}
+            className="mb-4 w-100 text-center"
+            color={color}
+          >
+            <PrimaryText fontSize={14} lineHeight={20} color={color}>
+              You can complete your withdrawal any time after 12pm UTC on{" "}
+              {withdrawalDate} when your {asset} will be removed from the
+              vault’s investable pool of funds
+            </PrimaryText>
+          </WarningContainer>
+        );
+      }
+  }
 
   return (
     <div className="d-flex flex-column align-items-center">
@@ -245,6 +413,9 @@ const PreviewStep: React.FC<{
 
       {/* Title */}
       <FormTitle delay={0.2} show={show}>
+        {actionType === "withdraw" && withdrawOption === "standard"
+          ? "INITIATE"
+          : "INSTANT"}{" "}
         {actionWord} PREVIEW
       </FormTitle>
 
@@ -290,41 +461,61 @@ const PreviewStep: React.FC<{
           <Title className="text-right">{detail.value}</Title>
         </DetailRow>
       ))}
-      {depositSignature !== undefined ? (
-        <FormButton
-          delay={0.4 + detailRows.length * 0.1}
-          show={show}
-          className="btn py-3 mt-4 mb-3"
-          color={color}
-          variant={"earn"}
-        >
-          USDC READY TO DEPOSIT
-        </FormButton>
-      ) : (
-        <FormButton
-          delay={0.4 + detailRows.length * 0.1}
-          show={show}
-          onClick={handleApprove}
-          className="btn py-3 mt-4 mb-3"
-          color={color}
-          variant={"primary"}
-        >
-          {waitingApproval ? loadingText : `PERMIT VAULT TO USE YOUR USDC`}
-        </FormButton>
-      )}
+      {actionType === "deposit" ? (
+        <div>
+          {depositSignature !== undefined ? (
+            <FormButton
+              delay={0.4 + detailRows.length * 0.1}
+              show={show}
+              className="btn py-3 mt-4 mb-3"
+              color={color}
+              variant={"earn"}
+            >
+              USDC READY TO DEPOSIT
+            </FormButton>
+          ) : (
+            <FormButton
+              delay={0.4 + detailRows.length * 0.1}
+              show={show}
+              onClick={handleApprove}
+              className="btn py-3 mt-4 mb-3"
+              color={color}
+              variant={"primary"}
+            >
+              {waitingApproval ? loadingText : `PERMIT VAULT TO USE YOUR USDC`}
+            </FormButton>
+          )}
 
-      <FormButton
-        delay={0.5 + detailRows.length * 0.1}
-        show={show}
-        onClick={onClickConfirmButton}
-        disabled={depositSignature === undefined}
-        className="btn py-3 mb-3"
-        color={color}
-        variant={depositSignature === undefined ? "earnDisabled" : "primary"}
-      >
-        {actionWord} Now
-      </FormButton>
-      {warning}
+          <FormButton
+            delay={0.5 + detailRows.length * 0.1}
+            show={show}
+            onClick={onClickConfirmButton}
+            disabled={depositSignature === undefined}
+            className="btn py-3 mb-3"
+            color={color}
+            variant={
+              depositSignature === undefined ? "earnDisabled" : "primary"
+            }
+          >
+            {actionWord} Now
+          </FormButton>
+          {warning}
+        </div>
+      ) : (
+        <div style={{ width: "100%" }}>
+          <FormButton
+            delay={0.5 + detailRows.length * 0.1}
+            show={show}
+            onClick={onClickConfirmButton}
+            className="btn py-3 mt-4 mb-3"
+            color={color}
+          >
+            {withdrawOption === "standard" ? "Initiate Withdrawal" : "Withdraw"}
+          </FormButton>
+          {renderWithdrawalSteps()}
+          {warning}
+        </div>
+      )}
     </div>
   );
 };

@@ -34,6 +34,7 @@ const ModalNavigationCloseButton = styled.span`
 interface ModalBodyProps extends ModalProps {
   isFormStep: boolean;
   steps: Steps;
+  actionType: ActionType;
 }
 
 const ModalBody = styled.div<ModalBodyProps>`
@@ -48,9 +49,9 @@ const ModalBody = styled.div<ModalBodyProps>`
     switch (props.steps) {
       case STEPS.confirmationStep:
       case STEPS.submittedStep:
-        return "unset";
+      case STEPS.previewStep:
       case STEPS.formStep:
-        return "672px";
+        return "unset";
       default:
         return "396px";
     }
@@ -150,7 +151,7 @@ interface ActionModalProps extends ModalProps {
   };
   show: boolean;
   onClose: () => void;
-  actionType: ActionType
+  actionType: ActionType;
 }
 
 const ActionModal: React.FC<ActionModalProps> = ({
@@ -158,7 +159,7 @@ const ActionModal: React.FC<ActionModalProps> = ({
   show,
   onClose,
   variant,
-  actionType
+  actionType,
 }) => {
   const [step, setStep] = useState<Steps>(0);
   const isDesktop = variant === "desktop";
@@ -264,6 +265,7 @@ const ActionModal: React.FC<ActionModalProps> = ({
           isFormStep={step === STEPS.formStep}
           variant={variant}
           steps={step}
+          actionType={actionType}
         >
           {renderModalHeader()}
 
