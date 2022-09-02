@@ -449,7 +449,7 @@ const YieldCard: React.FC<YieldCardProps> = ({
   const { prices } = useAssetsPrice();
   const { account } = useWeb3Wallet();
   const loadingText = useLoadingText();
-  const { maxYield } = useAirtable();
+  const { loading, maxYield } = useAirtable();
   const baseAPY = useMemo(() => {
     if (!lg5Data) {
       return 0;
@@ -664,7 +664,9 @@ const YieldCard: React.FC<YieldCardProps> = ({
         <EarnCard color={color} height={!!account ? 447 : 504} />
         <ParagraphText>
           Earn up to{" "}
-          <HighlightedText>{(maxYield * 100).toFixed(2)}% APY</HighlightedText>{" "}
+          <HighlightedText>
+            {loading ? "---" : (maxYield * 100).toFixed(2) + "%"} APY
+          </HighlightedText>{" "}
           with a <HighlightedText>principal protected</HighlightedText> vault
           strategy
         </ParagraphText>
@@ -680,6 +682,7 @@ const YieldCard: React.FC<YieldCardProps> = ({
     depositLimitStr,
     color,
     account,
+    loading,
     maxYield,
   ]);
 

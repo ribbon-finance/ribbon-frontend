@@ -269,7 +269,6 @@ const CounterpartyDetail: React.FC<VaultStrategyExplainerProps> = ({
     [principalOutstanding]
   );
 
-  console.log(borrowRate);
   const renderBorrowRate = useCallback(
     (s: Counterparty) => {
       if (loading) {
