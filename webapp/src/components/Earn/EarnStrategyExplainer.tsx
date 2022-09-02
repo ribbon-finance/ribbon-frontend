@@ -91,7 +91,7 @@ const EarnStrategyExplainer: React.FC = () => {
 
   useEffect(() => {
     const skip = Boolean(localStorage.getItem("skipEARNExplanation"));
-    //if (skip) setShowOnboardingCallback();
+    if (skip) setShowOnboardingCallback();
   }, [setShowOnboardingCallback]);
 
   const renderTitle = useCallback((s: ExplanationStep) => {
