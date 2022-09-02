@@ -426,6 +426,100 @@ export const MigrateIcon: React.FC<SVGPropsWithColor> = ({
   </svg>
 );
 
+export const WithdrawGlowIcon: React.FC<SVGPropsWithColor> = ({
+  color,
+  ...props
+}) => (
+  <svg
+    width="176"
+    height="164"
+    viewBox="0 0 176 164"
+    fill="none"
+    xmlns="http://www.w3.org/2000/svg"
+    {...props}
+  >
+    <g filter="url(#filter0_d_1983_6790)">
+      <rect
+        x="54"
+        y="40"
+        width="64"
+        height="64"
+        rx="32"
+        fill="#3E73C4"
+        fill-opacity="0.12"
+        shape-rendering="crispEdges"
+      />
+      <path
+        d="M86 81.3333V62.6666"
+        stroke="#3E73C4"
+        stroke-width="2"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+      />
+      <path
+        d="M76.6663 72L85.9997 62.6667L95.333 72"
+        stroke="#3E73C4"
+        stroke-width="2"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+      />
+      <rect
+        x="55"
+        y="41"
+        width="62"
+        height="62"
+        rx="31"
+        stroke="#3E73C4"
+        stroke-width="2"
+        shape-rendering="crispEdges"
+      />
+    </g>
+    <defs>
+      <filter
+        id="filter0_d_1983_6790"
+        x="0"
+        y="-12"
+        width="176"
+        height="176"
+        filterUnits="userSpaceOnUse"
+        color-interpolation-filters="sRGB"
+      >
+        <feFlood flood-opacity="0" result="BackgroundImageFix" />
+        <feColorMatrix
+          in="SourceAlpha"
+          type="matrix"
+          values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0"
+          result="hardAlpha"
+        />
+        <feMorphology
+          radius="16"
+          operator="dilate"
+          in="SourceAlpha"
+          result="effect1_dropShadow_1983_6790"
+        />
+        <feOffset dx="2" dy="4" />
+        <feGaussianBlur stdDeviation="20" />
+        <feComposite in2="hardAlpha" operator="out" />
+        <feColorMatrix
+          type="matrix"
+          values="0 0 0 0 0.243137 0 0 0 0 0.45098 0 0 0 0 0.768627 0 0 0 0.16 0"
+        />
+        <feBlend
+          mode="normal"
+          in2="BackgroundImageFix"
+          result="effect1_dropShadow_1983_6790"
+        />
+        <feBlend
+          mode="normal"
+          in="SourceGraphic"
+          in2="effect1_dropShadow_1983_6790"
+          result="shape"
+        />
+      </filter>
+    </defs>
+  </svg>
+);
+
 export const TransferIcon: React.FC<SVGPropsWithColor> = ({
   color,
   ...props

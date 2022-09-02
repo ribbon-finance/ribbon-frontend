@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { BigNumber, ethers } from "ethers";
 import { useWeb3Wallet } from "shared/lib/hooks/useWeb3Wallet";
-import styled, { css } from "styled-components";
+import styled, { css, keyframes } from "styled-components";
 import { Redirect } from "react-router-dom";
 import { SecondaryText, Title } from "shared/lib/designSystem";
 import colors from "shared/lib/designSystem/colors";
@@ -38,6 +38,7 @@ import ActionModal from "../../components/Vault/VaultActionsForm/EarnModal/Actio
 import { usePendingTransactions } from "shared/lib/hooks/pendingTransactionsContext";
 import useEarnStrategyTime from "../../hooks/useEarnStrategyTime";
 import useLoadingText from "shared/lib/hooks/useLoadingText";
+import { ACTIONS } from "../../components/Vault/VaultActionsForm/EarnModal/types";
 import {
   fadeIn,
   fadeOut,
@@ -47,7 +48,14 @@ import {
 
 const { formatUnits } = ethers.utils;
 
-const PendingDepositsContainer = styled.div`
+const PendingOrLogoContainer = styled.div<{ delay?: number }>`
+  display: flex;
+  opacity: 0;
+  animation: ${fadeIn} 1s ease-in-out forwards;
+  animation-delay: ${({ delay }) => `${delay || 0}s`};
+`;
+
+const PendingDepositsContainer = styled.div<{ delay?: number }>`
   display: flex;
   flex-direction: row;
   align-items: flex-start;
@@ -87,7 +95,7 @@ const TextContainer = styled.div`
   margin-left: 8px;
 `;
 
-const ProductAssetLogoContainer = styled.div<{ delay?: number }>`
+const ProductAssetLogoContainer = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
@@ -96,9 +104,6 @@ const ProductAssetLogoContainer = styled.div<{ delay?: number }>`
   background-color: ${colors.background.one};
   border-radius: 50%;
   position: relative;
-  opacity: 0;
-  animation: ${fadeIn} 1s ease-in-out forwards;
-  animation-delay: ${({ delay }) => `${delay || 0}s`};
 `;
 
 const CirclesContainer = styled.div<{ offset: number }>`
@@ -263,15 +268,18 @@ const EarnPage = () => {
   const [, setShowConnectModal] = useConnectWalletModal();
   const [showDetailsModal, setShowDetailsModal] = useState(false);
   const [showDepositModal, setShowDepositModal] = useState(false);
-  const [isDepositSuccess, setDepositSuccess] = useState<boolean>();
+  const [showWithdrawModal, setShowWithdrawModal] = useState(false);
   const { pendingTransactions } = usePendingTransactions();
+  const [isDepositSuccess, setDepositSuccess] = useState<boolean>();
 
   useEffect(() => {
     if (
       pendingTransactions.some((transaction) => {
         return (
           transaction.status === "success" &&
-          transaction.type === "deposit" &&
+          (transaction.type === "deposit" ||
+            transaction.type === "withdraw" ||
+            transaction.type === "withdrawInitiation") &&
           transaction.vault === vaultOption
         );
       })
@@ -330,11 +338,17 @@ const EarnPage = () => {
     ];
   }, [decimals, v2Deposits, v2VaultLimit]);
 
-  const hasPendingDeposits = useMemo(() => {
+  const [hasPendingDeposits, hasLockedBalanceInAsset] = useMemo(() => {
     if (!vaultAccount) {
-      return false;
+      return [false, false];
     }
-    return !isPracticallyZero(vaultAccount.totalPendingDeposit, decimals);
+    return [
+      !isPracticallyZero(vaultAccount.totalPendingDeposit, decimals),
+      !isPracticallyZero(
+        vaultAccount.totalBalance.sub(vaultAccount.totalPendingDeposit),
+        decimals
+      ),
+    ];
   }, [vaultAccount, decimals]);
 
   const [roi, yieldColor] = useMemo(() => {
@@ -477,25 +491,27 @@ const EarnPage = () => {
               }}
             >
               <VaultContainer>
-                {hasPendingDeposits ? (
-                  <PendingDepositsContainer>
-                    <ProductAssetLogoContainer color={color} delay={0.1}>
+                <PendingOrLogoContainer delay={0.1}>
+                  {hasPendingDeposits ? (
+                    <PendingDepositsContainer>
+                      <ProductAssetLogoContainer color={color}>
+                        {logo}
+                      </ProductAssetLogoContainer>
+                      <TextContainer>
+                        <p>
+                          Your deposit will deployed in the vault in{" "}
+                          <span style={{ color: colors.primaryText }}>
+                            {strategyStartTime}
+                          </span>
+                        </p>
+                      </TextContainer>
+                    </PendingDepositsContainer>
+                  ) : (
+                    <ProductAssetLogoContainer color={color}>
                       {logo}
                     </ProductAssetLogoContainer>
-                    <TextContainer>
-                      <p>
-                        Your deposit will deployed in the vault in{" "}
-                        <span style={{ color: colors.primaryText }}>
-                          {strategyStartTime}
-                        </span>
-                      </p>
-                    </TextContainer>
-                  </PendingDepositsContainer>
-                ) : (
-                  <ProductAssetLogoContainer color={color} delay={0.2}>
-                    {logo}
-                  </ProductAssetLogoContainer>
-                )}
+                  )}
+                </PendingOrLogoContainer>
                 <BalanceTitle className={`mt-1 py-3`} delay={0.2}>
                   Your Balance
                 </BalanceTitle>
@@ -533,13 +549,18 @@ const EarnPage = () => {
                       >
                         Deposit
                       </StyledActionButton>
-                      {/* WIP <StyledActionButton
-                        disabled={true}
+                      <StyledActionButton
                         className={`py-3 mb-1 w-100`}
                         color={"white"}
+                        disabled={
+                          !hasLockedBalanceInAsset && !hasPendingDeposits
+                        }
+                        onClick={() => {
+                          setShowWithdrawModal(true);
+                        }}
                       >
-                        Initiate Withdraw
-                      </StyledActionButton> */}
+                        Withdraw
+                      </StyledActionButton>
                     </>
                   ) : (
                     <StyledActionButton
@@ -600,7 +621,18 @@ const EarnPage = () => {
         }}
         variant={"desktop"}
         show={showDepositModal}
+        actionType={ACTIONS.deposit}
         onClose={() => setShowDepositModal(false)}
+      />
+      <ActionModal
+        vault={{
+          vaultOption: vaultOption,
+          vaultVersion: vaultVersion,
+        }}
+        variant={"desktop"}
+        show={showWithdrawModal}
+        actionType={ACTIONS.withdraw}
+        onClose={() => setShowWithdrawModal(false)}
       />
     </>
   );

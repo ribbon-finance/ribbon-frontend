@@ -244,7 +244,7 @@ const VaultV2WithdrawForm: React.FC<VaultV2WithdrawFormProps> = ({
       switch (_error) {
         case "withdrawLimitExceeded":
           return "Available limit exceeded";
-        case "eixstingWithdraw":
+        case "existingWithdraw":
           return "Existing withdraw from previous round";
       }
     }

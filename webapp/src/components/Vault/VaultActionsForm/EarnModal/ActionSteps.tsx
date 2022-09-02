@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { BigNumber } from "ethers";
-import { Steps, STEPS } from "./types";
+import { ActionType, Steps, STEPS, V2WithdrawOption } from "./types";
 import PreviewStep from "./PreviewStep";
 import TransactionStep from "./TransactionStep";
 import {
@@ -9,13 +9,12 @@ import {
   VaultVersion,
 } from "shared/lib/constants/constants";
 import { usePendingTransactions } from "shared/lib/hooks/pendingTransactionsContext";
-import useVaultActionForm from "../../../../hooks/useVaultActionForm";
 import { parseUnits } from "@ethersproject/units";
 import { useV2VaultData } from "shared/lib/hooks/web3DataContext";
 import { useVaultsPriceHistory } from "shared/lib/hooks/useVaultPerformanceUpdate";
 import { getAssetColor, getAssetDecimals } from "shared/lib/utils/asset";
 import { RibbonEarnVault } from "shared/lib/codegen";
-import DepositFormStep from "./DepositFormStep";
+import DepositFormStep from "./FormStep";
 import useEarnVaultContract from "shared/lib/hooks/useEarnVaultContract";
 import { DepositSignature } from "../../../../hooks/useUSDC";
 export interface ActionStepsProps {
@@ -28,6 +27,7 @@ export interface ActionStepsProps {
   step: Steps;
   onChangeStep: (stepData: Steps) => void;
   skipToPreview?: boolean;
+  actionType: ActionType;
 }
 
 const ActionSteps: React.FC<ActionStepsProps> = ({
@@ -37,8 +37,8 @@ const ActionSteps: React.FC<ActionStepsProps> = ({
   step,
   onChangeStep,
   skipToPreview = false,
+  actionType,
 }) => {
-  const { resetActionForm } = useVaultActionForm(vaultOption);
   const { data: priceHistories } = useVaultsPriceHistory();
 
   const firstStep = useMemo(() => {
@@ -58,6 +58,7 @@ const ActionSteps: React.FC<ActionStepsProps> = ({
       lockedBalanceInAsset,
       depositBalanceInAsset,
       withdrawals,
+      pricePerShare,
     },
   } = useV2VaultData(vaultOption);
 
@@ -81,6 +82,8 @@ const ActionSteps: React.FC<ActionStepsProps> = ({
   ]);
 
   const [inputAmount, setInputAmount] = useState<string>("");
+  const [withdrawOption, setWithdrawOption] =
+    useState<V2WithdrawOption>("standard");
   const [signature, setSignature] = useState<DepositSignature | undefined>();
 
   const amountStr = useMemo(() => {
@@ -94,11 +97,8 @@ const ActionSteps: React.FC<ActionStepsProps> = ({
 
   const cleanupEffects = useCallback(() => {
     setTxhash("");
-
-    if (step === STEPS.submittedStep) {
-      resetActionForm();
-    }
-  }, [resetActionForm, step]);
+    setInputAmount("");
+  }, []);
 
   const handleClose = useCallback(() => {
     cleanupEffects();
@@ -145,28 +145,60 @@ const ActionSteps: React.FC<ActionStepsProps> = ({
       onChangeStep(STEPS.confirmationStep);
       try {
         let res: any;
-        if (!signature) {
-          return;
+        switch (actionType) {
+          case "deposit":
+            if (!signature) {
+              return;
+            }
+
+            res = await vault.depositWithPermit(
+              amountStr,
+              signature.deadline,
+              signature.v,
+              signature.r,
+              signature.s
+            );
+
+            addPendingTransaction({
+              txhash: res.hash,
+              type: "deposit",
+              amount: amountStr,
+              vault: vaultOption,
+              asset: asset,
+            });
+
+            setTxhash(res.hash);
+            onChangeStep(STEPS.submittedStep);
+            break;
+          case "withdraw":
+            if (withdrawOption === "standard") {
+              const shares = BigNumber.from(amountStr)
+                .mul(BigNumber.from(10).pow(decimals))
+                .div(pricePerShare);
+              res = await vault.initiateWithdraw(shares);
+              addPendingTransaction({
+                txhash: res.hash,
+                type: "withdrawInitiation",
+                amount: amountStr,
+                vault: vaultOption,
+              });
+
+              setTxhash(res.hash);
+              onChangeStep(STEPS.submittedStep);
+            } else {
+              res = await vault.withdrawInstantly(amountStr);
+              addPendingTransaction({
+                txhash: res.hash,
+                type: "withdraw",
+                amount: amountStr,
+                vault: vaultOption,
+              });
+
+              setTxhash(res.hash);
+              onChangeStep(STEPS.submittedStep);
+            }
+            break;
         }
-
-        res = await vault.depositWithPermit(
-          amountStr,
-          signature.deadline,
-          signature.v,
-          signature.r,
-          signature.s
-        );
-
-        addPendingTransaction({
-          txhash: res.hash,
-          type: "deposit",
-          amount: amountStr,
-          vault: vaultOption,
-          asset: asset,
-        });
-
-        setTxhash(res.hash);
-        onChangeStep(STEPS.submittedStep);
       } catch (e) {
         console.error(e);
         handleClose();
@@ -177,8 +209,10 @@ const ActionSteps: React.FC<ActionStepsProps> = ({
   const stepComponents = {
     0: (
       <DepositFormStep
-        actionType={"deposit"}
+        actionType={actionType}
+        inputAmount={inputAmount}
         onClickUpdateInput={setInputAmount}
+        onClickUpdateWithdrawOption={setWithdrawOption}
         onClickConfirmButton={handleClickNextButton}
         asset={asset}
         vaultOption={vaultOption}
@@ -188,11 +222,12 @@ const ActionSteps: React.FC<ActionStepsProps> = ({
     ),
     1: (
       <PreviewStep
-        actionType={"deposit"}
+        actionType={actionType}
         amount={BigNumber.from(amountStr)}
         positionAmount={vaultBalanceInAsset}
         onClickConfirmButton={handleClickConfirmButton}
         asset={asset}
+        withdrawOption={withdrawOption}
         vaultOption={vaultOption}
         vaultVersion={vaultVersion}
         onSignatureMade={setSignature}

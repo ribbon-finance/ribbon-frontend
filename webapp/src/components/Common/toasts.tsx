@@ -4,6 +4,7 @@ import { useTranslation } from "react-i18next";
 
 import {
   getAssets,
+  isEarnVault,
   isSolanaVault,
   VaultList,
   VaultOptions,
@@ -27,7 +28,7 @@ import { useVaultsPriceHistory } from "shared/lib/hooks/useVaultPerformanceUpdat
 import { parseUnits } from "ethers/lib/utils";
 import { useChain } from "shared/lib/hooks/chainContext";
 import { useHistory } from "react-router-dom";
-
+import useEarnStrategyTime from "../../hooks/useEarnStrategyTime";
 /**
  * TODO: Temporary disabled
  * In the future, we should seperate out wrong network service from useVaultData
@@ -66,6 +67,7 @@ type TxStatuses = "processing" | "success" | "error" | undefined;
 export const TxStatusToast = () => {
   const { pendingTransactions, transactionsCounter } = usePendingTransactions();
   const { t } = useTranslation();
+  const { withdrawalDate } = useEarnStrategyTime();
 
   const [showedPendingTxCounter, setShowPendingTxCounter] =
     useState(transactionsCounter);
@@ -143,6 +145,13 @@ export const TxStatusToast = () => {
             )} withdrawal from ${t(
               `shared:ProductCopies:${_currentTx.vault}:title`
             )}. Your funds are automatically credited after 12pm UTC on Friday.`;
+          }
+          if (isEarnVault(_currentTx.vault)) {
+            return `Initiated ${amountFormatted} ${getAssetDisplay(
+              getAssets(_currentTx.vault)
+            )} withdrawal from ${t(
+              `shared:ProductCopies:${_currentTx.vault}:title`
+            )}. You can complete your withdrawal any time after 12pm UTC on ${withdrawalDate}.`;
           }
           return `Initiated ${amountFormatted} ${getAssetDisplay(
             getAssets(_currentTx.vault)
