@@ -249,7 +249,6 @@ const ButtonContainer = styled.div<{ delay?: number }>`
   opacity: 0;
   animation: ${fadeIn} 1s ease-in-out forwards;
   animation-delay: ${({ delay }) => `${delay || 0}s`};
->>>>>>> master
 `;
 const StyledActionButton = styled(ActionButton)`
   font-size: 14px;
