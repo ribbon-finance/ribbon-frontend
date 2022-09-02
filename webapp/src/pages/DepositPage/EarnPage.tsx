@@ -48,7 +48,14 @@ import {
 
 const { formatUnits } = ethers.utils;
 
-const PendingDepositsContainer = styled.div`
+const PendingOrLogoContainer = styled.div<{ delay?: number }>`
+  display: flex;
+  opacity: 0;
+  animation: ${fadeIn} 1s ease-in-out forwards;
+  animation-delay: ${({ delay }) => `${delay || 0}s`};
+`;
+
+const PendingDepositsContainer = styled.div<{ delay?: number }>`
   display: flex;
   flex-direction: row;
   align-items: flex-start;
@@ -88,7 +95,7 @@ const TextContainer = styled.div`
   margin-left: 8px;
 `;
 
-const ProductAssetLogoContainer = styled.div<{ delay?: number }>`
+const ProductAssetLogoContainer = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
@@ -97,9 +104,6 @@ const ProductAssetLogoContainer = styled.div<{ delay?: number }>`
   background-color: ${colors.background.one};
   border-radius: 50%;
   position: relative;
-  opacity: 0;
-  animation: ${fadeIn} 1s ease-in-out forwards;
-  animation-delay: ${({ delay }) => `${delay || 0}s`};
 `;
 
 const CirclesContainer = styled.div<{ offset: number }>`
@@ -489,25 +493,27 @@ const EarnPage = () => {
               }}
             >
               <VaultContainer>
-                {hasPendingDeposits ? (
-                  <PendingDepositsContainer>
-                    <ProductAssetLogoContainer color={color} delay={0.1}>
+                <PendingOrLogoContainer delay={0.1}>
+                  {hasPendingDeposits ? (
+                    <PendingDepositsContainer>
+                      <ProductAssetLogoContainer color={color}>
+                        {logo}
+                      </ProductAssetLogoContainer>
+                      <TextContainer>
+                        <p>
+                          Your deposit will deployed in the vault in{" "}
+                          <span style={{ color: colors.primaryText }}>
+                            {strategyStartTime}
+                          </span>
+                        </p>
+                      </TextContainer>
+                    </PendingDepositsContainer>
+                  ) : (
+                    <ProductAssetLogoContainer color={color}>
                       {logo}
                     </ProductAssetLogoContainer>
-                    <TextContainer>
-                      <p>
-                        Your deposit will deployed in the vault in{" "}
-                        <span style={{ color: colors.primaryText }}>
-                          {strategyStartTime}
-                        </span>
-                      </p>
-                    </TextContainer>
-                  </PendingDepositsContainer>
-                ) : (
-                  <ProductAssetLogoContainer color={color} delay={0.2}>
-                    {logo}
-                  </ProductAssetLogoContainer>
-                )}
+                  )}
+                </PendingOrLogoContainer>
                 <BalanceTitle className={`mt-1 py-3`} delay={0.2}>
                   Your Balance
                 </BalanceTitle>
