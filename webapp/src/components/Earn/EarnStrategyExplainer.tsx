@@ -12,6 +12,7 @@ import { SecondaryText, Title } from "shared/lib/designSystem";
 import SegmentPagination from "shared/lib/components/Common/SegmentPagination";
 
 import { useGlobalState } from "shared/lib/store/store";
+import { useAirtable } from "shared/lib/hooks/useAirtable";
 
 const ExplainerContainer = styled.div`
   display: flex;
@@ -77,14 +78,10 @@ const ExplanationStepList = ["step1", "step2", "step3"] as const;
 
 type ExplanationStep = typeof ExplanationStepList[number];
 
-interface EarnStrategyExplainerProps {
-  maxYield: number;
-}
-const EarnStrategyExplainer: React.FC<EarnStrategyExplainerProps> = ({
-  maxYield,
-}) => {
+const EarnStrategyExplainer: React.FC = () => {
   const containerRef = useRef(null);
   const [, setShowEarnVault] = useGlobalState("showEarnVault");
+  const { loading, maxYield } = useAirtable();
   const [step, setStep] = useState<ExplanationStep>(ExplanationStepList[0]);
 
   const setShowOnboardingCallback = useCallback(() => {
@@ -112,8 +109,8 @@ const EarnStrategyExplainer: React.FC<EarnStrategyExplainerProps> = ({
         case "step1":
           return (
             <>
-              Earn up to {(maxYield * 100).toFixed(2)}% yield with principal
-              protection
+              Earn up to {loading ? "---" : (maxYield * 100).toFixed(2) + "% "}
+              yield with principal protection
             </>
           );
         case "step2":
@@ -129,7 +126,7 @@ const EarnStrategyExplainer: React.FC<EarnStrategyExplainerProps> = ({
           );
       }
     },
-    [maxYield]
+    [loading, maxYield]
   );
 
   const renderButton = useCallback(

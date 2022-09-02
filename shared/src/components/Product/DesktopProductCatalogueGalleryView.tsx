@@ -135,7 +135,7 @@ const DesktopProductCatalogueGalleryView: React.FC<
   const [currentVault, setCurrentVault] = useState<VaultOptions | undefined>(
     filteredProducts[page - 1]
   );
-  const { maxYield } = useAirtable();
+  const { loading, maxYield } = useAirtable();
   // Prevent page overflow
   useEffect(() => {
     if (filteredProducts.length <= 0) {
@@ -155,8 +155,8 @@ const DesktopProductCatalogueGalleryView: React.FC<
     if (currentVault === "rEARN") {
       return (
         "Earn up to " +
-        (maxYield * 100).toFixed(2) +
-        "% APY with a principal protected vault strategy"
+        (loading ? "---" : (maxYield * 100).toFixed(2) + "%") +
+        " APY with a principal protected vault strategy"
       );
     } else {
       const asset = getAssets(currentVault!);
@@ -166,7 +166,7 @@ const DesktopProductCatalogueGalleryView: React.FC<
         return t("shared:ProductCopies:Call:description", { asset });
       }
     }
-  }, [t, maxYield, currentVault]);
+  }, [currentVault, loading, maxYield, t]);
 
   const vaultInfo = useMemo(() => {
     if (!currentVault) {
