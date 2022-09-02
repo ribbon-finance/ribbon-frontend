@@ -9,6 +9,7 @@ import currency from "currency.js";
 import { useContext, useMemo } from "react";
 import { formatUnits } from "ethers/lib/utils";
 import { BigNumber } from "ethers/lib/ethers";
+import useLoadingText from "shared/lib/hooks/useLoadingText";
 const ExplainerTitle = styled.div<{ color: string }>`
   display: flex;
   font-size: 12px;
@@ -48,9 +49,10 @@ const StyledTitle = styled(Title)<{ marginTop: number }>`
 `;
 
 export const Strategy = () => {
-  const { strikePrice, barrierPercentage, baseYield, maxYield } = useAirtable();
+  const { strikePrice, barrierPercentage, baseYield, maxYield, loading } =
+    useAirtable();
   const { vaultSubgraphData } = useContext(SubgraphDataContext);
-
+  const loadingText = useLoadingText();
   const TVL = useMemo(() => {
     if (!vaultSubgraphData.vaults.earn.rEARN) {
       return BigNumber.from(0.0);
@@ -113,22 +115,25 @@ export const Strategy = () => {
         <span>Upside Barrier</span>
       </ExplainerTitle>
       <StyledTitle marginTop={4}>
-        {/* 108% ({currency(strikePrice * (1 + barrierPercentage)).format()}) */}
-        ---
+        {loading
+          ? loadingText
+          : `108% (${currency(
+              strikePrice * (1 + barrierPercentage)
+            ).format()})`}
       </StyledTitle>
       <ExplainerTitle color={colors.tertiaryText}>
         <span>Downside Barrier</span>
       </ExplainerTitle>
       <StyledTitle marginTop={4}>
-        {/* 92% ({currency(strikePrice * (1 - barrierPercentage)).format()}) */}
-        ---
+        {loading
+          ? loadingText
+          : `92% (${currency(strikePrice * (1 - barrierPercentage)).format()})`}
       </StyledTitle>
       <ExplainerTitle color={colors.tertiaryText}>
         <span>Strike</span>
       </ExplainerTitle>
       <StyledTitle marginTop={4}>
-        {/* 100% ({currency(strikePrice).format()}) */}
-        ---
+        {loading ? loadingText : `100% (${currency(strikePrice).format()})`}
       </StyledTitle>{" "}
       <ExplainerTitle color={colors.tertiaryText}>
         <span>Capital Protection</span>
@@ -137,11 +142,15 @@ export const Strategy = () => {
       <ExplainerTitle color={colors.tertiaryText}>
         <span>Base APY</span>
       </ExplainerTitle>
-      <StyledTitle marginTop={4}>{(baseYield * 100).toFixed(2)}%</StyledTitle>
+      <StyledTitle marginTop={4}>
+        {loading ? loadingText : `${(baseYield * 100).toFixed(2)}%`}
+      </StyledTitle>
       <ExplainerTitle color={colors.tertiaryText}>
         <span>Max APY</span>
       </ExplainerTitle>
-      <StyledTitle marginTop={4}>{(maxYield * 100).toFixed(2)}%</StyledTitle>{" "}
+      <StyledTitle marginTop={4}>
+        {loading ? loadingText : `${(maxYield * 100).toFixed(2)}%`}
+      </StyledTitle>{" "}
       <ExplainerTitle color={colors.tertiaryText}>
         <span>Barrier Type</span>
       </ExplainerTitle>

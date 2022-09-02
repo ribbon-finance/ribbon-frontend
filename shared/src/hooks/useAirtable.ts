@@ -8,6 +8,7 @@ export interface ScheduleItem {
   baseYield: number;
   participationRate: number;
   barrierPercentage: number;
+  borrowRate: number;
 }
 
 dotenv.config();
@@ -89,28 +90,30 @@ export const useAirtable = () => {
     }, [schedule, ETHPrice]);
 
   if (loading || !schedule) {
+    //placeholder values while values are loading
     return {
       loading,
       strikePrice: ETHPrice,
       baseYield: 0.04,
       participationRate: 0.04,
       barrierPercentage: 0.08,
-      absolutePerformance: 0.06,
+      absolutePerformance: 0.0,
       performance: 0.0,
       expectedYield: 0.0,
       maxYield: 0.1633,
+      borrowRate: 0.1,
     };
   }
   return {
-    //placeholder values for some of them before 1st sept
     loading,
-    strikePrice: ETHPrice,
+    strikePrice: schedule.strikePrice,
     baseYield: schedule.baseYield,
     participationRate: schedule.participationRate,
     barrierPercentage: schedule.barrierPercentage,
-    absolutePerformance: 0,
-    performance: 0,
-    expectedYield: 0.04,
-    maxYield: 0.1633,
+    absolutePerformance: absolutePerformance,
+    performance: performance,
+    expectedYield: expectedYield,
+    maxYield: maxYield,
+    borrowRate: schedule.borrowRate,
   };
 };

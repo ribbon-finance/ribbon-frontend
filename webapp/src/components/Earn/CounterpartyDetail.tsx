@@ -20,6 +20,7 @@ import { BoostIcon, ExternalIcon } from "shared/lib/assets/icons/icons";
 import { Counterparty } from "./Counterparties";
 import { SubgraphDataContext } from "shared/lib/hooks/subgraphDataContext";
 import { formatUnits } from "ethers/lib/utils";
+import { useAirtable } from "shared/lib/hooks/useAirtable";
 const BoostLogoContainer = styled.div`
   display: flex;
   align-items: center;
@@ -111,6 +112,7 @@ const CounterpartyDetail: React.FC<VaultStrategyExplainerProps> = ({
   counterparty,
 }) => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const { borrowRate, loading } = useAirtable();
   const { vaultSubgraphData } = useContext(SubgraphDataContext);
   const onToggleMenu = useCallback(() => {
     setIsMenuOpen((open) => !open);
@@ -122,6 +124,7 @@ const CounterpartyDetail: React.FC<VaultStrategyExplainerProps> = ({
     }
     return vaultSubgraphData.vaults.earn.rEARN.principalOutstanding;
   }, [vaultSubgraphData.vaults.earn.rEARN]);
+
   const handleButtonClick = useCallback(async () => {
     onToggleMenu();
   }, [onToggleMenu]);
@@ -266,18 +269,25 @@ const CounterpartyDetail: React.FC<VaultStrategyExplainerProps> = ({
     [principalOutstanding]
   );
 
-  const renderBorrowRate = useCallback((s: Counterparty) => {
-    switch (s) {
-      case "R-EARN DIVERSIFIED":
-        return <>7.00%</>;
-      case "ORTHOGONAL":
-        return <>7.00%</>;
-      case "ALAMEDA RESEARCH":
-        return <>7.00%</>;
-      case "CITADEL":
-        return <>7.00%</>;
-    }
-  }, []);
+  console.log(borrowRate);
+  const renderBorrowRate = useCallback(
+    (s: Counterparty) => {
+      if (loading) {
+        return <>---</>;
+      }
+      switch (s) {
+        case "R-EARN DIVERSIFIED":
+          return <>{(borrowRate * 100).toFixed(2)}%</>;
+        case "ORTHOGONAL":
+          return <>7.00%</>;
+        case "ALAMEDA RESEARCH":
+          return <>7.00%</>;
+        case "CITADEL":
+          return <>7.00%</>;
+      }
+    },
+    [borrowRate, loading]
+  );
 
   const renderCreditRating = useCallback((s: Counterparty) => {
     switch (s) {
@@ -299,7 +309,7 @@ const CounterpartyDetail: React.FC<VaultStrategyExplainerProps> = ({
           <WalletContent>
             <StyledTitle>{counterparty}</StyledTitle>
             <WalletContentText>
-              {renderAPR(counterparty)} Borrow Rate (APR)
+              {renderBorrowRate(counterparty)} Borrow Rate (APR)
             </WalletContentText>
           </WalletContent>
           <ButtonArrow isOpen={isMenuOpen} color="white"></ButtonArrow>
@@ -313,8 +323,7 @@ const CounterpartyDetail: React.FC<VaultStrategyExplainerProps> = ({
               <WalletContentText color={colors.tertiaryText} fontSize={12}>
                 Principal Outstanding
               </WalletContentText>
-              <Title>---</Title>
-              {/* <Title>{renderPrincipleOutstanding(counterparty)}</Title> */}
+              <Title>{renderPrincipleOutstanding(counterparty)}</Title>
               <WalletContentText
                 color={colors.tertiaryText}
                 fontSize={12}
@@ -329,8 +338,7 @@ const CounterpartyDetail: React.FC<VaultStrategyExplainerProps> = ({
               <WalletContentText color={colors.tertiaryText} fontSize={12}>
                 Borrow Rate (APR)
               </WalletContentText>
-              <Title>---</Title>
-              {/* <Title>{renderBorrowRate(counterparty)}</Title> */}
+              <Title>{renderBorrowRate(counterparty)}</Title>
               <WalletContentText
                 color={colors.tertiaryText}
                 fontSize={12}
