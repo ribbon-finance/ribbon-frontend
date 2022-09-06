@@ -11,10 +11,8 @@ import colors from "shared/lib/designSystem/colors";
  * Expiry: Expiry of the option
  */
 interface ProfitChartProps {
-  loading?: boolean;
   onHoverPrice: (price: number | undefined) => void;
   onHoverPercentage: (percentage: number | undefined) => void;
-  absolutePerformance: number;
   performance: number;
   maxYield: number;
   barrierPercentage: number;
@@ -23,10 +21,8 @@ interface ProfitChartProps {
 }
 
 const EarnChart: React.FC<ProfitChartProps> = ({
-  loading,
   onHoverPrice,
   onHoverPercentage,
-  absolutePerformance,
   performance,
   maxYield,
   barrierPercentage,
@@ -79,9 +75,14 @@ const EarnChart: React.FC<ProfitChartProps> = ({
       ctx.textBaseline = "middle";
       const padding = 8;
 
-      const text = `${drawIndex === 0 ? "<<< " : ""}${price.toFixed(2)}%${
-        drawIndex === meta.data.length - 1 ? " >>>" : ""
+      const text = `${
+        drawIndex === 0 || price < -8
+          ? "<<< -8.00%"
+          : drawIndex === meta.data.length - 1 || price > 8
+          ? " >>> 8.00%"
+          : `${price.toFixed(2)}%`
       }`;
+
       const textLength = ctx.measureText(text).width;
 
       let xPosition = priceX;
@@ -146,8 +147,12 @@ const EarnChart: React.FC<ProfitChartProps> = ({
       ctx.textBaseline = "middle";
       const padding = 8;
 
-      const text = `${drawIndex === 0 ? "<<< " : ""}${price.toFixed(2)}%${
-        drawIndex === meta.data.length - 1 ? " >>>" : ""
+      const text = `${
+        drawIndex === 0 || price < -8
+          ? "<<< -8.00%"
+          : drawIndex === meta.data.length - 1 || price > 8
+          ? " >>> 8.00%"
+          : `${price.toFixed(2)}%`
       }`;
       const textLength = ctx.measureText(text).width;
 
@@ -256,10 +261,7 @@ const EarnChart: React.FC<ProfitChartProps> = ({
       green.addColorStop(1, `transparent`);
       green.addColorStop(0.9, `${colors.green}01`);
       green.addColorStop(0, `${colors.green}20`);
-      const performanceRounded =
-        performance < 0
-          ? Math.floor(performance * 100)
-          : Math.round(performance * 100);
+      const performanceRounded = Math.round(performance * 100 * 1e2) / 1e2;
       return {
         labels: moneynessRange,
         datasets: [
