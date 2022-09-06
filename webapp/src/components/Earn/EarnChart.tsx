@@ -76,10 +76,11 @@ const EarnChart: React.FC<ProfitChartProps> = ({
       const padding = 8;
 
       const text = `${
-        drawIndex === 0 || price < -8
-          ? "<<< -8.00%"
-          : drawIndex === meta.data.length - 1 || price > 8
-          ? " >>> 8.00%"
+        drawIndex === 0 || price < -barrierPercentage * 100
+          ? `<<< ${(-barrierPercentage * 100).toFixed(2)}%`
+          : drawIndex === meta.data.length - 1 ||
+            price > barrierPercentage * 100
+          ? `>>> ${(barrierPercentage * 100).toFixed(2)}%`
           : `${price.toFixed(2)}%`
       }`;
 
