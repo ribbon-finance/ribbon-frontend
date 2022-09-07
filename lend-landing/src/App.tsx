@@ -31,6 +31,7 @@ import "shared/lib/i18n/config";
 
 const Body = styled.div`
   background-color: ${colors.background.one};
+  max-height: 100vh;
 `;
 
 const MainContainer = styled.div`
@@ -52,7 +53,7 @@ function App() {
                     <Router>
                       <Header />
 
-                      <Switch>
+                      {/* <Switch>
                         <Route path="/" exact>
                           <MainContainer>
                             <Hero />
@@ -73,11 +74,8 @@ function App() {
                         <Route>
                           <Redirect to="/" />
                         </Route>
-                      </Switch>
-
-                      <Footer />
+                      </Switch> */}
                     </Router>
-                    <StickyFooter />
                   </Body>
                 </ExternalAPIDataContextProvider>
               </SubgraphDataContextProvider>

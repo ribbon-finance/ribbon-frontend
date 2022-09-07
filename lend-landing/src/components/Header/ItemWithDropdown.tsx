@@ -20,33 +20,15 @@ import ButtonArrow from "../Common/ButtonArrow";
 const WalletContainer = styled.div<AccountStatusVariantProps>`
   justify-content: center;
   align-items: center;
+  height: 100%;
+  width: fit-content;
+  display: flex;
+  z-index: 1000;
+  position: relative;
 
-  ${(props) => {
-    switch (props.variant) {
-      case "desktop":
-        return `
-          display: flex;
-          padding-right: 40px;
-          z-index: 1000;
-          position: relative;
-  
-          @media (max-width: ${sizes.md}px) {
-            display: none;
-          }
-          `;
-      case "mobile":
-        return `
-            display: none;
-  
-            @media (max-width: ${sizes.md}px) {
-              display: flex;
-              align-items: unset;
-              padding-top: 16px;
-              width: 100%;
-            }
-          `;
-    }
-  }}
+  @media (max-width: ${sizes.md}px) {
+    display: none;
+  }
 `;
 
 const WalletButton = styled(BaseButton)<WalletButtonProps>`
@@ -57,19 +39,6 @@ const WalletButton = styled(BaseButton)<WalletButtonProps>`
   &:hover {
     opacity: 1;
   }
-
-  ${(props) => {
-    switch (props.variant) {
-      case "mobile":
-        return `
-          height: 48px;
-          justify-content: center;
-          padding: 14px 16px;
-        `;
-      case "desktop":
-        return ``;
-    }
-  }}
 `;
 
 const WalletButtonText = styled(Title)<WalletStatusProps>`
@@ -127,11 +96,11 @@ const WalletMobileOverlayMenu = styled(
 
 const MenuItem = styled.div`
   padding: 8px 16px;
-  padding-right: 38px;
   opacity: 1;
   display: flex;
   align-items: center;
   color: ${colors.primaryText};
+  background: green;
 
   &:first-child {
     padding-top: 16px;
@@ -144,13 +113,6 @@ const MenuItem = styled.div`
   &:hover {
     span {
       // color: ${colors.primaryText};
-    }
-  }
-
-  @media (max-width: ${sizes.md}px) {
-    margin: unset;
-    && {
-      padding: 28px;
     }
   }
 `;
@@ -258,35 +220,10 @@ const ItemWithDropdown: React.FC<ItemWithDropdownProps> = ({
           onClick={onToggleMenu}
         >
           <>
-            <WalletButtonText>
-              {children} <ButtonArrow isOpen={isMenuOpen} />
-            </WalletButtonText>
+            <WalletButtonText>{children}</WalletButtonText>
           </>
         </WalletButton>
-        <WalletDesktopMenu isMenuOpen={isMenuOpen}>
-          {dropdownItems.map((item, index) =>
-            renderMenuItem(index, item.text, item.link)
-          )}
-        </WalletDesktopMenu>
       </WalletContainer>
-
-      {/* Mobile Menu */}
-      <WalletMobileOverlayMenu
-        className="flex-column align-items-center justify-content-center"
-        isMenuOpen={isMenuOpen}
-        onClick={onCloseMenu}
-        variant={variant}
-        mountRoot="div#root"
-        overflowOnOpen={false}
-      >
-        {dropdownItems.map((item, index) =>
-          renderMenuItem(index, item.text, item.link)
-        )}
-
-        <MenuCloseItem role="button" onClick={onCloseMenu}>
-          <MenuButton isOpen={true} onToggle={onCloseMenu} />
-        </MenuCloseItem>
-      </WalletMobileOverlayMenu>
     </>
   );
 };
