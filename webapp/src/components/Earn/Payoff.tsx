@@ -82,6 +82,7 @@ const Payoff: React.FC<ProfitCalculatorProps> = () => {
     barrierPercentage,
     loading,
   } = useAirtable();
+
   const loadingText = useLoadingText();
 
   const [hoverPrice, setHoverPrice] = useState<number>();
@@ -104,28 +105,26 @@ const Payoff: React.FC<ProfitCalculatorProps> = () => {
     let array = [];
     let rightArray = [];
 
-    for (let i = 0; i < 20; i += 1) {
-      leftArray.push(-Math.round(barrierPercentage * 100) - (20 - i));
+    for (let i = 0; i < 2000; i += 1) {
+      leftArray.push(-Math.round(barrierPercentage * 100) - (2000 - i));
     }
 
     for (
-      let i = -(Math.round(barrierPercentage * 100) - 1);
-      i <= Math.round(barrierPercentage * 100) - 1;
+      let i = -(Math.round(barrierPercentage * 100) * 100);
+      i <= Math.round(barrierPercentage * 100) * 100;
       i += 1
     ) {
-      array.push(i);
+      array.push(i / 100);
     }
 
-    for (let i = 0; i < 20; i += 1) {
+    for (let i = 0; i < 2000; i += 1) {
       rightArray.push(Math.round(barrierPercentage * 100) + i + 1);
     }
 
     return [
       ...leftArray,
       -(barrierPercentage * 100) - 0.01,
-      -(barrierPercentage * 100),
       ...array,
-      barrierPercentage * 100,
       barrierPercentage * 100 + 0.01,
       ...rightArray,
     ];
@@ -136,25 +135,27 @@ const Payoff: React.FC<ProfitCalculatorProps> = () => {
     let array = [];
     let rightArray = [];
 
-    for (let i = 0; i <= 20; i += 1) {
+    for (let i = 0; i < 2000; i += 1) {
       leftArray.push(4);
     }
 
     for (
-      let i = -Math.round(barrierPercentage * 100);
-      i <= Math.round(barrierPercentage * 100);
+      let i = -Math.round(barrierPercentage * 100) * 100;
+      i <= Math.round(barrierPercentage * 100) * 100;
       i += 1
     ) {
       array.push(
         4 +
-          Math.abs(i / (barrierPercentage * 100)) * (maxYield - baseYield) * 100
+          Math.abs(i / 100 / (barrierPercentage * 100)) *
+            (maxYield - baseYield) *
+            100
       );
     }
 
-    for (let i = 0; i <= 20; i += 1) {
+    for (let i = 0; i < 2000; i += 1) {
       rightArray.push(4);
     }
-    return [...leftArray, ...array, ...rightArray];
+    return [...leftArray, 4, ...array, 4, ...rightArray];
   }, [barrierPercentage, baseYield, maxYield]);
 
   return (
@@ -185,11 +186,9 @@ const Payoff: React.FC<ProfitCalculatorProps> = () => {
             onMouseLeave={() => setChartHovering(false)}
           >
             <EarnChart
-              loading={loading}
               onHoverPrice={setHoverPrice}
               onHoverPercentage={setHoverPercentage}
               performance={performance}
-              absolutePerformance={absolutePerformance}
               barrierPercentage={barrierPercentage}
               maxYield={maxYield}
               moneynessRange={moneynessRange}
@@ -260,8 +259,8 @@ const Payoff: React.FC<ProfitCalculatorProps> = () => {
                 ? loadingText
                 : `${optionMoneyness <= 0 ? "" : "+"}${
                     optionMoneyness <= 0
-                      ? Math.floor(optionMoneyness * 100).toFixed(2)
-                      : Math.round(optionMoneyness * 100).toFixed(2)
+                      ? (optionMoneyness * 100).toFixed(2)
+                      : (optionMoneyness * 100).toFixed(2)
                   }%`}
             </CalculationData>
           </CalculationColumn>
