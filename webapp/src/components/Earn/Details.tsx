@@ -99,8 +99,8 @@ export const Strategy = () => {
         upside up to 108% of the ETH's spot level at the start of the week
         (upside barrier) and any ETH downside down to 92% of ETH's spot level at
         the start of the week (downside barrier). However, if the price of ETH
-        increases or decreases by more than 8% during the week, the barrier
-        options expire worthless and the vault earns the base APY only.
+        has increased or decreased by more than 8% at the end of the week, the
+        barrier options expire worthless and the vault earns the base APY only.
       </ParagraphText>
       <StyledTitle marginTop={24}>Vault Specifications</StyledTitle>
       <ExplainerTitle color={colors.tertiaryText}>
