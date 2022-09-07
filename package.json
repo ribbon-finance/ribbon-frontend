@@ -6,7 +6,9 @@
     "webapp",
     "nft-drop",
     "governance",
-    "treasury"
+    "treasury",
+    "lend-landing",
+    "lend"
   ],
   "devDependencies": {
     "husky": "^7.0.4",
