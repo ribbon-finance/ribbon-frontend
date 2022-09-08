@@ -1,172 +1,83 @@
-import React, { FC } from "react";
-import { Col, Row } from "react-bootstrap";
+import React from "react";
 import styled from "styled-components";
-
-import { BaseLink, Title } from "../../designSystem";
 import colors from "shared/lib/designSystem/colors";
-import sizes from "../../designSystem/sizes";
+import { SecondaryText, Title } from "shared/lib/designSystem/index";
 
-const FooterContainer = styled(Row)`
-  width: 100%;
-  padding: 80px 0;
-  justify-content: center;
-  margin-bottom: 20px;
-
-  > * {
-    @media (max-width: ${sizes.md}px) {
-      margin-bottom: 40px;
-    }
-  }
-`;
-
-const LinkContainer = styled(BaseLink)`
+const FooterContainer = styled.div`
   display: flex;
-  margin: auto;
-  margin-top: 40px;
-  width: fit-content;
+  width: 100%;
+  height: 64px;
+  align-items: center;
+  z-index: 999;
+  border-top: 1px solid ${colors.border};
 `;
 
-const LinkItem = styled.div`
-  width: fit-content;
-  opacity: 0.48;
+const StyledTitle = styled(Title)<{
+  size?: number;
+  marginLeft?: number;
+  marginRight?: number;
+  color?: string;
+}>`
   text-align: center;
-
-  &:hover {
-    opacity: 1;
-  }
-`;
-
-const LinkItemText = styled(Title)`
-  font-size: 12px;
+  color: ${(props) =>
+    props.color === undefined ? `${colors.primaryText}` : `${props.color}`};
+  margin-right: ${(props) =>
+    props.marginRight === undefined ? `0px` : `${props.marginRight}px`};
+  margin-left: ${(props) =>
+    props.marginLeft === undefined ? `0px` : `${props.marginLeft}px`};
+  font-size: ${(props) =>
+    props.size === undefined ? `14px` : `${props.size}px`};
   line-height: 20px;
-  white-space: nowrap;
 `;
 
-const FooterTitle = styled.div`
-  font-size: 14px;
-  font-family: VCR;
-  text-transform: uppercase;
+const StyledSecondaryText = styled(SecondaryText)<{ color?: string }>`
+  color: ${(props) =>
+    props.color === undefined ? `${colors.primaryText}` : `${props.color}`};
+  font-size: 12px;
+`;
+
+const FooterTextContainer = styled.div`
+  display: flex;
+  align-items: center;
+  align-self: center;
+  justify-content: center;
+  width: calc(100% / 3);
   text-align: center;
-  color: ${colors.primaryText};
+  height: 16px;
+  padding-left: 30px;
+  padding-right: 30px;
+  border-right: 1px solid ${colors.border};
+  margin: auto;
 `;
 
-interface Link {
-  title: string;
-  to: string;
-  external?: boolean;
-  download?: boolean;
-}
-
-const links = {
-  about: [
-    {
-      title: "FAQ",
-      to: "https://docs.ribbon.finance/faq",
-      external: true,
-    },
-    {
-      title: "BLOG",
-      to: "https://medium.com/@ribbonfinance",
-      external: true,
-    },
-    {
-      title: "DOCS",
-      to: "https://docs.ribbon.finance",
-    },
-    {
-      title: "TERMS",
-      to: "/terms",
-    },
-    {
-      title: "POLICY",
-      to: "/policy",
-    },
-  ] as Array<Link>,
-  community: [
-    {
-      title: "GITHUB",
-      to: "https://github.com/ribbon-finance",
-      external: true,
-    },
-    {
-      title: "DISCORD",
-      to: "https://discord.com/invite/ribbon-finance",
-      external: true,
-    },
-    {
-      title: "TWITTER",
-      to: "https://twitter.com/ribbonfinance",
-      external: true,
-    },
-    {
-      title: "GOVERNANCE PORTAL",
-      to: "https://vote.ribbon.finance",
-      external: true,
-    },
-    {
-      title: "SNAPSHOT",
-      to: "https://snapshot.org/#/rbn.eth",
-      external: true,
-    },
-    {
-      title: "MEDIA KIT",
-      to: "/ribbon_media_kit.zip",
-      external: true,
-      download: true,
-    },
-  ] as Array<Link>,
-  data: [
-    {
-      title: "TOKEN TERMINAL",
-      to: "https://www.tokenterminal.com/terminal/projects/ribbon-finance",
-      external: true,
-    },
-    {
-      title: "DEFI LLAMA",
-      to: "https://defillama.com/protocol/ribbon-finance",
-      external: true,
-    },
-  ] as Array<Link>,
-};
-
-const LinkList: FC<{ links: Array<Link> }> = ({ links }) => (
-  <>
-    {links.map((link, i) => {
-      return (
-        <LinkContainer
-          key={i}
-          to={link.to}
-          target={link.external ? "_blank" : undefined}
-          rel={link.external ? "noreferrer noopener" : undefined}
-          download={link.download}
-        >
-          <LinkItem>
-            <LinkItemText>{link.title}</LinkItemText>
-          </LinkItem>
-        </LinkContainer>
-      );
-    })}
-  </>
-);
-
-const Footer = () => {
+const Footer: React.FC = () => {
   return (
-    <>
-      <FooterContainer fluid noGutters>
-        <Col xs={12} md={3}>
-          <FooterTitle>About</FooterTitle>
-          <LinkList links={links.about} />
-        </Col>
-        <Col xs={12} md={3}>
-          <FooterTitle>Community</FooterTitle>
-          <LinkList links={links.community} />
-        </Col>
-        <Col xs={12} md={3}>
-          <FooterTitle>Data</FooterTitle>
-          <LinkList links={links.data} />
-        </Col>
-      </FooterContainer>
-    </>
+    <FooterContainer>
+      <FooterTextContainer>
+        <StyledSecondaryText color={colors.tertiaryText}>
+          Total Value Locked:
+        </StyledSecondaryText>
+        <StyledTitle marginLeft={8} size={14}>
+          $112,458,199.02
+        </StyledTitle>
+      </FooterTextContainer>
+      <FooterTextContainer>
+        <StyledSecondaryText color={colors.tertiaryText}>
+          Total Loans Originated:
+        </StyledSecondaryText>
+        <StyledTitle marginLeft={8} size={14}>
+          $112,458,199.02
+        </StyledTitle>
+      </FooterTextContainer>
+      <FooterTextContainer>
+        <StyledSecondaryText color={colors.tertiaryText}>
+          Total Interest Accrued:
+        </StyledSecondaryText>
+        <StyledTitle marginLeft={8} size={14}>
+          $112,458,199.02
+        </StyledTitle>
+      </FooterTextContainer>
+    </FooterContainer>
   );
 };
 
