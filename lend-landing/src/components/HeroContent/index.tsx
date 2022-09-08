@@ -4,6 +4,7 @@ import colors from "shared/lib/designSystem/colors";
 import { Title } from "shared/lib/designSystem/index";
 import { AnimatePresence, motion } from "framer";
 import Marquee from "react-fast-marquee/dist";
+import sizes from "../../designSystem/sizes";
 
 const ContentContainer = styled.div`
   display: flex;
@@ -13,7 +14,7 @@ const ContentContainer = styled.div`
   align-items: center;
 `;
 
-const Panel = styled.div<{ marginLeft?: number }>`
+const Panel = styled.div<{ marginLeft?: number; mobile?: boolean }>`
   display: flex;
   position: relative;
   width: 25%;
@@ -22,6 +23,10 @@ const Panel = styled.div<{ marginLeft?: number }>`
   margin-left: ${(props) =>
     props.marginLeft !== undefined ? `${props.marginLeft}px` : `40px`};
   background: ${(props) => props.color};
+  @media (max-width: ${sizes.md}px) {
+    width: 50%;
+    display: ${(props) => (props.mobile ? `none` : ``)};
+  }
 `;
 
 const SpecialText = styled(Title)<{ size: number }>`
@@ -40,8 +45,6 @@ const HeroHeaderContainer = styled.div<{ clockwise: boolean }>`
     ${(props) => (props.clockwise ? `90deg` : `-90deg`)}
   );
   -moz-transform: rotate(${(props) => (props.clockwise ? `90deg` : `-90deg`)});
-  text-align: center;
-  align-self: center;
   align-items: center;
   justify-content: center;
 `;
@@ -101,7 +104,6 @@ const HeroHeader: React.FC<HeroHeaderInterface> = ({ children, clockwise }) => {
       <AnimatePresence exitBeforeEnter>
         <motion.div
           transition={{
-            delay: 1,
             duration: 0.25,
             type: "keyframes",
             ease: "easeOut",
@@ -116,12 +118,7 @@ const HeroHeader: React.FC<HeroHeaderInterface> = ({ children, clockwise }) => {
             opacity: 0,
           }}
         >
-          <Marquee
-            style={{ textAlign: "center" }}
-            gradient={false}
-            speed={50}
-            delay={1}
-          >
+          <Marquee gradient={false} speed={50} delay={0}>
             {children}
           </Marquee>
         </motion.div>
@@ -139,10 +136,10 @@ const HeroContent: React.FC = () => {
           <SpecialText size={256}>Ribbon</SpecialText>
         </HeroHeader>
       </Panel>
-      <Panel>
+      <Panel mobile={true}>
         <Video2 />
       </Panel>
-      <Panel>
+      <Panel mobile={true}>
         <Video3 />
       </Panel>
       <Panel marginLeft={0}>

@@ -24,9 +24,6 @@ const ButtonContainer = styled.div`
   height: 100%;
   justify-content: center;
   align-items: center;
-  @media (max-width: ${sizes.md}px) {
-    display: none;
-  }
   border-left: 1px solid ${colors.border};
 `;
 
