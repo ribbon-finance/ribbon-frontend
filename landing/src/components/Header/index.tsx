@@ -127,8 +127,8 @@ const ButtonText = styled.span`
   font-family: VCR;
   font-style: normal;
   font-weight: normal;
-  font-size: 14px;
-  line-height: 24px;
+  font-size: 50px;
+  line-height: 50px;
   text-align: center;
   text-transform: capitalize;
   color: ${colors.green};

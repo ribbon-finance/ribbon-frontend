@@ -1,18 +1,15 @@
-import React, { useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import styled from "styled-components";
 
 import Logo from "./Logo";
 import colors from "shared/lib/designSystem/colors";
 import sizes from "../../designSystem/sizes";
-import { Title, BaseLink, Button, SecondaryText } from "../../designSystem";
-import MenuButton from "./MenuButton";
-import { NavItemProps, MobileMenuOpenProps } from "./types";
-import theme from "../../designSystem/theme";
-import MobileOverlayMenu from "shared/lib/components/Common/MobileOverlayMenu";
-import ItemWithDropdown from "./ItemWithDropdown";
-import ExternalLinkIcon from "shared/lib/assets/icons/externalLink";
+import { SecondaryText } from "../../designSystem";
+import { Title } from "shared/lib/designSystem/index";
+import { AnimatePresence, motion } from "framer";
+import Marquee from "react-fast-marquee/dist";
 
-const HeaderContainer = styled.div`
+const VerticalHeader = styled.div`
   display: flex;
   width: 64px;
   height: 100vh;
@@ -21,14 +18,13 @@ const HeaderContainer = styled.div`
   align-items: center;
   position: sticky;
   border-right: 1px solid ${colors.border};
-  padding: 44px 23px 32px 23px;
+  padding: 56px 23px 44px 23px;
   z-index: 1000;
-  background: black;
 `;
 
-const ContentContainer = styled.div`
+const ColumnContainer = styled.div`
   display: flex;
-  width: 100%;
+  width: calc(100% - 64px);
   flex-direction: column;
   justify-content: space-between;
   height: 100%;
@@ -39,7 +35,16 @@ const MainContainer = styled.div`
   width: 100vw;
   height: 100vh;
 `;
-const HeaderContainer2 = styled.div`
+
+const ContentContainer = styled.div`
+  display: flex;
+  width: 100%;
+  height: 100%;
+  justify-content: center;
+  align-items: center;
+`;
+
+const HorizontalHeader = styled.div`
   display: flex;
   width: 100%;
   height: 64px;
@@ -49,7 +54,7 @@ const HeaderContainer2 = styled.div`
   border-bottom: 1px solid ${colors.border};
 `;
 
-const HeaderContainer3 = styled.div`
+const Footer = styled.div`
   display: flex;
   width: 100%;
   height: 64px;
@@ -68,13 +73,15 @@ const LogoContainer = styled.div`
   bottom: 0;
 `;
 
-// const LinksContainer = styled.div`
-//   display: flex;
-//   align-items: center;
-//   height: 100vh;
-//   flex-direction: column;
-//   justify-content: space-between;
-// `;
+const Panel = styled.div`
+  display: flex;
+  position: relative;
+  width: 25%;
+  height: 100%;
+  overflow: hidden;
+  margin-left: 40px;
+  background: ${(props) => props.color};
+`;
 
 const ButtonContainer = styled.div`
   display: flex;
@@ -91,17 +98,24 @@ const ButtonContainer = styled.div`
   border-left: 1px solid ${colors.border};
 `;
 
-const Text = styled(Title)`
+const Text = styled(Title)<{ size: number }>`
   text-align: center;
   color: ${colors.primaryText};
-
-  font-size: 14px;
+  font-size: ${(props) => props.size}px;
+  line-height: 20px;
 `;
 
-const StyledSecondaryText = styled(SecondaryText)`
-  text-align: center;
+const SpecialText = styled(Title)<{ size: number }>`
   color: ${colors.primaryText};
-  font-size: 14px;
+  font-size: 256px;
+  line-height: 256px;
+  margin-bottom: 17px;
+  font-family: VCR, sans-serif;
+`;
+
+const StyledSecondaryText = styled(SecondaryText)<{ color: string }>`
+  color: ${(props) => props.color};
+  font-size: 12px;
 `;
 
 const ButtonText = styled.span`
@@ -132,8 +146,9 @@ const TextContainer = styled.div`
   align-self: center;
   justify-content: center;
   text-align: center;
+  height: 16px;
   position: absolute;
-  margin-right: 64px;
+  margin: auto;
 `;
 const TextContainer2 = styled.div`
   display: flex;
@@ -146,54 +161,281 @@ const TextContainer2 = styled.div`
   padding-left: 30px;
   padding-right: 30px;
   border-right: 1px solid ${colors.border};
+  margin: auto;
 `;
 
-const Header = () => {
+const Ticker = styled.div<{ clockwise: boolean }>`
+  display: flex;
+  max-width: 100%;
+  height: 100%;
+  -webkit-transform: rotate(
+    ${(props) => (props.clockwise ? `90deg` : `-90deg`)}
+  );
+  -moz-transform: rotate(${(props) => (props.clockwise ? `90deg` : `-90deg`)});
+  text-align: center;
+  align-self: center;
+  align-items: center;
+  justify-content: center;
+`;
+
+const Video1 = styled.div`
+  position: absolute;
+  width: 100%;
+  display: flex;
+  height: calc(50% - 16px);
+  background: grey;
+`;
+
+const Video2 = styled.div`
+  position: absolute;
+  width: 100%;
+  display: flex;
+  height: calc(50% - 48px);
+  top: 0;
+  bottom: 0;
+  margin: auto;
+  background: grey;
+`;
+
+const Video3 = styled.div`
+  position: absolute;
+  width: 100%;
+  display: flex;
+  height: 104px;
+  bottom: 40px;
+  margin: auto;
+  background: grey;
+`;
+
+const Video4 = styled.div`
+  position: absolute;
+  width: 100%;
+  display: flex;
+  height: calc(50% - 48px);
+  top: 0;
+  bottom: 0;
+  margin: auto;
+`;
+
+const Video4Content = styled.div`
+  height: 40%;
+  width: 100%;
+  background: grey;
+`;
+
+interface PriceTickerInterface {
+  clockwise: boolean;
+}
+
+const PriceTicker: React.FC<PriceTickerInterface> = ({
+  children,
+  clockwise,
+}) => {
+  return (
+    <Ticker clockwise={clockwise}>
+      <AnimatePresence exitBeforeEnter>
+        <motion.div
+          transition={{
+            delay: 1,
+            duration: 0.25,
+            type: "keyframes",
+            ease: "easeOut",
+          }}
+          initial={{
+            opacity: 0,
+          }}
+          animate={{
+            opacity: 1,
+          }}
+          exit={{
+            opacity: 0,
+          }}
+        >
+          <Marquee
+            style={{ textAlign: "center" }}
+            gradient={false}
+            speed={50}
+            delay={1}
+          >
+            {children}
+          </Marquee>
+        </motion.div>
+      </AnimatePresence>
+    </Ticker>
+  );
+};
+
+const ExplanationStepList = ["step1", "step2", "step3"] as const;
+
+type ExplanationStep = typeof ExplanationStepList[number];
+
+const Header: React.FC = () => {
+  const [step, setStep] = useState<ExplanationStep>(ExplanationStepList[0]);
+
+  useEffect(() => {
+    setTimeout(() => {
+      if (
+        ExplanationStepList.indexOf(step) + 1 ===
+        ExplanationStepList.length
+      ) {
+        setStep(ExplanationStepList[0]);
+      } else {
+        setStep(ExplanationStepList[ExplanationStepList.indexOf(step) + 1]);
+      }
+    }, 2000);
+  }, [step]);
+
+  const renderStep = useCallback((s: ExplanationStep) => {
+    switch (s) {
+      case "step1":
+        return (
+          <>
+            <Text
+              style={{ color: colors.tertiaryText, marginRight: 8 }}
+              size={12}
+            >
+              01
+            </Text>
+            <StyledSecondaryText color={colors.primaryText}>
+              Earn enhanced yield on USDC deposits
+            </StyledSecondaryText>
+          </>
+        );
+      case "step2":
+        return (
+          <>
+            <Text
+              style={{ color: colors.tertiaryText, marginRight: 8 }}
+              size={12}
+            >
+              02
+            </Text>
+            <StyledSecondaryText color={colors.primaryText}>
+              No lock-ups
+            </StyledSecondaryText>
+          </>
+        );
+      case "step3":
+        return (
+          <>
+            <Text
+              style={{ color: colors.tertiaryText, marginRight: 8 }}
+              size={12}
+            >
+              03
+            </Text>
+            <StyledSecondaryText color={colors.primaryText}>
+              Lend to institutions with the highest-quality credit
+            </StyledSecondaryText>
+          </>
+        );
+    }
+  }, []);
   return (
     <MainContainer>
-      <HeaderContainer>
+      <VerticalHeader>
         <LogoContainer>
-          <Logo></Logo>
+          <Logo />
         </LogoContainer>
         <TextInnerContainer>
-          <Text>Community</Text>
+          <Text size={14}>Community</Text>
         </TextInnerContainer>
 
         <TextInnerContainer>
-          <Text>About</Text>
+          <Text size={14}>About</Text>
         </TextInnerContainer>
-      </HeaderContainer>
-      <ContentContainer>
-        <HeaderContainer2>
+      </VerticalHeader>
+      <ColumnContainer>
+        <HorizontalHeader>
           <TextContainer>
-            <StyledSecondaryText>
+            <AnimatePresence exitBeforeEnter>
+              <motion.div
+                key={step}
+                transition={{
+                  delay: 0.25,
+                  duration: 0.5,
+                  type: "keyframes",
+                  ease: "easeOut",
+                }}
+                initial={{
+                  opacity: 0,
+                }}
+                animate={{
+                  opacity: 1,
+                }}
+                exit={{
+                  opacity: 0,
+                }}
+              >
+                {renderStep(step)}
+              </motion.div>
+            </AnimatePresence>
+            {/* <Text
+              style={{ color: colors.tertiaryText, marginRight: 8 }}
+              size={12}
+            >
+              01
+            </Text>
+            <StyledSecondaryText color={colors.primaryText}>
               Earn enhanced yield on USDC deposits
-            </StyledSecondaryText>
+            </StyledSecondaryText> */}
           </TextContainer>
           <ButtonContainer>
             <a href="https://app.ribbon.finance">
               <ButtonText>OPEN APP</ButtonText>
             </a>
           </ButtonContainer>
-        </HeaderContainer2>
-        <HeaderContainer3>
+        </HorizontalHeader>
+        <ContentContainer>
+          <Panel>
+            <Video1 />
+            <PriceTicker clockwise={false}>
+              <SpecialText size={256}>Ribbon</SpecialText>
+            </PriceTicker>
+          </Panel>
+          <Panel>
+            <Video2 />
+          </Panel>
+          <Panel>
+            <Video3 />
+          </Panel>
+          <Panel>
+            <Video4>
+              <Video4Content />
+            </Video4>
+            <PriceTicker clockwise={true}>
+              <SpecialText size={256}>Lend</SpecialText>
+            </PriceTicker>
+          </Panel>
+        </ContentContainer>
+        <Footer>
           <TextContainer2>
-            <StyledSecondaryText>
-              Earn enhanced yield on USDC deposits
+            <StyledSecondaryText color={colors.tertiaryText}>
+              Total Value Locked:
             </StyledSecondaryText>
+            <Text style={{ marginLeft: 8 }} size={14}>
+              $112,458,199.02
+            </Text>
           </TextContainer2>
           <TextContainer2>
-            <StyledSecondaryText>
-              Earn enhanced yield on USDC deposits
+            <StyledSecondaryText color={colors.tertiaryText}>
+              Total Loans Originated:
             </StyledSecondaryText>
+            <Text style={{ marginLeft: 8 }} size={14}>
+              $112,458,199.02
+            </Text>
           </TextContainer2>
           <TextContainer2>
-            <StyledSecondaryText>
-              Earn enhanced yield on USDC deposits
+            <StyledSecondaryText color={colors.tertiaryText}>
+              Total Interest Accrued:
             </StyledSecondaryText>
+            <Text style={{ marginLeft: 8 }} size={14}>
+              {" "}
+              $112,458,199.02
+            </Text>
           </TextContainer2>
-        </HeaderContainer3>
-      </ContentContainer>
+        </Footer>
+      </ColumnContainer>
     </MainContainer>
   );
 };
