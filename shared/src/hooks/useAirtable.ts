@@ -1,4 +1,4 @@
-import Airtable, { FieldSet } from "airtable";
+import Airtable from "airtable";
 import dotenv from "dotenv";
 import { useEffect, useMemo, useState } from "react";
 import useAssetPrice from "./useAssetPrice";
@@ -35,7 +35,7 @@ Airtable.configure({
   apiKey: process.env.REACT_APP_AIRTABLE_API_KEY,
 });
 
-const BASE_NAME = "EarnTest";
+const BASE_NAME = "Earn";
 
 const base = Airtable.base("appkUHzxJ1lehQTIt");
 
