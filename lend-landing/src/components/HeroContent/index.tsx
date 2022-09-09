@@ -17,12 +17,11 @@ const ContentContainer = styled.div`
 const Panel = styled.div<{ marginLeft?: number; mobile?: boolean }>`
   display: flex;
   position: relative;
-  width: 25%;
+  width: 150%;
   height: 100%;
   overflow: hidden;
   margin-left: ${(props) =>
     props.marginLeft !== undefined ? `${props.marginLeft}px` : `40px`};
-  background: ${(props) => props.color};
   @media (max-width: ${sizes.md}px) {
     width: 50%;
     display: ${(props) => (props.mobile ? `none` : ``)};
@@ -33,13 +32,13 @@ const SpecialText = styled(Title)<{ size: number }>`
   color: ${colors.primaryText};
   font-size: 256px;
   line-height: 256px;
-  margin-bottom: 17px;
+  margin-bottom: 25px;
   font-family: VCR, sans-serif;
 `;
 
 const HeroHeaderContainer = styled.div<{ clockwise: boolean }>`
   display: flex;
-  max-width: 100%;
+  width: 100%;
   height: 100%;
   -webkit-transform: rotate(
     ${(props) => (props.clockwise ? `90deg` : `-90deg`)}
@@ -118,7 +117,12 @@ const HeroHeader: React.FC<HeroHeaderInterface> = ({ children, clockwise }) => {
             opacity: 0,
           }}
         >
-          <Marquee gradient={false} speed={50} delay={0}>
+          <Marquee
+            style={{ marginRight: clockwise ? -800 : -500 }}
+            gradient={false}
+            speed={30}
+            delay={0}
+          >
             {children}
           </Marquee>
         </motion.div>
@@ -147,7 +151,7 @@ const HeroContent: React.FC = () => {
           <Video4Content />
         </Video4>
         <HeroHeader clockwise={true}>
-          <SpecialText size={256}>Lend</SpecialText>
+          <SpecialText size={256}>Lend&nbsp;&nbsp;</SpecialText>
         </HeroHeader>
       </Panel>
     </ContentContainer>

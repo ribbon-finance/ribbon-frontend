@@ -1,7 +1,6 @@
 import React, { useCallback, useEffect, useState } from "react";
 import styled from "styled-components";
 import colors from "shared/lib/designSystem/colors";
-import sizes from "../../designSystem/sizes";
 import { SecondaryText, Title } from "shared/lib/designSystem/index";
 import { AnimatePresence, motion } from "framer";
 
