@@ -2,7 +2,8 @@ import React from "react";
 import styled from "styled-components";
 import colors from "shared/lib/designSystem/colors";
 import { SecondaryText, Title } from "shared/lib/designSystem/index";
-
+import Marquee from "react-fast-marquee/dist";
+import sizes from "../../designSystem/sizes";
 const FooterContainer = styled.div`
   display: flex;
   width: 100%;
@@ -10,6 +11,36 @@ const FooterContainer = styled.div`
   align-items: center;
   z-index: 999;
   border-top: 1px solid ${colors.border};
+`;
+
+const ButtonText = styled.span`
+  font-family: VCR;
+  font-style: normal;
+  font-weight: normal;
+  font-size: 14px;
+  line-height: 24px;
+  text-align: center;
+  text-transform: capitalize;
+  color: ${colors.green};
+  margin-left: auto;
+`;
+
+const ButtonContainer = styled.div`
+  display: none;
+
+  @media (max-width: ${sizes.lg}px) {
+    display: flex;
+    z-index: 0;
+    margin-left: auto;
+    padding-left: 40px;
+    padding-right: 40px;
+    height: 64px;
+    width: 100%;
+    justify-content: center;
+    align-items: center;
+    border-top: 1px solid ${colors.border};
+  }
+
 `;
 
 const StyledTitle = styled(Title)<{
@@ -42,42 +73,51 @@ const FooterTextContainer = styled.div`
   align-self: center;
   justify-content: center;
   width: calc(100% / 3);
+  min-width: 350px;
   text-align: center;
   height: 16px;
-  padding-left: 30px;
-  padding-right: 30px;
   border-right: 1px solid ${colors.border};
   margin: auto;
+  overflow: hidden;
 `;
 
 const Footer: React.FC = () => {
   return (
+    <>
     <FooterContainer>
-      <FooterTextContainer>
-        <StyledSecondaryText color={colors.tertiaryText}>
-          Total Value Locked:
-        </StyledSecondaryText>
-        <StyledTitle marginLeft={8} size={14}>
-          $112,458,199.02
-        </StyledTitle>
-      </FooterTextContainer>
-      <FooterTextContainer>
-        <StyledSecondaryText color={colors.tertiaryText}>
-          Total Loans Originated:
-        </StyledSecondaryText>
-        <StyledTitle marginLeft={8} size={14}>
-          $112,458,199.02
-        </StyledTitle>
-      </FooterTextContainer>
-      <FooterTextContainer>
-        <StyledSecondaryText color={colors.tertiaryText}>
-          Total Interest Accrued:
-        </StyledSecondaryText>
-        <StyledTitle marginLeft={8} size={14}>
-          $112,458,199.02
-        </StyledTitle>
-      </FooterTextContainer>
+      <Marquee gradient={false} speed={100} delay={0}>
+        <FooterTextContainer>
+          <StyledSecondaryText color={colors.tertiaryText}>
+            Total Value Locked:
+          </StyledSecondaryText>
+          <StyledTitle marginLeft={8} size={14}>
+            $112,458,199.02
+          </StyledTitle>
+        </FooterTextContainer>
+        <FooterTextContainer>
+          <StyledSecondaryText color={colors.tertiaryText}>
+            Total Loans Originated:
+          </StyledSecondaryText>
+          <StyledTitle marginLeft={8} size={14}>
+            $112,458,199.02
+          </StyledTitle>
+        </FooterTextContainer>
+        <FooterTextContainer>
+          <StyledSecondaryText color={colors.tertiaryText}>
+            Total Interest Accrued:
+          </StyledSecondaryText>
+          <StyledTitle marginLeft={8} size={14}>
+            $112,458,199.02
+          </StyledTitle>
+        </FooterTextContainer>
+      </Marquee>
     </FooterContainer>
+    <ButtonContainer>
+        <a href="https://app.ribbon.finance">
+          <ButtonText>OPEN APP</ButtonText>
+        </a>
+      </ButtonContainer>
+    </>
   );
 };
 

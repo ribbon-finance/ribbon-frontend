@@ -8,11 +8,10 @@ import { Title } from "shared/lib/designSystem/index";
 const VerticalHeader = styled.div`
   display: flex;
   width: 64px;
-  height: 100vh;
+  height: 100%;
   flex-direction: column;
   justify-content: space-between;
   align-items: center;
-  position: sticky;
   border-right: 1px solid ${colors.border};
   padding: 56px 23px 44px 23px;
   background: black;
@@ -57,7 +56,7 @@ const VerticalHeaderTextContainer = styled.div`
   margin-top: 50%;
 `;
 
-const Header: React.FC = () => {
+const MobileHeader: React.FC = () => {
   return (
     <VerticalHeader>
       <LogoContainer>
@@ -73,4 +72,4 @@ const Header: React.FC = () => {
   );
 };
 
-export default Header;
+export default MobileHeader;

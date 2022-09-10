@@ -3,6 +3,7 @@ import styled from "styled-components";
 import HorizontalHeader from "../HorizontalHeader";
 import Footer from "../Footer";
 import HeroContent from "../HeroContent";
+import sizes from "../../designSystem/sizes";
 
 const HeroContainer = styled.div`
   display: flex;
@@ -10,6 +11,10 @@ const HeroContainer = styled.div`
   flex-direction: column;
   justify-content: space-between;
   height: 100%;
+
+  @media (max-width: ${sizes.lg}px) {
+    width: 100%;
+  }
 `;
 
 const Hero: React.FC = () => {

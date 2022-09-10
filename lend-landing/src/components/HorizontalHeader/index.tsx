@@ -3,6 +3,7 @@ import styled from "styled-components";
 import colors from "shared/lib/designSystem/colors";
 import { SecondaryText, Title } from "shared/lib/designSystem/index";
 import { AnimatePresence, motion } from "framer";
+import sizes from "../../designSystem/sizes";
 
 const HeaderContainer = styled.div`
   display: flex;
@@ -24,6 +25,9 @@ const ButtonContainer = styled.div`
   justify-content: center;
   align-items: center;
   border-left: 1px solid ${colors.border};
+  @media (max-width: ${sizes.lg}px) {
+    display: none;
+  }
 `;
 
 const StyledTitle = styled(Title)<{

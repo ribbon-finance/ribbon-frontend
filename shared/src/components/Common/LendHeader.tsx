@@ -1,9 +1,11 @@
 import React from "react";
+import { Link } from "react-router-dom";
 import styled from "styled-components";
 
-import Logo from "./Logo";
-import colors from "shared/lib/designSystem/colors";
-import { Title } from "shared/lib/designSystem/index";
+import { AppLogo } from "../../assets/icons/logo";
+import colors from "../../designSystem/colors";
+import { Title } from "../../designSystem/index";
+import sizes from "../../designSystem/sizes";
 
 const VerticalHeader = styled.div`
   display: flex;
@@ -15,8 +17,11 @@ const VerticalHeader = styled.div`
   position: sticky;
   border-right: 1px solid ${colors.border};
   padding: 56px 23px 44px 23px;
-  background: black;
   z-index: 1000;
+  background: black;
+  @media (max-width: ${sizes.lg}px) {
+    display: none;
+  }
 `;
 
 const LogoContainer = styled.div`
@@ -27,6 +32,11 @@ const LogoContainer = styled.div`
   z-index: 1000;
   top: 0;
   bottom: 0;
+`;
+
+const LogoContainer2 = styled.div`
+  display: flex;
+  border-radius: 48px;
 `;
 
 const StyledTitle = styled(Title)<{
@@ -57,7 +67,19 @@ const VerticalHeaderTextContainer = styled.div`
   margin-top: 50%;
 `;
 
-const Header: React.FC = () => {
+const Logo = () => {
+  return (
+    <>
+      <LogoContainer2>
+        <Link to="/">
+          <AppLogo height="48px" width="48px" />
+        </Link>
+      </LogoContainer2>
+    </>
+  );
+};
+
+const LendHeader: React.FC = () => {
   return (
     <VerticalHeader>
       <LogoContainer>
@@ -73,4 +95,4 @@ const Header: React.FC = () => {
   );
 };
 
-export default Header;
+export default LendHeader;
