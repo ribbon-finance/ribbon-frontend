@@ -53,12 +53,12 @@ export const useAirtable = () => {
       .select({ view: "Grid view" })
       .all()
       .then((records) => {
-        let count = 1;
         // check for undefined rows in airtable
-        while (recordHasUndefined(records[records.length - count])) {
-          count += 1;
-        }
-        const fields = records[records.length - count].fields as unknown;
+        const filteredRecords = records.filter(
+          (record) => !recordHasUndefined(record)
+        );
+        const fields = filteredRecords[filteredRecords.length - 1]
+          .fields as unknown;
         const item = fields as AirtableValues;
         if (!assetPriceLoading) {
           setValues(item);
