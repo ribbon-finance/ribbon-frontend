@@ -11,7 +11,7 @@ const HeaderContainer = styled.div`
   height: 64px;
   justify-content: center;
   align-items: center;
-  z-index: 999;
+  z-index: 1001;
   border-bottom: 1px solid ${colors.border};
 `;
 

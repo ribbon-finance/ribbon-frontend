@@ -9,7 +9,8 @@ const FooterContainer = styled.div`
   width: 100%;
   height: 64px;
   align-items: center;
-  z-index: 999;
+  z-index: 1001;
+  background: black;
   border-top: 1px solid ${colors.border};
 `;
 
@@ -27,10 +28,8 @@ const ButtonText = styled.span`
 
 const ButtonContainer = styled.div`
   display: none;
-
   @media (max-width: ${sizes.lg}px) {
     display: flex;
-    z-index: 0;
     margin-left: auto;
     padding-left: 40px;
     padding-right: 40px;
@@ -39,6 +38,7 @@ const ButtonContainer = styled.div`
     justify-content: center;
     align-items: center;
     border-top: 1px solid ${colors.border};
+    z-index: 1001;
   }
 
 `;

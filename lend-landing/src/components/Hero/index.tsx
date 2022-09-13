@@ -4,6 +4,7 @@ import HorizontalHeader from "../HorizontalHeader";
 import Footer from "../Footer";
 import HeroContent from "../HeroContent";
 import sizes from "../../designSystem/sizes";
+import MobileHeader from "../VerticalHeaderMobile";
 
 const HeroContainer = styled.div`
   display: flex;
@@ -20,6 +21,7 @@ const HeroContainer = styled.div`
 const Hero: React.FC = () => {
   return (
     <HeroContainer>
+      <MobileHeader />
       <HorizontalHeader />
       <HeroContent />
       <Footer />

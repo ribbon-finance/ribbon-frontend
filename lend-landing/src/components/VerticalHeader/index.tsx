@@ -4,6 +4,7 @@ import styled from "styled-components";
 import Logo from "./Logo";
 import colors from "shared/lib/designSystem/colors";
 import { Title } from "shared/lib/designSystem/index";
+import sizes from "../../designSystem/sizes";
 
 const VerticalHeader = styled.div`
   display: flex;
@@ -17,6 +18,9 @@ const VerticalHeader = styled.div`
   padding: 56px 23px 44px 23px;
   background: black;
   z-index: 1000;
+  @media (max-width: ${sizes.lg}px) {
+    display: none;
+  }  
 `;
 
 const LogoContainer = styled.div`
