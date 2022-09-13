@@ -3,6 +3,11 @@ import styled from "styled-components";
 const Container = styled.div`
   width: 64px;
   height: 64px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  z-index: 999;
 `;
 
 const Line = styled.div`

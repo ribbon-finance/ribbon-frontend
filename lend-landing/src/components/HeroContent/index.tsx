@@ -277,7 +277,7 @@ const HeroContent: React.FC = () => {
         <HeroHeader clockwise={false}>
           <SpecialText size={256}>Ribbon</SpecialText>
         </HeroHeader>
-        <Video1/>
+        <Video1 />
       </Panel>
       <Panel>
         <Video2 />

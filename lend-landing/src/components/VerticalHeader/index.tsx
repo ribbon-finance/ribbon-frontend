@@ -20,7 +20,7 @@ const VerticalHeader = styled.div`
   z-index: 1000;
   @media (max-width: ${sizes.lg}px) {
     display: none;
-  }  
+  }
 `;
 
 const LogoContainer = styled.div`

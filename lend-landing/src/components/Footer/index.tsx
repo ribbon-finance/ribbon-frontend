@@ -40,7 +40,6 @@ const ButtonContainer = styled.div`
     border-top: 1px solid ${colors.border};
     z-index: 1001;
   }
-
 `;
 
 const StyledTitle = styled(Title)<{
@@ -84,35 +83,35 @@ const FooterTextContainer = styled.div`
 const Footer: React.FC = () => {
   return (
     <>
-    <FooterContainer>
-      <Marquee gradient={false} speed={100} delay={0}>
-        <FooterTextContainer>
-          <StyledSecondaryText color={colors.tertiaryText}>
-            Total Value Locked:
-          </StyledSecondaryText>
-          <StyledTitle marginLeft={8} size={14}>
-            $112,458,199.02
-          </StyledTitle>
-        </FooterTextContainer>
-        <FooterTextContainer>
-          <StyledSecondaryText color={colors.tertiaryText}>
-            Total Loans Originated:
-          </StyledSecondaryText>
-          <StyledTitle marginLeft={8} size={14}>
-            $112,458,199.02
-          </StyledTitle>
-        </FooterTextContainer>
-        <FooterTextContainer>
-          <StyledSecondaryText color={colors.tertiaryText}>
-            Total Interest Accrued:
-          </StyledSecondaryText>
-          <StyledTitle marginLeft={8} size={14}>
-            $112,458,199.02
-          </StyledTitle>
-        </FooterTextContainer>
-      </Marquee>
-    </FooterContainer>
-    <ButtonContainer>
+      <FooterContainer>
+        <Marquee gradient={false} speed={100} delay={0}>
+          <FooterTextContainer>
+            <StyledSecondaryText color={colors.tertiaryText}>
+              Total Value Locked:
+            </StyledSecondaryText>
+            <StyledTitle marginLeft={8} size={14}>
+              $112,458,199.02
+            </StyledTitle>
+          </FooterTextContainer>
+          <FooterTextContainer>
+            <StyledSecondaryText color={colors.tertiaryText}>
+              Total Loans Originated:
+            </StyledSecondaryText>
+            <StyledTitle marginLeft={8} size={14}>
+              $112,458,199.02
+            </StyledTitle>
+          </FooterTextContainer>
+          <FooterTextContainer>
+            <StyledSecondaryText color={colors.tertiaryText}>
+              Total Interest Accrued:
+            </StyledSecondaryText>
+            <StyledTitle marginLeft={8} size={14}>
+              $112,458,199.02
+            </StyledTitle>
+          </FooterTextContainer>
+        </Marquee>
+      </FooterContainer>
+      <ButtonContainer>
         <a href="https://app.ribbon.finance">
           <ButtonText>OPEN APP</ButtonText>
         </a>
