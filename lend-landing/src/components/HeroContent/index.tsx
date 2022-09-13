@@ -43,8 +43,7 @@ const SpecialText = styled(Title)<{ size: number }>`
   margin-bottom: 25px;
   font-family: VCR, sans-serif;
   @media (max-width: ${sizes.lg}px) {
-    margin-bottom: 0px;
-    margin-top: 32px;
+    margin-bottom: 8px;
   }
 `;
 
@@ -74,7 +73,7 @@ const HeroHeaderMobileContainer = styled.div`
     align-items: center;
     justify-content: center;
     overflow: hidden;
-    z-index: 1000;
+    z-index: 1001;
     margin: auto 0;
   }
 `;
@@ -157,30 +156,6 @@ const BackgroundContainer = styled.div`
   overflow: hidden;
   z-index: 1000;
   background: black;
-`;
-
-const C1 = styled.div`
-  position: relative;
-  background: blue;
-  width: 100%;
-  height: 40px;
-  overflow: hidden;
-`;
-
-const C2 = styled.div`
-  position: absolute;
-  background: transparent;
-  width: 50%;
-  height: 40px;
-  z-index: 998;
-`;
-
-const C3 = styled.div`
-  position: absolute;
-  background: white;
-  width: 25%;
-  height: 40px;
-  z-index: 1000;
 `;
 
 interface HeroHeaderInterface {

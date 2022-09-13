@@ -9,6 +9,7 @@ const HeaderContainer = styled.div`
   display: flex;
   width: 100%;
   height: 64px;
+  min-height: 64px;
   justify-content: center;
   align-items: center;
   z-index: 1001;

@@ -45,10 +45,13 @@ const VerticalHeader = styled.div<MobileMenuOpenProps>`
 `;
 
 const LogoContainer = styled.div`
-  position: relative;
-  display: flex;
-  justify-content: center;
-  margin-left: 16px;
+  display: none;
+  @media (max-width: ${sizes.lg}px) {
+    position: relative;
+    display: flex;
+    justify-content: center;
+    margin-left: 16px;
+  }
 `;
 
 const NavItemsContainer = styled.div`
@@ -148,6 +151,9 @@ const MobileHeader: React.FC = () => {
       isMenuOpen={isMenuOpen}
       className="d-flex align-items-center justify-content-between"
     >
+      <LogoContainer>
+        <Logo />
+      </LogoContainer>
       <InfoModal
         show={Boolean(modalContentMode)}
         title={(modalContentMode ?? "").toUpperCase()}
@@ -156,9 +162,6 @@ const MobileHeader: React.FC = () => {
         {modalContent}
       </InfoModal>
 
-      <LogoContainer>
-        <Logo />
-      </LogoContainer>
       <MobileOnly>
         <MenuButton onToggle={onToggleMenu} isOpen={isMenuOpen} />
         <MobileOverlayMenu

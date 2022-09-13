@@ -5,7 +5,7 @@ import { AppLogo } from "shared/lib/assets/icons/logo";
 
 const LogoContainer = styled.div`
   display: flex;
-  border-radius: 24px;
+  border-radius: 48px;
 `;
 
 const Logo = () => {
@@ -13,7 +13,7 @@ const Logo = () => {
     <>
       <LogoContainer>
         <Link to="/">
-          <AppLogo height="24px" width="24px" />
+          <AppLogo height="48px" width="48px" />
         </Link>
       </LogoContainer>
     </>

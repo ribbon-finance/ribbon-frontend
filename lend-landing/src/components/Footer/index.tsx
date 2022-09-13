@@ -8,6 +8,7 @@ const FooterContainer = styled.div`
   display: flex;
   width: 100%;
   height: 64px;
+  min-height: 64px;
   align-items: center;
   z-index: 1001;
   background: black;
@@ -34,6 +35,7 @@ const ButtonContainer = styled.div`
     padding-left: 40px;
     padding-right: 40px;
     height: 64px;
+    min-height: 64px;
     width: 100%;
     justify-content: center;
     align-items: center;
