@@ -7,7 +7,6 @@
     "nft-drop",
     "governance",
     "treasury",
-    "lend-landing",
     "lend"
   ],
   "devDependencies": {
