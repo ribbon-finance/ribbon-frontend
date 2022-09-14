@@ -1,7 +1,7 @@
 import React from "react";
 import styled from "styled-components";
 import { BrowserRouter as Router } from "react-router-dom";
-import LendVerticalHeader from "shared/lib/components/Common/LendVerticalHeader";
+import LendVerticalHeader from "./components/Common/LendVerticalHeader";
 import Hero from "./components/Hero";
 import colors from "shared/lib/designSystem/colors";
 import "shared/lib/i18n/config";

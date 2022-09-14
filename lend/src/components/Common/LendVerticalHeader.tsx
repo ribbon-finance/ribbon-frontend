@@ -1,8 +1,8 @@
 import React, { useState } from "react";
 import styled from "styled-components";
 
-import HeaderLogo from "../../components/Common/HeaderLogo";
-import colors from "../../designSystem/colors";
+import Logo from "./Logo";
+import colors from "shared/lib/designSystem/colors";
 import { Title } from "../../designSystem/index";
 import LendModal from "../../components/Common/LendModal";
 import sizes from "../../designSystem/sizes";
@@ -87,7 +87,7 @@ const LendVerticalHeader: React.FC = () => {
       </LendModal>
       <VerticalHeaderContainer>
         <LogoContainer>
-          <HeaderLogo />
+          <Logo />
         </LogoContainer>
         <VerticalHeaderTextContainer>
           <ButtonContainer

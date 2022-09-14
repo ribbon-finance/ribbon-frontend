@@ -28,9 +28,6 @@ const ButtonContainer = styled.div`
   justify-content: center;
   align-items: center;
   border-left: 1px solid ${colors.border};
-  &:hover {
-    opacity: ${theme.hover.opacity};
-  }
   @media (max-width: ${sizes.lg}px) {
     display: none;
   }
@@ -93,10 +90,11 @@ const OpenAppButton = styled.div`
   justify-content: center;
   align-items: center;
   text-align: center;
-  &:hover {
-    cursor: pointer;
-    opacity: ${theme.hover.opacity};
-  }
+  // uncomment on launch
+  // &:hover {
+  //   cursor: pointer;
+  //   opacity: ${theme.hover.opacity};
+  // }
 `;
 
 const ExplanationStepList = ["step1", "step2", "step3"] as const;
@@ -168,11 +166,12 @@ const StepsHeader: React.FC = () => {
         </AnimatePresence>
       </StepsHeaderTextContainer>
       <ButtonContainer>
-        <a href={URLS.lendApp}>
-          <OpenAppButton>
-            <ButtonText>OPEN APP</ButtonText>
-          </OpenAppButton>
-        </a>
+        {/* uncomment on launch */}
+        {/* <a href={URLS.lendApp}> */}
+        <OpenAppButton>
+          <ButtonText>COMING SOON</ButtonText>
+        </OpenAppButton>
+        {/* </a> */}
       </ButtonContainer>
     </HeaderContainer>
   );

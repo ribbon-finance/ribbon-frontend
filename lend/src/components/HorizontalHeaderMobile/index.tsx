@@ -4,7 +4,7 @@ import styled from "styled-components";
 import colors from "shared/lib/designSystem/colors";
 import { Title } from "shared/lib/designSystem";
 import MobileOverlayMenu from "shared/lib/components/Common/MobileOverlayMenu";
-import LendModal from "shared/lib/components/Common/LendModal";
+import LendModal from "../Common/LendModal";
 import { URLS } from "shared/lib/constants/constants";
 import ExternalLinkIcon from "../Common/ExternalLinkIcon";
 import Logo from "../Common/Logo";
@@ -15,7 +15,7 @@ import theme from "../../designSystem/theme";
 import {
   ModalContent,
   ModalContentMode,
-} from "shared/lib/components/Common/ModalContent";
+} from "../../components/Common/ModalContent";
 
 const HeaderContainer = styled.div<MobileMenuOpenProps>`
   display: none;

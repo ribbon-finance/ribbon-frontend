@@ -1,11 +1,13 @@
 import { useMemo } from "react";
-import { Title } from "../../designSystem";
-import colors from "../../designSystem/colors";
-import { URLS } from "../../constants/constants";
+import { Title } from "shared/lib/designSystem";
+import colors from "shared/lib/designSystem/colors";
+import { URLS } from "shared/lib/constants/constants";
 import styled, { css } from "styled-components";
-import ExternalLink from "../../assets/icons/externalLink";
-import { Discord } from "../../assets/icons/discord";
-import { Github } from "../../assets/icons/github";
+import ExternalLinkIcon from "./ExternalLinkIcon";
+import twitter from "../../assets/icons/twitter.svg";
+import discord from "../../assets/icons/discord.svg";
+import github from "../../assets/icons/github.png";
+
 const AboutContent = styled.div`
   color: ${colors.primaryText}A3;
   padding: 16px 24px;
@@ -23,13 +25,11 @@ const CommunityContentRow = styled.div.attrs({
   height: 80px;
   padding: 0 24px;
   font-size: 14px;
-
   ${(props) => {
     if (props.onClick) {
       return css`
         &:hover {
           cursor: pointer;
-
           > svg {
             transform: translate(2px, -2px);
           }
@@ -38,13 +38,11 @@ const CommunityContentRow = styled.div.attrs({
     }
     return "";
   }}
-
   > img {
     width: 32px;
     height: 32px;
     margin-right: 20px;
   }
-
   > svg {
     transition: all 0.2s ease-in-out;
     margin-left: 8px;
@@ -58,13 +56,11 @@ const Footer = styled.div`
   color: ${colors.primaryText}52;
   flex: 1;
   text-align: center;
-
   svg {
     transition: all 0.2s ease-in-out;
     margin-left: 4px;
     opacity: 0.32;
   }
-
   > a {
     color: ${colors.primaryText}52;
     text-decoration: underline;
@@ -101,19 +97,19 @@ export const ModalContent = ({ modalContentMode }: ModalContentProps) => {
       return (
         <CommunityContent>
           <CommunityContentRow onClick={() => window.open(URLS.twitter)}>
-            {/* <img src={twitter} alt="Twitter" /> */}
+            <img src={twitter} alt="Twitter" />
             <Title>Twitter</Title>
-            <ExternalLink />
+            <ExternalLinkIcon />
           </CommunityContentRow>
           <CommunityContentRow onClick={() => window.open(URLS.discord)}>
-            {/* <Discord /> */}
+            <img src={discord} alt="Discord" />
             <Title>Discord</Title>
-            <ExternalLink />
+            <ExternalLinkIcon />
           </CommunityContentRow>
           <CommunityContentRow onClick={() => window.open(URLS.github)}>
-            {/* <Github /> */}
+            <img src={github} alt="Github" />
             <Title>Github</Title>
-            <ExternalLink />
+            <ExternalLinkIcon />
           </CommunityContentRow>
           <CommunityContentRow
             style={{
@@ -128,7 +124,7 @@ export const ModalContent = ({ modalContentMode }: ModalContentProps) => {
                 rel="noreferrer noopener"
               >
                 Ribbon Finance
-                <ExternalLink />
+                <ExternalLinkIcon />
               </a>
             </Footer>
           </CommunityContentRow>

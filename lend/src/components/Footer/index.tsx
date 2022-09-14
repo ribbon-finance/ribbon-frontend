@@ -52,10 +52,11 @@ const OpenAppButton = styled.div`
   justify-content: center;
   align-items: center;
   text-align: center;
-  &:hover {
-    cursor: pointer;
-    opacity: ${theme.hover.opacity};
-  }
+  // uncomment on launch
+  // &:hover {
+  //   cursor: pointer;
+  //   opacity: ${theme.hover.opacity};
+  // }
 `;
 
 const StyledTitle = styled(Title)<{
@@ -137,11 +138,12 @@ const Footer: React.FC = () => {
         </Marquee>
       </FooterContainer>
       <ButtonContainer>
-        <a href={URLS.lendApp}>
-          <OpenAppButton>
-            <ButtonText>OPEN APP</ButtonText>
-          </OpenAppButton>
-        </a>
+        {/* uncomment on launch */}
+        {/* <a href={URLS.lendApp}> */}
+        <OpenAppButton>
+          <ButtonText>COMING SOON</ButtonText>
+        </OpenAppButton>
+        {/* </a> */}
       </ButtonContainer>
     </>
   );
