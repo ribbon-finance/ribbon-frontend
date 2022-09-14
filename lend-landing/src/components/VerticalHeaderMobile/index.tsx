@@ -11,7 +11,7 @@ import sizes from "../../designSystem/sizes";
 import MenuButton from "./MenuButton";
 import { MobileMenuOpenProps } from "./types";
 import theme from "../../designSystem/theme";
-import { ModalContent } from "../Common/ModalContent";
+import { ModalContent, ModalContentMode } from "../Common/ModalContent";
 
 const VerticalHeader = styled.div<MobileMenuOpenProps>`
   display: none;
@@ -117,9 +117,7 @@ const MobileOnly = styled.div`
 
 const MobileHeader: React.FC = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const [modalContentMode, setModalContentMode] = useState<
-    "about" | "community" | undefined
-  >();
+  const [modalContentMode, setModalContentMode] = useState<ModalContentMode>();
 
   const onToggleMenu = () => {
     setIsMenuOpen(!isMenuOpen);
@@ -138,7 +136,7 @@ const MobileHeader: React.FC = () => {
         title={(modalContentMode ?? "").toUpperCase()}
         onHide={() => setModalContentMode(undefined)}
       >
-        {ModalContent(modalContentMode)}
+        <ModalContent modalContentMode={modalContentMode} />
       </LendModal>
 
       <MobileOnly>

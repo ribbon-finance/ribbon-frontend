@@ -6,7 +6,7 @@ import colors from "shared/lib/designSystem/colors";
 import { Title } from "shared/lib/designSystem/index";
 import LendModal from "shared/lib/components/Common/LendModal";
 import sizes from "../../designSystem/sizes";
-import { ModalContent } from "../Common/ModalContent";
+import { ModalContent, ModalContentMode } from "../Common/ModalContent";
 import theme from "../../designSystem/theme";
 
 const VerticalHeader = styled.div`
@@ -70,9 +70,7 @@ const VerticalHeaderTextContainer = styled.div`
 
 const Header: React.FC = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const [modalContentMode, setModalContentMode] = useState<
-    "about" | "community" | undefined
-  >();
+  const [modalContentMode, setModalContentMode] = useState<ModalContentMode>();
 
   return (
     <>
@@ -81,7 +79,7 @@ const Header: React.FC = () => {
         title={(modalContentMode ?? "").toUpperCase()}
         onHide={() => setModalContentMode(undefined)}
       >
-        {ModalContent(modalContentMode)}
+        <ModalContent modalContentMode={modalContentMode} />
       </LendModal>
       <VerticalHeader>
         <LogoContainer>

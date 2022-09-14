@@ -1,15 +1,80 @@
 import { useMemo } from "react";
+import { Title } from "shared/lib/designSystem";
 import colors from "shared/lib/designSystem/colors";
-import styled from "styled-components";
+import styled, { css } from "styled-components";
+import ExternalLinkIcon from "./ExternalLinkIcon";
 
 const AboutContent = styled.div`
   color: ${colors.primaryText}A3;
   padding: 16px 24px;
 `;
 
-export const ModalContent = (
-  modalContentMode: "about" | "community" | undefined
-) => {
+const CommunityContent = styled.div`
+  > div:not(:last-child) {
+    border-bottom: 1px solid ${colors.primaryText}1F;
+  }
+`;
+
+const CommunityContentRow = styled.div.attrs({
+  className: "d-flex align-items-center",
+})`
+  height: 80px;
+  padding: 0 24px;
+  font-size: 14px;
+
+  ${(props) => {
+    if (props.onClick) {
+      return css`
+        &:hover {
+          cursor: pointer;
+
+          > svg {
+            transform: translate(2px, -2px);
+          }
+        }
+      `;
+    }
+    return "";
+  }}
+
+  > svg {
+    transition: all 0.2s ease-in-out;
+    margin-left: 8px;
+    width: 20px;
+    height: 20px;
+  }
+`;
+
+const Footer = styled.div`
+  font-size: 12px;
+  color: ${colors.primaryText}52;
+  flex: 1;
+  text-align: center;
+
+  svg {
+    transition: all 0.2s ease-in-out;
+    margin-left: 4px;
+    opacity: 0.32;
+  }
+
+  > a {
+    color: ${colors.primaryText}52;
+    text-decoration: underline;
+    &:hover {
+      svg {
+        transform: translate(2px, -2px);
+      }
+    }
+  }
+`;
+
+export type ModalContentMode = "about" | "community" | undefined;
+
+interface ModalContentProps {
+  modalContentMode: ModalContentMode;
+}
+
+export const ModalContent = ({ modalContentMode }: ModalContentProps) => {
   const modalContent = useMemo(() => {
     if (modalContentMode === "about") {
       return (
@@ -24,7 +89,51 @@ export const ModalContent = (
         </AboutContent>
       );
     }
+    if (modalContentMode === "community") {
+      return (
+        <CommunityContent>
+          <CommunityContentRow
+            onClick={() => window.open("https://twitter.com/ribbonfinance")}
+          >
+            <Title>Twitter</Title>
+            <ExternalLinkIcon />
+          </CommunityContentRow>
+          <CommunityContentRow
+            onClick={() =>
+              window.open("https://discord.com/invite/ribbon-finance")
+            }
+          >
+            <Title>Discord</Title>
+            <ExternalLinkIcon />
+          </CommunityContentRow>
+          <CommunityContentRow
+            onClick={() => window.open("https://github.com/ribbon-finance")}
+          >
+            <Title>Github</Title>
+            <ExternalLinkIcon />
+          </CommunityContentRow>
+          <CommunityContentRow
+            style={{
+              padding: 0,
+            }}
+          >
+            <Footer>
+              Ribbon Lend is a product build by&nbsp;
+              <a
+                href="https://ribbon.finance"
+                target="_blank"
+                rel="noreferrer noopener"
+              >
+                Ribbon Finance
+                <ExternalLinkIcon />
+              </a>
+            </Footer>
+          </CommunityContentRow>
+        </CommunityContent>
+      );
+    }
     return null;
   }, [modalContentMode]);
+
   return modalContent;
 };
