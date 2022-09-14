@@ -11,7 +11,7 @@ const Logo = () => {
   return (
     <>
       <LogoContainer>
-          <AppLogo height="48px" width="48px" />
+        <AppLogo height="48px" width="48px" />
       </LogoContainer>
     </>
   );

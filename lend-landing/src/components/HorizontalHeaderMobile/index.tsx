@@ -12,7 +12,10 @@ import sizes from "../../designSystem/sizes";
 import MenuButton from "./MenuButton";
 import { MobileMenuOpenProps } from "./types";
 import theme from "../../designSystem/theme";
-import { ModalContent, ModalContentMode } from "../Common/ModalContent";
+import {
+  ModalContent,
+  ModalContentMode,
+} from "shared/lib/components/Common/ModalContent";
 
 const HeaderContainer = styled.div<MobileMenuOpenProps>`
   display: none;

@@ -1,12 +1,15 @@
 import React, { useState } from "react";
 import styled from "styled-components";
 
-import Logo from "../Common/Logo";
-import colors from "shared/lib/designSystem/colors";
-import { Title } from "shared/lib/designSystem/index";
-import LendModal from "shared/lib/components/Common/LendModal";
+import HeaderLogo from "../../components/Common/HeaderLogo";
+import colors from "../../designSystem/colors";
+import { Title } from "../../designSystem/index";
+import LendModal from "../../components/Common/LendModal";
 import sizes from "../../designSystem/sizes";
-import { ModalContent, ModalContentMode } from "../Common/ModalContent";
+import {
+  ModalContent,
+  ModalContentMode,
+} from "../../components/Common/ModalContent";
 import theme from "../../designSystem/theme";
 
 const VerticalHeaderContainer = styled.div`
@@ -70,7 +73,7 @@ const VerticalHeaderTextContainer = styled.div`
   z-index: 1000;
 `;
 
-const VerticalHeader: React.FC = () => {
+const LendVerticalHeader: React.FC = () => {
   const [modalContentMode, setModalContentMode] = useState<ModalContentMode>();
 
   return (
@@ -84,7 +87,7 @@ const VerticalHeader: React.FC = () => {
       </LendModal>
       <VerticalHeaderContainer>
         <LogoContainer>
-          <Logo />
+          <HeaderLogo />
         </LogoContainer>
         <VerticalHeaderTextContainer>
           <ButtonContainer
@@ -109,4 +112,4 @@ const VerticalHeader: React.FC = () => {
   );
 };
 
-export default VerticalHeader;
+export default LendVerticalHeader;

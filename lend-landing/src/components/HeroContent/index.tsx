@@ -81,7 +81,7 @@ const HeroHeader: React.FC<HeroHeaderInterface> = ({ children, clockwise }) => {
       <AnimatePresence exitBeforeEnter>
         <motion.div
           transition={{
-            delay: 2,
+            delay: 1.5,
             duration: 0.5,
             type: "keyframes",
             ease: "easeOut",
@@ -111,7 +111,7 @@ const HeroHeaderMobile: React.FC = ({ children }) => {
       <AnimatePresence exitBeforeEnter>
         <motion.div
           transition={{
-            delay: 2,
+            delay: 1.5,
             duration: 0.5,
             type: "keyframes",
             ease: "easeOut",

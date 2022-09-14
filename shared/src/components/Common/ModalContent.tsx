@@ -1,13 +1,11 @@
 import { useMemo } from "react";
-import { Title } from "shared/lib/designSystem";
-import colors from "shared/lib/designSystem/colors";
-import { URLS } from "shared/lib/constants/constants";
+import { Title } from "../../designSystem";
+import colors from "../../designSystem/colors";
+import { URLS } from "../../constants/constants";
 import styled, { css } from "styled-components";
-import ExternalLinkIcon from "./ExternalLinkIcon";
-import twitter from "../../assets/icons/twitter.svg";
-import discord from "../../assets/icons/discord.svg";
-import github from "../../assets/icons/github.png";
-
+import ExternalLink from "../../assets/icons/externalLink";
+import { Discord } from "../../assets/icons/discord";
+import { Github } from "../../assets/icons/github";
 const AboutContent = styled.div`
   color: ${colors.primaryText}A3;
   padding: 16px 24px;
@@ -103,19 +101,19 @@ export const ModalContent = ({ modalContentMode }: ModalContentProps) => {
       return (
         <CommunityContent>
           <CommunityContentRow onClick={() => window.open(URLS.twitter)}>
-            <img src={twitter} alt="Twitter" />
+            {/* <img src={twitter} alt="Twitter" /> */}
             <Title>Twitter</Title>
-            <ExternalLinkIcon />
+            <ExternalLink />
           </CommunityContentRow>
           <CommunityContentRow onClick={() => window.open(URLS.discord)}>
-            <img src={discord} alt="Discord" />
+            {/* <Discord /> */}
             <Title>Discord</Title>
-            <ExternalLinkIcon />
+            <ExternalLink />
           </CommunityContentRow>
           <CommunityContentRow onClick={() => window.open(URLS.github)}>
-            <img src={github} alt="Github" />
+            {/* <Github /> */}
             <Title>Github</Title>
-            <ExternalLinkIcon />
+            <ExternalLink />
           </CommunityContentRow>
           <CommunityContentRow
             style={{
@@ -130,7 +128,7 @@ export const ModalContent = ({ modalContentMode }: ModalContentProps) => {
                 rel="noreferrer noopener"
               >
                 Ribbon Finance
-                <ExternalLinkIcon />
+                <ExternalLink />
               </a>
             </Footer>
           </CommunityContentRow>

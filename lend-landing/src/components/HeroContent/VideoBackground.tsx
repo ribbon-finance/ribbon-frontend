@@ -75,7 +75,7 @@ const VideoBackground: React.FC = () => {
         }}
       />
     );
-  }, [clipCount]);
+  }, [clipCount, video.height, video.width]);
 
   useEffect(() => {
     if (clipCount === clipAmount) {

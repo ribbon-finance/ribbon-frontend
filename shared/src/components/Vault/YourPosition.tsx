@@ -25,7 +25,6 @@ import useWeb3Wallet from "../../hooks/useWeb3Wallet";
 import { AnimatePresence, motion } from "framer-motion";
 import { BigNumber } from "ethers";
 import ButtonArrow from "../Common/ButtonArrow";
-
 const DesktopContainer = styled.div`
   display: flex;
   position: sticky;

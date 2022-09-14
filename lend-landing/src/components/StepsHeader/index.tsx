@@ -22,10 +22,8 @@ const ButtonContainer = styled.div`
   display: flex;
   z-index: 0;
   margin-left: auto;
-  padding-left: 40px;
-  padding-right: 40px;
   background: rgba(22, 206, 185, 0.08);
-
+  width: fit-content;
   height: 100%;
   justify-content: center;
   align-items: center;
@@ -72,6 +70,7 @@ const ButtonText = styled.span`
   text-transform: capitalize;
   color: ${colors.green};
   margin-left: auto;
+  width: 100%;
 `;
 
 const StepsHeaderTextContainer = styled.div`
@@ -83,6 +82,21 @@ const StepsHeaderTextContainer = styled.div`
   height: 16px;
   position: absolute;
   margin: auto;
+`;
+
+const OpenAppButton = styled.div`
+  display: flex;
+  width: 100%;
+  height: 64px;
+  padding-left: 40px;
+  padding-right: 40px;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  &:hover {
+    cursor: pointer;
+    opacity: ${theme.hover.opacity};
+  }
 `;
 
 const ExplanationStepList = ["step1", "step2", "step3"] as const;
@@ -155,7 +169,9 @@ const StepsHeader: React.FC = () => {
       </StepsHeaderTextContainer>
       <ButtonContainer>
         <a href={URLS.lendApp}>
-          <ButtonText>OPEN APP</ButtonText>
+          <OpenAppButton>
+            <ButtonText>OPEN APP</ButtonText>
+          </OpenAppButton>
         </a>
       </ButtonContainer>
     </HeaderContainer>
