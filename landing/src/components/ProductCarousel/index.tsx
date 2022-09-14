@@ -27,7 +27,7 @@ const CarouselTitle = styled(Title)`
 const ProductCarousel = () => {
   const getVaultUrl = useCallback(
     (vault: VaultOptions, version: VaultVersion) => {
-      const base = URLS.app;
+      const base = URLS.ribbonApp;
       const vaultName =
         Object.keys(VaultNameOptionMap)[
           Object.values(VaultNameOptionMap).indexOf(vault)

@@ -1135,8 +1135,12 @@ export const URLS = {
   ribbonFinancePolicy: "https://ribbon.finance/policy",
   ribbonFinanceFaq: "https://ribbon.finance/faq",
 
-  app: "https://app.ribbon.finance",
+  ribbonApp: "https://app.ribbon.finance",
   research: "https://research.ribbon.finance",
+
+  // lend
+  lend: "https://lend.ribbon.finance",
+  lendApp: "https://lend.ribbon.finance/app",
 
   // governance
   governance: "https://vote.ribbon.finance",

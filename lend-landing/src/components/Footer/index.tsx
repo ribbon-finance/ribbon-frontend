@@ -115,7 +115,7 @@ const Footer: React.FC = () => {
         </Marquee>
       </FooterContainer>
       <ButtonContainer>
-        <a href={URLS.app}>
+        <a href={URLS.ribbonApp}>
           <ButtonText>OPEN APP</ButtonText>
         </a>
       </ButtonContainer>

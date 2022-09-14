@@ -262,7 +262,7 @@ const Header = () => {
       </HeaderAbsoluteContainer>
 
       <ButtonContainer>
-        <a href={URLS.app}>
+        <a href={URLS.ribbonApp}>
           <AppButton>
             <ButtonText>START EARNING</ButtonText>
           </AppButton>
@@ -283,7 +283,7 @@ const Header = () => {
           }}
           style={{ paddingTop: 40 }}
         >
-          {renderLinkItem("START EARNING", URLS.app, true)}
+          {renderLinkItem("START EARNING", URLS.ribbonApp, true)}
           {renderLinkItem("FAQ", URLS.docsFaq, false, false, true)}
           {renderLinkItem("BLOG", URLS.medium, false, false, true)}
           {renderLinkItem("SNAPSHOT", URLS.snapshot, false, false, true)}

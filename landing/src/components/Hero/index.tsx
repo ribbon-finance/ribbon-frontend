@@ -208,7 +208,7 @@ const Hero = () => {
             </SubTitle>
           </SubtitleContainer>
           <ButtonContainer>
-            <a href={URLS.app} target="_blank" rel="noreferrer noopener">
+            <a href={URLS.ribbonApp} target="_blank" rel="noreferrer noopener">
               <CTAButton>START EARNING</CTAButton>
             </a>
           </ButtonContainer>

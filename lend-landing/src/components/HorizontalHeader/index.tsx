@@ -154,7 +154,7 @@ const HorizontalHeader: React.FC = () => {
         </AnimatePresence>
       </HorizontalHeaderTextContainer>
       <ButtonContainer>
-        <a href={URLS.app}>
+        <a href={URLS.ribbonApp}>
           <ButtonText>OPEN APP</ButtonText>
         </a>
       </ButtonContainer>
