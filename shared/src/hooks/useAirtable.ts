@@ -3,7 +3,7 @@ import dotenv from "dotenv";
 import { useEffect, useMemo, useState } from "react";
 import useAssetPrice from "./useAssetPrice";
 
-export interface ScheduleItem {
+export interface AirtableValues {
   strikePrice: number;
   baseYield: number;
   participationRate: number;
@@ -11,7 +11,24 @@ export interface ScheduleItem {
   borrowRate: number;
 }
 
+const airtableValueArray = [
+  "strikePrice",
+  "baseYield",
+  "participationRate",
+  "barrierPercentage",
+  "borrowRate",
+];
+
 dotenv.config();
+
+const recordHasUndefined = (recordTemp: any): boolean => {
+  for (const key in airtableValueArray) {
+    if (recordTemp.fields[airtableValueArray[key]] === undefined) {
+      return true;
+    }
+  }
+  return false;
+};
 
 Airtable.configure({
   endpointUrl: "https://api.airtable.com",
@@ -23,7 +40,7 @@ const BASE_NAME = "Earn";
 const base = Airtable.base("appkUHzxJ1lehQTIt");
 
 export const useAirtable = () => {
-  const [schedule, setSchedule] = useState<ScheduleItem>();
+  const [values, setValues] = useState<AirtableValues>();
   const [, setError] = useState<string>();
 
   const { price: ETHPrice, loading: assetPriceLoading } = useAssetPrice({
@@ -36,14 +53,15 @@ export const useAirtable = () => {
       .select({ view: "Grid view" })
       .all()
       .then((records) => {
-        const s: ScheduleItem[] = [];
-        records.forEach((record) => {
-          const fields = record.fields as unknown;
-          const item = fields as ScheduleItem;
-          s.push(item);
-        });
+        // check for undefined rows in airtable
+        const filteredRecords = records.filter(
+          (record) => !recordHasUndefined(record)
+        );
+        const fields = filteredRecords[filteredRecords.length - 1]
+          .fields as unknown;
+        const item = fields as AirtableValues;
         if (!assetPriceLoading) {
-          setSchedule(s[s.length - 1]);
+          setValues(item);
         }
       })
       .catch((e) => {
@@ -52,33 +70,32 @@ export const useAirtable = () => {
   }, [assetPriceLoading]);
 
   const loading = useMemo(() => {
-    return assetPriceLoading || !schedule;
-  }, [assetPriceLoading, schedule]);
+    return assetPriceLoading || !values;
+  }, [assetPriceLoading, values]);
 
   //   Absolute perf = abs(spot - strike) / strike
   // (Absolute perf * participation rate * 4 + 1)^(365/28) -1
   const [absolutePerformance, performance, expectedYield, maxYield] =
     useMemo(() => {
-      if (!schedule) {
+      if (!values) {
         return [0, 0, 0, 0];
       }
       const absolutePerformance =
-        Math.abs(ETHPrice - schedule.strikePrice) / schedule.strikePrice;
+        Math.abs(ETHPrice - values.strikePrice) / values.strikePrice;
 
-      const performance =
-        (ETHPrice - schedule.strikePrice) / schedule.strikePrice;
+      const performance = (ETHPrice - values.strikePrice) / values.strikePrice;
 
       const calculateMaxYield =
-        schedule.baseYield +
-        (schedule.barrierPercentage * schedule.participationRate * 4 + 1) **
+        values.baseYield +
+        (values.barrierPercentage * values.participationRate * 4 + 1) **
           (365 / 28) -
         1;
 
       const calculateExpectedYield =
-        absolutePerformance > schedule.barrierPercentage
-          ? schedule.baseYield
-          : schedule.baseYield +
-            (absolutePerformance * schedule.participationRate * 4 + 1) **
+        absolutePerformance > values.barrierPercentage
+          ? values.baseYield
+          : values.baseYield +
+            (absolutePerformance * values.participationRate * 4 + 1) **
               (365 / 28) -
             1;
       return [
@@ -87,9 +104,9 @@ export const useAirtable = () => {
         calculateExpectedYield,
         calculateMaxYield,
       ];
-    }, [schedule, ETHPrice]);
+    }, [values, ETHPrice]);
 
-  if (loading || !schedule) {
+  if (loading || !values) {
     //placeholder values while values are loading
     return {
       loading,
@@ -106,14 +123,14 @@ export const useAirtable = () => {
   }
   return {
     loading,
-    strikePrice: schedule.strikePrice,
-    baseYield: schedule.baseYield,
-    participationRate: schedule.participationRate,
-    barrierPercentage: schedule.barrierPercentage,
+    strikePrice: values.strikePrice,
+    baseYield: values.baseYield,
+    participationRate: values.participationRate,
+    barrierPercentage: values.barrierPercentage,
     absolutePerformance: absolutePerformance,
     performance: performance,
     expectedYield: expectedYield,
     maxYield: maxYield,
-    borrowRate: schedule.borrowRate,
+    borrowRate: values.borrowRate,
   };
 };

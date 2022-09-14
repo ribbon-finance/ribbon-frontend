@@ -5,7 +5,6 @@ import {
   getDisplayAssets,
   VaultOptions,
   VaultVersion,
-  VaultAddressMap,
 } from "../../constants/constants";
 import { getVaultColor } from "../../utils/vault";
 import theme from "../../designSystem/theme";
@@ -19,12 +18,10 @@ import sizes from "../../designSystem/sizes";
 import { useGlobalState } from "../../store/store";
 import { WidgetPauseIcon } from "../../assets/icons/icons";
 import { useV2VaultData } from "../../hooks/web3DataContext";
-import { RibbonVaultPauser } from "../../codegen";
-import useVaultPauser from "../../hooks/useV2VaultPauserContract";
-import useWeb3Wallet from "../../hooks/useWeb3Wallet";
 import { AnimatePresence, motion } from "framer-motion";
-import { BigNumber } from "ethers";
 import ButtonArrow from "../Common/ButtonArrow";
+import { usePausedPosition } from "../../hooks/usePausedPosition";
+
 const DesktopContainer = styled.div`
   display: flex;
   position: sticky;
@@ -179,9 +176,10 @@ const YourPosition: React.FC<YourPositionProps> = ({
   const [, setVaultPositionModal] = useGlobalState("vaultPositionModal");
   const [, setVaultPauseModal] = useGlobalState("vaultPauseModal");
   const [, setVaultResumeModal] = useGlobalState("vaultResumeModal");
-  const [pausedAmount, setPausedAmount] = useState(BigNumber.from(0));
-  const [canResume, setCanResume] = useState(false);
-  const [canPause, setCanPause] = useState(false);
+  const { pausedAmount, canResume, canPause } = usePausedPosition(
+    vaultOption,
+    vaultVersion
+  );
   const [widgetState, setWidgetState] = useState<"position" | "paused">(
     "position"
   );
@@ -189,35 +187,8 @@ const YourPosition: React.FC<YourPositionProps> = ({
     "position" | "paused" | "partiallyPaused"
   >("position");
   const {
-    data: { asset, lockedBalanceInAsset, round, decimals },
+    data: { asset, decimals },
   } = useV2VaultData(vaultOption);
-
-  const { account, chainId } = useWeb3Wallet();
-  const contract = useVaultPauser(chainId || 1) as RibbonVaultPauser;
-  const vaultAddress = VaultAddressMap[vaultOption][vaultVersion];
-
-  useEffect(() => {
-    if (contract && vaultAddress && account) {
-      contract
-        .getPausePosition(vaultAddress, account)
-        .then(([pauseRound, pauseAmount]) => {
-          setPausedAmount(pauseAmount);
-          setCanResume(pauseRound !== 0 && pauseRound < round); // edge case round returns 0
-          setCanPause(
-            isPracticallyZero(pauseAmount, decimals) &&
-              !isPracticallyZero(lockedBalanceInAsset, decimals)
-          );
-        });
-    }
-  }, [
-    contract,
-    canResume,
-    vaultAddress,
-    account,
-    lockedBalanceInAsset,
-    decimals,
-    round,
-  ]);
 
   // set state of user's position
   useMemo(() => {
@@ -729,18 +700,18 @@ const YourPosition: React.FC<YourPositionProps> = ({
         );
     }
   }, [
+    variant,
+    color,
+    setShowPositionModal,
+    asset,
+    pausedAmount,
+    decimals,
+    canResume,
     positionState,
     widgetState,
-    setWidgetStateHandler,
-    pausedAmount,
-    canResume,
-    decimals,
-    asset,
-    color,
     roi,
-    setShowPositionModal,
     setShowResumeModal,
-    variant,
+    setWidgetStateHandler,
   ]);
 
   const render = useMemo(() => {

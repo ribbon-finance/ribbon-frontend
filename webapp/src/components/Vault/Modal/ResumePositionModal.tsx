@@ -32,7 +32,7 @@ import useVaultPauser from "shared/lib/hooks/useV2VaultPauserContract";
 import { useLatestOption } from "shared/lib/hooks/useLatestOption";
 import { formatBigNumber } from "shared/lib/utils/math";
 import { BigNumber } from "ethers";
-
+import { usePausedPosition } from "shared/lib/hooks/usePausedPosition";
 const FloatingContainer = styled.div`
   display: flex;
   align-items: center;
@@ -90,21 +90,11 @@ const ResumePositionModal: React.FC = () => {
   const { addPendingTransaction } = usePendingTransactions();
   const [txId, setTxId] = useState("");
   const contract = useVaultPauser(chainId || 1) as RibbonVaultPauser;
-  const [resumeAmount, setResumeAmount] = useState(BigNumber.from(0));
   const vaultAddress = VaultAddressMap[vaultOption][vaultVersion];
-
-  // get the paused position to be resumed
-  // temporary: set the paused amount and canResume bool;
-  // to be replaced with subgraph data
-  useEffect(() => {
-    if (contract && vaultAddress && account && !isSolanaVault(vaultOption)) {
-      contract
-        .getPausePosition(vaultAddress, account)
-        .then(([, pauseAmount]) => {
-          setResumeAmount(pauseAmount);
-        });
-    }
-  }, [contract, vaultAddress, account, decimals, vaultOption]);
+  const { pausedAmount: resumeAmount } = usePausedPosition(
+    vaultOption,
+    vaultVersion
+  );
 
   // get the date of next option expiry
   const expiryTime = useMemo(() => {

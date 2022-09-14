@@ -1,15 +1,10 @@
-import React, { useMemo, useState, useEffect } from "react";
+import React, { useMemo, useState } from "react";
 import styled from "styled-components";
 import { formatUnits } from "ethers/lib/utils";
 import { AnimatePresence, motion } from "framer-motion";
 
 import { isStakingEnabledForChainId } from "shared/lib/utils/env";
-import {
-  getDisplayAssets,
-  VaultList,
-  VaultAddressMap,
-  isSolanaVault,
-} from "shared/lib/constants/constants";
+import { getDisplayAssets, VaultList } from "shared/lib/constants/constants";
 import BasicModal from "shared/lib/components/Common/BasicModal";
 import { getVaultColor } from "shared/lib/utils/vault";
 import {
@@ -35,8 +30,7 @@ import {
 } from "shared/lib/hooks/web3DataContext";
 import { useGlobalState } from "shared/lib/store/store";
 import { useWeb3Wallet } from "shared/lib/hooks/useWeb3Wallet";
-import { RibbonVaultPauser } from "shared/lib/codegen";
-import useVaultPauser from "shared/lib/hooks/useV2VaultPauserContract";
+import { usePausedPosition } from "shared/lib/hooks/usePausedPosition";
 const ModalContent = styled(motion.div)`
   display: flex;
   flex-direction: column;
@@ -51,30 +45,18 @@ const InfoLabel = styled(SecondaryText)`
 const YourPositionModal: React.FC = () => {
   const [vaultPositionModal, setVaultPositionModal] =
     useGlobalState("vaultPositionModal");
-  const [pausedAmount, setPausedAmount] = useState(BigNumber.from(0));
-  const { account, chainId } = useWeb3Wallet();
-  const contract = useVaultPauser(chainId || 1) as RibbonVaultPauser;
+  const { chainId } = useWeb3Wallet();
   const vaultOption = vaultPositionModal.vaultOption || VaultList[0];
   const vaultVersion = vaultPositionModal.vaultVersion;
-  const vaultAddress = VaultAddressMap[vaultOption][vaultVersion];
   const color = getVaultColor(vaultOption);
   const Logo = getAssetLogo(getDisplayAssets(vaultOption));
 
+  const { pausedAmount } = usePausedPosition(vaultOption, vaultVersion);
   const { vaultAccounts } = useVaultAccounts(vaultVersion);
   const { data: stakingPoolData } = useLiquidityMiningPoolData(vaultOption);
   const {
     data: { asset, decimals, depositBalanceInAsset },
   } = useV2VaultData(vaultOption);
-
-  useEffect(() => {
-    if (contract && vaultAddress && account && !isSolanaVault(vaultOption)) {
-      contract
-        .getPausePosition(vaultAddress, account)
-        .then(([, pauseAmount]) => {
-          setPausedAmount(pauseAmount);
-        });
-    }
-  }, [contract, vaultAddress, account, decimals, vaultOption]);
 
   const ModeList: string[] = isStakingEnabledForChainId(chainId)
     ? ["deposits", "staking"]
