@@ -7,8 +7,8 @@ import Marquee from "react-fast-marquee/dist";
 import sizes from "../../designSystem/sizes";
 import ReactPlayer from "react-player";
 import useScreenSize from "shared/lib/hooks/useScreenSize";
+import LendModal from "shared/lib/components/Common/LendModal";
 import VideoBackground from "./VideoBackground";
-import InfoModal from "../Common/InfoModal";
 
 const ContentContainer = styled.div`
   position: relative;

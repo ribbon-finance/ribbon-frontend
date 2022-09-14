@@ -1,7 +1,7 @@
-import { StyledModal } from "shared/lib/components/Common/BasicModal";
-import { Title } from "shared/lib/designSystem";
-import colors from "shared/lib/designSystem/colors";
-import { CloseIcon } from "shared/lib/assets/icons/icons";
+import { StyledModal } from "../../components/Common/BasicModal";
+import { Title } from "../../designSystem";
+import colors from "../../designSystem/colors";
+import { CloseIcon } from "../../assets/icons/icons";
 import styled from "styled-components";
 
 const borderStyle = `1px solid ${colors.primaryText}1F`;
@@ -32,7 +32,7 @@ interface InfoModalProps {
   onHide: () => void;
 }
 
-const InfoModal: React.FC<InfoModalProps> = ({
+const LendModal: React.FC<InfoModalProps> = ({
   show,
   onHide,
   title,
@@ -51,4 +51,4 @@ const InfoModal: React.FC<InfoModalProps> = ({
   );
 };
 
-export default InfoModal;
+export default LendModal;

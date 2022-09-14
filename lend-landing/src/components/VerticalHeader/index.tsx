@@ -4,8 +4,8 @@ import styled from "styled-components";
 import Logo from "./Logo";
 import colors from "shared/lib/designSystem/colors";
 import { Title } from "shared/lib/designSystem/index";
+import LendModal from "shared/lib/components/Common/LendModal";
 import sizes from "../../designSystem/sizes";
-import InfoModal from "../Common/InfoModal";
 import { ModalContent } from "../Common/ModalContent";
 import theme from "../../designSystem/theme";
 
@@ -76,13 +76,13 @@ const Header: React.FC = () => {
 
   return (
     <>
-      <InfoModal
+      <LendModal
         show={Boolean(modalContentMode)}
         title={(modalContentMode ?? "").toUpperCase()}
         onHide={() => setModalContentMode(undefined)}
       >
         {ModalContent(modalContentMode)}
-      </InfoModal>
+      </LendModal>
       <VerticalHeader>
         <LogoContainer>
           <Logo />

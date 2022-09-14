@@ -1,17 +1,18 @@
-import React, { useMemo, useState } from "react";
+import React, { useState } from "react";
 import styled from "styled-components";
 
 import colors from "shared/lib/designSystem/colors";
 import { Title } from "shared/lib/designSystem";
 import MobileOverlayMenu from "shared/lib/components/Common/MobileOverlayMenu";
+import LendModal from "shared/lib/components/Common/LendModal";
 import ExternalLinkIcon from "../Common/ExternalLinkIcon";
 import Logo from "./Logo";
 import sizes from "../../designSystem/sizes";
 import MenuButton from "./MenuButton";
 import { MobileMenuOpenProps } from "./types";
 import theme from "../../designSystem/theme";
-import InfoModal from "../Common/InfoModal";
 import { ModalContent } from "../Common/ModalContent";
+
 const VerticalHeader = styled.div<MobileMenuOpenProps>`
   display: none;
   @media (max-width: ${sizes.lg}px) {
@@ -114,11 +115,6 @@ const MobileOnly = styled.div`
   }
 `;
 
-const AboutContent = styled.div`
-  color: ${colors.primaryText}A3;
-  padding: 16px 24px;
-`;
-
 const MobileHeader: React.FC = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [modalContentMode, setModalContentMode] = useState<
@@ -137,13 +133,13 @@ const MobileHeader: React.FC = () => {
       <LogoContainer>
         <Logo />
       </LogoContainer>
-      <InfoModal
+      <LendModal
         show={Boolean(modalContentMode)}
         title={(modalContentMode ?? "").toUpperCase()}
         onHide={() => setModalContentMode(undefined)}
       >
         {ModalContent(modalContentMode)}
-      </InfoModal>
+      </LendModal>
 
       <MobileOnly>
         <MenuButton onToggle={onToggleMenu} isOpen={isMenuOpen} />
