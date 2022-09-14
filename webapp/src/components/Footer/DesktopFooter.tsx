@@ -1,6 +1,7 @@
 import React, { useCallback } from "react";
 import styled from "styled-components";
 
+import { URLS } from "shared/lib/constants/constants";
 import { BaseLink, Title } from "shared/lib/designSystem";
 import colors from "shared/lib/designSystem/colors";
 import sizes from "shared/lib/designSystem/sizes";
@@ -52,16 +53,16 @@ const DesktopFooter = () => {
   return (
     <FooterContainer>
       <LeftContainer>
-        {renderLinkItem("FAQ", "https://docs.ribbon.finance/faq")}
-        {renderLinkItem("BLOG", "https://medium.com/@ribbonfinance")}
-        {renderLinkItem("TERMS", "https://ribbon.finance/terms")}
-        {renderLinkItem("POLICY", "https://ribbon.finance/policy")}
-        {renderLinkItem("AUCTIONS", "https://auction.ribbon.finance")}
+        {renderLinkItem("FAQ", URLS.docsFaq)}
+        {renderLinkItem("BLOG", URLS.medium)}
+        {renderLinkItem("TERMS", URLS.ribbonFinanceTerms)}
+        {renderLinkItem("POLICY", URLS.ribbonFinancePolicy)}
+        {renderLinkItem("AUCTIONS", URLS.auction)}
       </LeftContainer>
       <LinksContainer>
-        {renderLinkItem("DISCORD", "http://discord.ribbon.finance")}
-        {renderLinkItem("TWITTER", "https://twitter.com/ribbonfinance")}
-        {renderLinkItem("GITHUB", "https://github.com/ribbon-finance")}
+        {renderLinkItem("DISCORD", URLS.discord)}
+        {renderLinkItem("TWITTER", URLS.twitter)}
+        {renderLinkItem("GITHUB", URLS.github)}
       </LinksContainer>
     </FooterContainer>
   );

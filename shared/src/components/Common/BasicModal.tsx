@@ -8,7 +8,7 @@ import theme from "../../designSystem/theme";
 import colors from "../../designSystem/colors";
 import MenuButton from "./MenuButton";
 
-const StyledModal = styled(BaseModal)<{
+export const StyledModal = styled(BaseModal)<{
   height: number;
   maxWidth: number;
   theme?: string;

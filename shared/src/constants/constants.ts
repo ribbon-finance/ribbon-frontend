@@ -1128,3 +1128,43 @@ const DISABLED_VAULTS: VaultOptions[] = ["rAPE-THETA", "rUSDC-AVAX-P-THETA"];
 export const isDisabledVault = (vaultOption: VaultOptions) => {
   return DISABLED_VAULTS.includes(vaultOption);
 };
+
+export const URLS = {
+  ribbonFinance: "https://ribbon.finance",
+  ribbonFinanceTerms: "https://ribbon.finance/terms",
+  ribbonFinancePolicy: "https://ribbon.finance/policy",
+  ribbonFinanceFaq: "https://ribbon.finance/faq",
+
+  ribbonApp: "https://app.ribbon.finance",
+  research: "https://research.ribbon.finance",
+
+  // lend
+  lend: "https://lend.ribbon.finance",
+  lendApp: "https://lend.ribbon.finance/app",
+
+  // governance
+  governance: "https://vote.ribbon.finance",
+  snapshot: "https://snapshot.org/#/rbn.eth",
+
+  // auction
+  auction: "https://auction.ribbon.finance",
+
+  // treasury
+  treasury: "https://treasury.ribbon.finance",
+
+  // socials
+  twitter: "https://twitter.com/ribbonfinance",
+  github: "https://github.com/ribbon-finance",
+  discord: "https://discord.com/invite/ribbon-finance",
+  medium: "https://medium.com/@ribbonfinance",
+
+  // docs
+  docs: "https://docs.ribbon.finance",
+  docsFaq: "https://docs.ribbon.finance/faq",
+
+  // others
+  tokenterminal:
+    "https://www.tokenterminal.com/terminal/projects/ribbon-finance",
+  defillama: "https://defillama.com/protocol/ribbon-finance",
+  hiddenhand: "https://hiddenhand.finance/ribbon",
+} as const;

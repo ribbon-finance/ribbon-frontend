@@ -1,5 +1,5 @@
 import React from "react";
-
+import { URLS } from "shared/lib/constants/constants";
 import Logo from "shared/lib/assets/icons/logo";
 import { ActionButton } from "shared/lib/components/Common/buttons";
 import {
@@ -44,7 +44,7 @@ const StakingModalApprove: React.FC<StakingModalApproveProps> = ({
       </BaseModalContentColumn>
       <BaseModalContentColumn marginTop={16}>
         <BaseUnderlineLink
-          to="https://ribbon.finance/faq"
+          to={URLS.ribbonFinanceFaq}
           target="_blank"
           rel="noreferrer noopener"
         >

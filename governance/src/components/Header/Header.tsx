@@ -1,8 +1,8 @@
 import { useCallback, useRef, useState } from "react";
 import styled from "styled-components";
 import { useRouteMatch } from "react-router-dom";
-
 import HeaderLogo from "./HeaderLogo";
+import { URLS } from "shared/lib/constants/constants";
 import colors from "shared/lib/designSystem/colors";
 import sizes from "shared/lib/designSystem/sizes";
 import { Title, BaseLink } from "shared/lib/designSystem";
@@ -179,10 +179,10 @@ const Header = () => {
   const onContinueToVotingLink = useCallback(() => {
     switch (votingLinkType) {
       case "gaugeVoting":
-        window.open("https://hiddenhand.finance/ribbon");
+        window.open(URLS.hiddenhand);
         break;
       case "proposal":
-        window.open("https://snapshot.org/#/rbn.eth");
+        window.open(URLS.snapshot);
         break;
     }
     setVotingLinkType(undefined);
@@ -350,42 +350,42 @@ const Header = () => {
               )}
               {renderLinkItem(
                 t("shared:Navigation:discord"),
-                "http://tiny.cc/ribbon-discord",
+                URLS.discord,
                 false,
                 false,
                 true
               )}
               {renderLinkItem(
                 t("shared:Navigation:twitter"),
-                "https://twitter.com/ribbonfinance",
+                URLS.twitter,
                 false,
                 false,
                 true
               )}
               {renderLinkItem(
                 t("shared:Navigation:github"),
-                "https://github.com/ribbon-finance",
+                URLS.github,
                 false,
                 false,
                 true
               )}
               {renderLinkItem(
                 t("shared:Navigation:blog"),
-                "https://medium.com/@ribbonfinance",
+                URLS.medium,
                 false,
                 false,
                 true
               )}
               {renderLinkItem(
                 t("shared:Navigation:terms"),
-                "https://ribbon.finance/terms",
+                URLS.ribbonFinanceTerms,
                 false,
                 false,
                 true
               )}
               {renderLinkItem(
                 t("shared:Navigation:policy"),
-                "https://ribbon.finance/policy",
+                URLS.ribbonFinancePolicy,
                 false,
                 false,
                 true
