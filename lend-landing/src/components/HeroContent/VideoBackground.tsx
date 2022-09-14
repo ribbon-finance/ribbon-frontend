@@ -62,7 +62,7 @@ const VideoBackground: React.FC = () => {
       <AnimatePresence exitBeforeEnter>
         <motion.div
           transition={{
-            delay: 1,
+            delay: 2,
             duration: 0.5,
             type: "keyframes",
             ease: "easeOut",

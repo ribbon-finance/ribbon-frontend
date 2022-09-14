@@ -4,6 +4,7 @@ import colors from "shared/lib/designSystem/colors";
 import { SecondaryText, Title } from "shared/lib/designSystem/index";
 import { AnimatePresence, motion } from "framer";
 import sizes from "../../designSystem/sizes";
+import theme from "../../designSystem/theme";
 
 const HeaderContainer = styled.div`
   display: flex;
@@ -22,10 +23,15 @@ const ButtonContainer = styled.div`
   margin-left: auto;
   padding-left: 40px;
   padding-right: 40px;
+  background: rgba(22, 206, 185, 0.08);
+
   height: 100%;
   justify-content: center;
   align-items: center;
   border-left: 1px solid ${colors.border};
+  &:hover {
+    opacity: ${theme.hover.opacity};
+  }
   @media (max-width: ${sizes.lg}px) {
     display: none;
   }

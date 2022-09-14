@@ -39,7 +39,7 @@ const InfoModal: React.FC<InfoModalProps> = ({
   children,
 }) => {
   return (
-    <StyledModal centered show={show} onHide={onHide} backdrop>
+    <StyledModal centered show={show} maxWidth={343} onHide={onHide} backdrop>
       <Header>
         <Title>{title}</Title>
         <CloseButton onClick={onHide}>
