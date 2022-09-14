@@ -6,6 +6,7 @@ import { AnimatePresence, motion } from "framer";
 import {
   getAssets,
   isNativeToken,
+  URLS,
   VaultAddressMap,
   VaultAllowedDepositAssets,
   VaultOptions,
@@ -311,7 +312,7 @@ const VaultApprovalForm: React.FC<VaultApprovalFormProps> = ({
         {getAssetDisplay(depositAsset)} in the vault’s strategy.
       </ApprovalDescription>
       <ApprovalHelp
-        to="https://docs.ribbon.finance/faq"
+        to={URLS.docsFaq}
         target="__blank"
         rel="noreferrer noopener"
       >

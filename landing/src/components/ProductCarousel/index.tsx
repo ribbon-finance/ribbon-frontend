@@ -2,6 +2,7 @@ import styled from "styled-components";
 import Row from "react-bootstrap/Row";
 import { Container } from "react-bootstrap";
 
+import { URLS } from "shared/lib/constants/constants";
 import ProductCatalogue from "shared/lib/components/Product/ProductCatalogue";
 import {
   VaultNameOptionMap,
@@ -26,7 +27,7 @@ const CarouselTitle = styled(Title)`
 const ProductCarousel = () => {
   const getVaultUrl = useCallback(
     (vault: VaultOptions, version: VaultVersion) => {
-      const base = "https://app.ribbon.finance";
+      const base = URLS.ribbonApp;
       const vaultName =
         Object.keys(VaultNameOptionMap)[
           Object.values(VaultNameOptionMap).indexOf(vault)

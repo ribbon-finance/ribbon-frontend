@@ -2,6 +2,7 @@ import styled from "styled-components";
 import sizes from "shared/lib/designSystem/sizes";
 import colors from "shared/lib/designSystem/colors";
 import theme from "shared/lib/designSystem/theme";
+import { URLS } from "shared/lib/constants/constants";
 import { useCallback, useRef, useState } from "react";
 import { BaseButton } from "shared/lib/designSystem";
 import useOutsideAlerter from "shared/lib/hooks/useOutsideAlerter";
@@ -69,29 +70,17 @@ const DesktopSubmenu = () => {
         }}
       >
         <MenuItem title="FAQ" onClick={openFAQ} />
-        <MenuItem
-          title="DISCORD"
-          onClick={() => openLink("http://discord.ribbon.finance")}
-        />
-        <MenuItem
-          title="TWITTER"
-          onClick={() => openLink("https://twitter.com/ribbonfinance")}
-        />
-        <MenuItem
-          title="GITHUB"
-          onClick={() => openLink("https://github.com/ribbon-finance")}
-        />
-        <MenuItem
-          title="BLOG"
-          onClick={() => openLink("https://medium.com/@ribbonfinance")}
-        />
+        <MenuItem title="DISCORD" onClick={() => openLink(URLS.discord)} />
+        <MenuItem title="TWITTER" onClick={() => openLink(URLS.twitter)} />
+        <MenuItem title="GITHUB" onClick={() => openLink(URLS.github)} />
+        <MenuItem title="BLOG" onClick={() => openLink(URLS.medium)} />
         <MenuItem
           title="TERMS"
-          onClick={() => openLink("https://ribbon.finance/terms")}
+          onClick={() => openLink(URLS.ribbonFinanceTerms)}
         />
         <MenuItem
           title="POLICY"
-          onClick={() => openLink("https://ribbon.finance/policy")}
+          onClick={() => openLink(URLS.ribbonFinancePolicy)}
         />
       </DesktopFloatingMenu>
     </Container>

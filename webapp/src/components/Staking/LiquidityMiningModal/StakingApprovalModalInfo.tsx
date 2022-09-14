@@ -9,7 +9,11 @@ import {
   SecondaryText,
   Title,
 } from "shared/lib/designSystem";
-import { getDisplayAssets, VaultOptions } from "shared/lib/constants/constants";
+import {
+  getDisplayAssets,
+  URLS,
+  VaultOptions,
+} from "shared/lib/constants/constants";
 import { ActionButton } from "shared/lib/components/Common/buttons";
 import { getAssetLogo } from "shared/lib/utils/asset";
 import { getVaultColor } from "shared/lib/utils/vault";
@@ -105,7 +109,7 @@ const StakingApprovalModalInfo: React.FC<StakingApprovalModalInfoProps> = ({
       </BaseModalContentColumn>
       <BaseModalContentColumn marginTop={16}>
         <BaseUnderlineLink
-          to="https://docs.ribbon.finance/faq"
+          to={URLS.docsFaq}
           target="_blank"
           rel="noreferrer noopener"
           className="d-flex"
