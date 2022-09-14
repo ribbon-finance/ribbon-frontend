@@ -82,35 +82,44 @@ const FooterTextContainer = styled.div`
   overflow: hidden;
 `;
 
+interface Stat {
+  title: string | JSX.Element;
+  value: string | JSX.Element;
+}
+
 const Footer: React.FC = () => {
+  const footerStats: Stat[] = [
+    {
+      title: "Total Value Locked",
+      value: "$112,458,199.02",
+    },
+    {
+      title: "Total Loans Originated",
+      value: "$112,458,199.02",
+    },
+    {
+      title: "Total Interest Accrued",
+      value: "$112,458,199.02",
+    },
+    {
+      title: "Total Insurance Accrued",
+      value: "$112,458,199.02",
+    },
+  ];
   return (
     <>
       <FooterContainer>
-        <Marquee gradient={false} speed={100} delay={0}>
-          <FooterTextContainer>
-            <StyledSecondaryText color={colors.tertiaryText}>
-              Total Value Locked:
-            </StyledSecondaryText>
-            <StyledTitle marginLeft={8} size={14}>
-              $112,458,199.02
-            </StyledTitle>
-          </FooterTextContainer>
-          <FooterTextContainer>
-            <StyledSecondaryText color={colors.tertiaryText}>
-              Total Loans Originated:
-            </StyledSecondaryText>
-            <StyledTitle marginLeft={8} size={14}>
-              $112,458,199.02
-            </StyledTitle>
-          </FooterTextContainer>
-          <FooterTextContainer>
-            <StyledSecondaryText color={colors.tertiaryText}>
-              Total Interest Accrued:
-            </StyledSecondaryText>
-            <StyledTitle marginLeft={8} size={14}>
-              $112,458,199.02
-            </StyledTitle>
-          </FooterTextContainer>
+        <Marquee gradient={false} speed={100} delay={0} pauseOnHover>
+          {footerStats.map((stat) => (
+            <FooterTextContainer>
+              <StyledSecondaryText color={colors.tertiaryText}>
+                {stat.title}:
+              </StyledSecondaryText>
+              <StyledTitle marginLeft={8} size={14}>
+                {stat.value}
+              </StyledTitle>
+            </FooterTextContainer>
+          ))}
         </Marquee>
       </FooterContainer>
       <ButtonContainer>
