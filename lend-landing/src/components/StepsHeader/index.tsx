@@ -74,7 +74,7 @@ const ButtonText = styled.span`
   margin-left: auto;
 `;
 
-const HorizontalHeaderTextContainer = styled.div`
+const StepsHeaderTextContainer = styled.div`
   display: flex;
   align-items: center;
   align-self: center;
@@ -89,7 +89,7 @@ const ExplanationStepList = ["step1", "step2", "step3"] as const;
 
 type ExplanationStep = typeof ExplanationStepList[number];
 
-const HorizontalHeader: React.FC = () => {
+const StepsHeader: React.FC = () => {
   const [step, setStep] = useState<ExplanationStep>(ExplanationStepList[0]);
 
   useEffect(() => {
@@ -126,7 +126,7 @@ const HorizontalHeader: React.FC = () => {
 
   return (
     <HeaderContainer>
-      <HorizontalHeaderTextContainer>
+      <StepsHeaderTextContainer>
         <AnimatePresence exitBeforeEnter>
           <motion.div
             key={step}
@@ -152,9 +152,9 @@ const HorizontalHeader: React.FC = () => {
             <StyledSecondaryText>{renderExplanation(step)}</StyledSecondaryText>
           </motion.div>
         </AnimatePresence>
-      </HorizontalHeaderTextContainer>
+      </StepsHeaderTextContainer>
       <ButtonContainer>
-        <a href={URLS.ribbonApp}>
+        <a href={URLS.lendApp}>
           <ButtonText>OPEN APP</ButtonText>
         </a>
       </ButtonContainer>
@@ -162,4 +162,4 @@ const HorizontalHeader: React.FC = () => {
   );
 };
 
-export default HorizontalHeader;
+export default StepsHeader;

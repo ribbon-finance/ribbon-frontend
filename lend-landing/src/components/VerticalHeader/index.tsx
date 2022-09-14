@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import styled from "styled-components";
 
-import Logo from "./Logo";
+import Logo from "../Common/Logo";
 import colors from "shared/lib/designSystem/colors";
 import { Title } from "shared/lib/designSystem/index";
 import LendModal from "shared/lib/components/Common/LendModal";
@@ -9,18 +9,15 @@ import sizes from "../../designSystem/sizes";
 import { ModalContent, ModalContentMode } from "../Common/ModalContent";
 import theme from "../../designSystem/theme";
 
-const VerticalHeader = styled.div`
+const VerticalHeaderContainer = styled.div`
   display: flex;
   width: 64px;
   height: 100vh;
   flex-direction: column;
   justify-content: space-between;
   align-items: center;
-  position: sticky;
   border-right: 1px solid ${colors.border};
-  padding: 56px 23px 44px 23px;
-  background: black;
-  z-index: 1000;
+  padding: 40px 23px 28px 23px;
   @media (max-width: ${sizes.lg}px) {
     display: none;
   }
@@ -29,11 +26,23 @@ const VerticalHeader = styled.div`
 const LogoContainer = styled.div`
   position: absolute;
   display: flex;
-  flex-direction: column;
   justify-content: center;
-  z-index: 1000;
+  align-items: center;
   top: 0;
   bottom: 0;
+`;
+
+const ButtonContainer = styled.div`
+  display: flex;
+  min-width: 64px;
+  min-height: 64px;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+  &:hover {
+    opacity: ${theme.hover.opacity};
+    cursor: pointer;
+  }
 `;
 
 const StyledTitle = styled(Title)<{
@@ -45,17 +54,9 @@ const StyledTitle = styled(Title)<{
   text-align: center;
   color: ${(props) =>
     props.color === undefined ? `${colors.primaryText}` : `${props.color}`};
-  margin-right: ${(props) =>
-    props.marginRight === undefined ? `0px` : `${props.marginRight}px`};
-  margin-left: ${(props) =>
-    props.marginLeft === undefined ? `0px` : `${props.marginLeft}px`};
   font-size: ${(props) =>
     props.size === undefined ? `14px` : `${props.size}px`};
   line-height: 20px;
-  &:hover {
-    cursor: pointer;
-    opacity: ${theme.hover.opacity};
-  }
 `;
 
 const VerticalHeaderTextContainer = styled.div`
@@ -66,10 +67,10 @@ const VerticalHeaderTextContainer = styled.div`
   justify-content: center;
   text-align: center;
   margin-top: 50%;
+  z-index: 1000;
 `;
 
-const Header: React.FC = () => {
-  const [isMenuOpen, setIsMenuOpen] = useState(false);
+const VerticalHeader: React.FC = () => {
   const [modalContentMode, setModalContentMode] = useState<ModalContentMode>();
 
   return (
@@ -81,27 +82,31 @@ const Header: React.FC = () => {
       >
         <ModalContent modalContentMode={modalContentMode} />
       </LendModal>
-      <VerticalHeader>
+      <VerticalHeaderContainer>
         <LogoContainer>
           <Logo />
         </LogoContainer>
         <VerticalHeaderTextContainer>
-          <StyledTitle
-            role={"button"}
+          <ButtonContainer
             onClick={() => {
-              setIsMenuOpen(false);
+              setModalContentMode("community");
+            }}
+          >
+            <StyledTitle>Community</StyledTitle>
+          </ButtonContainer>
+        </VerticalHeaderTextContainer>
+        <VerticalHeaderTextContainer>
+          <ButtonContainer
+            onClick={() => {
               setModalContentMode("about");
             }}
           >
-            Community
-          </StyledTitle>
+            <StyledTitle>About</StyledTitle>
+          </ButtonContainer>
         </VerticalHeaderTextContainer>
-        <VerticalHeaderTextContainer>
-          <StyledTitle>About</StyledTitle>
-        </VerticalHeaderTextContainer>
-      </VerticalHeader>
+      </VerticalHeaderContainer>
     </>
   );
 };
 
-export default Header;
+export default VerticalHeader;

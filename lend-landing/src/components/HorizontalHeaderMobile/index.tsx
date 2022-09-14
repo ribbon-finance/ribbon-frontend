@@ -7,14 +7,14 @@ import MobileOverlayMenu from "shared/lib/components/Common/MobileOverlayMenu";
 import LendModal from "shared/lib/components/Common/LendModal";
 import { URLS } from "shared/lib/constants/constants";
 import ExternalLinkIcon from "../Common/ExternalLinkIcon";
-import Logo from "./Logo";
+import Logo from "../Common/Logo";
 import sizes from "../../designSystem/sizes";
 import MenuButton from "./MenuButton";
 import { MobileMenuOpenProps } from "./types";
 import theme from "../../designSystem/theme";
 import { ModalContent, ModalContentMode } from "../Common/ModalContent";
 
-const VerticalHeader = styled.div<MobileMenuOpenProps>`
+const HeaderContainer = styled.div<MobileMenuOpenProps>`
   display: none;
   @media (max-width: ${sizes.lg}px) {
     height: 64px;
@@ -26,13 +26,13 @@ const VerticalHeader = styled.div<MobileMenuOpenProps>`
     ${(props) => {
       if (props.isMenuOpen) {
         return `
-    @media (min-width: ${sizes.md}px) {
+    @media (min-width: ${sizes.lg}px) {
       backdrop-filter: none
     }`;
       }
 
       return `
-  backdrop-filter: blur(40px);
+  backdrop-filter: blur(10px);
     /**
      * Firefox desktop come with default flag to have backdrop-filter disabled
      * Firefox Android also currently has bug where backdrop-filter is not being applied
@@ -116,7 +116,7 @@ const MobileOnly = styled.div`
   }
 `;
 
-const MobileHeader: React.FC = () => {
+const HorizontalHeaderMobile: React.FC = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [modalContentMode, setModalContentMode] = useState<ModalContentMode>();
 
@@ -125,7 +125,7 @@ const MobileHeader: React.FC = () => {
   };
 
   return (
-    <VerticalHeader
+    <HeaderContainer
       isMenuOpen={isMenuOpen}
       className="d-flex align-items-center justify-content-between"
     >
@@ -193,8 +193,8 @@ const MobileHeader: React.FC = () => {
           </NavItemsContainer>
         </MobileOverlayMenu>
       </MobileOnly>
-    </VerticalHeader>
+    </HeaderContainer>
   );
 };
 
-export default MobileHeader;
+export default HorizontalHeaderMobile;

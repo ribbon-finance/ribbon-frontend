@@ -1,7 +1,7 @@
 import React from "react";
 import styled from "styled-components";
 import { BrowserRouter as Router } from "react-router-dom";
-import LendHeader from "shared/lib/components/Common/LendHeader";
+import VerticalHeader from "./components/VerticalHeader";
 import Hero from "./components/Hero";
 import colors from "shared/lib/designSystem/colors";
 import "shared/lib/i18n/config";
@@ -17,7 +17,7 @@ function App() {
   return (
     <Body>
       <Router>
-        <LendHeader />
+        <VerticalHeader />
         <Hero />
       </Router>
     </Body>

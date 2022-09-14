@@ -1,10 +1,10 @@
 import React from "react";
 import styled from "styled-components";
-import HorizontalHeader from "../HorizontalHeader";
+import HorizontalHeader from "../StepsHeader";
 import Footer from "../Footer";
 import HeroContent from "../HeroContent";
 import sizes from "../../designSystem/sizes";
-import MobileHeader from "../VerticalHeaderMobile";
+import MobileHeader from "../HorizontalHeaderMobile";
 
 const HeroContainer = styled.div`
   display: flex;

@@ -5,9 +5,6 @@ import { Title } from "shared/lib/designSystem/index";
 import { AnimatePresence, motion } from "framer";
 import Marquee from "react-fast-marquee/dist";
 import sizes from "../../designSystem/sizes";
-import ReactPlayer from "react-player";
-import useScreenSize from "shared/lib/hooks/useScreenSize";
-import LendModal from "shared/lib/components/Common/LendModal";
 import VideoBackground from "./VideoBackground";
 
 const ContentContainer = styled.div`

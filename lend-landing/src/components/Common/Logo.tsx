@@ -1,4 +1,3 @@
-import { Link } from "react-router-dom";
 import styled from "styled-components";
 
 import { AppLogo } from "shared/lib/assets/icons/logo";
@@ -12,9 +11,7 @@ const Logo = () => {
   return (
     <>
       <LogoContainer>
-        <Link to="/">
           <AppLogo height="48px" width="48px" />
-        </Link>
       </LogoContainer>
     </>
   );

@@ -5,6 +5,7 @@ import { URLS } from "shared/lib/constants/constants";
 import { SecondaryText, Title } from "shared/lib/designSystem/index";
 import Marquee from "react-fast-marquee/dist";
 import sizes from "../../designSystem/sizes";
+import theme from "../../designSystem/theme";
 const FooterContainer = styled.div`
   display: flex;
   width: 100%;
@@ -25,7 +26,6 @@ const ButtonText = styled.span`
   text-align: center;
   text-transform: capitalize;
   color: ${colors.green};
-  margin-left: auto;
 `;
 
 const ButtonContainer = styled.div`
@@ -41,7 +41,20 @@ const ButtonContainer = styled.div`
     justify-content: center;
     align-items: center;
     border-top: 1px solid ${colors.border};
-    z-index: 1001;
+    z-index: 10000;
+  }
+`;
+
+const OpenAppButton = styled.div`
+  display: flex;
+  width: 100vw;
+  height: 64px;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  &:hover {
+    cursor: pointer;
+    opacity: ${theme.hover.opacity};
   }
 `;
 
@@ -115,8 +128,10 @@ const Footer: React.FC = () => {
         </Marquee>
       </FooterContainer>
       <ButtonContainer>
-        <a href={URLS.ribbonApp}>
-          <ButtonText>OPEN APP</ButtonText>
+        <a href={URLS.lendApp}>
+          <OpenAppButton>
+            <ButtonText>OPEN APP</ButtonText>
+          </OpenAppButton>
         </a>
       </ButtonContainer>
     </>
