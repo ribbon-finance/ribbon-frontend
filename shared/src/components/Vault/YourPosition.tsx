@@ -21,10 +21,13 @@ import { WidgetPauseIcon } from "../../assets/icons/icons";
 import { useV2VaultData } from "../../hooks/web3DataContext";
 import { RibbonVaultPauser } from "../../codegen";
 import useVaultPauser from "../../hooks/useV2VaultPauserContract";
+import useV2VaultContract from "../../hooks/useV2VaultContract";
 import useWeb3Wallet from "../../hooks/useWeb3Wallet";
 import { AnimatePresence, motion } from "framer-motion";
 import { BigNumber } from "ethers";
 import ButtonArrow from "../Common/ButtonArrow";
+import { couldStartTrivia } from "typescript";
+import { parseUnits } from "ethers/lib/utils";
 
 const DesktopContainer = styled.div`
   display: flex;
@@ -180,7 +183,10 @@ const YourPosition: React.FC<YourPositionProps> = ({
   const [, setVaultPositionModal] = useGlobalState("vaultPositionModal");
   const [, setVaultPauseModal] = useGlobalState("vaultPauseModal");
   const [, setVaultResumeModal] = useGlobalState("vaultResumeModal");
-  const [pausedAmount, setPausedAmount] = useState(BigNumber.from(0));
+  const [pausedShares, setPausedShares] = useState(BigNumber.from(0));
+  const [roundPricePerShare, setRoundPricePerShare] = useState(
+    BigNumber.from(0)
+  );
   const [canResume, setCanResume] = useState(false);
   const [canPause, setCanPause] = useState(false);
   const [widgetState, setWidgetState] = useState<"position" | "paused">(
@@ -194,31 +200,46 @@ const YourPosition: React.FC<YourPositionProps> = ({
   } = useV2VaultData(vaultOption);
 
   const { account, chainId } = useWeb3Wallet();
-  const contract = useVaultPauser(chainId || 1) as RibbonVaultPauser;
+  const pauseContract = useVaultPauser(chainId || 1) as RibbonVaultPauser;
   const vaultAddress = VaultAddressMap[vaultOption][vaultVersion];
+  const v2Contract = useV2VaultContract(vaultOption);
 
   useEffect(() => {
-    if (contract && vaultAddress && account) {
-      contract
+    if (pauseContract && v2Contract && vaultAddress && account) {
+      pauseContract
         .getPausePosition(vaultAddress, account)
         .then(([pauseRound, pauseAmount]) => {
-          setPausedAmount(pauseAmount);
+          setPausedShares(pauseAmount);
           setCanResume(pauseRound !== 0 && pauseRound < round); // edge case round returns 0
           setCanPause(
             isPracticallyZero(pauseAmount, decimals) &&
               !isPracticallyZero(lockedBalanceInAsset, decimals)
           );
+          if (pauseRound === round) {
+            v2Contract.pricePerShare().then((val) => {
+              setRoundPricePerShare(val);
+            });
+          } else {
+            v2Contract.roundPricePerShare(pauseRound).then((val) => {
+              setRoundPricePerShare(val);
+            });
+          }
         });
     }
   }, [
-    contract,
+    pauseContract,
     canResume,
     vaultAddress,
     account,
     lockedBalanceInAsset,
     decimals,
     round,
+    v2Contract,
   ]);
+
+  const pausedAmount = useMemo(() => {
+    return pausedShares.mul(roundPricePerShare).div(parseUnits("1", decimals));
+  }, [pausedShares, roundPricePerShare, decimals]);
 
   // set state of user's position
   useMemo(() => {
@@ -532,24 +553,7 @@ const YourPosition: React.FC<YourPositionProps> = ({
       }
     }
     return <></>;
-  }, [
-    alwaysShowPosition,
-    vaultAccount,
-    decimals,
-    variant,
-    color,
-    setShowPositionModal,
-    Logo,
-    asset,
-    pausedAmount,
-    roi,
-    vaultOption,
-    canPause,
-    positionState,
-    widgetState,
-    setShowPauseModal,
-    setWidgetStateHandler,
-  ]);
+  }, [alwaysShowPosition, vaultAccount, decimals, variant, color, setShowPositionModal, Logo, asset, pausedAmount, roi, vaultOption, canPause, positionState, widgetState, setShowPauseModal, setWidgetStateHandler]);
 
   const pausedPositionWidget = useMemo(() => {
     switch (variant) {
@@ -729,20 +733,7 @@ const YourPosition: React.FC<YourPositionProps> = ({
           </MobileContainer>
         );
     }
-  }, [
-    positionState,
-    widgetState,
-    setWidgetStateHandler,
-    pausedAmount,
-    canResume,
-    decimals,
-    asset,
-    color,
-    roi,
-    setShowPositionModal,
-    setShowResumeModal,
-    variant,
-  ]);
+  }, [variant, color, setShowPositionModal, asset, pausedAmount, decimals, canResume, positionState, widgetState, roi, setShowResumeModal, setWidgetStateHandler]);
 
   const render = useMemo(() => {
     if (!vaultAccount) {
