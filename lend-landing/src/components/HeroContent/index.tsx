@@ -8,6 +8,7 @@ import sizes from "../../designSystem/sizes";
 import ReactPlayer from "react-player";
 import useScreenSize from "shared/lib/hooks/useScreenSize";
 import VideoBackground from "./VideoBackground";
+import InfoModal from "../Common/InfoModal";
 
 const ContentContainer = styled.div`
   position: relative;
@@ -83,8 +84,8 @@ const HeroHeader: React.FC<HeroHeaderInterface> = ({ children, clockwise }) => {
       <AnimatePresence exitBeforeEnter>
         <motion.div
           transition={{
-            delay: 0.5,
-            duration: 0.25,
+            delay: 1,
+            duration: 0.5,
             type: "keyframes",
             ease: "easeOut",
           }}
@@ -98,12 +99,7 @@ const HeroHeader: React.FC<HeroHeaderInterface> = ({ children, clockwise }) => {
             opacity: 0,
           }}
         >
-          <Marquee
-            style={{ marginRight: clockwise ? -800 : -500 }}
-            gradient={false}
-            speed={30}
-            delay={0}
-          >
+          <Marquee gradient={false} speed={30} delay={0}>
             {children}
           </Marquee>
         </motion.div>
@@ -118,8 +114,8 @@ const HeroHeaderMobile: React.FC = ({ children }) => {
       <AnimatePresence exitBeforeEnter>
         <motion.div
           transition={{
-            delay: 2,
-            duration: 0.25,
+            delay: 1,
+            duration: 0.5,
             type: "keyframes",
             ease: "easeOut",
           }}
@@ -144,24 +140,26 @@ const HeroHeaderMobile: React.FC = ({ children }) => {
 
 const HeroContent: React.FC = () => {
   return (
-    <ContentContainer>
-      <VideoBackground />
-      <HeroHeaderMobile>
-        <SpecialText size={152}>Ribbon Lend</SpecialText>
-      </HeroHeaderMobile>
-      <div className="d-flex align-items-center justify-content-between w-100 h-100">
-        <Panel marginLeft={32} marginRight={50}>
-          <HeroHeader clockwise={false}>
-            <SpecialText size={256}>Ribbon</SpecialText>
-          </HeroHeader>
-        </Panel>
-        <Panel marginLeft={0} marginRight={32}>
-          <HeroHeader clockwise={true}>
-            <SpecialText size={256}>Lend&nbsp;&nbsp;</SpecialText>
-          </HeroHeader>
-        </Panel>
-      </div>
-    </ContentContainer>
+    <>
+      <ContentContainer>
+        <VideoBackground />
+        <HeroHeaderMobile>
+          <SpecialText size={152}>Ribbon Lend</SpecialText>
+        </HeroHeaderMobile>
+        <div className="d-flex align-items-center justify-content-between w-100 h-100">
+          <Panel marginLeft={32} marginRight={50}>
+            <HeroHeader clockwise={false}>
+              <SpecialText size={256}>Ribbon Lend</SpecialText>
+            </HeroHeader>
+          </Panel>
+          <Panel marginLeft={0} marginRight={32}>
+            <HeroHeader clockwise={true}>
+              <SpecialText size={256}>Ribbon lend</SpecialText>
+            </HeroHeader>
+          </Panel>
+        </div>
+      </ContentContainer>
+    </>
   );
 };
 export default HeroContent;

@@ -77,7 +77,7 @@ const FooterTextContainer = styled.div`
   min-width: 350px;
   text-align: center;
   height: 16px;
-  border-right: 1px solid ${colors.border};
+  border-right: 1px solid ${colors.tertiaryText};
   margin: auto;
   overflow: hidden;
 `;

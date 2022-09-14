@@ -11,7 +11,7 @@ import MenuButton from "./MenuButton";
 import { MobileMenuOpenProps } from "./types";
 import theme from "../../designSystem/theme";
 import InfoModal from "../Common/InfoModal";
-
+import { ModalContent } from "../Common/ModalContent";
 const VerticalHeader = styled.div<MobileMenuOpenProps>`
   display: none;
   @media (max-width: ${sizes.lg}px) {
@@ -129,23 +129,6 @@ const MobileHeader: React.FC = () => {
     setIsMenuOpen(!isMenuOpen);
   };
 
-  const modalContent = useMemo(() => {
-    if (modalContentMode === "about") {
-      return (
-        <AboutContent>
-          Lorem ipsum dolor sit amet, consectetur adipiscing elit ut aliquam,
-          purus sit amet luctus venenatis, lectus magna fringilla urna,
-          porttitor rhoncus dolor purus non enim praesent elementum facilisis
-          leo, vel fringilla est ullamcorper eget nulla facilisi etiam dignissim
-          diam quis enim lobortis scelerisque fermentum dui faucibus in ornare
-          quam viverra orci sagittis eu volutpat odio facilisis mauris sit amet
-          massa vitae tortor condimentum lacinia
-        </AboutContent>
-      );
-    }
-    return null;
-  }, [modalContentMode]);
-
   return (
     <VerticalHeader
       isMenuOpen={isMenuOpen}
@@ -159,7 +142,7 @@ const MobileHeader: React.FC = () => {
         title={(modalContentMode ?? "").toUpperCase()}
         onHide={() => setModalContentMode(undefined)}
       >
-        {modalContent}
+        {ModalContent(modalContentMode)}
       </InfoModal>
 
       <MobileOnly>

@@ -1,10 +1,13 @@
-import React from "react";
+import React, { useState } from "react";
 import styled from "styled-components";
 
 import Logo from "./Logo";
 import colors from "shared/lib/designSystem/colors";
 import { Title } from "shared/lib/designSystem/index";
 import sizes from "../../designSystem/sizes";
+import InfoModal from "../Common/InfoModal";
+import { ModalContent } from "../Common/ModalContent";
+import theme from "../../designSystem/theme";
 
 const VerticalHeader = styled.div`
   display: flex;
@@ -49,6 +52,10 @@ const StyledTitle = styled(Title)<{
   font-size: ${(props) =>
     props.size === undefined ? `14px` : `${props.size}px`};
   line-height: 20px;
+  &:hover {
+    cursor: pointer;
+    opacity: ${theme.hover.opacity};
+  }
 `;
 
 const VerticalHeaderTextContainer = styled.div`
@@ -62,18 +69,40 @@ const VerticalHeaderTextContainer = styled.div`
 `;
 
 const Header: React.FC = () => {
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [modalContentMode, setModalContentMode] = useState<
+    "about" | "community" | undefined
+  >();
+
   return (
-    <VerticalHeader>
-      <LogoContainer>
-        <Logo />
-      </LogoContainer>
-      <VerticalHeaderTextContainer>
-        <StyledTitle>Community</StyledTitle>
-      </VerticalHeaderTextContainer>
-      <VerticalHeaderTextContainer>
-        <StyledTitle>About</StyledTitle>
-      </VerticalHeaderTextContainer>
-    </VerticalHeader>
+    <>
+      <InfoModal
+        show={Boolean(modalContentMode)}
+        title={(modalContentMode ?? "").toUpperCase()}
+        onHide={() => setModalContentMode(undefined)}
+      >
+        {ModalContent(modalContentMode)}
+      </InfoModal>
+      <VerticalHeader>
+        <LogoContainer>
+          <Logo />
+        </LogoContainer>
+        <VerticalHeaderTextContainer>
+          <StyledTitle
+            role={"button"}
+            onClick={() => {
+              setIsMenuOpen(false);
+              setModalContentMode("about");
+            }}
+          >
+            Community
+          </StyledTitle>
+        </VerticalHeaderTextContainer>
+        <VerticalHeaderTextContainer>
+          <StyledTitle>About</StyledTitle>
+        </VerticalHeaderTextContainer>
+      </VerticalHeader>
+    </>
   );
 };
 

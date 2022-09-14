@@ -92,7 +92,7 @@ const HorizontalHeader: React.FC = () => {
           ? ExplanationStepList[0]
           : ExplanationStepList[ExplanationStepList.indexOf(step) + 1]
       );
-    }, 2000);
+    }, 4000);
   }, [step]);
 
   const renderNumber = useCallback((s: ExplanationStep) => {
