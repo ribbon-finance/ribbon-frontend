@@ -12,10 +12,7 @@ import sizes from "../../designSystem/sizes";
 import MenuButton from "./MenuButton";
 import { MobileMenuOpenProps } from "./types";
 import theme from "../../designSystem/theme";
-import {
-  ModalContent,
-  ModalContentMode,
-} from "../../components/Common/ModalContent";
+import { ModalContent, ModalContentMode } from "../Common/ModalContent";
 
 const HeaderContainer = styled.div<MobileMenuOpenProps>`
   display: none;
@@ -119,7 +116,7 @@ const MobileOnly = styled.div`
   }
 `;
 
-const HorizontalHeaderMobile: React.FC = () => {
+const MobileHeader: React.FC = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [modalContentMode, setModalContentMode] = useState<ModalContentMode>();
 
@@ -200,4 +197,4 @@ const HorizontalHeaderMobile: React.FC = () => {
   );
 };
 
-export default HorizontalHeaderMobile;
+export default MobileHeader;

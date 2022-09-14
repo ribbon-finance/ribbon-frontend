@@ -13,7 +13,7 @@ const HeaderContainer = styled.div`
   height: 64px;
   min-height: 64px;
   justify-content: center;
-  align-items: center;
+  align-items: top;
   z-index: 1001;
   border-bottom: 1px solid ${colors.border};
 `;
@@ -169,7 +169,7 @@ const StepsHeader: React.FC = () => {
         {/* uncomment on launch */}
         {/* <a href={URLS.lendApp}> */}
         <OpenAppButton>
-          <ButtonText>COMING SOON</ButtonText>
+          <ButtonText>OPEN APP</ButtonText>
         </OpenAppButton>
         {/* </a> */}
       </ButtonContainer>
