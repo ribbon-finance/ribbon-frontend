@@ -1,4 +1,4 @@
-import React, { useCallback, useMemo, useState, useEffect } from "react";
+import React, { useCallback, useMemo, useState } from "react";
 import styled, { css } from "styled-components";
 import { ethers } from "ethers";
 import { AnimatePresence, motion } from "framer-motion";
@@ -30,7 +30,6 @@ import {
   isAvaxVault,
   isSolanaVault,
   isDisabledVault,
-  VaultAddressMap,
 } from "../../../constants/constants";
 import { BoostIcon } from "../../../assets/icons/icons";
 import { getAssetDisplay, getAssetLogo } from "../../../utils/asset";
@@ -53,12 +52,9 @@ import TooltipExplanation from "../../Common/TooltipExplanation";
 import HelpInfo from "../../Common/HelpInfo";
 import { calculateBaseRewards } from "../../../utils/governanceMath";
 import { useAssetsPrice } from "../../../hooks/useAssetPrice";
-import { RibbonVaultPauser } from "../../../codegen";
-import useVaultPauser from "../../../hooks/useV2VaultPauserContract";
-import { BigNumber } from "ethers";
 import EarnCard from "../../Common/EarnCard";
 import { useAirtable } from "../../../hooks/useAirtable";
-
+import { usePausedPosition } from "../../../hooks/usePausedPosition";
 const { formatUnits } = ethers.utils;
 
 const CardContainer = styled.div`
@@ -782,24 +778,10 @@ const YieldCard: React.FC<YieldCardProps> = ({
     asset,
   ]);
 
-  const contract = useVaultPauser(chainId || 1) as RibbonVaultPauser;
-  const vaultAddress = VaultAddressMap[vault][vaultVersion];
-  const [pausedAmount, setPausedAmount] = useState(BigNumber.from(0));
+  const { pausedAmount } = usePausedPosition(vault, vaultVersion);
   const [positionState, setPositionState] = useState<
     "position" | "paused" | "partiallyPaused"
   >("position");
-
-  // temporary: set the paused amount and canResume bool;
-  // to be replaced with subgraph data
-  useEffect(() => {
-    if (contract && vaultAddress && account && !isSolanaVault(vault)) {
-      contract
-        .getPausePosition(vaultAddress, account)
-        .then(([, pauseAmount]) => {
-          setPausedAmount(pauseAmount);
-        });
-    }
-  }, [contract, vaultAddress, account, decimals, vault]);
 
   // set state of user's position
   useMemo(() => {
