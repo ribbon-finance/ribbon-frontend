@@ -76,7 +76,7 @@ export const usePausedPosition = (
   const pausedAmount = useMemo(() => {
     return pausedShares.mul(roundPricePerShare).div(parseUnits("1", decimals));
   }, [pausedShares, roundPricePerShare, decimals]);
-  //placeholder values while values are loading
+
   return {
     pausedAmount: pausedAmount,
     canResume: canResume,
