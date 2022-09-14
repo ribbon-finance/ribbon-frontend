@@ -1,35 +1,32 @@
+import { BigNumber } from "ethers";
 import { createGlobalState } from "react-hooks-global-state";
-import { VaultOptions, VaultVersion } from "shared/lib/constants/constants";
-import { Assets } from "shared/lib/store/types";
-import {
-  ACTIONS,
-  ActionType,
-  V2WithdrawOption,
-} from "../components/Vault/VaultActionsForm/Modal/types";
+import { PendingTransaction, VaultDataResponse } from "./types";
 
 interface GlobalStore {
-  vaultActionForm: {
-    vaultOption?: VaultOptions;
-    vaultVersion: VaultVersion;
-    inputAmount: string;
-    actionType: ActionType;
-    depositAsset?: Assets;
-    withdrawOption?: V2WithdrawOption;
-    migrateSourceVault?: VaultOptions;
-    receiveVault?: VaultOptions;
+  vaultData: VaultDataResponse;
+  prices: {
+    WETH: number;
   };
+  pendingTransactions: PendingTransaction[];
+  showConnectWallet: boolean;
+  latestAPY: number;
+  gasPrice: string;
 }
 
-export const initialVaultActionForm = {
-  vaultVersion: "v1" as VaultVersion,
-  inputAmount: "",
-  // Default to deposit
-  actionType: ACTIONS.deposit,
-};
-
 export const initialState: GlobalStore = {
-  vaultActionForm: initialVaultActionForm,
+  vaultData: {
+    status: "loading",
+    deposits: BigNumber.from("0"),
+    vaultLimit: BigNumber.from("0"),
+    error: null,
+  },
+  prices: {
+    WETH: 0.0,
+  },
+  pendingTransactions: [],
+  showConnectWallet: false,
+  latestAPY: 0.0,
+  gasPrice: "",
 };
 
-export const { useGlobalState: useWebappGlobalState } =
-  createGlobalState(initialState);
+export const { useGlobalState } = createGlobalState(initialState);
