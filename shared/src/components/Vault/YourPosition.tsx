@@ -26,7 +26,6 @@ import useWeb3Wallet from "../../hooks/useWeb3Wallet";
 import { AnimatePresence, motion } from "framer-motion";
 import { BigNumber } from "ethers";
 import ButtonArrow from "../Common/ButtonArrow";
-import { couldStartTrivia } from "typescript";
 import { parseUnits } from "ethers/lib/utils";
 
 const DesktopContainer = styled.div`
@@ -553,7 +552,24 @@ const YourPosition: React.FC<YourPositionProps> = ({
       }
     }
     return <></>;
-  }, [alwaysShowPosition, vaultAccount, decimals, variant, color, setShowPositionModal, Logo, asset, pausedAmount, roi, vaultOption, canPause, positionState, widgetState, setShowPauseModal, setWidgetStateHandler]);
+  }, [
+    alwaysShowPosition,
+    vaultAccount,
+    decimals,
+    variant,
+    color,
+    setShowPositionModal,
+    Logo,
+    asset,
+    pausedAmount,
+    roi,
+    vaultOption,
+    canPause,
+    positionState,
+    widgetState,
+    setShowPauseModal,
+    setWidgetStateHandler,
+  ]);
 
   const pausedPositionWidget = useMemo(() => {
     switch (variant) {
@@ -733,7 +749,20 @@ const YourPosition: React.FC<YourPositionProps> = ({
           </MobileContainer>
         );
     }
-  }, [variant, color, setShowPositionModal, asset, pausedAmount, decimals, canResume, positionState, widgetState, roi, setShowResumeModal, setWidgetStateHandler]);
+  }, [
+    variant,
+    color,
+    setShowPositionModal,
+    asset,
+    pausedAmount,
+    decimals,
+    canResume,
+    positionState,
+    widgetState,
+    roi,
+    setShowResumeModal,
+    setWidgetStateHandler,
+  ]);
 
   const render = useMemo(() => {
     if (!vaultAccount) {
