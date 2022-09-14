@@ -4,6 +4,9 @@ import colors from "shared/lib/designSystem/colors";
 import { URLS } from "shared/lib/constants/constants";
 import styled, { css } from "styled-components";
 import ExternalLinkIcon from "./ExternalLinkIcon";
+import twitter from "../../assets/icons/twitter.svg";
+import discord from "../../assets/icons/discord.svg";
+import github from "../../assets/icons/github.png";
 
 const AboutContent = styled.div`
   color: ${colors.primaryText}A3;
@@ -37,6 +40,12 @@ const CommunityContentRow = styled.div.attrs({
     }
     return "";
   }}
+
+  > img {
+    width: 32px;
+    height: 32px;
+    margin-right: 20px;
+  }
 
   > svg {
     transition: all 0.2s ease-in-out;
@@ -94,14 +103,17 @@ export const ModalContent = ({ modalContentMode }: ModalContentProps) => {
       return (
         <CommunityContent>
           <CommunityContentRow onClick={() => window.open(URLS.twitter)}>
+            <img src={twitter} alt="Twitter" />
             <Title>Twitter</Title>
             <ExternalLinkIcon />
           </CommunityContentRow>
           <CommunityContentRow onClick={() => window.open(URLS.discord)}>
+            <img src={discord} alt="Discord" />
             <Title>Discord</Title>
             <ExternalLinkIcon />
           </CommunityContentRow>
           <CommunityContentRow onClick={() => window.open(URLS.github)}>
+            <img src={github} alt="Github" />
             <Title>Github</Title>
             <ExternalLinkIcon />
           </CommunityContentRow>
