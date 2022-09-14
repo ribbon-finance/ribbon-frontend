@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import styled from "styled-components";
 import { useRouteMatch } from "react-router-dom";
 import { useWeb3Wallet } from "shared/lib/hooks/useWeb3Wallet";
+import { URLS } from "shared/lib/constants/constants";
 
 import HeaderLogo from "./HeaderLogo";
 import colors from "shared/lib/designSystem/colors";
@@ -215,13 +216,7 @@ const Header = () => {
           {chainId &&
             isEthNetwork(chainId) &&
             renderLinkItem("STAKING", "/staking", Boolean(staking))}
-          {renderLinkItem(
-            "GOVERNANCE",
-            "https://vote.ribbon.finance/",
-            false,
-            true,
-            true
-          )}
+          {renderLinkItem("GOVERNANCE", URLS.governance, false, true, true)}
         </LinksContainer>
       </HeaderAbsoluteContainer>
 
@@ -267,70 +262,22 @@ const Header = () => {
             "/staking",
             Boolean(useRouteMatch({ path: "/staking", exact: true }))
           )}
-          {renderLinkItem(
-            "GOVERNANCE",
-            "https://vote.ribbon.finance",
-            false,
-            true,
-            true
-          )}
-          {renderLinkItem(
-            "DISCORD",
-            "http://tiny.cc/ribbon-discord",
-            false,
-            false,
-            true
-          )}
-          {renderLinkItem(
-            "TWITTER",
-            "https://twitter.com/ribbonfinance",
-            false,
-            false,
-            true
-          )}
-          {renderLinkItem(
-            "GITHUB",
-            "https://github.com/ribbon-finance",
-            false,
-            false,
-            true
-          )}
-          {renderLinkItem(
-            "FAQ",
-            "https://docs.ribbon.finance/faq",
-            false,
-            false,
-            true
-          )}
-          {renderLinkItem(
-            "BLOG",
-            "https://medium.com/@ribbonfinance",
-            false,
-            false,
-            true
-          )}
-          {renderLinkItem(
-            "TERMS",
-            "https://ribbon.finance/terms",
-            false,
-            false,
-            true
-          )}
+          {renderLinkItem("GOVERNANCE", URLS.governance, false, true, true)}
+          {renderLinkItem("DISCORD", URLS.discord, false, false, true)}
+          {renderLinkItem("TWITTER", URLS.twitter, false, false, true)}
+          {renderLinkItem("GITHUB", URLS.github, false, false, true)}
+          {renderLinkItem("FAQ", URLS.docsFaq, false, false, true)}
+          {renderLinkItem("BLOG", URLS.medium, false, false, true)}
+          {renderLinkItem("TERMS", URLS.ribbonFinanceTerms, false, false, true)}
           {renderLinkItem(
             "POLICY",
-            "https://ribbon.finance/policy",
+            URLS.ribbonFinancePolicy,
             false,
             false,
             true
           )}
 
-          {renderLinkItem(
-            "AUCTIONS",
-            "https://auction.ribbon.finance",
-            false,
-            false,
-            true
-          )}
+          {renderLinkItem("AUCTIONS", URLS.auction, false, false, true)}
         </MobileOverlayMenu>
       </MobileOnly>
     </HeaderContainer>

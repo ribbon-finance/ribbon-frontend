@@ -2,6 +2,7 @@ import React, { useCallback, useMemo, useState } from "react";
 import styled from "styled-components";
 import { useWeb3Wallet } from "shared/lib/hooks/useWeb3Wallet";
 import { AnimatePresence, motion } from "framer";
+import { URLS } from "shared/lib/constants/constants";
 
 import {
   getAssets,
@@ -311,7 +312,7 @@ const VaultApprovalForm: React.FC<VaultApprovalFormProps> = ({
         {getAssetDisplay(depositAsset)} in the vault’s strategy.
       </ApprovalDescription>
       <ApprovalHelp
-        to="https://docs.ribbon.finance/faq"
+        to={URLS.docsFaq}
         target="__blank"
         rel="noreferrer noopener"
       >

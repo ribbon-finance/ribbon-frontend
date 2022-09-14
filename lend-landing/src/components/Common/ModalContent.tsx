@@ -1,6 +1,7 @@
 import { useMemo } from "react";
 import { Title } from "shared/lib/designSystem";
 import colors from "shared/lib/designSystem/colors";
+import { URLS } from "shared/lib/constants/constants";
 import styled, { css } from "styled-components";
 import ExternalLinkIcon from "./ExternalLinkIcon";
 
@@ -92,23 +93,15 @@ export const ModalContent = ({ modalContentMode }: ModalContentProps) => {
     if (modalContentMode === "community") {
       return (
         <CommunityContent>
-          <CommunityContentRow
-            onClick={() => window.open("https://twitter.com/ribbonfinance")}
-          >
+          <CommunityContentRow onClick={() => window.open(URLS.twitter)}>
             <Title>Twitter</Title>
             <ExternalLinkIcon />
           </CommunityContentRow>
-          <CommunityContentRow
-            onClick={() =>
-              window.open("https://discord.com/invite/ribbon-finance")
-            }
-          >
+          <CommunityContentRow onClick={() => window.open(URLS.discord)}>
             <Title>Discord</Title>
             <ExternalLinkIcon />
           </CommunityContentRow>
-          <CommunityContentRow
-            onClick={() => window.open("https://github.com/ribbon-finance")}
-          >
+          <CommunityContentRow onClick={() => window.open(URLS.github)}>
             <Title>Github</Title>
             <ExternalLinkIcon />
           </CommunityContentRow>
@@ -120,7 +113,7 @@ export const ModalContent = ({ modalContentMode }: ModalContentProps) => {
             <Footer>
               Ribbon Lend is a product build by&nbsp;
               <a
-                href="https://ribbon.finance"
+                href={URLS.ribbonFinance}
                 target="_blank"
                 rel="noreferrer noopener"
               >

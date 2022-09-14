@@ -5,6 +5,7 @@ import discord from "../../img/Footer/discord.svg";
 import twitter from "../../img/Footer/twitter.svg";
 import chevron from "../../img/Footer/chevron.svg";
 import globe from "../../img/Footer/globe.svg";
+import { URLS } from "shared/lib/constants/constants";
 import { AppLogo } from "shared/lib/assets/icons/logo";
 import { motion } from "framer";
 import {
@@ -210,29 +211,17 @@ const SocialButton = styled.button`
 const SocialMedia = () => {
   return (
     <Socials>
-      <BaseLink
-        to="https://github.com/ribbon-finance"
-        target="_blank"
-        rel="noreferrer noopener"
-      >
+      <BaseLink to={URLS.github} target="_blank" rel="noreferrer noopener">
         <SocialButton>
           <img src={github} alt="github" />
         </SocialButton>
       </BaseLink>
-      <BaseLink
-        to="https://discord.com/invite/ribbon-finance"
-        target="_blank"
-        rel="noreferrer noopener"
-      >
+      <BaseLink to={URLS.discord} target="_blank" rel="noreferrer noopener">
         <SocialButton>
           <img src={discord} alt="discord" />
         </SocialButton>
       </BaseLink>
-      <BaseLink
-        to="https://twitter.com/ribbonfinance"
-        target="_blank"
-        rel="noreferrer noopener"
-      >
+      <BaseLink to={URLS.twitter} target="_blank" rel="noreferrer noopener">
         <SocialButton>
           <img src={twitter} alt="twitter" />
         </SocialButton>

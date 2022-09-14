@@ -2,6 +2,7 @@ import styled, { css, keyframes } from "styled-components";
 import sizes from "shared/lib/designSystem/sizes";
 import theme from "shared/lib/designSystem/theme";
 import useScreenSize from "shared/lib/hooks/useScreenSize";
+import { URLS } from "shared/lib/constants/constants";
 import usePullUp from "webapp/lib/hooks/usePullUp";
 import { useHistory } from "react-router-dom";
 import { VaultName, VaultNameOptionMap } from "shared/lib/constants/constants";
@@ -370,7 +371,7 @@ const Homepage = () => {
           <ProductText>
             A product by{" "}
             <a
-              href="https://ribbon.finance"
+              href={URLS.ribbonFinance}
               target="_blank"
               rel="noopener noreferrer"
             >

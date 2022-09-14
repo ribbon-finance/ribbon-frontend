@@ -2,6 +2,7 @@ import React, { useCallback, useMemo } from "react";
 import styled from "styled-components";
 import moment from "moment";
 
+import { URLS } from "shared/lib/constants/constants";
 import {
   BaseModalContentColumn,
   BaseUnderlineLink,
@@ -105,7 +106,7 @@ const StakingApprovalModalInfo: React.FC<StakingApprovalModalInfoProps> = ({
       </BaseModalContentColumn>
       <BaseModalContentColumn marginTop={16}>
         <BaseUnderlineLink
-          to="https://docs.ribbon.finance/faq"
+          to={URLS.docsFaq}
           target="_blank"
           rel="noreferrer noopener"
           className="d-flex"

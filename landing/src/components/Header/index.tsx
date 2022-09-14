@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import styled from "styled-components";
+import { URLS } from "shared/lib/constants/constants";
 
 import Logo from "./Logo";
 import colors from "shared/lib/designSystem/colors";
@@ -213,9 +214,9 @@ const Header = () => {
           <ItemWithDropdown
             variant="desktop"
             dropdownItems={[
-              { text: "FAQ", link: "https://docs.ribbon.finance/faq" },
-              { text: "Blog", link: "https://research.ribbon.finance" },
-              { text: "Docs", link: "https://docs.ribbon.finance" },
+              { text: "FAQ", link: URLS.docsFaq },
+              { text: "Blog", link: URLS.research },
+              { text: "Docs", link: URLS.docs },
               { text: "Terms", link: "/terms" },
               { text: "Policy", link: "/policy" },
             ]}
@@ -226,14 +227,14 @@ const Header = () => {
           <ItemWithDropdown
             variant="desktop"
             dropdownItems={[
-              { text: "Github", link: "https://github.com/ribbon-finance" },
-              { text: "Discord", link: "http://discord.ribbon.finance" },
-              { text: "Twitter", link: "https://twitter.com/ribbonfinance" },
+              { text: "Github", link: URLS.github },
+              { text: "Discord", link: URLS.discord },
+              { text: "Twitter", link: URLS.twitter },
               {
                 text: "Governance Portal",
-                link: "https://vote.ribbon.finance",
+                link: URLS.governance,
               },
-              { text: "Snapshot", link: "https://snapshot.org/#/rbn.eth" },
+              { text: "Snapshot", link: URLS.snapshot },
               { text: "Media Kit", link: "/ribbon_media_kit.zip" },
             ]}
           >
@@ -245,29 +246,23 @@ const Header = () => {
             dropdownItems={[
               {
                 text: "Token Terminal",
-                link: "https://www.tokenterminal.com/terminal/projects/ribbon-finance",
+                link: URLS.tokenterminal,
               },
               {
                 text: "Defi Llama",
-                link: "https://defillama.com/protocol/ribbon-finance",
+                link: URLS.defillama,
               },
             ]}
           >
             Data
           </ItemWithDropdown>
 
-          {renderLinkItem(
-            "TREASURY",
-            "https://treasury.ribbon.finance/",
-            false,
-            true,
-            true
-          )}
+          {renderLinkItem("TREASURY", URLS.treasury, false, true, true)}
         </LinksContainer>
       </HeaderAbsoluteContainer>
 
       <ButtonContainer>
-        <a href="https://app.ribbon.finance">
+        <a href={URLS.app}>
           <AppButton>
             <ButtonText>START EARNING</ButtonText>
           </AppButton>
@@ -288,49 +283,13 @@ const Header = () => {
           }}
           style={{ paddingTop: 40 }}
         >
-          {renderLinkItem("START EARNING", "https://app.ribbon.finance", true)}
-          {renderLinkItem(
-            "FAQ",
-            "https://docs.ribbon.finance/faq",
-            false,
-            false,
-            true
-          )}
-          {renderLinkItem(
-            "BLOG",
-            "https://medium.com/@ribbonfinance",
-            false,
-            false,
-            true
-          )}
-          {renderLinkItem(
-            "SNAPSHOT",
-            "https://snapshot.org/#/rbn.eth",
-            false,
-            false,
-            true
-          )}
-          {renderLinkItem(
-            "DISCORD",
-            "http://tiny.cc/ribbon-discord",
-            false,
-            false,
-            true
-          )}
-          {renderLinkItem(
-            "TWITTER",
-            "https://twitter.com/ribbonfinance",
-            false,
-            false,
-            true
-          )}
-          {renderLinkItem(
-            "GITHUB",
-            "https://github.com/ribbon-finance",
-            false,
-            false,
-            true
-          )}
+          {renderLinkItem("START EARNING", URLS.app, true)}
+          {renderLinkItem("FAQ", URLS.docsFaq, false, false, true)}
+          {renderLinkItem("BLOG", URLS.medium, false, false, true)}
+          {renderLinkItem("SNAPSHOT", URLS.snapshot, false, false, true)}
+          {renderLinkItem("DISCORD", URLS.discord, false, false, true)}
+          {renderLinkItem("TWITTER", URLS.twitter, false, false, true)}
+          {renderLinkItem("GITHUB", URLS.github, false, false, true)}
           {renderLinkItem("POLICY", "/policy", false, false, true)}
           {renderLinkItem("TERMS", "/terms", false, false, true)}
         </MobileOverlayMenu>

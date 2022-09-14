@@ -1,6 +1,7 @@
 import React from "react";
 import styled from "styled-components";
 import colors from "shared/lib/designSystem/colors";
+import { URLS } from "shared/lib/constants/constants";
 import { SecondaryText, Title } from "shared/lib/designSystem/index";
 import Marquee from "react-fast-marquee/dist";
 import sizes from "../../designSystem/sizes";
@@ -114,7 +115,7 @@ const Footer: React.FC = () => {
         </Marquee>
       </FooterContainer>
       <ButtonContainer>
-        <a href="https://app.ribbon.finance">
+        <a href={URLS.app}>
           <ButtonText>OPEN APP</ButtonText>
         </a>
       </ButtonContainer>

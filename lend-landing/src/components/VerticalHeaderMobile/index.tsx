@@ -5,6 +5,7 @@ import colors from "shared/lib/designSystem/colors";
 import { Title } from "shared/lib/designSystem";
 import MobileOverlayMenu from "shared/lib/components/Common/MobileOverlayMenu";
 import LendModal from "shared/lib/components/Common/LendModal";
+import { URLS } from "shared/lib/constants/constants";
 import ExternalLinkIcon from "../Common/ExternalLinkIcon";
 import Logo from "./Logo";
 import sizes from "../../designSystem/sizes";
@@ -176,7 +177,7 @@ const MobileHeader: React.FC = () => {
             <Footer>
               Ribbon Lend is a product built by&nbsp;
               <a
-                href="https://ribbon.finance"
+                href={URLS.ribbonFinance}
                 target="_blank"
                 rel="noreferrer noopener"
               >

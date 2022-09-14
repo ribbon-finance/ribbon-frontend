@@ -1,6 +1,7 @@
 import React, { FC } from "react";
 import { Col, Row } from "react-bootstrap";
 import styled from "styled-components";
+import { URLS } from "shared/lib/constants/constants";
 
 import { BaseLink, Title } from "../../designSystem";
 import colors from "shared/lib/designSystem/colors";
@@ -61,17 +62,17 @@ const links = {
   about: [
     {
       title: "FAQ",
-      to: "https://docs.ribbon.finance/faq",
+      to: URLS.docsFaq,
       external: true,
     },
     {
       title: "BLOG",
-      to: "https://medium.com/@ribbonfinance",
+      to: URLS.medium,
       external: true,
     },
     {
       title: "DOCS",
-      to: "https://docs.ribbon.finance",
+      to: URLS.docs,
     },
     {
       title: "TERMS",
@@ -85,27 +86,27 @@ const links = {
   community: [
     {
       title: "GITHUB",
-      to: "https://github.com/ribbon-finance",
+      to: URLS.github,
       external: true,
     },
     {
       title: "DISCORD",
-      to: "https://discord.com/invite/ribbon-finance",
+      to: URLS.discord,
       external: true,
     },
     {
       title: "TWITTER",
-      to: "https://twitter.com/ribbonfinance",
+      to: URLS.twitter,
       external: true,
     },
     {
       title: "GOVERNANCE PORTAL",
-      to: "https://vote.ribbon.finance",
+      to: URLS.governance,
       external: true,
     },
     {
       title: "SNAPSHOT",
-      to: "https://snapshot.org/#/rbn.eth",
+      to: URLS.snapshot,
       external: true,
     },
     {
@@ -118,12 +119,12 @@ const links = {
   data: [
     {
       title: "TOKEN TERMINAL",
-      to: "https://www.tokenterminal.com/terminal/projects/ribbon-finance",
+      to: URLS.tokenterminal,
       external: true,
     },
     {
       title: "DEFI LLAMA",
-      to: "https://defillama.com/protocol/ribbon-finance",
+      to: URLS.defillama,
       external: true,
     },
   ] as Array<Link>,

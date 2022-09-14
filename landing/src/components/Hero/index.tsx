@@ -5,6 +5,7 @@ import { Title, PrimaryText, Button } from "../../designSystem";
 import { Container } from "react-bootstrap";
 import { AnimatePresence, motion } from "framer";
 import Marquee from "react-fast-marquee/dist";
+import { URLS } from "shared/lib/constants/constants";
 import useScreenSize from "shared/lib/hooks/useScreenSize";
 import { useAssetsPrice } from "shared/lib/hooks/useAssetPrice";
 import sizes from "../../designSystem/sizes";
@@ -207,11 +208,7 @@ const Hero = () => {
             </SubTitle>
           </SubtitleContainer>
           <ButtonContainer>
-            <a
-              href="https://app.ribbon.finance"
-              target="_blank"
-              rel="noreferrer noopener"
-            >
+            <a href={URLS.app} target="_blank" rel="noreferrer noopener">
               <CTAButton>START EARNING</CTAButton>
             </a>
           </ButtonContainer>
