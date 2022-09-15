@@ -16,9 +16,7 @@ import wintermute from "../assets/icons/makers/wintermute.svg";
 import orthogonal from "../assets/icons/makers/orthogonal.svg";
 import folkvang from "../assets/icons/makers/folkvang.svg";
 import { getAssetLogo } from "shared/lib/utils/asset";
-import { motion } from "framer-motion";
 import { fadeIn } from "shared/lib/designSystem/keyframes";
-import ButtonArrow from "./Common/ButtonArrow";
 
 const HeroContainer = styled.div`
   display: flex;
@@ -233,7 +231,6 @@ const PoolStats = styled.div`
 const StyledTitle = styled(Title)`
   font-size: 14px;
   line-height: 36px;
-  // width: fit-content;
 
   svg {
     width: fit-content;

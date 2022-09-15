@@ -7,6 +7,7 @@ const DisclaimerText = styled.div`
   font-size: 12px;
   color: ${colors.primaryText}52;
   text-align: center;
+  margin: auto;
 
   > * {
     margin: auto 0;
