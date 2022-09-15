@@ -120,6 +120,10 @@ const PoolLogo = styled.div`
   border-right: 1px solid ${colors.border};
   display: inline-flex;
 
+  > * {
+    overflow: hidden;
+  }
+
   img {
     margin: auto;
   }
@@ -129,6 +133,10 @@ const PoolButton = styled(BaseButton)`
   opacity: 0;
   width: 0;
   padding: 0;
+
+  > * {
+    overflow: hidden;
+  }
 
   i {
     text-align: center;
