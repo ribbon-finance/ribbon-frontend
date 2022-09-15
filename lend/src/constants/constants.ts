@@ -260,4 +260,5 @@ export const COINGECKO_BASE_URL = "https://api.coingecko.com/api/v3";
 export const COINGECKO_CURRENCIES: { [key in Assets]: string | undefined } = {
   WETH: "ethereum",
   USDC: "usd-coin",
+  RBN: "ribbon-finance",
 };
