@@ -109,11 +109,6 @@ const DisclaimerWrapper = styled.div`
 
 const ListRow = styled(Row)`
   display: block;
-  height: calc(100% - ${components.header}px - ${components.footer}px);
-
-  @media (max-width: ${sizes.lg}px) {
-    height: 100%;
-  }
 
   padding: 0;
 `;
@@ -174,11 +169,23 @@ const StyledTitle = styled(Title)`
   }
 `;
 
-const StyledSubtitle = styled(Subtitle)<{ color: string }>`
+const StyledSubtitle = styled(Subtitle)<{ color?: string }>`
   font-size: 12px;
   line-height: 16px;
   text-transform: uppercase;
   color: ${({ color }) => color ?? colors.tertiaryText};
+`;
+
+const Content = styled(Row)`
+  height: calc(100% - ${components.header}px - ${components.footer}px);
+
+  @media (max-width: ${sizes.lg}px) {
+    height: 100%;
+  }
+
+  > *:not(:last-child) {
+    border-right: 1px solid ${colors.border};
+  }
 `;
 
 enum PageEnum {
@@ -192,7 +199,12 @@ const MainPage: React.FC = () => {
   return (
     <HeroContainer>
       <Header />
-      <Pools />
+      <Content>
+        <Col xs={6}></Col>
+        <Col xs={6}>
+          <Pools />
+        </Col>
+      </Content>
       <Footer activePage={activePage} setPage={setPage} />
     </HeroContainer>
   );
