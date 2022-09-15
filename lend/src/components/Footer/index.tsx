@@ -6,6 +6,7 @@ import { SecondaryText, Title } from "shared/lib/designSystem/index";
 import Marquee from "react-fast-marquee/dist";
 import sizes from "../../designSystem/sizes";
 import theme from "../../designSystem/theme";
+import ExternalLinkIcon from "../Common/ExternalLinkIcon";
 const FooterContainer = styled.div`
   display: flex;
   width: 100%;
@@ -52,10 +53,11 @@ const OpenAppButton = styled.div`
   justify-content: center;
   align-items: center;
   text-align: center;
-  &:hover {
-    cursor: pointer;
-    opacity: ${theme.hover.opacity};
-  }
+  // uncomment on launch
+  // &:hover {
+  //   cursor: pointer;
+  //   opacity: ${theme.hover.opacity};
+  // }
 `;
 
 const StyledTitle = styled(Title)<{
@@ -96,6 +98,27 @@ const FooterTextContainer = styled.div`
   overflow: hidden;
 `;
 
+const FooterText = styled.div`
+  font-size: 12px;
+  color: ${colors.primaryText}52;
+  flex: 1;
+  text-align: center;
+  svg {
+    transition: all 0.2s ease-in-out;
+    margin-left: 4px;
+    opacity: 0.32;
+  }
+  > a {
+    color: ${colors.primaryText}52;
+    text-decoration: underline;
+    &:hover {
+      svg {
+        transform: translate(2px, -2px);
+      }
+    }
+  }
+`;
+
 interface Stat {
   title: string | JSX.Element;
   value: string | JSX.Element;
@@ -123,7 +146,8 @@ const Footer: React.FC = () => {
   return (
     <>
       <FooterContainer>
-        <Marquee gradient={false} speed={100} delay={0} pauseOnHover>
+        {/* uncomment when tvl high */}
+        {/* <Marquee gradient={false} speed={100} delay={0} pauseOnHover>
           {footerStats.map((stat) => (
             <FooterTextContainer>
               <StyledSecondaryText color={colors.tertiaryText}>
@@ -134,14 +158,26 @@ const Footer: React.FC = () => {
               </StyledTitle>
             </FooterTextContainer>
           ))}
-        </Marquee>
+        </Marquee> */}
+        <FooterText>
+          Ribbon Lend is a product build by&nbsp;
+          <a
+            href={URLS.ribbonFinance}
+            target="_blank"
+            rel="noreferrer noopener"
+          >
+            Ribbon Finance
+            <ExternalLinkIcon />
+          </a>
+        </FooterText>
       </FooterContainer>
       <ButtonContainer>
-        <a href={URLS.lendApp}>
-          <OpenAppButton>
-            <ButtonText>OPEN APP</ButtonText>
-          </OpenAppButton>
-        </a>
+        {/* uncomment on launch */}
+        {/* <a href={URLS.lendApp}> */}
+        <OpenAppButton>
+          <ButtonText>OPEN APP</ButtonText>
+        </OpenAppButton>
+        {/* </a> */}
       </ButtonContainer>
     </>
   );

@@ -1,18 +1,17 @@
 import React from "react";
 import styled from "styled-components";
-import HorizontalHeader from "../StepsHeader";
+import StepsHeader from "../StepsHeader";
 import Footer from "../Footer";
 import HeroContent from "../HeroContent";
+import MobileHeader from "../MobileHeader";
 import sizes from "../../designSystem/sizes";
-import MobileHeader from "../HorizontalHeaderMobile";
 
 const HeroContainer = styled.div`
   display: flex;
   width: calc(100% - 64px);
+  height: 100%;
   flex-direction: column;
   justify-content: space-between;
-  height: 100%;
-
   @media (max-width: ${sizes.lg}px) {
     width: 100%;
   }
@@ -22,7 +21,7 @@ const Hero: React.FC = () => {
   return (
     <HeroContainer>
       <MobileHeader />
-      <HorizontalHeader />
+      <StepsHeader />
       <HeroContent />
       <Footer />
     </HeroContainer>
