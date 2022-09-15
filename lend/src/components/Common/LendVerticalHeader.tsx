@@ -11,10 +11,11 @@ import {
   ModalContentMode,
 } from "../../components/Common/ModalContent";
 import theme from "../../designSystem/theme";
+import { components } from "../../designSystem/components";
 
 const VerticalHeaderContainer = styled.div`
   display: flex;
-  width: 64px;
+  width: ${components.sidebar}px;
   height: 100vh;
   flex-direction: column;
   justify-content: space-between;
@@ -24,6 +25,8 @@ const VerticalHeaderContainer = styled.div`
   @media (max-width: ${sizes.lg}px) {
     display: none;
   }
+  z-index: 100;
+  background-color: ${colors.background.one};
 `;
 
 const LogoContainer = styled.div`

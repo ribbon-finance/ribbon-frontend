@@ -167,11 +167,11 @@ const StepsHeader: React.FC = () => {
       </StepsHeaderTextContainer>
       <ButtonContainer>
         {/* uncomment on launch */}
-        {/* <a href={URLS.lendApp}> */}
-        <OpenAppButton>
-          <ButtonText>OPEN APP</ButtonText>
-        </OpenAppButton>
-        {/* </a> */}
+        <a href={"/app"}>
+          <OpenAppButton>
+            <ButtonText>OPEN APP</ButtonText>
+          </OpenAppButton>
+        </a>
       </ButtonContainer>
     </HeaderContainer>
   );

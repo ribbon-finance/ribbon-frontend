@@ -16,14 +16,6 @@ const Body = styled.div`
   height: 100vh;
 `;
 
-const HeroContainer = styled.div`
-  display: flex;
-  width: calc(100% - 64px);
-  height: 100%;
-  flex-direction: column;
-  justify-content: space-between;
-`;
-
 function App() {
   return (
     <Body>
