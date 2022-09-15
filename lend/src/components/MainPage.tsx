@@ -1,11 +1,11 @@
 import React, { useState } from "react";
 import { Col, Row } from "react-bootstrap";
 import colors from "shared/lib/designSystem/colors";
-import styled from "styled-components";
+import styled, { keyframes } from "styled-components";
 import { components } from "../designSystem/components";
 import { StatsMarquee } from "./StatsMarquee";
 import { truncateAddress } from "shared/lib/utils/address";
-import { Button, Subtitle, Title } from "../designSystem";
+import { BaseButton, Button, Subtitle, Title } from "../designSystem";
 import sizes from "../designSystem/sizes";
 import Indicator from "shared/lib/components/Indicator/Indicator";
 import { ProductDisclaimer } from "./ProductDisclaimer";
@@ -16,6 +16,9 @@ import wintermute from "../assets/icons/makers/wintermute.svg";
 import orthogonal from "../assets/icons/makers/orthogonal.svg";
 import folkvang from "../assets/icons/makers/folkvang.svg";
 import { getAssetLogo } from "shared/lib/utils/asset";
+import { motion } from "framer-motion";
+import { fadeIn } from "shared/lib/designSystem/keyframes";
+import ButtonArrow from "./Common/ButtonArrow";
 
 const HeroContainer = styled.div`
   display: flex;
@@ -113,13 +116,6 @@ const ListRow = styled(Row)`
   padding: 0;
 `;
 
-const PoolWrapper = styled.div`
-  height: 120px;
-  width: 100%;
-  border-bottom: 1px solid ${colors.border};
-  display: flex;
-`;
-
 const PoolLogo = styled.div`
   width: 120px;
   height: 120px;
@@ -128,6 +124,84 @@ const PoolLogo = styled.div`
 
   img {
     margin: auto;
+  }
+`;
+
+const PoolButton = styled(BaseButton)`
+  opacity: 0;
+  width: 0;
+  padding: 0;
+
+  i {
+    text-align: center;
+    margin: auto;
+    width: 24px;
+    height: 24px;
+    color: white;
+  }
+`;
+
+const slide = keyframes`
+  0% {
+    opacity: 1;
+    width: 120px;
+  } 
+
+  50% {
+    opacity: 0;
+  }
+
+  100% {
+    width: 0;
+    opacity: 0;
+  }
+`;
+
+const reverseSlide = keyframes`
+  0% {
+    width: 0;
+  } 
+
+  100% {
+    width: 120px;
+    opacity: 1;
+  }
+`;
+
+const PoolWrapper = styled.div`
+  height: 120px;
+  width: 100%;
+  border-bottom: 1px solid ${colors.border};
+  display: flex;
+
+  &:hover {
+    ${PoolLogo} {
+      animation-delay: 2s;
+      animation: 0.5s ${slide} forwards;
+    }
+
+    ${PoolButton} {
+      animation: 0.5s ${reverseSlide} forwards;
+      cursor: pointer;
+      width: 120px;
+      height: 120px;
+    }
+  }
+
+  &:not(:hover) {
+    ${PoolLogo} {
+      animation: 0.5s ${reverseSlide} forwards;
+
+      > img {
+        animation-delay: 1s;
+        animation: 0.5s ${fadeIn};
+      }
+    }
+
+    ${PoolButton} {
+      transition: 0.5s ease-in-out;
+      animation: 0.5s ${slide};
+    }
   }
 `;
 
@@ -289,6 +363,9 @@ const Pools = () => {
                 </StyledSubtitle>
               </Stat>
             </PoolStats>
+            <PoolButton>
+              <i className="fas fa-chevron-right" />
+            </PoolButton>
           </PoolWrapper>
         );
       })}
