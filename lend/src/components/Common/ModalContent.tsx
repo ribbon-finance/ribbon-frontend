@@ -4,9 +4,9 @@ import colors from "shared/lib/designSystem/colors";
 import { URLS } from "shared/lib/constants/constants";
 import styled, { css } from "styled-components";
 import ExternalLinkIcon from "./ExternalLinkIcon";
-import twitter from "../../assets/icons/twitter.svg";
-import discord from "../../assets/icons/discord.svg";
-import github from "../../assets/icons/github.png";
+import twitter from "../../assets/icons/socials/twitter.svg";
+import discord from "../../assets/icons/socials/discord.svg";
+import github from "../../assets/icons/socials/github.png";
 
 const AboutContent = styled.div`
   color: ${colors.primaryText}A3;

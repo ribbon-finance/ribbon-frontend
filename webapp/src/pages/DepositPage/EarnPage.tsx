@@ -32,8 +32,6 @@ import {
   EarnMiddleRing,
   EarnOuterRing,
 } from "shared/lib/assets/icons/icons";
-
-import { useAirtable } from "shared/lib/hooks/useAirtable";
 import ActionModal from "../../components/Vault/VaultActionsForm/EarnModal/ActionModal";
 import { usePendingTransactions } from "shared/lib/hooks/pendingTransactionsContext";
 import useEarnStrategyTime from "../../hooks/useEarnStrategyTime";

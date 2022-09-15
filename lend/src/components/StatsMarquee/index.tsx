@@ -72,8 +72,8 @@ export const StatsMarquee = () => {
 
   return (
     <StyledMarquee gradient={false} speed={100} delay={0} pauseOnHover>
-      {stats.map((stat) => (
-        <TextContainer>
+      {stats.map((stat, i) => (
+        <TextContainer key={i}>
           <StyledSecondaryText color={colors.tertiaryText}>
             {stat.title}:
           </StyledSecondaryText>
