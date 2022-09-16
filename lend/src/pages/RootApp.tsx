@@ -1,9 +1,9 @@
 import styled from "styled-components";
 import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
-import LendVerticalHeader from "./Common/LendVerticalHeader";
-import Hero from "./Hero";
+import LendVerticalHeader from "../components/Common/LendVerticalHeader";
+import Hero from "./HeroPage";
 import MainPage from "./MainPage";
-import NotFound from "../pages/NotFound";
+import NotFound from "./NotFound";
 import useEagerConnect from "shared/lib/hooks/useEagerConnect";
 import colors from "shared/lib/designSystem/colors";
 

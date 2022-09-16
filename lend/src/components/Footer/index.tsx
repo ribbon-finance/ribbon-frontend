@@ -60,27 +60,6 @@ const OpenAppButton = styled.div`
   // }
 `;
 
-const DisclaimerText = styled.div`
-  font-size: 12px;
-  color: ${colors.primaryText}52;
-  flex: 1;
-  text-align: center;
-  svg {
-    transition: all 0.2s ease-in-out;
-    margin-left: 4px;
-    opacity: 0.32;
-  }
-  > a {
-    color: ${colors.primaryText}52;
-    text-decoration: underline;
-    &:hover {
-      svg {
-        transform: translate(2px, -2px);
-      }
-    }
-  }
-`;
-
 const Footer: React.FC = () => {
   return (
     <>
