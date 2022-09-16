@@ -54,6 +54,10 @@ export const getAssetDecimals = (asset: Assets): number => {
   }
 };
 
+export const getUtilizationDecimals = (): number => {
+  return 16;
+};
+
 export const getDefaultSignificantDecimalsFromAssetDecimals = (
   decimals: number
 ) => {

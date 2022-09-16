@@ -119,9 +119,9 @@ const useFetchVaultData = (): VaultData => {
                 {
                   ...prev.responses[vault],
                   ...response,
+                  utilizationRate: utilizationRate,
                   vaultMaxWithdrawAmount:
                     totalSupply &&
-                    utilizationRate &&
                     vaultMaxWithdrawableShares &&
                     response.deposits &&
                     !totalSupply.isZero()

@@ -9,15 +9,14 @@ import { BaseButton, Button, Subtitle, Title } from "../designSystem";
 import sizes from "../designSystem/sizes";
 import Indicator from "shared/lib/components/Indicator/Indicator";
 import { ProductDisclaimer } from "./ProductDisclaimer";
-import { Assets } from "shared/lib/store/types";
-import alameda from "../assets/icons/makers/alameda.svg";
-import jump from "../assets/icons/makers/jump.svg";
-import wintermute from "../assets/icons/makers/wintermute.svg";
-import orthogonal from "../assets/icons/makers/orthogonal.svg";
-import folkvang from "../assets/icons/makers/folkvang.svg";
+import { getMakerLogo } from "../constants/constants";
 import { getAssetLogo } from "shared/lib/utils/asset";
+import { getAssets } from "../constants/constants";
 import { fadeIn } from "shared/lib/designSystem/keyframes";
-
+import { VaultList } from "../constants/constants";
+import { useVaultsData } from "../hooks/web3DataContext";
+import { formatBigNumber } from "../utils/math";
+import { getAssetDecimals, getUtilizationDecimals } from "../utils/asset";
 const HeroContainer = styled.div`
   display: flex;
   height: 100%;
@@ -289,83 +288,37 @@ const MainPage: React.FC = () => {
   );
 };
 
-interface Pool {
-  logo: string;
-  name: string;
-  asset: Assets;
-  apr: number;
-  deposits: number;
-  capacity: number;
-}
-
 const Pools = () => {
-  const poolList: Pool[] = [
-    {
-      logo: alameda,
-      name: "Alameda Research",
-      asset: "USDC",
-      apr: 12.43,
-      deposits: 100,
-      capacity: 1000,
-    },
-    {
-      logo: jump,
-      name: "Jump Trading",
-      asset: "USDC",
-      apr: 12.43,
-      deposits: 100,
-      capacity: 1000,
-    },
-    {
-      logo: wintermute,
-      name: "Wintermute",
-      asset: "USDC",
-      apr: 12.43,
-      deposits: 100,
-      capacity: 1000,
-    },
-    {
-      logo: orthogonal,
-      name: "Orthogonal",
-      asset: "USDC",
-      apr: 12.43,
-      deposits: 100,
-      capacity: 1000,
-    },
-    {
-      logo: folkvang,
-      name: "Folkvang",
-      asset: "USDC",
-      apr: 12.43,
-      deposits: 100,
-      capacity: 1000,
-    },
-  ];
-
+  const vaultDatas = useVaultsData();
+  const utilizationDecimals = getUtilizationDecimals();
   return (
     <ListRow>
-      {poolList.map((pool, i) => {
-        const Logo = getAssetLogo(pool.asset);
+      {VaultList.map((pool, i) => {
+        const deposits = vaultDatas.data[pool].deposits;
+        const utilizationRate = vaultDatas.data[pool].utilizationRate;
+        const poolLogo = getMakerLogo(pool);
+        const asset = getAssets(pool);
+        const decimals = getAssetDecimals(asset);
+        const Logo = getAssetLogo(asset);
         return (
           <PoolWrapper key={i}>
             <PoolLogo>
-              <img src={pool.logo} alt={pool.name} />
+              <img src={poolLogo} alt={pool} />
             </PoolLogo>
             <PoolStats>
               <Stat>
-                <StyledTitle>{pool.name}</StyledTitle>
+                <StyledTitle>{pool}</StyledTitle>
                 <StyledSubtitle>
-                  Utilization {(pool.deposits / pool.capacity) * 100}%
+                  Utilization{" "}
+                  {formatBigNumber(utilizationRate, utilizationDecimals)}%
                 </StyledSubtitle>
               </Stat>
               <Stat>
                 <StyledTitle>
                   <Logo height={24} />
-                  <span>{pool.deposits}</span>
+                  <span>{formatBigNumber(deposits, decimals)}</span>
                 </StyledTitle>
-                <StyledSubtitle color={colors.green}>
-                  {pool.apr}%
-                </StyledSubtitle>
+                <StyledSubtitle color={colors.green}>12.55%</StyledSubtitle>
               </Stat>
             </PoolStats>
             <PoolButton>
