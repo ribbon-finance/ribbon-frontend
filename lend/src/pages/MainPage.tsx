@@ -18,6 +18,7 @@ import { useVaultsData } from "../hooks/web3DataContext";
 import { formatBigNumber } from "../utils/math";
 import { getAssetDecimals, getUtilizationDecimals } from "../utils/asset";
 import { motion } from "framer-motion";
+import { Balance } from "../components/Balance";
 
 const statSideContainer: number = 120;
 
@@ -282,7 +283,9 @@ const MainPage: React.FC = () => {
     <HeroContainer>
       <Header />
       <Content>
-        <Col xs={6}></Col>
+        <Col xs={6}>
+          <Balance />
+        </Col>
         <Col xs={6}>
           <Pools />
         </Col>
