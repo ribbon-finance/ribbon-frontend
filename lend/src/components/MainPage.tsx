@@ -17,6 +17,10 @@ import { VaultList } from "../constants/constants";
 import { useVaultsData } from "../hooks/web3DataContext";
 import { formatBigNumber } from "../utils/math";
 import { getAssetDecimals, getUtilizationDecimals } from "../utils/asset";
+import { motion } from "framer-motion";
+
+const statSideContainer: number = 120;
+
 const HeroContainer = styled.div`
   display: flex;
   height: 100%;
@@ -114,8 +118,8 @@ const ListRow = styled(Row)`
 `;
 
 const PoolLogo = styled.div`
-  width: 120px;
-  height: 120px;
+  width: ${statSideContainer}px;
+  height: ${statSideContainer}px;
   border-right: 1px solid ${colors.border};
   display: inline-flex;
 
@@ -149,7 +153,7 @@ const PoolButton = styled(BaseButton)`
 const slide = keyframes`
   0% {
     opacity: 1;
-    width: 120px;
+    width: ${statSideContainer}px;
   } 
 
   50% {
@@ -168,28 +172,29 @@ const reverseSlide = keyframes`
   } 
 
   100% {
-    width: 120px;
+    width: ${statSideContainer}px;
     opacity: 1;
   }
 `;
 
 const PoolWrapper = styled.div`
-  height: 120px;
+  height: ${statSideContainer}px;
   width: 100%;
   border-bottom: 1px solid ${colors.border};
   display: flex;
 
   &:hover {
+    transition: 0.25s;
+    background: ${colors.background.two};
+
     ${PoolLogo} {
-      animation-delay: 2s;
       animation: 0.5s ${slide} forwards;
     }
 
     ${PoolButton} {
       animation: 0.5s ${reverseSlide} forwards;
-      cursor: pointer;
-      width: 120px;
-      height: 120px;
+      width: ${statSideContainer}px;
+      height: ${statSideContainer}px;
     }
   }
 
@@ -198,7 +203,6 @@ const PoolWrapper = styled.div`
       animation: 0.5s ${reverseSlide} forwards;
 
       > img {
-        animation-delay: 1s;
         animation: 0.5s ${fadeIn};
       }
     }
@@ -220,11 +224,11 @@ const Stat = styled.div`
 `;
 
 const PoolStats = styled.div`
-  height: 120px;
-  border-right: 1px solid ${colors.border};
+  height: ${statSideContainer}px;
+  cursor: pointer;
   display: flex;
   justify-content: space-between;
-  width: calc(100% - 120px);
+  width: calc(100% - ${statSideContainer}px);
   padding: 16px 32px;
 
   > ${Stat}:last-of-type {
@@ -301,30 +305,52 @@ const Pools = () => {
         const decimals = getAssetDecimals(asset);
         const Logo = getAssetLogo(asset);
         return (
-          <PoolWrapper key={i}>
-            <PoolLogo>
-              <img src={poolLogo} alt={pool} />
-            </PoolLogo>
-            <PoolStats>
-              <Stat>
-                <StyledTitle>{pool}</StyledTitle>
-                <StyledSubtitle>
-                  Utilization{" "}
-                  {formatBigNumber(utilizationRate, utilizationDecimals)}%
-                </StyledSubtitle>
-              </Stat>
-              <Stat>
-                <StyledTitle>
-                  <Logo height={24} />
-                  <span>{formatBigNumber(deposits, decimals)}</span>
-                </StyledTitle>
-                <StyledSubtitle color={colors.green}>12.55%</StyledSubtitle>
-              </Stat>
-            </PoolStats>
-            <PoolButton>
-              <i className="fas fa-chevron-right" />
-            </PoolButton>
-          </PoolWrapper>
+          <motion.div
+            key={i}
+            transition={{
+              duration: 0.5,
+              delay: (i + 1) / 10,
+              type: "keyframes",
+              ease: "easeInOut",
+            }}
+            initial={{
+              y: 50,
+              opacity: 0,
+            }}
+            animate={{
+              y: 0,
+              opacity: 1,
+            }}
+            exit={{
+              y: 50,
+              opacity: 0,
+            }}
+          >
+            <PoolWrapper key={i}>
+              <PoolLogo>
+                <img src={poolLogo} alt={pool} />
+              </PoolLogo>
+              <PoolStats>
+                <Stat>
+                  <StyledTitle>{pool}</StyledTitle>
+                  <StyledSubtitle>
+                    Utilization{" "}
+                    {formatBigNumber(utilizationRate, utilizationDecimals)}%
+                  </StyledSubtitle>
+                </Stat>
+                <Stat>
+                  <StyledTitle>
+                    <Logo height={24} />
+                    <span>{formatBigNumber(deposits, decimals)}</span>
+                  </StyledTitle>
+                  <StyledSubtitle color={colors.green}>12.55%</StyledSubtitle>
+                </Stat>
+              </PoolStats>
+              <PoolButton>
+                <i className="fas fa-chevron-right" />
+              </PoolButton>
+            </PoolWrapper>
+          </motion.div>
         );
       })}
     </ListRow>
