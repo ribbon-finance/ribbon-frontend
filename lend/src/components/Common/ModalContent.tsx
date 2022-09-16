@@ -7,6 +7,7 @@ import ExternalLinkIcon from "./ExternalLinkIcon";
 import twitter from "../../assets/icons/socials/twitter.svg";
 import discord from "../../assets/icons/socials/discord.svg";
 import github from "../../assets/icons/socials/github.png";
+import { ProductDisclaimer } from "../ProductDisclaimer";
 
 const AboutContent = styled.div`
   color: ${colors.primaryText}A3;
@@ -15,18 +16,21 @@ const AboutContent = styled.div`
 
 const CommunityContent = styled.div`
   > div:not(:last-child) {
+    border: 1px solid transparent;
     border-bottom: 1px solid ${colors.primaryText}1F;
   }
 `;
 
-const CommunityContentRow = styled.div.attrs({
-  className: "d-flex align-items-center",
-})`
+const CommunityContentRow = styled.div<{ color: string }>`
+  display: flex;
+  align-items: center;
   height: 80px;
   padding: 0 24px;
   font-size: 14px;
-  ${(props) => {
-    if (props.onClick) {
+  transition: 0.2s ease-in-out;
+
+  ${({ onClick }) => {
+    if (onClick) {
       return css`
         &:hover {
           cursor: pointer;
@@ -38,17 +42,38 @@ const CommunityContentRow = styled.div.attrs({
     }
     return "";
   }}
+
+  ${({ color }) => {
+    return css`
+      &:hover {
+        transition: 0.2s ease-in-out;
+        border: 1px solid ${color} !important;
+        box-shadow: inset 0 0 5px ${color};
+        background: ${color}10;
+      }
+    `;
+  }}
+
   > img {
     width: 32px;
     height: 32px;
     margin-right: 20px;
   }
+
   > svg {
     transition: all 0.2s ease-in-out;
     margin-left: 8px;
     width: 20px;
     height: 20px;
   }
+`;
+
+const CommunityContentFooter = styled.div`
+  display: flex;
+  align-items: center;
+  height: 80px;
+  padding: 0;
+  font-size: 14px;
 `;
 
 const Footer = styled.div`
@@ -96,38 +121,33 @@ export const ModalContent = ({ modalContentMode }: ModalContentProps) => {
     if (modalContentMode === "community") {
       return (
         <CommunityContent>
-          <CommunityContentRow onClick={() => window.open(URLS.twitter)}>
+          <CommunityContentRow
+            onClick={() => window.open(URLS.twitter)}
+            color={"#1D9BF0"}
+          >
             <img src={twitter} alt="Twitter" />
             <Title>Twitter</Title>
             <ExternalLinkIcon />
           </CommunityContentRow>
-          <CommunityContentRow onClick={() => window.open(URLS.discord)}>
+          <CommunityContentRow
+            onClick={() => window.open(URLS.discord)}
+            color={"#5865F2"}
+          >
             <img src={discord} alt="Discord" />
             <Title>Discord</Title>
             <ExternalLinkIcon />
           </CommunityContentRow>
-          <CommunityContentRow onClick={() => window.open(URLS.github)}>
+          <CommunityContentRow
+            onClick={() => window.open(URLS.github)}
+            color={"#FFFFFF"}
+          >
             <img src={github} alt="Github" />
             <Title>Github</Title>
             <ExternalLinkIcon />
           </CommunityContentRow>
-          <CommunityContentRow
-            style={{
-              padding: 0,
-            }}
-          >
-            <Footer>
-              Ribbon Lend is a product build by&nbsp;
-              <a
-                href={URLS.ribbonFinance}
-                target="_blank"
-                rel="noreferrer noopener"
-              >
-                Ribbon Finance
-                <ExternalLinkIcon />
-              </a>
-            </Footer>
-          </CommunityContentRow>
+          <CommunityContentFooter>
+            <ProductDisclaimer />
+          </CommunityContentFooter>
         </CommunityContent>
       );
     }
