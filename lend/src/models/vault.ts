@@ -134,11 +134,16 @@ export interface UnconnectedVaultData {
   utilizationRate: BigNumber;
   vaultLimit: BigNumber;
   vaultMaxWithdrawAmount: BigNumber;
+  supplyRate: BigNumber;
+  rewardPerSecond: BigNumber;
 }
 
 export interface UserSpecificData {
   vaultBalanceInAsset: BigNumber;
   maxWithdrawAmount: BigNumber;
+  accumulativeReward: BigNumber;
+  withdrawableReward: BigNumber;
+  withdrawnReward: BigNumber;
 }
 export type VaultDataResponse = UnconnectedVaultData & UserSpecificData;
 

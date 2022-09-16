@@ -66,6 +66,8 @@ const useFetchVaultData = (): VaultData => {
           contract.getUtilizationRate(),
           contract.availableToWithdraw(),
           contract.totalSupply(),
+          contract.getSupplyRate(),
+          contract.rewardPerSecond(),
         ];
 
         /**
@@ -73,9 +75,19 @@ const useFetchVaultData = (): VaultData => {
          */
         const promises = unconnectedPromises.concat(
           active
-            ? [contract.balanceOf(account!)]
+            ? [
+                contract.balanceOf(account!),
+                contract.accumulativeRewardOf(account!),
+                contract.withdrawableRewardOf(account!),
+                contract.withdrawnRewardOf(account!),
+              ]
             : [
                 // Default value when not connected
+                Promise.resolve(BigNumber.from(0)),
+                Promise.resolve(BigNumber.from(0)),
+                Promise.resolve(BigNumber.from(0)),
+                Promise.resolve(BigNumber.from(0)),
+                Promise.resolve(BigNumber.from(0)),
                 Promise.resolve(BigNumber.from(0)),
               ]
         );
@@ -85,8 +97,12 @@ const useFetchVaultData = (): VaultData => {
           utilizationRate,
           vaultMaxWithdrawableShares,
           totalSupply,
+          supplyRate,
+          rewardPerSecond,
           vaultBalanceInAsset,
-          maxWithdrawAmount,
+          accumulativeReward,
+          withdrawableReward,
+          withdrawnReward,
         ] = await Promise.all(
           promises.map((p) => p.catch((e) => BigNumber.from(0)))
         );
@@ -97,8 +113,12 @@ const useFetchVaultData = (): VaultData => {
           utilizationRate,
           vaultMaxWithdrawableShares,
           totalSupply,
+          supplyRate,
+          rewardPerSecond,
           vaultBalanceInAsset,
-          maxWithdrawAmount,
+          accumulativeReward,
+          withdrawableReward,
+          withdrawnReward,
         };
       })
     );
@@ -113,6 +133,11 @@ const useFetchVaultData = (): VaultData => {
                 utilizationRate,
                 vaultMaxWithdrawableShares,
                 totalSupply,
+                supplyRate,
+                rewardPerSecond,
+                accumulativeReward,
+                withdrawableReward,
+                withdrawnReward,
                 ...response
               }) => [
                 vault,
@@ -120,6 +145,10 @@ const useFetchVaultData = (): VaultData => {
                   ...prev.responses[vault],
                   ...response,
                   utilizationRate: utilizationRate,
+                  supplyRate: supplyRate,
+                  rewardPerSecond: rewardPerSecond,
+                  withdrawableReward: withdrawableReward,
+                  withdrawnReward: withdrawnReward,
                   vaultMaxWithdrawAmount:
                     totalSupply &&
                     vaultMaxWithdrawableShares &&

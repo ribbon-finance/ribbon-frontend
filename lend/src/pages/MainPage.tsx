@@ -19,7 +19,7 @@ import { formatBigNumber } from "../utils/math";
 import { getAssetDecimals, getUtilizationDecimals } from "../utils/asset";
 import { motion } from "framer-motion";
 import { Balance } from "../components/Balance";
-
+import { usePoolsAPR } from "../hooks/usePoolsAPR";
 const statSideContainer: number = 120;
 
 const HeroContainer = styled.div`
@@ -298,6 +298,7 @@ const MainPage: React.FC = () => {
 const Pools = () => {
   const vaultDatas = useVaultsData();
   const utilizationDecimals = getUtilizationDecimals();
+  const aprs = usePoolsAPR();
   return (
     <ListRow>
       {VaultList.map((pool, i) => {
@@ -307,6 +308,7 @@ const Pools = () => {
         const asset = getAssets(pool);
         const decimals = getAssetDecimals(asset);
         const Logo = getAssetLogo(asset);
+        const apr = aprs[pool];
         return (
           <motion.div
             key={i}
@@ -346,7 +348,9 @@ const Pools = () => {
                     <Logo height={24} />
                     <span>{formatBigNumber(deposits, decimals)}</span>
                   </StyledTitle>
-                  <StyledSubtitle color={colors.green}>12.55%</StyledSubtitle>
+                  <StyledSubtitle color={colors.green}>
+                    {apr.toFixed(2)}%
+                  </StyledSubtitle>
                 </Stat>
               </PoolStats>
               <PoolButton>
