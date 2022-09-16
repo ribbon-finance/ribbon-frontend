@@ -2,7 +2,6 @@ import { useCallback, useEffect, useState } from "react";
 import axios from "axios";
 
 import {
-  Chains,
   getSubgraphURIForVersion,
   SUBGRAPHS_TO_QUERY,
   VaultVersion,

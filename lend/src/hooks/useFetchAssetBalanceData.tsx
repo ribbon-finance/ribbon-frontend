@@ -8,8 +8,6 @@ import { ERC20Token } from "shared/lib/models/eth";
 import { getERC20Token } from "shared/lib/hooks/useERC20Token";
 import { isProduction } from "../utils/env";
 import { usePendingTransactions } from "shared/lib/hooks/pendingTransactionsContext";
-import { useConnection, useWallet } from "@solana/wallet-adapter-react";
-import { PublicKey } from "@solana/web3.js";
 import useWeb3Wallet from "shared/lib/hooks/useWeb3Wallet";
 import { isEVMChain } from "../utils/chains";
 import { useChain } from "./chainContext";
@@ -52,8 +50,6 @@ const useFetchAssetBalanceData = (
   } = useWeb3Wallet();
   const account = impersonateAddress ? impersonateAddress : web3Account;
   const { transactionsCounter } = usePendingTransactions();
-  const { connection } = useConnection();
-  const { publicKey } = useWallet();
   const [chain] = useChain();
 
   const doMulticall = useCallback(async () => {

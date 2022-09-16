@@ -244,7 +244,7 @@ export const useAssetsPriceHistory = () => {
 };
 
 interface AssetInfo {
-  circulating_supply: number;
+  circulatingSupply: number;
 }
 
 export const useAssetInfo = (asset: Assets) => {
@@ -262,12 +262,12 @@ export const useAssetInfo = (asset: Assets) => {
       const response = await axios.get(apiURL);
       const { data } = response;
       setInfo({
-        circulating_supply: data.market_data.circulating_supply,
+        circulatingSupply: data.market_data.circulating_supply,
       });
     } catch (error) {
       !isProduction() && console.log("Asset info fetch error:", error); // eslint-disable-line
       setInfo({
-        circulating_supply: 0,
+        circulatingSupply: 0,
       });
     } finally {
       setLoading(false);
@@ -279,7 +279,7 @@ export const useAssetInfo = (asset: Assets) => {
   }, [fetchAssetInfo]);
 
   return {
-    info: info || { circulating_supply: 0 },
+    info: info || { circulatingSupply: 0 },
     loading,
   };
 };
