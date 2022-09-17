@@ -84,10 +84,10 @@ const useFetchVaultData = (): VaultData => {
               ]
             : [
                 // Default value when not connected
-                contract.balanceOf(account!),
-                contract.accumulativeRewardOf(account!),
-                contract.withdrawableRewardOf(account!),
-                contract.withdrawnRewardOf(account!),
+                Promise.resolve(BigNumber.from(0)),
+                Promise.resolve(BigNumber.from(0)),
+                Promise.resolve(BigNumber.from(0)),
+                Promise.resolve(BigNumber.from(0)),
               ]
         );
 
