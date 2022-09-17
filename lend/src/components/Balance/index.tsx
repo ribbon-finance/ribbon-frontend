@@ -1,9 +1,11 @@
 import { BigNumber } from "ethers";
 import colors from "shared/lib/designSystem/colors";
 import { fadeIn } from "shared/lib/designSystem/keyframes";
-import useWeb3Wallet from "shared/lib/hooks/useWeb3Wallet";
+import useWeb3Wallet from "../../hooks/useWeb3Wallet";
 import styled, { css } from "styled-components";
 import { Title, Subtitle, Button } from "../../designSystem";
+import { useVaultAccountBalances } from "../../hooks/useVaultAccountBalances";
+import { useVaultData } from "../../hooks/web3DataContext";
 import { getAssetLogo } from "../../utils/asset";
 import { formatBigNumber } from "../../utils/math";
 
@@ -86,10 +88,11 @@ const ClaimValue = styled.span`
 `;
 
 export const Balance = () => {
-  const isLoading = false;
   const { account } = useWeb3Wallet();
-
   const Logo = getAssetLogo("USDC");
+  const { loading, accountBalances } = useVaultAccountBalances();
+  const yourBalance = accountBalances.totalBalance;
+  const rbnRewards = accountBalances.rbnEarned;
 
   return (
     <BalanceWrapper>
@@ -99,16 +102,19 @@ export const Balance = () => {
         </ProductAssetLogoContainer>
         <BalanceTitle delay={0.2}>Your Balance</BalanceTitle>
         <HeroText delay={0.3}>
-          {isLoading || !account
+          {loading || !account
             ? "---"
-            : "$" + formatBigNumber(BigNumber.from(0), 0, 2)}
+            : "$" + formatBigNumber(yourBalance, 6, 2)}
         </HeroText>
         <HeroSubtitle color={"white"} delay={0.4}>
-          +{isLoading ? "0.00" : "0.00"}%
+          +{loading ? "0.00" : "0.00"}%
         </HeroSubtitle>
         <ClaimTextContainer delay={0.5}>
           <ClaimLabel>RBN Rewards Earned:</ClaimLabel>
-          <ClaimValue>10,000.87</ClaimValue>
+          <ClaimValue>
+            {" "}
+            {loading || !account ? "---" : formatBigNumber(rbnRewards, 18, 2)}
+          </ClaimValue>
         </ClaimTextContainer>
         <ClaimButton delay={0.6}>Claim RBN</ClaimButton>
       </VaultContainer>

@@ -167,6 +167,9 @@ export const defaultVaultData: VaultData = {
         vaultBalanceInAsset: BigNumber.from("0"),
         vaultMaxWithdrawAmount: BigNumber.from("0"),
         maxWithdrawAmount: BigNumber.from("0"),
+        accumulativeReward: BigNumber.from("0"),
+        withdrawableReward: BigNumber.from("0"),
+        withdrawnReward: BigNumber.from("0"),
       },
     ])
   ) as VaultDataResponses,

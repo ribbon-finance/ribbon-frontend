@@ -2,7 +2,7 @@ import { BigNumber } from "ethers";
 import { useCallback, useEffect, useState } from "react";
 import { useWeb3React } from "@web3-react/core";
 
-import { useWeb3Context } from "shared/lib/hooks/web3Context";
+import { useWeb3Context } from "./web3Context";
 import { getLendContract } from "./useLendContract";
 import { VaultList } from "../constants/constants";
 import { impersonateAddress } from "shared/lib/utils/development";
@@ -12,7 +12,7 @@ import {
   VaultDataResponses,
 } from "../models/vault";
 import { isProduction } from "../utils/env";
-import { usePendingTransactions } from "shared/lib/hooks/pendingTransactionsContext";
+import { usePendingTransactions } from "./pendingTransactionsContext";
 import { isVaultSupportedOnChain } from "../utils/vault";
 
 const useFetchVaultData = (): VaultData => {
@@ -22,6 +22,7 @@ const useFetchVaultData = (): VaultData => {
     active: web3Active,
     account: web3Account,
   } = useWeb3React();
+
   const { provider } = useWeb3Context();
   const account = impersonateAddress ? impersonateAddress : web3Account;
   const { transactionsCounter } = usePendingTransactions();
@@ -83,12 +84,10 @@ const useFetchVaultData = (): VaultData => {
               ]
             : [
                 // Default value when not connected
-                Promise.resolve(BigNumber.from(0)),
-                Promise.resolve(BigNumber.from(0)),
-                Promise.resolve(BigNumber.from(0)),
-                Promise.resolve(BigNumber.from(0)),
-                Promise.resolve(BigNumber.from(0)),
-                Promise.resolve(BigNumber.from(0)),
+                contract.balanceOf(account!),
+                contract.accumulativeRewardOf(account!),
+                contract.withdrawableRewardOf(account!),
+                contract.withdrawnRewardOf(account!),
               ]
         );
 
@@ -147,6 +146,7 @@ const useFetchVaultData = (): VaultData => {
                   utilizationRate: utilizationRate,
                   supplyRate: supplyRate,
                   rewardPerSecond: rewardPerSecond,
+                  accumulativeReward: accumulativeReward,
                   withdrawableReward: withdrawableReward,
                   withdrawnReward: withdrawnReward,
                   vaultMaxWithdrawAmount:

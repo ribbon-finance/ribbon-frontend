@@ -11,7 +11,7 @@ export type APRMap = {
 
 export const usePoolsAPR = () => {
   const [aprs, setAPRs] = useState<APRMap>();
-  const vaultDatas = useVaultsData();
+  const { loading, data: vaultDatas } = useVaultsData();
   const { price: RBNPrice, loading: assetPriceLoading } = useAssetPrice({
     asset: "RBN",
   });
@@ -25,9 +25,10 @@ export const usePoolsAPR = () => {
       Orthogonal: 0,
       Folkvang: 0,
     };
-    if (!vaultDatas.loading && !assetPriceLoading) {
+
+    if (!loading && !assetPriceLoading) {
       VaultList.forEach((pool) => {
-        const poolData = vaultDatas.data[pool];
+        const poolData = vaultDatas[pool];
         const supplyRate = parseFloat(formatUnits(poolData.supplyRate, 18));
         const rewardPerSecond = parseFloat(
           formatUnits(poolData.rewardPerSecond, 18)
@@ -40,13 +41,13 @@ export const usePoolsAPR = () => {
       });
       setAPRs(aprsTemp);
     }
-  }, [vaultDatas, assetPriceLoading, RBNPrice]);
+  }, [loading, assetPriceLoading, RBNPrice, vaultDatas]);
 
-  const loading = useMemo(() => {
-    return vaultDatas.loading || assetPriceLoading || !aprs;
-  }, [vaultDatas, assetPriceLoading, aprs]);
+  const isLoading = useMemo(() => {
+    return loading || assetPriceLoading || !aprs;
+  }, [loading, assetPriceLoading, aprs]);
 
-  if (loading || !aprs) {
+  if (isLoading || !aprs) {
     //placeholder values while values are loading
     return {
       Alameda: 0,
