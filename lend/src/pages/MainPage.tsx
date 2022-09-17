@@ -302,7 +302,7 @@ const Pools = () => {
   return (
     <ListRow>
       {VaultList.map((pool, i) => {
-        const deposits = vaultDatas.data[pool].vaultBalanceInAsset;
+        const balance = vaultDatas.data[pool].vaultBalanceInAsset;
         const utilizationRate = vaultDatas.data[pool].utilizationRate;
         const poolLogo = getMakerLogo(pool);
         const asset = getAssets(pool);
@@ -346,7 +346,7 @@ const Pools = () => {
                 <Stat>
                   <StyledTitle>
                     <Logo height={24} />
-                    <span>{formatBigNumber(deposits, decimals)}</span>
+                    <span>{formatBigNumber(balance, decimals)}</span>
                   </StyledTitle>
                   <StyledSubtitle color={colors.green}>
                     {apr.toFixed(2)}%
