@@ -66,6 +66,7 @@ const useFetchVaultData = (): VaultData => {
           contract.poolSize(),
           contract.getUtilizationRate(),
           contract.availableToWithdraw(),
+          contract.getCurrentExchangeRate(),
           contract.totalSupply(),
           contract.getSupplyRate(),
           contract.rewardPerSecond(),
@@ -95,6 +96,7 @@ const useFetchVaultData = (): VaultData => {
           deposits,
           utilizationRate,
           vaultMaxWithdrawableShares,
+          currentExchangeRate,
           totalSupply,
           supplyRate,
           rewardPerSecond,
@@ -111,6 +113,7 @@ const useFetchVaultData = (): VaultData => {
           deposits,
           utilizationRate,
           vaultMaxWithdrawableShares,
+          currentExchangeRate,
           totalSupply,
           supplyRate,
           rewardPerSecond,
@@ -131,6 +134,7 @@ const useFetchVaultData = (): VaultData => {
                 vault,
                 utilizationRate,
                 vaultMaxWithdrawableShares,
+                currentExchangeRate,
                 totalSupply,
                 supplyRate,
                 rewardPerSecond,
@@ -149,6 +153,12 @@ const useFetchVaultData = (): VaultData => {
                   accumulativeReward: accumulativeReward,
                   withdrawableReward: withdrawableReward,
                   withdrawnReward: withdrawnReward,
+                  vaultBalanceInAsset:
+                    response.deposits && currentExchangeRate
+                      ? currentExchangeRate
+                          .div(BigNumber.from(10).pow(18))
+                          .mul(response.deposits)
+                      : BigNumber.from(0),
                   vaultMaxWithdrawAmount:
                     totalSupply &&
                     vaultMaxWithdrawableShares &&

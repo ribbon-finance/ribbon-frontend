@@ -140,6 +140,7 @@ export interface UnconnectedVaultData {
 
 export interface UserSpecificData {
   vaultBalanceInAsset: BigNumber;
+  vaultDepositsInAsset: BigNumber;
   maxWithdrawAmount: BigNumber;
   accumulativeReward: BigNumber;
   withdrawableReward: BigNumber;

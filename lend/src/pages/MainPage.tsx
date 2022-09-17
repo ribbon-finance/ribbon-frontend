@@ -302,7 +302,7 @@ const Pools = () => {
   return (
     <ListRow>
       {VaultList.map((pool, i) => {
-        const deposits = vaultDatas.data[pool].deposits;
+        const deposits = vaultDatas.data[pool].vaultBalanceInAsset;
         const utilizationRate = vaultDatas.data[pool].utilizationRate;
         const poolLogo = getMakerLogo(pool);
         const asset = getAssets(pool);

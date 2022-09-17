@@ -7,8 +7,15 @@ import { Title, Subtitle, Button } from "../../designSystem";
 import { useVaultAccountBalances } from "../../hooks/useVaultAccountBalances";
 import { useVaultData } from "../../hooks/web3DataContext";
 import { getAssetLogo } from "../../utils/asset";
-import { formatBigNumber } from "../../utils/math";
-
+import { formatBigNumber, isPracticallyZero } from "../../utils/math";
+import { useMemo } from "react";
+import useVaultAccounts, {
+  vaultAccountsGraphql,
+} from "../../hooks/useVaultAccounts";
+import { VaultOptions } from "../../constants/constants";
+import { useVaultTotalDeposits } from "../../hooks/useVaultTotalDeposits";
+import useFetchVaultSubgraphData from "../../hooks/useFetchVaultSubgraphData";
+import { formatUnits } from "ethers/lib/utils";
 const delayedFade = css<{ delay?: number }>`
   opacity: 0;
   animation: ${fadeIn} 1s ease-in-out forwards;
@@ -59,7 +66,8 @@ const HeroText = styled(Title)<{ delay?: number }>`
   ${delayedFade}
 `;
 
-const HeroSubtitle = styled(Subtitle)<{ delay?: number }>`
+const HeroSubtitle = styled(Subtitle)<{ delay?: number; color: string }>`
+  color: ${(props) => props.color};
   ${delayedFade}
 `;
 
@@ -93,7 +101,22 @@ export const Balance = () => {
   const { loading, accountBalances } = useVaultAccountBalances();
   const yourBalance = accountBalances.totalBalance;
   const rbnRewards = accountBalances.rbnEarned;
+  const yourDeposits = useVaultTotalDeposits();
+  const decimals = 6;
+  const roi = useMemo(() => {
+    if (
+      isPracticallyZero(yourDeposits, decimals) ||
+      isPracticallyZero(yourBalance, decimals)
+    ) {
+      return 0;
+    }
 
+    return (
+      (parseFloat(formatUnits(yourBalance.sub(yourDeposits), decimals)) /
+        parseFloat(formatUnits(yourDeposits, decimals))) *
+      100
+    );
+  }, [yourDeposits, yourBalance]);
   return (
     <BalanceWrapper>
       <VaultContainer>
@@ -104,10 +127,13 @@ export const Balance = () => {
         <HeroText delay={0.3}>
           {loading || !account
             ? "---"
-            : "$" + formatBigNumber(yourBalance, 6, 2)}
+            : "$" + formatBigNumber(yourBalance, decimals, 2)}
         </HeroText>
-        <HeroSubtitle color={"white"} delay={0.4}>
-          +{loading ? "0.00" : "0.00"}%
+        <HeroSubtitle
+          color={roi === 0 ? "white" : roi > 0 ? colors.green : colors.red}
+          delay={0.4}
+        >
+          +{loading ? "0.00" : roi.toFixed(2)}%
         </HeroSubtitle>
         <ClaimTextContainer delay={0.5}>
           <ClaimLabel>RBN Rewards Earned:</ClaimLabel>
