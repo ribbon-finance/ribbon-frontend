@@ -4,7 +4,7 @@ import styled from "styled-components";
 import colors from "shared/lib/designSystem/colors";
 import { Title } from "shared/lib/designSystem";
 import MobileOverlayMenu from "shared/lib/components/Common/MobileOverlayMenu";
-import LendModal from "../Common/LendModal";
+import LendModal, { ModalContentEnum } from "../Common/LendModal";
 import { URLS } from "shared/lib/constants/constants";
 import ExternalLinkIcon from "../Common/ExternalLinkIcon";
 import Logo from "../Common/Logo";
@@ -12,7 +12,6 @@ import sizes from "../../designSystem/sizes";
 import MenuButton from "./MenuButton";
 import { MobileMenuOpenProps } from "./types";
 import theme from "../../designSystem/theme";
-import { ContentEnum, ModalContent } from "../Common/ModalContent";
 
 const HeaderContainer = styled.div<MobileMenuOpenProps>`
   display: flex;
@@ -51,6 +50,7 @@ const HeaderContainer = styled.div<MobileMenuOpenProps>`
 
 const LogoContainer = styled.div`
   display: none;
+
   @media (max-width: ${sizes.lg}px) {
     position: relative;
     display: flex;
@@ -121,7 +121,7 @@ const MobileOnly = styled.div`
 
 const MobileHeader: React.FC = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const [modalContent, setModalContent] = useState<ContentEnum>();
+  const [modalContent, setModalContent] = useState<ModalContentEnum>();
 
   const onToggleMenu = () => {
     setIsMenuOpen(!isMenuOpen);
@@ -135,9 +135,8 @@ const MobileHeader: React.FC = () => {
       <LendModal
         show={Boolean(modalContent)}
         onHide={() => setModalContent(undefined)}
-      >
-        <ModalContent content={ContentEnum.WALLET} />
-      </LendModal>
+        content={ModalContentEnum.WALLET}
+      />
 
       <MobileOnly>
         <MenuButton onToggle={onToggleMenu} isOpen={isMenuOpen} />
@@ -160,18 +159,18 @@ const MobileHeader: React.FC = () => {
             <NavItem
               onClick={() => {
                 setIsMenuOpen(false);
-                setModalContent(ContentEnum.ABOUT);
+                setModalContent(ModalContentEnum.ABOUT);
               }}
             >
-              <NavLinkText>{ContentEnum.ABOUT}</NavLinkText>
+              <NavLinkText>{ModalContentEnum.ABOUT}</NavLinkText>
             </NavItem>
             <NavItem
               onClick={() => {
                 setIsMenuOpen(false);
-                setModalContent(ContentEnum.COMMUNITY);
+                setModalContent(ModalContentEnum.COMMUNITY);
               }}
             >
-              <NavLinkText>{ContentEnum.COMMUNITY}</NavLinkText>
+              <NavLinkText>{ModalContentEnum.COMMUNITY}</NavLinkText>
             </NavItem>
             <Footer>
               Ribbon Lend is a product built by&nbsp;

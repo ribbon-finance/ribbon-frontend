@@ -3,8 +3,7 @@ import { Title } from "shared/lib/designSystem";
 import colors from "shared/lib/designSystem/colors";
 import { CloseIcon } from "shared/lib/assets/icons/icons";
 import styled from "styled-components";
-import { ContentEnum, ModalContent } from "./ModalContent";
-import { useMemo } from "react";
+import { ModalContent } from "./ModalContent";
 
 const borderStyle = `1px solid ${colors.primaryText}1F`;
 
@@ -27,8 +26,14 @@ const CloseButton = styled.button`
   border-left: ${borderStyle};
 `;
 
+export enum ModalContentEnum {
+  ABOUT = "ABOUT",
+  COMMUNITY = "COMMUNITY",
+  WALLET = "CONNECT WALLET",
+}
+
 interface InfoModalProps {
-  content?: ContentEnum;
+  content?: ModalContentEnum;
   show?: boolean;
   onHide: () => void;
 }

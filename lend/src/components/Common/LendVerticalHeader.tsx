@@ -4,9 +4,8 @@ import styled from "styled-components";
 import Logo from "./Logo";
 import colors from "shared/lib/designSystem/colors";
 import { Title } from "../../designSystem/index";
-import LendModal from "../../components/Common/LendModal";
+import LendModal, { ModalContentEnum } from "../../components/Common/LendModal";
 import sizes from "../../designSystem/sizes";
-import { ContentEnum } from "../../components/Common/ModalContent";
 import theme from "../../designSystem/theme";
 import { components } from "../../designSystem/components";
 
@@ -74,7 +73,7 @@ const VerticalHeaderTextContainer = styled.div`
 `;
 
 const LendVerticalHeader: React.FC = () => {
-  const [modalContent, setModalContent] = useState<ContentEnum>();
+  const [modalContent, setModalContent] = useState<ModalContentEnum>();
 
   return (
     <>
@@ -91,13 +90,15 @@ const LendVerticalHeader: React.FC = () => {
         </LogoContainer>
         <VerticalHeaderTextContainer>
           <ButtonContainer
-            onClick={() => setModalContent(ContentEnum.COMMUNITY)}
+            onClick={() => setModalContent(ModalContentEnum.COMMUNITY)}
           >
             <StyledTitle>Community</StyledTitle>
           </ButtonContainer>
         </VerticalHeaderTextContainer>
         <VerticalHeaderTextContainer>
-          <ButtonContainer onClick={() => setModalContent(ContentEnum.ABOUT)}>
+          <ButtonContainer
+            onClick={() => setModalContent(ModalContentEnum.ABOUT)}
+          >
             <StyledTitle>About</StyledTitle>
           </ButtonContainer>
         </VerticalHeaderTextContainer>

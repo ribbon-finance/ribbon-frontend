@@ -12,8 +12,7 @@ import { ProductDisclaimer } from "../components/ProductDisclaimer";
 import { Balance } from "../components/Balance";
 import { Pools } from "../components/Pools";
 import useWeb3Wallet from "shared/lib/hooks/useWeb3Wallet";
-import LendModal from "../components/Common/LendModal";
-import { ContentEnum } from "../components/Common/ModalContent";
+import LendModal, { ModalContentEnum } from "../components/Common/LendModal";
 
 const HeroContainer = styled.div`
   display: flex;
@@ -130,7 +129,7 @@ const LendPage: React.FC = () => {
       <LendModal
         show={Boolean(triggerWalletModal)}
         onHide={() => setWalletModal(false)}
-        content={ContentEnum.WALLET}
+        content={ModalContentEnum.WALLET}
       />
       <HeroContainer>
         <Header setWalletModal={setWalletModal} />
