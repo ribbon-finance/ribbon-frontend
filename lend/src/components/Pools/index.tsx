@@ -11,6 +11,7 @@ import { fadeIn } from "shared/lib/designSystem/keyframes";
 import { motion } from "framer-motion";
 import { Row } from "react-bootstrap";
 import colors from "shared/lib/designSystem/colors";
+import { usePoolsAPR } from "../../hooks/usePoolsAPR";
 
 const statSideContainer: number = 120;
 
@@ -163,16 +164,21 @@ const StyledSubtitle = styled(Subtitle)<{ color?: string }>`
 export const Pools = () => {
   const vaultDatas = useVaultsData();
   const utilizationDecimals = getUtilizationDecimals();
+  const aprs = usePoolsAPR();
+  console.log(aprs);
 
   return (
     <ListRow>
       {VaultList.map((pool, i) => {
-        const deposits = vaultDatas.data[pool].deposits;
+        const balance = vaultDatas.data[pool].vaultBalanceInAsset;
         const utilizationRate = vaultDatas.data[pool].utilizationRate;
+
         const poolLogo = getMakerLogo(pool);
         const asset = getAssets(pool);
         const decimals = getAssetDecimals(asset);
         const Logo = getAssetLogo(asset);
+        const apr = aprs[pool];
+
         return (
           <motion.div
             key={i}
@@ -210,9 +216,11 @@ export const Pools = () => {
                 <Stat>
                   <StyledTitle>
                     <Logo height={24} />
-                    <span>{formatBigNumber(deposits, decimals)}</span>
+                    <span>{formatBigNumber(balance, decimals)}</span>
                   </StyledTitle>
-                  <StyledSubtitle color={colors.green}>12.55%</StyledSubtitle>
+                  <StyledSubtitle color={colors.green}>
+                    {apr.toFixed(2)}%
+                  </StyledSubtitle>
                 </Stat>
               </PoolStats>
               <PoolButton>

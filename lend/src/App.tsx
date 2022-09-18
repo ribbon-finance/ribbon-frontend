@@ -5,11 +5,11 @@ import { Web3ReactProvider } from "@web3-react/core";
 import { Web3DataContextProvider } from "./hooks/web3DataContext";
 import "shared/lib/i18n/config";
 import { Web3ContextProvider } from "./hooks/web3Context";
-import { getLibrary } from "shared/lib/utils/getLibrary";
+import { getLibrary } from "./utils/getLibrary";
 import { SubgraphDataContextProvider } from "./hooks/subgraphDataContext";
 import { PendingTransactionsContextProvider } from "./hooks/pendingTransactionsContext";
 import { ExternalAPIDataContextProvider } from "./hooks/externalAPIDataContext";
-import { ChainContextProvider } from "./hooks/chainContext";
+import { ChainContextProvider } from "shared/lib/hooks/chainContext";
 import { GeofenceCountry, useGeofence } from "shared/lib/hooks/useGeofence";
 import TextPreview from "shared/lib/components/TextPreview/TextPreview";
 import Geoblocked from "shared/lib/components/Geoblocked/Geoblocked";
@@ -47,19 +47,19 @@ function App() {
 
   return (
     <ChainContextProvider>
-      <Web3DataContextProvider>
-        <Web3ContextProvider>
-          <Web3ReactProvider getLibrary={getLibrary}>
-            <PendingTransactionsContextProvider>
+      <Web3ContextProvider>
+        <Web3ReactProvider getLibrary={getLibrary}>
+          <PendingTransactionsContextProvider>
+            <Web3DataContextProvider>
               <SubgraphDataContextProvider>
                 <ExternalAPIDataContextProvider>
                   <RootApp />
                 </ExternalAPIDataContextProvider>
               </SubgraphDataContextProvider>
-            </PendingTransactionsContextProvider>
-          </Web3ReactProvider>
-        </Web3ContextProvider>
-      </Web3DataContextProvider>
+            </Web3DataContextProvider>
+          </PendingTransactionsContextProvider>
+        </Web3ReactProvider>
+      </Web3ContextProvider>
     </ChainContextProvider>
   );
 }

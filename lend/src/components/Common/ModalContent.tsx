@@ -6,7 +6,7 @@ import styled, { css } from "styled-components";
 import ExternalLinkIcon from "./ExternalLinkIcon";
 import twitter from "../../assets/icons/socials/twitter.svg";
 import discord from "../../assets/icons/socials/discord.svg";
-import github from "../../assets/icons/socials/github.png";
+import github from "../../assets/icons/socials/github.svg";
 import { ProductDisclaimer } from "../ProductDisclaimer";
 import { ModalContentEnum } from "./LendModal";
 import useWeb3Wallet from "shared/lib/hooks/useWeb3Wallet";

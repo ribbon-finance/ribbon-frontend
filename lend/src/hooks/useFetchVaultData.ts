@@ -2,7 +2,7 @@ import { BigNumber } from "ethers";
 import { useCallback, useEffect, useState } from "react";
 import { useWeb3React } from "@web3-react/core";
 
-import { useWeb3Context } from "shared/lib/hooks/web3Context";
+import { useWeb3Context } from "./web3Context";
 import { getLendContract } from "./useLendContract";
 import { VaultList } from "../constants/constants";
 import { impersonateAddress } from "shared/lib/utils/development";
@@ -12,7 +12,7 @@ import {
   VaultDataResponses,
 } from "../models/vault";
 import { isProduction } from "../utils/env";
-import { usePendingTransactions } from "shared/lib/hooks/pendingTransactionsContext";
+import { usePendingTransactions } from "./pendingTransactionsContext";
 import { isVaultSupportedOnChain } from "../utils/vault";
 
 const useFetchVaultData = (): VaultData => {
@@ -22,6 +22,7 @@ const useFetchVaultData = (): VaultData => {
     active: web3Active,
     account: web3Account,
   } = useWeb3React();
+
   const { provider } = useWeb3Context();
   const account = impersonateAddress ? impersonateAddress : web3Account;
   const { transactionsCounter } = usePendingTransactions();
@@ -65,7 +66,10 @@ const useFetchVaultData = (): VaultData => {
           contract.poolSize(),
           contract.getUtilizationRate(),
           contract.availableToWithdraw(),
+          contract.getCurrentExchangeRate(),
           contract.totalSupply(),
+          contract.getSupplyRate(),
+          contract.rewardPerSecond(),
         ];
 
         /**
@@ -73,9 +77,17 @@ const useFetchVaultData = (): VaultData => {
          */
         const promises = unconnectedPromises.concat(
           active
-            ? [contract.balanceOf(account!)]
+            ? [
+                contract.balanceOf(account!),
+                contract.accumulativeRewardOf(account!),
+                contract.withdrawableRewardOf(account!),
+                contract.withdrawnRewardOf(account!),
+              ]
             : [
                 // Default value when not connected
+                Promise.resolve(BigNumber.from(0)),
+                Promise.resolve(BigNumber.from(0)),
+                Promise.resolve(BigNumber.from(0)),
                 Promise.resolve(BigNumber.from(0)),
               ]
         );
@@ -84,9 +96,14 @@ const useFetchVaultData = (): VaultData => {
           deposits,
           utilizationRate,
           vaultMaxWithdrawableShares,
+          currentExchangeRate,
           totalSupply,
+          supplyRate,
+          rewardPerSecond,
           vaultBalanceInAsset,
-          maxWithdrawAmount,
+          accumulativeReward,
+          withdrawableReward,
+          withdrawnReward,
         ] = await Promise.all(
           promises.map((p) => p.catch((e) => BigNumber.from(0)))
         );
@@ -96,9 +113,14 @@ const useFetchVaultData = (): VaultData => {
           deposits,
           utilizationRate,
           vaultMaxWithdrawableShares,
+          currentExchangeRate,
           totalSupply,
+          supplyRate,
+          rewardPerSecond,
           vaultBalanceInAsset,
-          maxWithdrawAmount,
+          accumulativeReward,
+          withdrawableReward,
+          withdrawnReward,
         };
       })
     );
@@ -112,7 +134,13 @@ const useFetchVaultData = (): VaultData => {
                 vault,
                 utilizationRate,
                 vaultMaxWithdrawableShares,
+                currentExchangeRate,
                 totalSupply,
+                supplyRate,
+                rewardPerSecond,
+                accumulativeReward,
+                withdrawableReward,
+                withdrawnReward,
                 ...response
               }) => [
                 vault,
@@ -120,6 +148,17 @@ const useFetchVaultData = (): VaultData => {
                   ...prev.responses[vault],
                   ...response,
                   utilizationRate: utilizationRate,
+                  supplyRate: supplyRate,
+                  rewardPerSecond: rewardPerSecond,
+                  accumulativeReward: accumulativeReward,
+                  withdrawableReward: withdrawableReward,
+                  withdrawnReward: withdrawnReward,
+                  vaultBalanceInAsset:
+                    response.deposits && currentExchangeRate
+                      ? currentExchangeRate
+                          .div(BigNumber.from(10).pow(18))
+                          .mul(response.deposits)
+                      : BigNumber.from(0),
                   vaultMaxWithdrawAmount:
                     totalSupply &&
                     vaultMaxWithdrawableShares &&
