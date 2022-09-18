@@ -3,6 +3,7 @@ import { Title } from "shared/lib/designSystem";
 import colors from "shared/lib/designSystem/colors";
 import { CloseIcon } from "shared/lib/assets/icons/icons";
 import styled from "styled-components";
+import { ModalContent } from "./ModalContent";
 
 const borderStyle = `1px solid ${colors.primaryText}1F`;
 
@@ -14,9 +15,10 @@ const Header = styled.div`
   align-items: center;
 `;
 
-const CloseButton = styled.button.attrs({
-  className: "d-flex align-items-center justify-content-center",
-})`
+const CloseButton = styled.button`
+  display: flex;
+  align-items: center;
+  justify-content: center;
   background: none;
   border: none;
   width: 80px;
@@ -24,29 +26,28 @@ const CloseButton = styled.button.attrs({
   border-left: ${borderStyle};
 `;
 
-const Content = styled.div``;
+export enum ModalContentEnum {
+  ABOUT = "ABOUT",
+  COMMUNITY = "COMMUNITY",
+  WALLET = "CONNECT WALLET",
+}
 
 interface InfoModalProps {
-  title?: string;
+  content?: ModalContentEnum;
   show?: boolean;
   onHide: () => void;
 }
 
-const LendModal: React.FC<InfoModalProps> = ({
-  show,
-  onHide,
-  title,
-  children,
-}) => {
+const LendModal: React.FC<InfoModalProps> = ({ show, onHide, content }) => {
   return (
     <StyledModal centered show={show} maxWidth={343} onHide={onHide} backdrop>
       <Header>
-        <Title>{title}</Title>
+        <Title>{content}</Title>
         <CloseButton onClick={onHide}>
           <CloseIcon />
         </CloseButton>
       </Header>
-      <Content>{children}</Content>
+      <ModalContent content={content} />
     </StyledModal>
   );
 };

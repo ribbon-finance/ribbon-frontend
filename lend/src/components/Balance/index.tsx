@@ -1,21 +1,15 @@
-import { BigNumber } from "ethers";
 import colors from "shared/lib/designSystem/colors";
 import { fadeIn } from "shared/lib/designSystem/keyframes";
 import useWeb3Wallet from "../../hooks/useWeb3Wallet";
 import styled, { css } from "styled-components";
 import { Title, Subtitle, Button } from "../../designSystem";
 import { useVaultAccountBalances } from "../../hooks/useVaultAccountBalances";
-import { useVaultData } from "../../hooks/web3DataContext";
 import { getAssetLogo } from "../../utils/asset";
 import { formatBigNumber, isPracticallyZero } from "../../utils/math";
 import { useMemo } from "react";
-import useVaultAccounts, {
-  vaultAccountsGraphql,
-} from "../../hooks/useVaultAccounts";
-import { VaultOptions } from "../../constants/constants";
 import { useVaultTotalDeposits } from "../../hooks/useVaultTotalDeposits";
-import useFetchVaultSubgraphData from "../../hooks/useFetchVaultSubgraphData";
 import { formatUnits } from "ethers/lib/utils";
+
 const delayedFade = css<{ delay?: number }>`
   opacity: 0;
   animation: ${fadeIn} 1s ease-in-out forwards;

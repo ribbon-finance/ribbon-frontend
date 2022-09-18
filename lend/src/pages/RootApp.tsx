@@ -2,7 +2,7 @@ import styled from "styled-components";
 import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
 import LendVerticalHeader from "../components/Common/LendVerticalHeader";
 import Hero from "./HeroPage";
-import MainPage from "./MainPage";
+import LendPage from "./LendPage";
 import NotFound from "./NotFound";
 import useEagerConnect from "shared/lib/hooks/useEagerConnect";
 import colors from "shared/lib/designSystem/colors";
@@ -26,7 +26,7 @@ const RootApp = () => {
             <Hero />
           </Route>
           <Route path="/app" exact>
-            <MainPage />
+            <LendPage />
           </Route>
           <Route>
             <NotFound />

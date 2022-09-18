@@ -34,7 +34,7 @@ const DisclaimerText = styled.div`
 export const ProductDisclaimer = () => {
   return (
     <DisclaimerText>
-      Ribbon Lend is a product build by&nbsp;
+      Ribbon Lend is a product built by&nbsp;
       <a href={URLS.ribbonFinance} target="_blank" rel="noreferrer noopener">
         Ribbon Finance
         <ExternalLinkIcon />
