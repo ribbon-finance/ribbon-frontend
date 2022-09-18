@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import styled from "styled-components";
 
-import Logo from "./Logo";
+import { AppLogo } from "./Logos";
 import colors from "shared/lib/designSystem/colors";
 import { Title } from "../../designSystem/index";
 import LendModal, { ModalContentEnum } from "../../components/Common/LendModal";
@@ -85,7 +85,7 @@ const LendVerticalHeader: React.FC = () => {
       <VerticalHeaderContainer>
         <LogoContainer>
           <a href={"/"}>
-            <Logo />
+            <AppLogo />
           </a>
         </LogoContainer>
         <VerticalHeaderTextContainer>

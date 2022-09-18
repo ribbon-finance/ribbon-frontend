@@ -7,7 +7,7 @@ import MobileOverlayMenu from "shared/lib/components/Common/MobileOverlayMenu";
 import LendModal, { ModalContentEnum } from "../Common/LendModal";
 import { URLS } from "shared/lib/constants/constants";
 import ExternalLinkIcon from "../Common/ExternalLinkIcon";
-import Logo from "../Common/Logo";
+import { AppLogo } from "../Common/Logos";
 import sizes from "../../designSystem/sizes";
 import MenuButton from "./MenuButton";
 import { MobileMenuOpenProps } from "./types";
@@ -130,7 +130,7 @@ const MobileHeader: React.FC = () => {
   return (
     <HeaderContainer isMenuOpen={isMenuOpen} className="">
       <LogoContainer>
-        <Logo />
+        <AppLogo />
       </LogoContainer>
       <LendModal
         show={Boolean(modalContent)}

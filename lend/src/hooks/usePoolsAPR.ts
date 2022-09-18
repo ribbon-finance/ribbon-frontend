@@ -50,12 +50,18 @@ export const usePoolsAPR = () => {
   if (isLoading || !aprs) {
     //placeholder values while values are loading
     return {
-      Alameda: 0,
-      JumpTrading: 0,
-      Wintermute: 0,
-      Orthogonal: 0,
-      Folkvang: 0,
+      loading: isLoading,
+      aprs: {
+        Alameda: 0,
+        JumpTrading: 0,
+        Wintermute: 0,
+        Orthogonal: 0,
+        Folkvang: 0,
+      },
     };
   }
-  return aprs;
+  return {
+    loading: isLoading,
+    aprs: aprs,
+  };
 };

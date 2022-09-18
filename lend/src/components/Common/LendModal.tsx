@@ -30,6 +30,7 @@ export enum ModalContentEnum {
   ABOUT = "ABOUT",
   COMMUNITY = "COMMUNITY",
   WALLET = "CONNECT WALLET",
+  CLAIMRBN = "CLAIM RBN"
 }
 
 interface InfoModalProps {

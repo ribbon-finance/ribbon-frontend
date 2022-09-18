@@ -164,8 +164,7 @@ const StyledSubtitle = styled(Subtitle)<{ color?: string }>`
 export const Pools = () => {
   const vaultDatas = useVaultsData();
   const utilizationDecimals = getUtilizationDecimals();
-  const aprs = usePoolsAPR();
-  console.log(aprs);
+  const { loading, aprs } = usePoolsAPR();
 
   return (
     <ListRow>
@@ -219,7 +218,7 @@ export const Pools = () => {
                     <span>{formatBigNumber(balance, decimals)}</span>
                   </StyledTitle>
                   <StyledSubtitle color={colors.green}>
-                    {apr.toFixed(2)}%
+                    {loading ? "0.00" : apr.toFixed(2)}%
                   </StyledSubtitle>
                 </Stat>
               </PoolStats>

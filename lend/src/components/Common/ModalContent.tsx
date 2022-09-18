@@ -11,9 +11,14 @@ import { ProductDisclaimer } from "../ProductDisclaimer";
 import { ModalContentEnum } from "./LendModal";
 import useWeb3Wallet from "shared/lib/hooks/useWeb3Wallet";
 import WalletLogo from "shared/lib/components/Wallet/WalletLogo";
-import { Button } from "../../designSystem";
+import { BaseLink, BaseText, Button, SecondaryText } from "../../designSystem";
 import { motion } from "framer-motion";
 import { ETHEREUM_WALLETS, WALLET_TITLES } from "shared/lib/models/wallets";
+import { RbnLogo } from "./Logos";
+import theme from "../../designSystem/theme";
+import { useVaultsData } from "../../hooks/web3DataContext";
+import { useVaultAccountBalances } from "../../hooks/useVaultAccountBalances";
+import { formatBigNumber } from "../../utils/math";
 
 const TextContent = styled.div`
   color: ${colors.primaryText}A3;
@@ -85,6 +90,7 @@ export const ModalContent = ({ content }: ModalContentProps) => {
     if (content === ModalContentEnum.ABOUT) return <About />;
     if (content === ModalContentEnum.COMMUNITY) return <Community />;
     if (content === ModalContentEnum.WALLET) return <Wallet />;
+    if (content === ModalContentEnum.CLAIMRBN) return <ClaimRbn />;
     return null;
   }, [content]);
 
@@ -178,7 +184,6 @@ const ButtonWrapper = styled.div`
   display: block;
   width: 100%;
   padding: 16px 24px;
-
   > * {
     width: 100%;
   }
@@ -233,6 +238,163 @@ const Wallet = () => {
 
     return <></>;
   }, [page]);
+
+  return content;
+};
+
+const LogoContent = styled.div`
+  width: 100%;
+  height: 160px;
+  padding: 40px 132px 40px 132px;
+  border-bottom: 1px solid ${colors.primaryText}1F;
+  background: linear-gradient(
+    102.28deg,
+    rgba(252, 10, 84, 0.04) 0%,
+    rgba(252, 10, 84, 0) 100%
+  );
+`;
+
+const DetailRow = styled.div`
+  width: 100%;
+  display: flex;
+`;
+
+const StyledTitle = styled(Title)<{ color?: string }>`
+  color: ${(props) => props.color};
+`;
+
+const StyledSecondaryText = styled(SecondaryText)<{ color?: string }>`
+  color: ${(props) => props.color};
+  font-size: 14px;
+  font-weight: 500;
+`;
+
+const ClaimTextContent = styled.div`
+  padding: 24px 16px;
+`;
+
+const RbnButtonWrapper = styled.div`
+  display: block;
+  width: 100%;
+  padding-left: 24px;
+  padding-right: 24px;
+  > * {
+    width: 100%;
+  }
+`;
+
+const ClaimRbnButton = styled(Button)`
+  background: #fc0a541f;
+  color: #fc0a54;
+  border: none;
+  border-radius: 0;
+  padding: 20px;
+`;
+
+const LearnMoreContainer = styled.div`
+  display: flex;
+  width: 100%;
+  text-align: center;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 16px;
+`;
+
+const Footer = styled.div`
+  display: flex;
+  margin-top: 20px;
+  font-size: 14px;
+
+  color: ${colors.primaryText};
+
+  svg {
+    transition: all 0.2s ease-in-out;
+  }
+
+  > a {
+    color: ${colors.primaryText};
+    text-decoration: underline;
+    &:hover {
+      svg {
+        transform: translate(2px, -2px);
+      }
+    }
+  }
+`;
+
+enum ClaimRbnPageEnum {
+  CLAIM_RBN,
+}
+
+const ClaimRbn = () => {
+  const [page, setPage] = useState<ClaimRbnPageEnum>(
+    ClaimRbnPageEnum.CLAIM_RBN
+  );
+  const { account } = useWeb3Wallet();
+  const { loading, accountBalances } = useVaultAccountBalances();
+  const claimableRbn = accountBalances.rbnClaimable;
+  const claimedRbn = accountBalances.rbnClaimed;
+  const content = useMemo(() => {
+    if (page === ClaimRbnPageEnum.CLAIM_RBN) {
+      return (
+        <>
+          <LogoContent>
+            <RbnLogo />
+          </LogoContent>
+          <ClaimTextContent>
+            <div className="d-flex w-100 flex-row align-items-center justify-content-between">
+              <StyledSecondaryText color={colors.tertiaryText}>
+                Unclaimed RBN
+              </StyledSecondaryText>
+              <StyledTitle className="text-right">
+                {" "}
+                {loading || !account
+                  ? "---"
+                  : formatBigNumber(claimableRbn, 18, 2)}
+              </StyledTitle>
+            </div>
+            <div className="d-flex w-100 flex-row align-items-center justify-content-between mt-4">
+              <StyledSecondaryText color={colors.tertiaryText}>
+                Claimed RBN
+              </StyledSecondaryText>
+              <StyledTitle className="text-right">
+                {" "}
+                {loading || !account
+                  ? "---"
+                  : formatBigNumber(claimedRbn, 18, 2)}
+              </StyledTitle>
+            </div>
+          </ClaimTextContent>
+          <RbnButtonWrapper>
+            <ClaimRbnButton
+              // onClick={() => setPage(WalletPageEnum.CONNECT_WALLET)}
+            >
+              Claim RBN
+            </ClaimRbnButton>
+            <LearnMoreContainer>
+              <Footer>
+                <a
+                  href={URLS.ribbonFinance}
+                  target="_blank"
+                  rel="noreferrer noopener"
+                >
+                  Learn more about RBN
+                  <ExternalLinkIcon
+                    style={{
+                      marginLeft: "4px",
+                      marginRight: "4px",
+                    }}
+                  />
+                </a>
+              </Footer>
+            </LearnMoreContainer>
+          </RbnButtonWrapper>
+        </>
+      );
+    }
+
+    return <></>;
+  }, [account, claimableRbn, claimedRbn, loading, page]);
 
   return content;
 };

@@ -6,9 +6,10 @@ import { Title, Subtitle, Button } from "../../designSystem";
 import { useVaultAccountBalances } from "../../hooks/useVaultAccountBalances";
 import { getAssetLogo } from "../../utils/asset";
 import { formatBigNumber, isPracticallyZero } from "../../utils/math";
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
 import { useVaultTotalDeposits } from "../../hooks/useVaultTotalDeposits";
 import { formatUnits } from "ethers/lib/utils";
+import LendModal, { ModalContentEnum } from "../Common/LendModal";
 
 const delayedFade = css<{ delay?: number }>`
   opacity: 0;
@@ -111,33 +112,44 @@ export const Balance = () => {
       100
     );
   }, [yourDeposits, yourBalance]);
+  const [triggerClaimModal, setClaimModal] = useState<boolean>(false);
+
   return (
-    <BalanceWrapper>
-      <VaultContainer>
-        <ProductAssetLogoContainer color={"white"} delay={0.1}>
-          <Logo height="100%" />
-        </ProductAssetLogoContainer>
-        <BalanceTitle delay={0.2}>Your Balance</BalanceTitle>
-        <HeroText delay={0.3}>
-          {loading || !account
-            ? "---"
-            : "$" + formatBigNumber(yourBalance, decimals, 2)}
-        </HeroText>
-        <HeroSubtitle
-          color={roi === 0 ? "white" : roi > 0 ? colors.green : colors.red}
-          delay={0.4}
-        >
-          +{loading ? "0.00" : roi.toFixed(2)}%
-        </HeroSubtitle>
-        <ClaimTextContainer delay={0.5}>
-          <ClaimLabel>RBN Rewards Earned:</ClaimLabel>
-          <ClaimValue>
-            {" "}
-            {loading || !account ? "---" : formatBigNumber(rbnRewards, 18, 2)}
-          </ClaimValue>
-        </ClaimTextContainer>
-        <ClaimButton delay={0.6}>Claim RBN</ClaimButton>
-      </VaultContainer>
-    </BalanceWrapper>
+    <>
+      <LendModal
+        show={Boolean(triggerClaimModal)}
+        onHide={() => setClaimModal(false)}
+        content={ModalContentEnum.CLAIMRBN}
+      />
+      <BalanceWrapper>
+        <VaultContainer>
+          <ProductAssetLogoContainer color={"white"} delay={0.1}>
+            <Logo height="100%" />
+          </ProductAssetLogoContainer>
+          <BalanceTitle delay={0.2}>Your Balance</BalanceTitle>
+          <HeroText delay={0.3}>
+            {loading || !account
+              ? "---"
+              : "$" + formatBigNumber(yourBalance, decimals, 2)}
+          </HeroText>
+          <HeroSubtitle
+            color={roi === 0 ? "white" : roi > 0 ? colors.green : colors.red}
+            delay={0.4}
+          >
+            +{loading ? "0.00" : roi.toFixed(2)}%
+          </HeroSubtitle>
+          <ClaimTextContainer delay={0.5}>
+            <ClaimLabel>RBN Rewards Earned:</ClaimLabel>
+            <ClaimValue>
+              {" "}
+              {loading || !account ? "---" : formatBigNumber(rbnRewards, 18, 2)}
+            </ClaimValue>
+          </ClaimTextContainer>
+          <ClaimButton onClick={() => setClaimModal(true)} delay={0.6}>
+            Claim RBN
+          </ClaimButton>
+        </VaultContainer>
+      </BalanceWrapper>
+    </>
   );
 };
