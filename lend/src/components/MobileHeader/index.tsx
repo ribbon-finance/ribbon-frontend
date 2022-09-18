@@ -12,9 +12,12 @@ import sizes from "../../designSystem/sizes";
 import MenuButton from "./MenuButton";
 import { MobileMenuOpenProps } from "./types";
 import theme from "../../designSystem/theme";
-import { ModalContent, ModalContentMode } from "../Common/ModalContent";
+import { ContentEnum, ModalContent } from "../Common/ModalContent";
 
 const HeaderContainer = styled.div<MobileMenuOpenProps>`
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
   display: none;
   @media (max-width: ${sizes.lg}px) {
     height: 64px;
@@ -118,26 +121,22 @@ const MobileOnly = styled.div`
 
 const MobileHeader: React.FC = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const [modalContentMode, setModalContentMode] = useState<ModalContentMode>();
+  const [modalContent, setModalContent] = useState<ContentEnum>();
 
   const onToggleMenu = () => {
     setIsMenuOpen(!isMenuOpen);
   };
 
   return (
-    <HeaderContainer
-      isMenuOpen={isMenuOpen}
-      className="d-flex align-items-center justify-content-between"
-    >
+    <HeaderContainer isMenuOpen={isMenuOpen} className="">
       <LogoContainer>
         <Logo />
       </LogoContainer>
       <LendModal
-        show={Boolean(modalContentMode)}
-        title={(modalContentMode ?? "").toUpperCase()}
-        onHide={() => setModalContentMode(undefined)}
+        show={Boolean(modalContent)}
+        onHide={() => setModalContent(undefined)}
       >
-        <ModalContent modalContentMode={modalContentMode} />
+        <ModalContent content={ContentEnum.WALLET} />
       </LendModal>
 
       <MobileOnly>
@@ -161,18 +160,18 @@ const MobileHeader: React.FC = () => {
             <NavItem
               onClick={() => {
                 setIsMenuOpen(false);
-                setModalContentMode("about");
+                setModalContent(ContentEnum.ABOUT);
               }}
             >
-              <NavLinkText>ABOUT</NavLinkText>
+              <NavLinkText>{ContentEnum.ABOUT}</NavLinkText>
             </NavItem>
             <NavItem
               onClick={() => {
                 setIsMenuOpen(false);
-                setModalContentMode("community");
+                setModalContent(ContentEnum.COMMUNITY);
               }}
             >
-              <NavLinkText>COMMUNITY</NavLinkText>
+              <NavLinkText>{ContentEnum.COMMUNITY}</NavLinkText>
             </NavItem>
             <Footer>
               Ribbon Lend is a product built by&nbsp;

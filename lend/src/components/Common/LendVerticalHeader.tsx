@@ -6,10 +6,7 @@ import colors from "shared/lib/designSystem/colors";
 import { Title } from "../../designSystem/index";
 import LendModal from "../../components/Common/LendModal";
 import sizes from "../../designSystem/sizes";
-import {
-  ModalContent,
-  ModalContentMode,
-} from "../../components/Common/ModalContent";
+import { ContentEnum } from "../../components/Common/ModalContent";
 import theme from "../../designSystem/theme";
 import { components } from "../../designSystem/components";
 
@@ -77,36 +74,30 @@ const VerticalHeaderTextContainer = styled.div`
 `;
 
 const LendVerticalHeader: React.FC = () => {
-  const [modalContentMode, setModalContentMode] = useState<ModalContentMode>();
+  const [modalContent, setModalContent] = useState<ContentEnum>();
 
   return (
     <>
       <LendModal
-        show={Boolean(modalContentMode)}
-        title={(modalContentMode ?? "").toUpperCase()}
-        onHide={() => setModalContentMode(undefined)}
-      >
-        <ModalContent modalContentMode={modalContentMode} />
-      </LendModal>
+        show={Boolean(modalContent)}
+        content={modalContent}
+        onHide={() => setModalContent(undefined)}
+      />
       <VerticalHeaderContainer>
         <LogoContainer>
-          <Logo />
+          <a href={"/"}>
+            <Logo />
+          </a>
         </LogoContainer>
         <VerticalHeaderTextContainer>
           <ButtonContainer
-            onClick={() => {
-              setModalContentMode("community");
-            }}
+            onClick={() => setModalContent(ContentEnum.COMMUNITY)}
           >
             <StyledTitle>Community</StyledTitle>
           </ButtonContainer>
         </VerticalHeaderTextContainer>
         <VerticalHeaderTextContainer>
-          <ButtonContainer
-            onClick={() => {
-              setModalContentMode("about");
-            }}
-          >
+          <ButtonContainer onClick={() => setModalContent(ContentEnum.ABOUT)}>
             <StyledTitle>About</StyledTitle>
           </ButtonContainer>
         </VerticalHeaderTextContainer>

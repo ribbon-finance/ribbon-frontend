@@ -76,36 +76,19 @@ const CommunityContentFooter = styled.div`
   font-size: 14px;
 `;
 
-const Footer = styled.div`
-  font-size: 12px;
-  color: ${colors.primaryText}52;
-  flex: 1;
-  text-align: center;
-  svg {
-    transition: all 0.2s ease-in-out;
-    margin-left: 4px;
-    opacity: 0.32;
-  }
-  > a {
-    color: ${colors.primaryText}52;
-    text-decoration: underline;
-    &:hover {
-      svg {
-        transform: translate(2px, -2px);
-      }
-    }
-  }
-`;
-
-export type ModalContentMode = "about" | "community" | undefined;
-
-interface ModalContentProps {
-  modalContentMode: ModalContentMode;
+export enum ContentEnum {
+  ABOUT = "ABOUT",
+  COMMUNITY = "COMMUNITY",
+  WALLET = "CONNECT WALLET",
 }
 
-export const ModalContent = ({ modalContentMode }: ModalContentProps) => {
+interface ModalContentProps {
+  content?: ContentEnum;
+}
+
+export const ModalContent = ({ content }: ModalContentProps) => {
   const modalContent = useMemo(() => {
-    if (modalContentMode === "about") {
+    if (content === ContentEnum.ABOUT) {
       return (
         <AboutContent>
           Lorem ipsum dolor sit amet, consectetur adipiscing elit ut aliquam,
@@ -118,7 +101,7 @@ export const ModalContent = ({ modalContentMode }: ModalContentProps) => {
         </AboutContent>
       );
     }
-    if (modalContentMode === "community") {
+    if (content === ContentEnum.COMMUNITY) {
       return (
         <CommunityContent>
           <CommunityContentRow
@@ -152,7 +135,7 @@ export const ModalContent = ({ modalContentMode }: ModalContentProps) => {
       );
     }
     return null;
-  }, [modalContentMode]);
+  }, [content]);
 
   return modalContent;
 };
