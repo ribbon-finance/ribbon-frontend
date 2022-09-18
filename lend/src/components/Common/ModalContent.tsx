@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { Title } from "shared/lib/designSystem";
 import colors from "shared/lib/designSystem/colors";
 import { URLS } from "shared/lib/constants/constants";
@@ -19,6 +19,12 @@ import theme from "../../designSystem/theme";
 import { useVaultsData } from "../../hooks/web3DataContext";
 import { useVaultAccountBalances } from "../../hooks/useVaultAccountBalances";
 import { formatBigNumber } from "../../utils/math";
+import TransactionStep from "../RbnClaim/TransactionStep";
+import usePoolFactoryContract from "../../hooks/usePoolFactoryContract";
+import { PoolFactory } from "../../codegen";
+import { usePendingTransactions } from "../../hooks/pendingTransactionsContext";
+import { getAssetColor } from "../../utils/asset";
+import { VaultAddressMap, VaultList } from "../../constants/constants";
 
 const TextContent = styled.div`
   color: ${colors.primaryText}A3;
@@ -90,7 +96,6 @@ export const ModalContent = ({ content }: ModalContentProps) => {
     if (content === ModalContentEnum.ABOUT) return <About />;
     if (content === ModalContentEnum.COMMUNITY) return <Community />;
     if (content === ModalContentEnum.WALLET) return <Wallet />;
-    if (content === ModalContentEnum.CLAIMRBN) return <ClaimRbn />;
     return null;
   }, [content]);
 
@@ -322,18 +327,81 @@ const Footer = styled.div`
   }
 `;
 
-enum ClaimRbnPageEnum {
+export enum ClaimRbnPageEnum {
   CLAIM_RBN,
+  TRANSACTION_STEP,
+  SUBMITTED_STEP,
+  SUCCESS_STEP,
 }
 
-const ClaimRbn = () => {
-  const [page, setPage] = useState<ClaimRbnPageEnum>(
-    ClaimRbnPageEnum.CLAIM_RBN
-  );
+interface ClaimRbnProps {
+  setRbnClaimStep: (step: ClaimRbnPageEnum) => void;
+  onHide: () => void;
+}
+
+export const ClaimRbn: React.FC<ClaimRbnProps> = ({
+  setRbnClaimStep,
+  onHide,
+}) => {
+  const { pendingTransactions, addPendingTransaction } =
+    usePendingTransactions();
+  const [txhash, setTxhash] = useState("");
   const { account } = useWeb3Wallet();
   const { loading, accountBalances } = useVaultAccountBalances();
   const claimableRbn = accountBalances.rbnClaimable;
   const claimedRbn = accountBalances.rbnClaimed;
+  const poolFactory = usePoolFactoryContract();
+
+  const [page, setPage] = useState<ClaimRbnPageEnum>(
+    ClaimRbnPageEnum.CLAIM_RBN
+  );
+
+  useEffect(() => {
+    // we check that the txhash and check if it had succeed
+    // so we can move to successmodal
+    if (page === ClaimRbnPageEnum.SUBMITTED_STEP && txhash !== "") {
+      const pendingTx = pendingTransactions.find((tx) => tx.txhash === txhash);
+      if (pendingTx && pendingTx.status) {
+        setTimeout(() => {
+          setPage(ClaimRbnPageEnum.SUCCESS_STEP);
+          setRbnClaimStep(ClaimRbnPageEnum.SUCCESS_STEP);
+        }, 300);
+      }
+    }
+  }, [pendingTransactions, txhash, page, setRbnClaimStep]);
+
+  const handleClickClaimButton = useCallback(async () => {
+    const pool = poolFactory as PoolFactory;
+
+    if (pool !== null) {
+      // // check illegal state transition
+      // if (step !== STEPS.confirmationStep - 1) return;
+      setPage(ClaimRbnPageEnum.TRANSACTION_STEP);
+      setRbnClaimStep(ClaimRbnPageEnum.TRANSACTION_STEP);
+      let addresses: string[] = [];
+      VaultList.forEach((pool) => {
+        addresses.push(VaultAddressMap[pool].lend);
+      });
+      try {
+        let res: any;
+        res = await pool.withdrawReward(addresses);
+
+        addPendingTransaction({
+          txhash: res.hash,
+          type: "claim",
+          amount: "200",
+        });
+
+        setTxhash(res.hash);
+        setRbnClaimStep(ClaimRbnPageEnum.SUBMITTED_STEP);
+        setPage(ClaimRbnPageEnum.SUBMITTED_STEP);
+      } catch (e) {
+        onHide();
+        console.error(e);
+      }
+    }
+  }, [addPendingTransaction, onHide, poolFactory, setRbnClaimStep]);
+
   const content = useMemo(() => {
     if (page === ClaimRbnPageEnum.CLAIM_RBN) {
       return (
@@ -367,7 +435,8 @@ const ClaimRbn = () => {
           </ClaimTextContent>
           <RbnButtonWrapper>
             <ClaimRbnButton
-              // onClick={() => setPage(WalletPageEnum.CONNECT_WALLET)}
+              // onClick={() => setPage(ClaimRbnPageEnum.TRANSACTION_STEP)}
+              onClick={() => handleClickClaimButton()}
             >
               Claim RBN
             </ClaimRbnButton>
@@ -392,9 +461,39 @@ const ClaimRbn = () => {
         </>
       );
     }
+    if (page === ClaimRbnPageEnum.TRANSACTION_STEP) {
+      return (
+        <>
+          <TransactionStep />
+        </>
+      );
+    }
+    if (page === ClaimRbnPageEnum.SUBMITTED_STEP) {
+      return (
+        <>
+          <TransactionStep txhash={txhash} color={getAssetColor("RBN")} />,
+        </>
+      );
+    }
+
+    if (page === ClaimRbnPageEnum.SUCCESS_STEP) {
+      return (
+        <>
+          {/* <TransactionStep txhash={txhash} color={getAssetColor("RBN")} />, */}
+        </>
+      );
+    }
 
     return <></>;
-  }, [account, claimableRbn, claimedRbn, loading, page]);
+  }, [
+    account,
+    claimableRbn,
+    claimedRbn,
+    handleClickClaimButton,
+    loading,
+    page,
+    txhash,
+  ]);
 
   return content;
 };

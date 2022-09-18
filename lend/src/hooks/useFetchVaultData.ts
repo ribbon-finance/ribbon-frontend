@@ -50,6 +50,7 @@ const useFetchVaultData = (): VaultData => {
         const active = Boolean(
           web3Active && isVaultSupportedOnChain(vault, chainId || 1)
         );
+
         const contract = getLendContract(library || provider, vault, active);
 
         if (!contract) {

@@ -3,7 +3,8 @@ import { Title } from "shared/lib/designSystem";
 import colors from "shared/lib/designSystem/colors";
 import { CloseIcon } from "shared/lib/assets/icons/icons";
 import styled from "styled-components";
-import { ModalContent } from "./ModalContent";
+import { ClaimRbn, ClaimRbnPageEnum, ModalContent } from "./ModalContent";
+import { useCallback, useState } from "react";
 
 const borderStyle = `1px solid ${colors.primaryText}1F`;
 
@@ -30,7 +31,7 @@ export enum ModalContentEnum {
   ABOUT = "ABOUT",
   COMMUNITY = "COMMUNITY",
   WALLET = "CONNECT WALLET",
-  CLAIMRBN = "CLAIM RBN"
+  CLAIMRBN = "CLAIM RBN",
 }
 
 interface InfoModalProps {
@@ -40,15 +41,68 @@ interface InfoModalProps {
 }
 
 const LendModal: React.FC<InfoModalProps> = ({ show, onHide, content }) => {
+  const [rbnClaimStep, setRbnClaimStep] = useState<ClaimRbnPageEnum>(
+    ClaimRbnPageEnum.CLAIM_RBN
+  );
+  const renderRbnClaimTitle = useCallback((rbnClaimStep: ClaimRbnPageEnum) => {
+    switch (rbnClaimStep) {
+      case 0:
+        return "CLAIM RBN";
+      case 1:
+        return "CONFIRM CLAIM";
+      case 2:
+        return "CLAIMING RBN";
+      case 3:
+        return "RBN CLAIMED";
+    }
+  }, []);
+
+  const renderContent = useCallback(
+    (content?: ModalContentEnum) => {
+      switch (content) {
+        case "ABOUT":
+        case "COMMUNITY":
+        case "CONNECT WALLET":
+          return (
+            <>
+              <Header>
+                <Title>{content}</Title>
+                <CloseButton onClick={onHide}>
+                  <CloseIcon />
+                </CloseButton>
+              </Header>
+              <ModalContent content={content} />
+            </>
+          );
+        case "CLAIM RBN":
+          return (
+            <>
+              <Header>
+                <Title>{renderRbnClaimTitle(rbnClaimStep)}</Title>
+                <CloseButton onClick={onHide}>
+                  <CloseIcon />
+                </CloseButton>
+              </Header>
+              <ClaimRbn onHide={onHide} setRbnClaimStep={setRbnClaimStep} />
+            </>
+          );
+        default:
+          return <></>;
+      }
+    },
+    [onHide, rbnClaimStep, renderRbnClaimTitle]
+  );
+
   return (
     <StyledModal centered show={show} maxWidth={343} onHide={onHide} backdrop>
-      <Header>
+      {renderContent(content)}
+      {/* <Header>
         <Title>{content}</Title>
         <CloseButton onClick={onHide}>
           <CloseIcon />
         </CloseButton>
       </Header>
-      <ModalContent content={content} />
+      <ModalContent content={content} /> */}
     </StyledModal>
   );
 };
