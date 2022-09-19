@@ -89,7 +89,7 @@ const WalletButtonText = styled(Title)<{ connected: boolean }>`
   }
 
   ${({ connected }) => {
-    return `color: ${connected ? colors.text : colors.green}`;
+    return `color: ${connected ? colors.primaryText : colors.green}`;
   }}
 `;
 
