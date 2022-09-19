@@ -21,7 +21,7 @@ import TransactionStep from "../RbnClaim/TransactionStep";
 import usePoolFactoryContract from "../../hooks/usePoolFactoryContract";
 import { PoolFactory } from "../../codegen";
 import { usePendingTransactions } from "../../hooks/pendingTransactionsContext";
-import { getAssetColor } from "../../utils/asset";
+import { getAssetColor, getAssetDecimals } from "../../utils/asset";
 import { VaultAddressMap, VaultList } from "../../constants/constants";
 import Logo from "shared/lib/assets/icons/logo";
 import {
@@ -605,6 +605,7 @@ export const ClaimRbn: React.FC<ClaimRbnProps> = ({
   const claimableRbn = accountBalances.rbnClaimable;
   const claimedRbn = accountBalances.rbnClaimed;
   const poolFactory = usePoolFactoryContract();
+  const rbnDecimals = getAssetDecimals("RBN");
   const [page, setPage] = useState<ClaimRbnPageEnum>(
     ClaimRbnPageEnum.CLAIM_RBN
   );
@@ -674,7 +675,7 @@ export const ClaimRbn: React.FC<ClaimRbnProps> = ({
               <StyledTitle>
                 {loading || !account
                   ? "---"
-                  : formatBigNumber(claimableRbn, 18, 2)}
+                  : formatBigNumber(claimableRbn, rbnDecimals, 2)}
               </StyledTitle>
             </div>
             <div className="d-flex w-100 flex-row align-items-center justify-content-between mt-4">
@@ -684,15 +685,12 @@ export const ClaimRbn: React.FC<ClaimRbnProps> = ({
               <StyledTitle>
                 {loading || !account
                   ? "---"
-                  : formatBigNumber(claimedRbn, 18, 2)}
+                  : formatBigNumber(claimedRbn, rbnDecimals, 2)}
               </StyledTitle>
             </div>
           </ClaimTextContent>
           <RbnButtonWrapper>
-            <ClaimRbnButton
-              // onClick={() => setPage(ClaimRbnPageEnum.TRANSACTION_STEP)}
-              onClick={() => handleClickClaimButton()}
-            >
+            <ClaimRbnButton onClick={() => handleClickClaimButton()}>
               Claim RBN
             </ClaimRbnButton>
             <LearnMoreContainer>
@@ -744,6 +742,7 @@ export const ClaimRbn: React.FC<ClaimRbnProps> = ({
     handleClickClaimButton,
     loading,
     page,
+    rbnDecimals,
     txhash,
   ]);
 
