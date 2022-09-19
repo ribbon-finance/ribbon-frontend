@@ -202,7 +202,7 @@ export const FooterButton = styled(Button)<{ isActive?: boolean }>`
 const Footer = ({ activePage, setPage }: FooterProps) => {
   const vaultDatas = useVaultsData();
   const usdcDecimals = getAssetDecimals("USDC");
-  const filteredList = VaultList.filter(
+  const positionsCount = VaultList.filter(
     (pool) =>
       !isPracticallyZero(
         vaultDatas.data[pool].vaultBalanceInAsset,
@@ -227,7 +227,7 @@ const Footer = ({ activePage, setPage }: FooterProps) => {
           isActive={activePage === PageEnum.POSITIONS}
           onClick={() => setPage(PageEnum.POSITIONS)}
         >
-          Positions({filteredList})
+          Positions({positionsCount})
         </FooterButton>
       </Col>
     </FooterRow>
