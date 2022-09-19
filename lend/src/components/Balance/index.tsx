@@ -4,7 +4,7 @@ import useWeb3Wallet from "../../hooks/useWeb3Wallet";
 import styled, { css } from "styled-components";
 import { Title, Subtitle, Button } from "../../designSystem";
 import { useVaultAccountBalances } from "../../hooks/useVaultAccountBalances";
-import { getAssetLogo } from "../../utils/asset";
+import { getAssetDecimals, getAssetLogo } from "../../utils/asset";
 import { formatBigNumber, isPracticallyZero } from "../../utils/math";
 import { useMemo, useState } from "react";
 import { useVaultTotalDeposits } from "../../hooks/useVaultTotalDeposits";
@@ -97,7 +97,8 @@ export const Balance = () => {
   const yourBalance = accountBalances.totalBalance;
   const rbnRewards = accountBalances.rbnEarned;
   const yourDeposits = useVaultTotalDeposits();
-  const decimals = 6;
+  const decimals = getAssetDecimals("USDC");
+
   const roi = useMemo(() => {
     if (
       isPracticallyZero(yourDeposits, decimals) ||
@@ -111,13 +112,13 @@ export const Balance = () => {
         parseFloat(formatUnits(yourDeposits, decimals))) *
       100
     );
-  }, [yourDeposits, yourBalance]);
+  }, [yourDeposits, decimals, yourBalance]);
   const [triggerClaimModal, setClaimModal] = useState<boolean>(false);
 
   return (
     <>
       <LendModal
-        show={Boolean(triggerClaimModal)}
+        show={triggerClaimModal}
         onHide={() => setClaimModal(false)}
         content={ModalContentEnum.CLAIMRBN}
       />

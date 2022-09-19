@@ -66,6 +66,7 @@ const WalletButton = styled.div`
   height: 100%;
   justify-content: center;
   cursor: pointer;
+  border-radius: 0;
 
   > * {
     margin: auto 0;
