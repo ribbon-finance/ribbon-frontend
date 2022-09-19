@@ -118,6 +118,11 @@ const links = {
   ] as Array<Link>,
   data: [
     {
+      title: "COINGECKO",
+      to: URLS.coingecko,
+      external: true,
+    },
+    {
       title: "TOKEN TERMINAL",
       to: URLS.tokenterminal,
       external: true,
