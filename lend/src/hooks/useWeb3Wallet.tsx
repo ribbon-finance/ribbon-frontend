@@ -34,7 +34,7 @@ interface Web3WalletData {
 }
 
 export const useWeb3Wallet = (): Web3WalletData => {
-  const [chain, setChain] = useChain();
+  const [, setChain] = useChain();
   const [chainToSwitch, setChainToSwitch] = useState<Chains | null>(null);
   const [connectingWallet, setConnectingWallet] = useState<Wallet>();
   const [connectedWallet, setConnectedWallet] = useState<Wallet>();

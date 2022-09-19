@@ -286,7 +286,7 @@ interface WalletPageProps {
 const WalletPage = ({ onHide }: WalletPageProps) => {
   const [page, setPage] = useState<WalletPageEnum>(WalletPageEnum.DISCLAIMER);
   const [selectedWallet, setWallet] = useState<EthereumWallet>();
-  const { active, account, activate, deactivate } = useWeb3Wallet();
+  const { active, activate, deactivate } = useWeb3Wallet();
 
   useEffect(() => {
     setTimeout(() => {

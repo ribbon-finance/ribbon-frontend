@@ -1,5 +1,4 @@
 import { providers } from "ethers";
-import { CHAINID } from "./env";
 
 // This error code indicates that
 enum ChainCodeErrorEnum {
