@@ -230,6 +230,7 @@ const ContinueButton = styled(Button)`
   background-color: ${colors.primaryText};
   color: #000000;
   height: 64px;
+  border-radius: 0;
 `;
 
 const ConnectButton = styled(Button)`
@@ -238,6 +239,7 @@ const ConnectButton = styled(Button)`
   border: none;
   padding: 12px 30px;
   height: 64px;
+  border-radius: 0;
 
   &:disabled {
     opacity: 0.6 !important;
