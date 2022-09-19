@@ -34,6 +34,7 @@ import { Chains } from "../../constants/constants";
 import { AssetsList } from "../../store/types";
 import { getAssetDisplay, getAssetLogo } from "../../utils/asset";
 import currency from "currency.js";
+import { useAssetBalances } from "../../hooks/useAssetBalance";
 
 const TextContent = styled.div`
   color: ${colors.primaryText}A3;
@@ -265,7 +266,7 @@ const AssetRowWrapper = styled.div`
 
 const AssetRow = styled.div`
   display: flex;
-  padding: 24px;
+  padding: 10px;
 `;
 
 const AssetStat = styled.div`
@@ -298,7 +299,7 @@ const WalletPage = ({ onHide }: WalletPageProps) => {
   const [page, setPage] = useState<WalletPageEnum>(WalletPageEnum.DISCLAIMER);
   const [selectedWallet, setWallet] = useState<EthereumWallet>();
   const { active, activate, deactivate } = useWeb3Wallet();
-
+  const balances = useAssetBalances();
   useEffect(() => {
     setTimeout(() => {
       if (active) setPage(WalletPageEnum.ACCOUNT);
@@ -403,13 +404,17 @@ const WalletPage = ({ onHide }: WalletPageProps) => {
             {AssetsList.map((asset) => {
               const Logo = getAssetLogo(asset);
               const name = getAssetDisplay(asset);
-
+              const decimals = getAssetDecimals(asset);
               return (
                 <AssetRow>
                   <Logo height={40} width={40} />
                   <AssetStat>
                     <label>{name} Balance</label>
-                    <span>{currency(0).format({ symbol: "" })}</span>
+                    <span>
+                      {currency(
+                        formatBigNumber(balances[asset], decimals, 2)
+                      ).format({ symbol: "" })}
+                    </span>
                   </AssetStat>
                 </AssetRow>
               );
@@ -431,14 +436,14 @@ const WalletPage = ({ onHide }: WalletPageProps) => {
     }
 
     return <></>;
-  }, [deactivate, onActivate, onHide, page, selectedWallet]);
+  }, [balances, deactivate, onActivate, onHide, page, selectedWallet]);
 
   return content;
 };
 
 const LogoContent = styled.div<{ padding?: number; height?: number }>`
   width: 100%;
-  height:   height: ${(props) =>
+  height: ${(props) =>
     props.padding !== undefined ? `${props.height}px` : ``};
   padding: ${(props) =>
     props.padding !== undefined
