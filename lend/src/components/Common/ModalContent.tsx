@@ -1,12 +1,8 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { Title } from "shared/lib/designSystem";
 import colors from "shared/lib/designSystem/colors";
-import {
-  getExplorerName,
-  getExplorerURI,
-  URLS,
-} from "shared/lib/constants/constants";
-import styled, { css } from "styled-components";
+import { getExplorerURI, URLS } from "shared/lib/constants/constants";
+import styled, { css, keyframes } from "styled-components";
 import ExternalLinkIcon from "./ExternalLinkIcon";
 import twitter from "../../assets/icons/socials/twitter.svg";
 import etherscan from "../../assets/icons/socials/etherscan.svg";
@@ -16,8 +12,17 @@ import disconnect from "../../assets/icons/disconnect.svg";
 import { ProductDisclaimer } from "../ProductDisclaimer";
 import { ModalContentEnum } from "./LendModal";
 import WalletLogo from "shared/lib/components/Wallet/WalletLogo";
-import { Button } from "../../designSystem";
+import { Button, PrimaryText, SecondaryText } from "../../designSystem";
 import { motion } from "framer-motion";
+import { useVaultAccountBalances } from "../../hooks/useVaultAccountBalances";
+import { formatBigNumber } from "../../utils/math";
+import TransactionStep from "../RbnClaim/TransactionStep";
+import usePoolFactoryContract from "../../hooks/usePoolFactoryContract";
+import { PoolFactory } from "../../codegen";
+import { usePendingTransactions } from "../../hooks/pendingTransactionsContext";
+import { getAssetColor } from "../../utils/asset";
+import { VaultAddressMap, VaultList } from "../../constants/constants";
+import Logo from "shared/lib/assets/icons/logo";
 import {
   EthereumWallet,
   ETHEREUM_WALLETS,
@@ -205,7 +210,6 @@ const ButtonWrapper = styled.div`
   display: block;
   width: 100%;
   padding: 16px 24px;
-
   > * {
     width: 100%;
   }
@@ -354,7 +358,321 @@ const WalletPage = ({ onHide }: WalletPageProps) => {
     }
 
     return <></>;
-  }, [deactivate, onActivate, page, selectedWallet]);
+  }, [deactivate, onActivate, onHide, page, selectedWallet]);
+
+  return content;
+};
+
+const LogoContent = styled.div<{ padding?: number; height?: number }>`
+  width: 100%;
+  height:   height: ${(props) =>
+    props.padding !== undefined ? `${props.height}px` : ``};
+  padding: ${(props) =>
+    props.padding !== undefined
+      ? `${props.padding}px`
+      : `40px 132px 40px 132px`};
+  border-bottom: 1px solid ${colors.primaryText}1F;
+  background: linear-gradient(
+    102.28deg,
+    rgba(252, 10, 84, 0.04) 0%,
+    rgba(252, 10, 84, 0) 100%
+  );
+`;
+
+const StyledTitle = styled(Title)<{ color?: string; position?: string }>`
+  color: ${(props) => props.color};
+  text-align: right;
+`;
+
+const StyledSecondaryText = styled(SecondaryText)<{ color?: string }>`
+  color: ${(props) => props.color};
+  font-size: 14px;
+  font-weight: 500;
+`;
+
+const ClaimTextContent = styled.div`
+  padding: 24px 16px;
+`;
+
+const RbnButtonWrapper = styled.div`
+  display: block;
+  width: 100%;
+  padding-left: 16px;
+  padding-right: 16px;
+  > * {
+    width: 100%;
+  }
+`;
+
+const ClaimRbnButton = styled(Button)`
+  background: #fc0a541f;
+  color: #fc0a54;
+  border: none;
+  border-radius: 0;
+  padding: 20px;
+`;
+
+const LearnMoreContainer = styled.div`
+  display: flex;
+  width: 100%;
+  text-align: center;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 16px;
+`;
+
+const Footer = styled.div`
+  display: flex;
+  margin-top: 20px;
+  font-size: 14px;
+
+  color: ${colors.primaryText};
+
+  svg {
+    transition: all 0.2s ease-in-out;
+  }
+
+  > a {
+    color: ${colors.primaryText};
+    text-decoration: underline;
+    &:hover {
+      svg {
+        transform: translate(2px, -2px);
+      }
+    }
+  }
+`;
+
+const BottomTextContainer = styled.div`
+  display: flex;
+  flex: 1;
+  justify-content: center;
+  width: 100%;
+  margin-bottom: 24px;
+  margin-top: 24px;
+`;
+
+const BottomText = styled(PrimaryText)`
+  color: rgba(255, 255, 255, 0.8);
+`;
+
+const livelyAnimation = (position: "top" | "bottom") => keyframes`
+  0% {
+    background-position-x: ${position === "top" ? 0 : 100}%;
+  }
+
+  50% {
+    background-position-x: ${position === "top" ? 100 : 0}%; 
+  }
+
+  100% {
+    background-position-x: ${position === "top" ? 0 : 100}%;
+  }
+`;
+
+const FrameBar = styled.div<{
+  color: string;
+  position: "top" | "bottom";
+  height: number;
+}>`
+  width: 100%;
+  height: ${(props) => props.height}px;
+  background: ${(props) => `linear-gradient(
+    270deg,
+    ${props.color}00 5%,
+    ${props.color} 50%,
+    ${props.color}00 95%
+  )`};
+  background-size: 200%;
+  animation: 10s ${(props) => livelyAnimation(props.position)} linear infinite;
+
+  &:before {
+    content: "";
+    z-index: -1;
+    position: absolute;
+    ${(props) => props.position}: 0;
+    right: 0;
+    left: 0;
+    background: inherit;
+    filter: blur(${(props) => props.height * 4}px);
+    opacity: 1;
+    transition: opacity 0.3s;
+    height: ${(props) => props.height * 2}px;
+  }
+`;
+
+const LogoContainer = styled.div`
+  width: 100%;
+`;
+
+const StyledExternalLinkIcon = styled(ExternalLinkIcon)`
+  margin-left: 4px;
+`;
+export enum ClaimRbnPageEnum {
+  CLAIM_RBN,
+  TRANSACTION_STEP,
+  SUCCESS_STEP,
+}
+
+interface ClaimRbnProps {
+  setRbnClaimStep: (step: ClaimRbnPageEnum) => void;
+  onHide: () => void;
+}
+
+export const ClaimRbn: React.FC<ClaimRbnProps> = ({
+  setRbnClaimStep,
+  onHide,
+}) => {
+  const { pendingTransactions, addPendingTransaction } =
+    usePendingTransactions();
+
+  const [txhash, setTxhash] = useState("");
+  const { account } = useWeb3Wallet();
+  const { loading, accountBalances } = useVaultAccountBalances();
+  const claimableRbn = accountBalances.rbnClaimable;
+  const claimedRbn = accountBalances.rbnClaimed;
+  const poolFactory = usePoolFactoryContract();
+  const [page, setPage] = useState<ClaimRbnPageEnum>(
+    ClaimRbnPageEnum.CLAIM_RBN
+  );
+
+  useEffect(() => {
+    // we check that the txhash and check if it had succeed
+    // so we can move to successmodal
+    if (page === ClaimRbnPageEnum.TRANSACTION_STEP && txhash !== "") {
+      const pendingTx = pendingTransactions.find((tx) => tx.txhash === txhash);
+
+      if (pendingTx && pendingTx.status) {
+        setTimeout(() => {
+          setTxhash("");
+          setPage(ClaimRbnPageEnum.SUCCESS_STEP);
+          setRbnClaimStep(ClaimRbnPageEnum.SUCCESS_STEP);
+        }, 300);
+      }
+    }
+  }, [pendingTransactions, txhash, page, setRbnClaimStep]);
+
+  const handleClickClaimButton = useCallback(async () => {
+    const pool = poolFactory as PoolFactory;
+    if (pool !== null) {
+      setPage(ClaimRbnPageEnum.TRANSACTION_STEP);
+      setRbnClaimStep(ClaimRbnPageEnum.TRANSACTION_STEP);
+      let addresses: string[] = [];
+      VaultList.forEach((pool) => {
+        addresses.push(VaultAddressMap[pool].lend);
+      });
+      try {
+        let res: any;
+        res = await pool.withdrawReward(addresses);
+
+        const withdrawAmount = formatBigNumber(claimableRbn, 18);
+        addPendingTransaction({
+          txhash: res.hash,
+          type: "claim",
+          amount: withdrawAmount,
+        });
+
+        setTxhash(res.hash);
+      } catch (e) {
+        onHide();
+        console.error(e);
+      }
+    }
+  }, [
+    addPendingTransaction,
+    claimableRbn,
+    onHide,
+    poolFactory,
+    setRbnClaimStep,
+  ]);
+
+  const content = useMemo(() => {
+    if (page === ClaimRbnPageEnum.CLAIM_RBN) {
+      return (
+        <>
+          <LogoContent height={160}>
+            <Logo width={80} height={80} />
+          </LogoContent>
+          <ClaimTextContent>
+            <div className="d-flex w-100 flex-row align-items-center justify-content-between">
+              <StyledSecondaryText color={colors.tertiaryText}>
+                Unclaimed RBN
+              </StyledSecondaryText>
+              <StyledTitle>
+                {loading || !account
+                  ? "---"
+                  : formatBigNumber(claimableRbn, 18, 2)}
+              </StyledTitle>
+            </div>
+            <div className="d-flex w-100 flex-row align-items-center justify-content-between mt-4">
+              <StyledSecondaryText color={colors.tertiaryText}>
+                Claimed RBN
+              </StyledSecondaryText>
+              <StyledTitle>
+                {loading || !account
+                  ? "---"
+                  : formatBigNumber(claimedRbn, 18, 2)}
+              </StyledTitle>
+            </div>
+          </ClaimTextContent>
+          <RbnButtonWrapper>
+            <ClaimRbnButton
+              // onClick={() => setPage(ClaimRbnPageEnum.TRANSACTION_STEP)}
+              onClick={() => handleClickClaimButton()}
+            >
+              Claim RBN
+            </ClaimRbnButton>
+            <LearnMoreContainer>
+              <Footer>
+                <a
+                  href={URLS.ribbonFinance}
+                  target="_blank"
+                  rel="noreferrer noopener"
+                >
+                  Learn more about RBN
+                  <StyledExternalLinkIcon />
+                </a>
+              </Footer>
+            </LearnMoreContainer>
+          </RbnButtonWrapper>
+        </>
+      );
+    }
+    if (page === ClaimRbnPageEnum.TRANSACTION_STEP) {
+      return (
+        <>
+          <TransactionStep txhash={txhash} color={getAssetColor("RBN")} />
+        </>
+      );
+    }
+
+    if (page === ClaimRbnPageEnum.SUCCESS_STEP) {
+      return (
+        <>
+          <LogoContainer>
+            <FrameBar color={colors.asset.RBN} position="top" height={4} />
+            <LogoContent>
+              <Logo width={96} height={96} />
+            </LogoContent>
+            <FrameBar color={colors.asset.RBN} position="bottom" height={4} />
+          </LogoContainer>
+          <BottomTextContainer>
+            <BottomText>Thank you for being part of the community</BottomText>
+          </BottomTextContainer>
+        </>
+      );
+    }
+
+    return <></>;
+  }, [
+    account,
+    claimableRbn,
+    claimedRbn,
+    handleClickClaimButton,
+    loading,
+    page,
+    txhash,
+  ]);
 
   return content;
 };

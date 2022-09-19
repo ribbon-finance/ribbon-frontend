@@ -50,6 +50,7 @@ const useFetchVaultData = (): VaultData => {
         const active = Boolean(
           web3Active && isVaultSupportedOnChain(vault, chainId || 1)
         );
+
         const contract = getLendContract(library || provider, vault, active);
 
         if (!contract) {
@@ -93,14 +94,14 @@ const useFetchVaultData = (): VaultData => {
         );
 
         const [
-          deposits,
+          poolSize,
           utilizationRate,
           vaultMaxWithdrawableShares,
           currentExchangeRate,
           totalSupply,
           supplyRate,
           rewardPerSecond,
-          vaultBalanceInAsset,
+          vaultBalance,
           accumulativeReward,
           withdrawableReward,
           withdrawnReward,
@@ -110,14 +111,14 @@ const useFetchVaultData = (): VaultData => {
 
         return {
           vault,
-          deposits,
+          poolSize,
           utilizationRate,
           vaultMaxWithdrawableShares,
           currentExchangeRate,
           totalSupply,
           supplyRate,
           rewardPerSecond,
-          vaultBalanceInAsset,
+          vaultBalance,
           accumulativeReward,
           withdrawableReward,
           withdrawnReward,
@@ -154,18 +155,18 @@ const useFetchVaultData = (): VaultData => {
                   withdrawableReward: withdrawableReward,
                   withdrawnReward: withdrawnReward,
                   vaultBalanceInAsset:
-                    response.deposits && currentExchangeRate
+                    response.vaultBalance && currentExchangeRate
                       ? currentExchangeRate
+                          .mul(response.vaultBalance)
                           .div(BigNumber.from(10).pow(18))
-                          .mul(response.deposits)
                       : BigNumber.from(0),
                   vaultMaxWithdrawAmount:
                     totalSupply &&
                     vaultMaxWithdrawableShares &&
-                    response.deposits &&
+                    response.poolSize &&
                     !totalSupply.isZero()
                       ? vaultMaxWithdrawableShares
-                          .mul(response.deposits)
+                          .mul(response.poolSize)
                           .div(totalSupply)
                       : BigNumber.from(0),
                 },

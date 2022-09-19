@@ -130,7 +130,7 @@ export const defaultVaultActivitiesData: VaultActivitiesData =
   ) as VaultActivitiesData;
 
 export interface UnconnectedVaultData {
-  deposits: BigNumber;
+  poolSize: BigNumber;
   utilizationRate: BigNumber;
   vaultLimit: BigNumber;
   vaultMaxWithdrawAmount: BigNumber;
@@ -161,7 +161,7 @@ export const defaultVaultData: VaultData = {
     VaultList.map((vault) => [
       vault,
       {
-        deposits: BigNumber.from("0"),
+        poolSize: BigNumber.from("0"),
         utilizationRate: BigNumber.from("0"),
         vaultLimit: BigNumber.from("0"),
         vaultBalanceInAsset: BigNumber.from("0"),

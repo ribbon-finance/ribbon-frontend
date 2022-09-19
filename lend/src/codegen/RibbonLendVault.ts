@@ -59,8 +59,8 @@ export interface RibbonLendVaultInterface extends utils.Interface {
     "principal()": FunctionFragment;
     "processAuctionStart()": FunctionFragment;
     "processDebtClaim()": FunctionFragment;
-    "provide(uint256)": FunctionFragment;
-    "provideWithPermit(uint256,uint256,uint8,bytes32,bytes32)": FunctionFragment;
+    "provide(uint256,address)": FunctionFragment;
+    "provideWithPermit(uint256,address,uint256,uint8,bytes32,bytes32)": FunctionFragment;
     "provisionalDefaultUtilization()": FunctionFragment;
     "redeem(uint256)": FunctionFragment;
     "redeemCurrency(uint256)": FunctionFragment;
@@ -212,11 +212,18 @@ export interface RibbonLendVaultInterface extends utils.Interface {
   ): string;
   encodeFunctionData(
     functionFragment: "provide",
-    values: [BigNumberish]
+    values: [BigNumberish, string]
   ): string;
   encodeFunctionData(
     functionFragment: "provideWithPermit",
-    values: [BigNumberish, BigNumberish, BigNumberish, BytesLike, BytesLike]
+    values: [
+      BigNumberish,
+      string,
+      BigNumberish,
+      BigNumberish,
+      BytesLike,
+      BytesLike
+    ]
   ): string;
   encodeFunctionData(
     functionFragment: "provisionalDefaultUtilization",
@@ -530,7 +537,7 @@ export interface RibbonLendVaultInterface extends utils.Interface {
     "Borrowed(uint256,address)": EventFragment;
     "Closed()": EventFragment;
     "Initialized(uint8)": EventFragment;
-    "Provided(address,uint256,uint256)": EventFragment;
+    "Provided(address,address,uint256,uint256)": EventFragment;
     "Redeemed(address,uint256,uint256)": EventFragment;
     "Repaid(uint256)": EventFragment;
     "RewardPerSecondSet(uint256)": EventFragment;
@@ -573,8 +580,13 @@ export type InitializedEvent = TypedEvent<[number], { version: number }>;
 export type InitializedEventFilter = TypedEventFilter<InitializedEvent>;
 
 export type ProvidedEvent = TypedEvent<
-  [string, BigNumber, BigNumber],
-  { provider: string; currencyAmount: BigNumber; tokens: BigNumber }
+  [string, string, BigNumber, BigNumber],
+  {
+    provider: string;
+    referral: string;
+    currencyAmount: BigNumber;
+    tokens: BigNumber;
+  }
 >;
 
 export type ProvidedEventFilter = TypedEventFilter<ProvidedEvent>;
@@ -757,11 +769,13 @@ export interface RibbonLendVault extends BaseContract {
 
     provide(
       currencyAmount: BigNumberish,
+      referral: string,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
     provideWithPermit(
       currencyAmount: BigNumberish,
+      referral: string,
       deadline: BigNumberish,
       v: BigNumberish,
       r: BytesLike,
@@ -1012,11 +1026,13 @@ export interface RibbonLendVault extends BaseContract {
 
   provide(
     currencyAmount: BigNumberish,
+    referral: string,
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
   provideWithPermit(
     currencyAmount: BigNumberish,
+    referral: string,
     deadline: BigNumberish,
     v: BigNumberish,
     r: BytesLike,
@@ -1255,11 +1271,13 @@ export interface RibbonLendVault extends BaseContract {
 
     provide(
       currencyAmount: BigNumberish,
+      referral: string,
       overrides?: CallOverrides
     ): Promise<void>;
 
     provideWithPermit(
       currencyAmount: BigNumberish,
+      referral: string,
       deadline: BigNumberish,
       v: BigNumberish,
       r: BytesLike,
@@ -1406,13 +1424,15 @@ export interface RibbonLendVault extends BaseContract {
     "Initialized(uint8)"(version?: null): InitializedEventFilter;
     Initialized(version?: null): InitializedEventFilter;
 
-    "Provided(address,uint256,uint256)"(
+    "Provided(address,address,uint256,uint256)"(
       provider?: string | null,
+      referral?: string | null,
       currencyAmount?: null,
       tokens?: null
     ): ProvidedEventFilter;
     Provided(
       provider?: string | null,
+      referral?: string | null,
       currencyAmount?: null,
       tokens?: null
     ): ProvidedEventFilter;
@@ -1577,11 +1597,13 @@ export interface RibbonLendVault extends BaseContract {
 
     provide(
       currencyAmount: BigNumberish,
+      referral: string,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
     provideWithPermit(
       currencyAmount: BigNumberish,
+      referral: string,
       deadline: BigNumberish,
       v: BigNumberish,
       r: BytesLike,
@@ -1848,11 +1870,13 @@ export interface RibbonLendVault extends BaseContract {
 
     provide(
       currencyAmount: BigNumberish,
+      referral: string,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 
     provideWithPermit(
       currencyAmount: BigNumberish,
+      referral: string,
       deadline: BigNumberish,
       v: BigNumberish,
       r: BytesLike,
