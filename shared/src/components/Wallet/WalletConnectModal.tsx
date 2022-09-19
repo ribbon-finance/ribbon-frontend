@@ -13,13 +13,7 @@ import {
 
 import { ConnectorButtonProps, connectorType } from "./types";
 import Indicator from "../Indicator/Indicator";
-import {
-  BaseButton,
-  BaseLink,
-  BaseModalContentColumn,
-  BaseText,
-  Title,
-} from "../../designSystem";
+import { BaseButton, BaseModalContentColumn, Title } from "../../designSystem";
 import colors from "../../designSystem/colors";
 import theme from "../../designSystem/theme";
 import {
@@ -30,6 +24,7 @@ import {
 import useLoadingText from "../../hooks/useLoadingText";
 import BasicModal from "../Common/BasicModal";
 import useConnectWalletModal from "../../hooks/useConnectWalletModal";
+import LearnMoreWallet from "./LearnMoreWallet";
 
 const ConnectorButton = styled(BaseButton)<ConnectorButtonProps>`
   background-color: ${colors.background.three};
@@ -74,21 +69,6 @@ const IndicatorContainer = styled.div`
 
 const ConnectorButtonText = styled(Title)`
   margin-left: 16px;
-`;
-
-const LearnMoreLink = styled(BaseLink)`
-  &:hover {
-    opacity: ${theme.hover.opacity};
-  }
-`;
-
-const LearnMoreText = styled(BaseText)`
-  text-decoration: underline;
-`;
-
-const LearnMoreArrow = styled(BaseText)`
-  text-decoration: none;
-  margin-left: 5px;
 `;
 
 const StyledWalletLinkIcon = styled(WalletLinkIcon)`
@@ -230,15 +210,7 @@ const WalletConnectModal: React.FC = () => {
           {renderConnectorButton("walletLink", "COINBASE WALLET")}
         </BaseModalContentColumn>
         <BaseModalContentColumn marginTop={16}>
-          <LearnMoreLink
-            to="https://ethereum.org/en/wallets/"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="w-100"
-          >
-            <LearnMoreText>Learn more about wallets</LearnMoreText>
-            <LearnMoreArrow>&#8594;</LearnMoreArrow>
-          </LearnMoreLink>
+          <LearnMoreWallet />
         </BaseModalContentColumn>
       </>
     </BasicModal>

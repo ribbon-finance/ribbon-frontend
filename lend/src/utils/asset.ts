@@ -1,6 +1,6 @@
 import React from "react";
 import styled, { StyledComponent } from "styled-components";
-import { USDCLogo } from "shared/lib/assets/icons/erc20Assets";
+import { USDCLogo, WETHLogo } from "shared/lib/assets/icons/erc20Assets";
 import Logo from "shared/lib/assets/icons/logo";
 import { Chains, VaultOptions } from "../constants/constants";
 import colors from "shared/lib/designSystem/colors";
@@ -42,7 +42,12 @@ export const getChainByVaultOption = (vault: VaultOptions): Chains => {
 };
 
 export const getAssetDisplay = (asset: Assets): string => {
-  return asset;
+  switch (asset) {
+    case "WETH":
+      return "ETH";
+    default:
+      return asset;
+  }
 };
 
 export const getAssetDecimals = (asset: Assets): number => {
@@ -85,9 +90,6 @@ export const getWalletColor = (wallet: Wallets): string =>
   colors.wallets[wallet];
 
 const ColoredUSDCLogo = styled(USDCLogo)<{ backgroundColor?: string }>`
-  margin: -8px;
-  width: 100%;
-
   && .background {
     fill: ${(props) =>
       props.backgroundColor ? props.backgroundColor : `${colors.asset.USDC}29`};
@@ -123,6 +125,8 @@ export const getAssetLogo: (asset: Assets) =>
   switch (asset) {
     case "USDC":
       return ColoredUSDCLogo;
+    case "WETH":
+      return WETHLogo;
     default:
       return Logo;
   }

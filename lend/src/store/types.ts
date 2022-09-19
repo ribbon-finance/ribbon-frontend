@@ -15,7 +15,7 @@ export type VaultDataResponse = {
   error: VaultDataErrors | null;
 } & UnconnectedVaultData;
 
-export const AssetsList = ["WETH", "USDC", "RBN"] as const;
+export const AssetsList = ["RBN", "WETH", "USDC"] as const;
 export type Assets = typeof AssetsList[number];
 
 export const WalletsList = ["Metamask", "WalletConnect", "WalletLink"] as const;

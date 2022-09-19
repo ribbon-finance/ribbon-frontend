@@ -1,11 +1,7 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { Title } from "shared/lib/designSystem";
 import colors from "shared/lib/designSystem/colors";
-import {
-  getExplorerName,
-  getExplorerURI,
-  URLS,
-} from "shared/lib/constants/constants";
+import { getExplorerURI, URLS } from "shared/lib/constants/constants";
 import styled, { css } from "styled-components";
 import ExternalLinkIcon from "./ExternalLinkIcon";
 import twitter from "../../assets/icons/socials/twitter.svg";
@@ -16,6 +12,7 @@ import disconnect from "../../assets/icons/disconnect.svg";
 import { ProductDisclaimer } from "../ProductDisclaimer";
 import { ModalContentEnum } from "./LendModal";
 import WalletLogo from "shared/lib/components/Wallet/WalletLogo";
+import LearnMoreWallet from "shared/lib/components/Wallet/LearnMoreWallet";
 import { Button } from "../../designSystem";
 import { motion } from "framer-motion";
 import {
@@ -25,6 +22,9 @@ import {
 } from "shared/lib/models/wallets";
 import useWeb3Wallet from "../../hooks/useWeb3Wallet";
 import { Chains } from "../../constants/constants";
+import { AssetsList } from "../../store/types";
+import { getAssetDisplay, getAssetLogo } from "../../utils/asset";
+import currency from "currency.js";
 
 const TextContent = styled.div`
   color: ${colors.primaryText}A3;
@@ -205,6 +205,12 @@ const ButtonWrapper = styled.div`
   display: block;
   width: 100%;
   padding: 16px 24px;
+  text-align: center;
+
+  a {
+    display: block;
+    margin-top: 16px;
+  }
 
   > * {
     width: 100%;
@@ -214,6 +220,7 @@ const ButtonWrapper = styled.div`
 const ContinueButton = styled(Button)`
   background-color: ${colors.primaryText};
   color: #000000;
+  height: 64px;
 `;
 
 const ConnectButton = styled(Button)`
@@ -221,6 +228,7 @@ const ConnectButton = styled(Button)`
   color: ${colors.buttons.secondaryText};
   border: none;
   padding: 12px 30px;
+  height: 64px;
 
   &:disabled {
     opacity: 0.6 !important;
@@ -237,6 +245,37 @@ const ContentLogoWrapper = styled.div`
   img {
     width: 24px;
     height: 24px;
+  }
+`;
+
+const AssetRowWrapper = styled.div`
+  border-bottom: 1px solid ${colors.primaryText}1F;
+`;
+
+const AssetRow = styled.div`
+  display: flex;
+  padding: 24px;
+`;
+
+const AssetStat = styled.div`
+  display: block;
+  flex-direction: column;
+  text-transform: uppercase;
+  margin-left: 16px;
+
+  > * {
+    display: flex;
+    font-family: VCR;
+    line-height: 1;
+  }
+
+  label {
+    color: ${colors.tertiaryText};
+    font-size: 10px;
+  }
+
+  span {
+    color: white;
   }
 `;
 
@@ -311,6 +350,7 @@ const WalletPage = ({ onHide }: WalletPageProps) => {
             >
               Connect Wallet
             </ConnectButton>
+            <LearnMoreWallet />
           </ButtonWrapper>
         </>
       );
@@ -318,6 +358,16 @@ const WalletPage = ({ onHide }: WalletPageProps) => {
 
     if (page === WalletPageEnum.ACCOUNT) {
       const actions = [
+        {
+          img: etherscan,
+          title: "Change wallet",
+          showExternalIcon: false,
+          onClick: async () => {
+            await deactivate().then(() => {
+              setPage(WalletPageEnum.CONNECT_WALLET);
+            });
+          },
+        },
         {
           img: etherscan,
           title: "Etherscan",
@@ -329,7 +379,7 @@ const WalletPage = ({ onHide }: WalletPageProps) => {
           title: "Disconnect",
           showExternalIcon: false,
           onClick: async () => {
-            deactivate().then(() => {
+            await deactivate().then(() => {
               onHide();
             });
           },
@@ -338,6 +388,22 @@ const WalletPage = ({ onHide }: WalletPageProps) => {
 
       return (
         <>
+          <AssetRowWrapper>
+            {AssetsList.map((asset) => {
+              const Logo = getAssetLogo(asset);
+              const name = getAssetDisplay(asset);
+
+              return (
+                <AssetRow>
+                  <Logo height={40} width={40} />
+                  <AssetStat>
+                    <label>{name} Balance</label>
+                    <span>{currency(0).format({ symbol: "" })}</span>
+                  </AssetStat>
+                </AssetRow>
+              );
+            })}
+          </AssetRowWrapper>
           <ContentWrapper>
             {actions.map((action) => (
               <ContentRow onClick={() => action.onClick()}>
@@ -354,7 +420,7 @@ const WalletPage = ({ onHide }: WalletPageProps) => {
     }
 
     return <></>;
-  }, [deactivate, onActivate, page, selectedWallet]);
+  }, [deactivate, onActivate, onHide, page, selectedWallet]);
 
   return content;
 };
