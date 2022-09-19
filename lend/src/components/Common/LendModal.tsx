@@ -58,9 +58,9 @@ const LendModal: React.FC<InfoModalProps> = ({ show, onHide, content }) => {
   const renderContent = useCallback(
     (content?: ModalContentEnum) => {
       switch (content) {
-        case "ABOUT":
-        case "COMMUNITY":
-        case "CONNECT WALLET":
+        case ModalContentEnum.ABOUT:
+        case ModalContentEnum.COMMUNITY:
+        case ModalContentEnum.WALLET:
           return (
             <>
               <Header>
@@ -72,7 +72,7 @@ const LendModal: React.FC<InfoModalProps> = ({ show, onHide, content }) => {
               <ModalContent content={content} />
             </>
           );
-        case "CLAIM RBN":
+        case ModalContentEnum.CLAIMRBN:
           return (
             <>
               <Header>

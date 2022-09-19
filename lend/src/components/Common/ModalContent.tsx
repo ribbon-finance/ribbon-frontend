@@ -245,10 +245,14 @@ const Wallet = () => {
   return content;
 };
 
-const LogoContent = styled.div`
+const LogoContent = styled.div<{ padding?: number; height?: number }>`
   width: 100%;
-  height: 160px;
-  padding: 40px 132px 40px 132px;
+  height:   height: ${(props) =>
+    props.padding !== undefined ? `${props.height}px` : ``};
+  padding: ${(props) =>
+    props.padding !== undefined
+      ? `${props.padding}px`
+      : `40px 132px 40px 132px`};
   border-bottom: 1px solid ${colors.primaryText}1F;
   background: linear-gradient(
     102.28deg,
@@ -257,13 +261,14 @@ const LogoContent = styled.div`
   );
 `;
 
-const LogoContent2 = styled.div`
+const SuccessContainer = styled.div`
   width: 100%;
   padding: 124px;
 `;
 
-const StyledTitle = styled(Title)<{ color?: string }>`
+const StyledTitle = styled(Title)<{ color?: string; position?: string }>`
   color: ${(props) => props.color};
+  text-align: right;
 `;
 
 const StyledSecondaryText = styled(SecondaryText)<{ color?: string }>`
@@ -386,6 +391,10 @@ const FrameBar = styled.div<{
 const LogoContainer = styled.div`
   width: 100%;
 `;
+
+const StyledExternalLinkIcon = styled(ExternalLinkIcon)`
+  margin-left: 4px;
+`;
 export enum ClaimRbnPageEnum {
   CLAIM_RBN,
   TRANSACTION_STEP,
@@ -468,7 +477,7 @@ export const ClaimRbn: React.FC<ClaimRbnProps> = ({
     if (page === ClaimRbnPageEnum.CLAIM_RBN) {
       return (
         <>
-          <LogoContent>
+          <LogoContent height={160}>
             <Logo width={80} height={80} />
           </LogoContent>
           <ClaimTextContent>
@@ -476,8 +485,7 @@ export const ClaimRbn: React.FC<ClaimRbnProps> = ({
               <StyledSecondaryText color={colors.tertiaryText}>
                 Unclaimed RBN
               </StyledSecondaryText>
-              <StyledTitle className="text-right">
-                {" "}
+              <StyledTitle>
                 {loading || !account
                   ? "---"
                   : formatBigNumber(claimableRbn, 18, 2)}
@@ -487,8 +495,7 @@ export const ClaimRbn: React.FC<ClaimRbnProps> = ({
               <StyledSecondaryText color={colors.tertiaryText}>
                 Claimed RBN
               </StyledSecondaryText>
-              <StyledTitle className="text-right">
-                {" "}
+              <StyledTitle>
                 {loading || !account
                   ? "---"
                   : formatBigNumber(claimedRbn, 18, 2)}
@@ -510,12 +517,7 @@ export const ClaimRbn: React.FC<ClaimRbnProps> = ({
                   rel="noreferrer noopener"
                 >
                   Learn more about RBN
-                  <ExternalLinkIcon
-                    style={{
-                      marginLeft: "4px",
-                      marginRight: "4px",
-                    }}
-                  />
+                  <StyledExternalLinkIcon />
                 </a>
               </Footer>
             </LearnMoreContainer>
@@ -536,9 +538,9 @@ export const ClaimRbn: React.FC<ClaimRbnProps> = ({
         <>
           <LogoContainer>
             <FrameBar color={colors.asset.RBN} position="top" height={4} />
-            <LogoContent2>
+            <LogoContent>
               <Logo width={96} height={96} />
-            </LogoContent2>
+            </LogoContent>
             <FrameBar color={colors.asset.RBN} position="bottom" height={4} />
           </LogoContainer>
           <BottomTextContainer>
