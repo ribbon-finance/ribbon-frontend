@@ -8,31 +8,6 @@ import { Assets, Wallets } from "shared/lib/store/types";
 
 export const assetFilterList: Assets[] = ["WETH", "USDC"];
 
-export const isYieldAsset = (asset: Assets): boolean => {
-  switch (asset) {
-    case "sAVAX":
-    case "stETH":
-    case "rETH":
-    case "wstETH":
-    case "yvUSDC":
-      return true;
-    default:
-      return false;
-  }
-};
-
-export const getYieldAssetUnderlying = (asset: Assets): Assets | undefined => {
-  switch (asset) {
-    case "sAVAX":
-      return "WAVAX";
-    case "stETH":
-    case "wstETH":
-      return "WETH";
-    case "yvUSDC":
-      return "USDC";
-  }
-};
-
 export const getChainByAsset = (asset: Assets): Chains => {
   return Chains.Ethereum;
 };

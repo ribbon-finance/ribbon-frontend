@@ -5,7 +5,7 @@ import { Web3ReactProvider } from "@web3-react/core";
 import { Web3DataContextProvider } from "./hooks/web3DataContext";
 import "shared/lib/i18n/config";
 import { Web3ContextProvider } from "./hooks/web3Context";
-import { getLibrary } from "./utils/getLibrary";
+import { getLibrary } from "shared/lib/utils/getLibrary";
 import { SubgraphDataContextProvider } from "./hooks/subgraphDataContext";
 import { PendingTransactionsContextProvider } from "./hooks/pendingTransactionsContext";
 import { ExternalAPIDataContextProvider } from "./hooks/externalAPIDataContext";
