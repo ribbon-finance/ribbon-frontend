@@ -9,7 +9,7 @@ import { getLibrary } from "./utils/getLibrary";
 import { SubgraphDataContextProvider } from "./hooks/subgraphDataContext";
 import { PendingTransactionsContextProvider } from "./hooks/pendingTransactionsContext";
 import { ExternalAPIDataContextProvider } from "./hooks/externalAPIDataContext";
-import { ChainContextProvider } from "shared/lib/hooks/chainContext";
+import { ChainContextProvider } from "./hooks/chainContext";
 import { GeofenceCountry, useGeofence } from "shared/lib/hooks/useGeofence";
 import TextPreview from "shared/lib/components/TextPreview/TextPreview";
 import Geoblocked from "shared/lib/components/Geoblocked/Geoblocked";

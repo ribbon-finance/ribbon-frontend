@@ -2,7 +2,7 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 import { Title } from "shared/lib/designSystem";
 import colors from "shared/lib/designSystem/colors";
 import { URLS } from "shared/lib/constants/constants";
-import styled, { css } from "styled-components";
+import styled, { keyframes } from "styled-components";
 import ExternalLinkIcon from "./ExternalLinkIcon";
 import twitter from "../../assets/icons/socials/twitter.svg";
 import discord from "../../assets/icons/socials/discord.svg";
@@ -11,12 +11,9 @@ import { ProductDisclaimer } from "../ProductDisclaimer";
 import { ModalContentEnum } from "./LendModal";
 import useWeb3Wallet from "shared/lib/hooks/useWeb3Wallet";
 import WalletLogo from "shared/lib/components/Wallet/WalletLogo";
-import { BaseLink, BaseText, Button, SecondaryText } from "../../designSystem";
+import { Button, PrimaryText, SecondaryText } from "../../designSystem";
 import { motion } from "framer-motion";
 import { ETHEREUM_WALLETS, WALLET_TITLES } from "shared/lib/models/wallets";
-import { RbnLogo } from "./Logos";
-import theme from "../../designSystem/theme";
-import { useVaultsData } from "../../hooks/web3DataContext";
 import { useVaultAccountBalances } from "../../hooks/useVaultAccountBalances";
 import { formatBigNumber } from "../../utils/math";
 import TransactionStep from "../RbnClaim/TransactionStep";
@@ -25,6 +22,7 @@ import { PoolFactory } from "../../codegen";
 import { usePendingTransactions } from "../../hooks/pendingTransactionsContext";
 import { getAssetColor } from "../../utils/asset";
 import { VaultAddressMap, VaultList } from "../../constants/constants";
+import Logo from "shared/lib/assets/icons/logo";
 
 const TextContent = styled.div`
   color: ${colors.primaryText}A3;
@@ -259,9 +257,9 @@ const LogoContent = styled.div`
   );
 `;
 
-const DetailRow = styled.div`
+const LogoContent2 = styled.div`
   width: 100%;
-  display: flex;
+  padding: 124px;
 `;
 
 const StyledTitle = styled(Title)<{ color?: string }>`
@@ -281,8 +279,8 @@ const ClaimTextContent = styled.div`
 const RbnButtonWrapper = styled.div`
   display: block;
   width: 100%;
-  padding-left: 24px;
-  padding-right: 24px;
+  padding-left: 16px;
+  padding-right: 16px;
   > * {
     width: 100%;
   }
@@ -327,10 +325,70 @@ const Footer = styled.div`
   }
 `;
 
+const BottomTextContainer = styled.div`
+  display: flex;
+  flex: 1;
+  justify-content: center;
+  width: 100%;
+  margin-bottom: 24px;
+  margin-top: 24px;
+`;
+
+const BottomText = styled(PrimaryText)`
+  color: rgba(255, 255, 255, 0.8);
+`;
+
+const livelyAnimation = (position: "top" | "bottom") => keyframes`
+  0% {
+    background-position-x: ${position === "top" ? 0 : 100}%;
+  }
+
+  50% {
+    background-position-x: ${position === "top" ? 100 : 0}%; 
+  }
+
+  100% {
+    background-position-x: ${position === "top" ? 0 : 100}%;
+  }
+`;
+
+const FrameBar = styled.div<{
+  color: string;
+  position: "top" | "bottom";
+  height: number;
+}>`
+  width: 100%;
+  height: ${(props) => props.height}px;
+  background: ${(props) => `linear-gradient(
+    270deg,
+    ${props.color}00 5%,
+    ${props.color} 50%,
+    ${props.color}00 95%
+  )`};
+  background-size: 200%;
+  animation: 10s ${(props) => livelyAnimation(props.position)} linear infinite;
+
+  &:before {
+    content: "";
+    z-index: -1;
+    position: absolute;
+    ${(props) => props.position}: 0;
+    right: 0;
+    left: 0;
+    background: inherit;
+    filter: blur(${(props) => props.height * 4}px);
+    opacity: 1;
+    transition: opacity 0.3s;
+    height: ${(props) => props.height * 2}px;
+  }
+`;
+
+const LogoContainer = styled.div`
+  width: 100%;
+`;
 export enum ClaimRbnPageEnum {
   CLAIM_RBN,
   TRANSACTION_STEP,
-  SUBMITTED_STEP,
   SUCCESS_STEP,
 }
 
@@ -345,13 +403,13 @@ export const ClaimRbn: React.FC<ClaimRbnProps> = ({
 }) => {
   const { pendingTransactions, addPendingTransaction } =
     usePendingTransactions();
+
   const [txhash, setTxhash] = useState("");
   const { account } = useWeb3Wallet();
   const { loading, accountBalances } = useVaultAccountBalances();
   const claimableRbn = accountBalances.rbnClaimable;
   const claimedRbn = accountBalances.rbnClaimed;
   const poolFactory = usePoolFactoryContract();
-
   const [page, setPage] = useState<ClaimRbnPageEnum>(
     ClaimRbnPageEnum.CLAIM_RBN
   );
@@ -359,10 +417,12 @@ export const ClaimRbn: React.FC<ClaimRbnProps> = ({
   useEffect(() => {
     // we check that the txhash and check if it had succeed
     // so we can move to successmodal
-    if (page === ClaimRbnPageEnum.SUBMITTED_STEP && txhash !== "") {
+    if (page === ClaimRbnPageEnum.TRANSACTION_STEP && txhash !== "") {
       const pendingTx = pendingTransactions.find((tx) => tx.txhash === txhash);
+
       if (pendingTx && pendingTx.status) {
         setTimeout(() => {
+          setTxhash("");
           setPage(ClaimRbnPageEnum.SUCCESS_STEP);
           setRbnClaimStep(ClaimRbnPageEnum.SUCCESS_STEP);
         }, 300);
@@ -372,10 +432,7 @@ export const ClaimRbn: React.FC<ClaimRbnProps> = ({
 
   const handleClickClaimButton = useCallback(async () => {
     const pool = poolFactory as PoolFactory;
-
     if (pool !== null) {
-      // // check illegal state transition
-      // if (step !== STEPS.confirmationStep - 1) return;
       setPage(ClaimRbnPageEnum.TRANSACTION_STEP);
       setRbnClaimStep(ClaimRbnPageEnum.TRANSACTION_STEP);
       let addresses: string[] = [];
@@ -386,28 +443,33 @@ export const ClaimRbn: React.FC<ClaimRbnProps> = ({
         let res: any;
         res = await pool.withdrawReward(addresses);
 
+        const withdrawAmount = formatBigNumber(claimableRbn, 18);
         addPendingTransaction({
           txhash: res.hash,
           type: "claim",
-          amount: "200",
+          amount: withdrawAmount,
         });
 
         setTxhash(res.hash);
-        setRbnClaimStep(ClaimRbnPageEnum.SUBMITTED_STEP);
-        setPage(ClaimRbnPageEnum.SUBMITTED_STEP);
       } catch (e) {
         onHide();
         console.error(e);
       }
     }
-  }, [addPendingTransaction, onHide, poolFactory, setRbnClaimStep]);
+  }, [
+    addPendingTransaction,
+    claimableRbn,
+    onHide,
+    poolFactory,
+    setRbnClaimStep,
+  ]);
 
   const content = useMemo(() => {
     if (page === ClaimRbnPageEnum.CLAIM_RBN) {
       return (
         <>
           <LogoContent>
-            <RbnLogo />
+            <Logo width={80} height={80} />
           </LogoContent>
           <ClaimTextContent>
             <div className="d-flex w-100 flex-row align-items-center justify-content-between">
@@ -464,14 +526,7 @@ export const ClaimRbn: React.FC<ClaimRbnProps> = ({
     if (page === ClaimRbnPageEnum.TRANSACTION_STEP) {
       return (
         <>
-          <TransactionStep />
-        </>
-      );
-    }
-    if (page === ClaimRbnPageEnum.SUBMITTED_STEP) {
-      return (
-        <>
-          <TransactionStep txhash={txhash} color={getAssetColor("RBN")} />,
+          <TransactionStep txhash={txhash} color={getAssetColor("RBN")} />
         </>
       );
     }
@@ -479,7 +534,16 @@ export const ClaimRbn: React.FC<ClaimRbnProps> = ({
     if (page === ClaimRbnPageEnum.SUCCESS_STEP) {
       return (
         <>
-          {/* <TransactionStep txhash={txhash} color={getAssetColor("RBN")} />, */}
+          <LogoContainer>
+            <FrameBar color={colors.asset.RBN} position="top" height={4} />
+            <LogoContent2>
+              <Logo width={96} height={96} />
+            </LogoContent2>
+            <FrameBar color={colors.asset.RBN} position="bottom" height={4} />
+          </LogoContainer>
+          <BottomTextContainer>
+            <BottomText>Thank you for being part of the community</BottomText>
+          </BottomTextContainer>
         </>
       );
     }

@@ -46,13 +46,11 @@ const LendModal: React.FC<InfoModalProps> = ({ show, onHide, content }) => {
   );
   const renderRbnClaimTitle = useCallback((rbnClaimStep: ClaimRbnPageEnum) => {
     switch (rbnClaimStep) {
-      case 0:
+      case ClaimRbnPageEnum.CLAIM_RBN:
         return "CLAIM RBN";
-      case 1:
-        return "CONFIRM CLAIM";
-      case 2:
+      case ClaimRbnPageEnum.TRANSACTION_STEP:
         return "CLAIMING RBN";
-      case 3:
+      case ClaimRbnPageEnum.SUCCESS_STEP:
         return "RBN CLAIMED";
     }
   }, []);

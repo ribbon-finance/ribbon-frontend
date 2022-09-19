@@ -6,7 +6,7 @@ import LendPage from "./LendPage";
 import NotFound from "./NotFound";
 import useEagerConnect from "shared/lib/hooks/useEagerConnect";
 import colors from "shared/lib/designSystem/colors";
-
+import { TxStatusToast } from "../components/Common/toasts";
 const Body = styled.div`
   background-color: ${colors.background.one};
   display: flex;
@@ -20,6 +20,7 @@ const RootApp = () => {
   return (
     <Body>
       <Router>
+        <TxStatusToast />
         <LendVerticalHeader />
         <Switch>
           <Route path="/" exact>

@@ -58,6 +58,7 @@ export const useVaultAccountBalances = () => {
       },
     };
   }
+
   return {
     loading: isLoading,
     accountBalances: accountBalances,

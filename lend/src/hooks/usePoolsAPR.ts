@@ -33,7 +33,7 @@ export const usePoolsAPR = () => {
         const rewardPerSecond = parseFloat(
           formatUnits(poolData.rewardPerSecond, 18)
         );
-        const poolSize = parseFloat(formatUnits(poolData.deposits, 6));
+        const poolSize = parseFloat(formatUnits(poolData.poolSize, 6));
         aprsTemp[pool] =
           (supplyRate + (rewardPerSecond * RBNPrice * 31536000) / poolSize) *
           100;

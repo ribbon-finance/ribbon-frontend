@@ -42,14 +42,14 @@ const TransactionStep: React.FC<TransactionStepProps> = ({ txhash, color }) => {
     <>
       <TransactionPendingContainer>
         <PendingTransactionLoader
-          active={Boolean(txhash)}
+          active={true}
           numberOfBars={4}
           color={color}
           barHeight={80}
         />
       </TransactionPendingContainer>
       <BottomTextContainer>
-        {chain !== Chains.NotSelected && !txhash ? (
+        {chain !== Chains.NotSelected && txhash !== "" ? (
           <BaseUnderlineLink
             to={`${getExplorerURI(chain)}/tx/${txhash}`}
             target="_blank"
