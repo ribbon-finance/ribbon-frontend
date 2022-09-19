@@ -96,6 +96,8 @@ export const Balance = () => {
   const { loading, accountBalances } = useVaultAccountBalances();
   const yourBalance = accountBalances.totalBalance;
   const rbnRewards = accountBalances.rbnEarned;
+  const rbnClaimableRewards = accountBalances.rbnClaimable;
+  const rbnDecimals = getAssetDecimals("RBN");
   const yourDeposits = useVaultTotalDeposits();
   const decimals = getAssetDecimals("USDC");
 
@@ -142,13 +144,16 @@ export const Balance = () => {
           <ClaimTextContainer delay={0.5}>
             <ClaimLabel>RBN Rewards Earned:</ClaimLabel>
             <ClaimValue>
-              {" "}
-              {loading || !account ? "---" : formatBigNumber(rbnRewards, 18, 2)}
+              {loading || !account
+                ? "---"
+                : formatBigNumber(rbnRewards, rbnDecimals, 2)}
             </ClaimValue>
           </ClaimTextContainer>
-          <ClaimButton onClick={() => setClaimModal(true)} delay={0.6}>
-            Claim RBN
-          </ClaimButton>
+          {!isPracticallyZero(rbnClaimableRewards, rbnDecimals) && (
+            <ClaimButton onClick={() => setClaimModal(true)} delay={0.6}>
+              Claim RBN
+            </ClaimButton>
+          )}
         </VaultContainer>
       </BalanceWrapper>
     </>
