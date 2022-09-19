@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useState } from "react";
 import { Col } from "react-bootstrap";
 import { useParams } from "react-router-dom";
 import { VaultOptions } from "../constants/constants";
@@ -24,14 +24,6 @@ import { truncateAddress } from "shared/lib/utils/address";
 import useWeb3Wallet from "../hooks/useWeb3Wallet";
 import LendModal, { ModalContentEnum } from "../components/Common/LendModal";
 
-const poolMap: Record<string, VaultOptions> = {
-  alameda: "Alameda",
-  jumptrading: "JumpTrading",
-  wintermute: "Wintermute",
-  orthogonal: "Orthogonal",
-  folkvang: "Folkvang",
-};
-
 const PoolContainer = styled.div`
   width: calc(100% - ${components.sidebar}px);
 
@@ -55,11 +47,7 @@ const PoolPage = () => {
   const [activePage, setPage] = useState<PageEnum>();
   const [triggerWalletModal, setWalletModal] = useState<boolean>(false);
 
-  const pool = useMemo(() => {
-    return poolMap[poolId];
-  }, [poolId]);
-
-  if (!pool) return <NotFound />;
+  if (!poolId) return <NotFound />;
 
   return (
     <>
@@ -69,7 +57,7 @@ const PoolPage = () => {
         content={ModalContentEnum.WALLET}
       />
       <PoolContainer>
-        <Header setWalletModal={setWalletModal} pool={pool} />
+        <Header setWalletModal={setWalletModal} pool={poolId} />
         <Content>
           <Col xs={6}>
             <p>hi</p>

@@ -55,11 +55,11 @@ export const VaultVersionList = ["lend"] as const;
 export type VaultVersion = typeof VaultVersionList[number];
 
 export const EVMVaultList = [
-  "Alameda",
-  "JumpTrading",
-  "Wintermute",
-  "Orthogonal",
-  "Folkvang",
+  "alameda",
+  "jumptrading",
+  "wintermute",
+  "orthogonal",
+  "folkvang",
 ] as const;
 
 const AllVaultOptions = [...EVMVaultList];
@@ -74,31 +74,31 @@ export const GAS_LIMITS: {
     lend: { deposit: number; withdraw: number };
   }>;
 } = {
-  Alameda: {
+  alameda: {
     lend: {
       deposit: 80000,
       withdraw: 100000,
     },
   },
-  JumpTrading: {
+  jumptrading: {
     lend: {
       deposit: 80000,
       withdraw: 100000,
     },
   },
-  Wintermute: {
+  wintermute: {
     lend: {
       deposit: 80000,
       withdraw: 100000,
     },
   },
-  Orthogonal: {
+  orthogonal: {
     lend: {
       deposit: 80000,
       withdraw: 100000,
     },
   },
-  Folkvang: {
+  folkvang: {
     lend: {
       deposit: 80000,
       withdraw: 100000,
@@ -112,24 +112,24 @@ export const VaultAddressMap: {
     chainId: number;
   };
 } = {
-  Alameda: {
-    lend: deployment.mainnet.Alameda,
+  alameda: {
+    lend: deployment.mainnet.alameda,
     chainId: CHAINID.ETH_MAINNET,
   },
-  JumpTrading: {
-    lend: deployment.mainnet.JumpTrading,
+  jumptrading: {
+    lend: deployment.mainnet.jumptrading,
     chainId: CHAINID.ETH_MAINNET,
   },
-  Wintermute: {
-    lend: deployment.mainnet.Wintermute,
+  wintermute: {
+    lend: deployment.mainnet.wintermute,
     chainId: CHAINID.ETH_MAINNET,
   },
-  Orthogonal: {
-    lend: deployment.mainnet.Orthogonal,
+  orthogonal: {
+    lend: deployment.mainnet.orthogonal,
     chainId: CHAINID.ETH_MAINNET,
   },
-  Folkvang: {
-    lend: deployment.mainnet.Folkvang,
+  folkvang: {
+    lend: deployment.mainnet.folkvang,
     chainId: CHAINID.ETH_MAINNET,
   },
 };
@@ -147,19 +147,19 @@ export const hasVaultVersion = (
 };
 
 export const VaultNamesList = [
-  "Alameda",
-  "JumpTrading",
-  "Wintermute",
-  "Orthogonal",
-  "Folkvang",
+  "alameda",
+  "jumptrading",
+  "wintermute",
+  "orthogonal",
+  "folkvang",
 ] as const;
 export type VaultName = typeof VaultNamesList[number];
 export const VaultNameOptionMap: { [name in VaultName]: VaultOptions } = {
-  Alameda: "Alameda",
-  JumpTrading: "JumpTrading",
-  Wintermute: "Wintermute",
-  Orthogonal: "Orthogonal",
-  Folkvang: "Folkvang",
+  alameda: "alameda",
+  jumptrading: "jumptrading",
+  wintermute: "wintermute",
+  orthogonal: "orthogonal",
+  folkvang: "folkvang",
 };
 
 // Reverse lookup for VaultNameOptionMap
@@ -214,30 +214,30 @@ export const getDisplayAssets = (vault: VaultOptions): Assets => {
 
 export const getMakerLogo = (vault: VaultOptions): string => {
   switch (vault) {
-    case "Alameda":
+    case "alameda":
       return alameda;
-    case "JumpTrading":
+    case "jumptrading":
       return jumptrading;
-    case "Wintermute":
+    case "wintermute":
       return wintermute;
-    case "Orthogonal":
+    case "orthogonal":
       return orthogonal;
-    case "Folkvang":
+    case "folkvang":
       return folkvang;
   }
 };
 
 export const VaultAllowedDepositAssets: { [vault in VaultOptions]: Assets[] } =
   {
-    Alameda: ["USDC"],
-    JumpTrading: ["USDC"],
-    Wintermute: ["USDC"],
-    Orthogonal: ["USDC"],
-    Folkvang: ["USDC"],
+    alameda: ["USDC"],
+    jumptrading: ["USDC"],
+    wintermute: ["USDC"],
+    orthogonal: ["USDC"],
+    folkvang: ["USDC"],
   };
 
 export const VaultMaxDeposit: BigNumber = BigNumber.from(100000000).mul(
-  BigNumber.from(10).pow(getAssetDecimals(getAssets("Alameda")))
+  BigNumber.from(10).pow(getAssetDecimals(getAssets("alameda")))
 );
 
 export const VaultFees = {
@@ -245,7 +245,7 @@ export const VaultFees = {
   performanceFee: "10",
 };
 
-export const RibbonTokenAddress = deployment.mainnet.RibbonToken;
+export const RibbonTokenAddress = deployment.mainnet.ribbontoken;
 
 export const getERC20TokenAddress = (token: ERC20Token, chainId: number) => {
   const network = NETWORKS[chainId];

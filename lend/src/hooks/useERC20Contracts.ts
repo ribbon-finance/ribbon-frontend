@@ -9,7 +9,7 @@ export const getRibbonContract = (library: any, useSigner: boolean = true) => {
   const provider = useSigner ? library.getSigner() : library;
 
   return ERC20Balance__factory.connect(
-    deployment.mainnet.RibbonToken,
+    deployment.mainnet.ribbontoken,
     provider
   );
 };
@@ -17,7 +17,7 @@ export const getRibbonContract = (library: any, useSigner: boolean = true) => {
 export const getUSDCContract = (library: any, useSigner: boolean = true) => {
   const provider = useSigner ? library.getSigner() : library;
 
-  return ERC20Balance__factory.connect(deployment.mainnet.USDCToken, provider);
+  return ERC20Balance__factory.connect(deployment.mainnet.usdctoken, provider);
 };
 
 const useERC20Contracts = () => {

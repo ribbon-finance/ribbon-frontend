@@ -1,12 +1,12 @@
 {
   "mainnet": {
-    "Alameda": "0xa3A369bED8bDa02de33B8Af5aeF8aFa6fAb8E593",
-    "JumpTrading": "0xa3A369bED8bDa02de33B8Af5aeF8aFa6fAb8E593",
-    "Wintermute": "0xa3A369bED8bDa02de33B8Af5aeF8aFa6fAb8E593",
-    "Orthogonal": "0xa3A369bED8bDa02de33B8Af5aeF8aFa6fAb8E593",
-    "Folkvang": "0xa3A369bED8bDa02de33B8Af5aeF8aFa6fAb8E593",
-    "RibbonToken": "0x6123B0049F904d730dB3C36a31167D9d4121fA6B",
-    "USDCToken": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
-    "PoolFactory": "0x3bcc284e5f1c7ec3ace602ae6c17b134c4b9db47"
+    "alameda": "0xa3A369bED8bDa02de33B8Af5aeF8aFa6fAb8E593",
+    "jumptrading": "0xa3A369bED8bDa02de33B8Af5aeF8aFa6fAb8E593",
+    "wintermute": "0xa3A369bED8bDa02de33B8Af5aeF8aFa6fAb8E593",
+    "orthogonal": "0xa3A369bED8bDa02de33B8Af5aeF8aFa6fAb8E593",
+    "folkvang": "0xa3A369bED8bDa02de33B8Af5aeF8aFa6fAb8E593",
+    "ribbontoken": "0x6123B0049F904d730dB3C36a31167D9d4121fA6B",
+    "usdctoken": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
+    "poolfactory": "0x3bcc284e5f1c7ec3ace602ae6c17b134c4b9db47"
   }
 }
