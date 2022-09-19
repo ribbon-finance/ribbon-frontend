@@ -12,6 +12,7 @@ import { motion } from "framer-motion";
 import { Row } from "react-bootstrap";
 import colors from "shared/lib/designSystem/colors";
 import { usePoolsAPR } from "../../hooks/usePoolsAPR";
+import { Link } from "react-router-dom";
 
 const statSideContainer: number = 120;
 
@@ -80,7 +81,7 @@ const reverseSlide = keyframes`
   }
 `;
 
-const PoolWrapper = styled.div`
+const PoolWrapper = styled(Link)`
   height: ${statSideContainer}px;
   width: 100%;
   border-bottom: 1px solid ${colors.border};
@@ -200,7 +201,7 @@ export const Pools = () => {
               opacity: 0,
             }}
           >
-            <PoolWrapper key={i}>
+            <PoolWrapper key={i} to={`/app/pool/${pool.toLowerCase()}`}>
               <PoolLogo>
                 <img src={poolLogo} alt={pool} />
               </PoolLogo>

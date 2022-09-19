@@ -31,7 +31,7 @@ const HeroContainer = styled.div`
   }
 `;
 
-const HeaderRow = styled(Row)`
+export const HeaderRow = styled(Row)`
   height: ${components.header}px;
   border-bottom: 1px solid ${colors.border};
   z-index: 1;
@@ -46,7 +46,7 @@ const HeaderRow = styled(Row)`
   }
 `;
 
-const FooterRow = styled(Row)`
+export const FooterRow = styled(Row)`
   height: ${components.footer}px;
   border-top: 1px solid ${colors.border};
   box-sizing: content-box;
@@ -60,7 +60,7 @@ const FooterRow = styled(Row)`
   }
 `;
 
-const WalletButton = styled.div`
+export const WalletButton = styled.div`
   display: flex;
   margin: auto;
   height: 100%;
@@ -77,7 +77,7 @@ const WalletButton = styled.div`
   }
 `;
 
-const WalletButtonText = styled(Title)<{ connected: boolean }>`
+export const WalletButtonText = styled(Title)<{ connected: boolean }>`
   font-size: 14px;
   line-height: 20px;
 
@@ -94,7 +94,7 @@ const WalletButtonText = styled(Title)<{ connected: boolean }>`
   }}
 `;
 
-const DisclaimerWrapper = styled.div`
+export const DisclaimerWrapper = styled.div`
   display: flex;
   justify-content: center;
   height: 100%;
@@ -104,7 +104,7 @@ const DisclaimerWrapper = styled.div`
   }
 `;
 
-const Content = styled(Row)`
+export const Content = styled(Row)`
   height: calc(100% - ${components.header}px - ${components.footer}px);
 
   @media (max-width: ${sizes.lg}px) {
@@ -177,7 +177,7 @@ interface FooterProps {
   setPage: (page: PageEnum) => void;
 }
 
-const FooterButton = styled(Button)<{ isActive?: boolean }>`
+export const FooterButton = styled(Button)<{ isActive?: boolean }>`
   border: none;
   border-radius: 0;
   height: ${components.footer}px;

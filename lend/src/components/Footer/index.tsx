@@ -2,9 +2,9 @@ import React from "react";
 import styled from "styled-components";
 import colors from "shared/lib/designSystem/colors";
 import sizes from "../../designSystem/sizes";
-import theme from "../../designSystem/theme";
 import { components } from "../../designSystem/components";
 import { ProductDisclaimer } from "../ProductDisclaimer";
+// import { Link } from "react-router-dom";
 // import { StatsMarquee } from "../StatsMarquee";
 
 const FooterContainer = styled.div`
@@ -18,16 +18,16 @@ const FooterContainer = styled.div`
   border-top: 1px solid ${colors.border};
 `;
 
-const ButtonText = styled.span`
-  font-family: VCR;
-  font-style: normal;
-  font-weight: normal;
-  font-size: 14px;
-  line-height: 24px;
-  text-align: center;
-  text-transform: capitalize;
-  color: ${colors.green};
-`;
+// const ButtonText = styled.span`
+//   font-family: VCR;
+//   font-style: normal;
+//   font-weight: normal;
+//   font-size: 14px;
+//   line-height: 24px;
+//   text-align: center;
+//   text-transform: capitalize;
+//   color: ${colors.green};
+// `;
 
 const ButtonContainer = styled.div`
   display: none;
@@ -46,19 +46,19 @@ const ButtonContainer = styled.div`
   }
 `;
 
-const OpenAppButton = styled.div`
-  display: flex;
-  width: 100vw;
-  height: 64px;
-  justify-content: center;
-  align-items: center;
-  text-align: center;
-  // uncomment on launch
-  // &:hover {
-  //   cursor: pointer;
-  //   opacity: ${theme.hover.opacity};
-  // }
-`;
+// const OpenAppButton = styled.div`
+//   display: flex;
+//   width: 100vw;
+//   height: 64px;
+//   justify-content: center;
+//   align-items: center;
+//   text-align: center;
+//   // uncomment on launch
+//   // &:hover {
+//   //   cursor: pointer;
+//   //   opacity: ${theme.hover.opacity};
+//   // }
+// `;
 
 const Footer: React.FC = () => {
   return (
@@ -69,11 +69,11 @@ const Footer: React.FC = () => {
       </FooterContainer>
       <ButtonContainer>
         {/* uncomment on launch */}
-        {/* <a href={URLS.lendApp}> */}
-        <OpenAppButton>
-          <ButtonText>OPEN APP</ButtonText>
-        </OpenAppButton>
-        {/* </a> */}
+        {/* <Link to={"/app"}>
+          <OpenAppButton>
+            <ButtonText>OPEN APP</ButtonText>
+          </OpenAppButton>
+        </Link> */}
       </ButtonContainer>
     </>
   );

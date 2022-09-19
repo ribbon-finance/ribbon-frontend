@@ -17,7 +17,7 @@ const HeroContainer = styled.div`
   }
 `;
 
-const Hero: React.FC = () => {
+const HeroPage: React.FC = () => {
   return (
     <HeroContainer>
       <MobileHeader />
@@ -28,4 +28,4 @@ const Hero: React.FC = () => {
   );
 };
 
-export default Hero;
+export default HeroPage;

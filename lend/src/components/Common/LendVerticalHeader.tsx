@@ -8,6 +8,7 @@ import LendModal, { ModalContentEnum } from "../../components/Common/LendModal";
 import sizes from "../../designSystem/sizes";
 import theme from "../../designSystem/theme";
 import { components } from "../../designSystem/components";
+import { Link } from "react-router-dom";
 
 const VerticalHeaderContainer = styled.div`
   display: flex;
@@ -84,9 +85,9 @@ const LendVerticalHeader: React.FC = () => {
       />
       <VerticalHeaderContainer>
         <LogoContainer>
-          <a href={"/"}>
+          <Link to="/">
             <AppLogo />
-          </a>
+          </Link>
         </LogoContainer>
         <VerticalHeaderTextContainer>
           <ButtonContainer
