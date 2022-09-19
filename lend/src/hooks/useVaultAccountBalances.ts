@@ -2,7 +2,7 @@ import { useEffect, useMemo, useState } from "react";
 import { useVaultsData } from "./web3DataContext";
 import { VaultList } from "../constants/constants";
 import { BigNumber } from "ethers";
-import useWeb3Wallet from "shared/lib/hooks/useWeb3Wallet";
+import useWeb3Wallet from "./useWeb3Wallet";
 
 export type AccountBalances = {
   totalBalance: BigNumber;
@@ -46,6 +46,18 @@ export const useVaultAccountBalances = () => {
   const isLoading = useMemo(() => {
     return loading || !account;
   }, [loading, account]);
+
+  if (isLoading) {
+    return {
+      loading: isLoading,
+      accountBalances: {
+        totalBalance: BigNumber.from(0.0),
+        rbnEarned: BigNumber.from(0.0),
+        rbnClaimed: BigNumber.from(0.0),
+        rbnClaimable: BigNumber.from(0.0),
+      },
+    };
+  }
 
   return {
     loading: isLoading,

@@ -83,6 +83,12 @@ const _abi = [
         type: "address",
       },
       {
+        indexed: true,
+        internalType: "address",
+        name: "referral",
+        type: "address",
+      },
+      {
         indexed: false,
         internalType: "uint256",
         name: "currencyAmount",
@@ -743,6 +749,11 @@ const _abi = [
         name: "currencyAmount",
         type: "uint256",
       },
+      {
+        internalType: "address",
+        name: "referral",
+        type: "address",
+      },
     ],
     name: "provide",
     outputs: [],
@@ -755,6 +766,11 @@ const _abi = [
         internalType: "uint256",
         name: "currencyAmount",
         type: "uint256",
+      },
+      {
+        internalType: "address",
+        name: "referral",
+        type: "address",
       },
       {
         internalType: "uint256",

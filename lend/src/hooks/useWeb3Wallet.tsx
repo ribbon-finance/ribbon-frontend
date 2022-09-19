@@ -54,6 +54,8 @@ export const useWeb3Wallet = (): Web3WalletData => {
   useEffect(() => {
     if (isActiveEth && chainIdEth) {
       setChain(ID_TO_CHAINS[chainIdEth as number]);
+    } else if (!chainIdEth) {
+      setChain(Chains.NotSelected);
     }
   }, [chainIdEth, isActiveEth, setChain]);
 
@@ -98,6 +100,7 @@ export const useWeb3Wallet = (): Web3WalletData => {
           throw new Error("Wallet is not supported");
         }
 
+        setConnectedWallet(wallet as EthereumWallet);
         setConnectingWallet(undefined);
       } catch (error) {
         console.error(error); // eslint-disable-line
