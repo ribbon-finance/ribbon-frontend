@@ -15,7 +15,7 @@ import {
   Wallet,
 } from "shared/lib/models/wallets";
 import { Chains, CHAINS_TO_ID, ID_TO_CHAINS } from "../constants/constants";
-import { switchChains } from "../utils/chainSwitching";
+import { switchChains } from "shared/lib/utils/chainSwitching";
 import { impersonateAddress } from "shared/lib/utils/development";
 import { isLedgerDappBrowserProvider } from "web3-ledgerhq-frame-connector";
 

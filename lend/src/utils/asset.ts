@@ -4,7 +4,7 @@ import { USDCLogo, WETHLogo } from "shared/lib/assets/icons/erc20Assets";
 import Logo from "shared/lib/assets/icons/logo";
 import { Chains, VaultOptions } from "../constants/constants";
 import colors from "shared/lib/designSystem/colors";
-import { Assets, Wallets } from "shared/lib/store/types";
+import { Assets, Wallets } from "../store/types";
 
 export const assetFilterList: Assets[] = ["WETH", "USDC"];
 
