@@ -39,7 +39,8 @@
     "test": "craco test",
     "eject": "react-scripts eject",
     "lint": "eslint --fix --ext .tsx,.ts .",
-    "codegen": "typechain --target=ethers-v5 --out-dir src/codegen 'src/constants/abis/*.json'"
+    "codegen": "typechain --target=ethers-v5 --out-dir src/codegen 'src/constants/abis/*.json'",
+    "deploy:staging": "cur=$(git rev-parse --abbrev-ref HEAD) && git checkout staging && git reset --hard $cur && git push -f origin staging && git checkout $cur"
   },
   "eslintConfig": {
     "extends": [

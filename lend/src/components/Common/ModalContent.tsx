@@ -701,7 +701,7 @@ export const ClaimRbn: React.FC<ClaimRbnProps> = ({
             <LearnMoreContainer>
               <Footer>
                 <a
-                  href={URLS.ribbonFinance}
+                  href="https://ribbonfinance.medium.com/decentralizing-ribbon-governance-395950da7a6"
                   target="_blank"
                   rel="noreferrer noopener"
                 >

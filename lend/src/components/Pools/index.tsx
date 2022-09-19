@@ -13,7 +13,9 @@ import { Row } from "react-bootstrap";
 import colors from "shared/lib/designSystem/colors";
 import { usePoolsAPR } from "../../hooks/usePoolsAPR";
 import { Link } from "react-router-dom";
-
+import { isPracticallyZero } from "../../utils/math";
+import useVaultAccounts from "../../hooks/useVaultAccounts";
+import { formatUnits } from "ethers/lib/utils";
 const statSideContainer: number = 120;
 
 const ListRow = styled(Row)`
@@ -231,5 +233,122 @@ export const Pools = () => {
         );
       })}
     </ListRow>
+  );
+};
+
+const NoPositionsContainer = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  height: 100%;
+`;
+
+const NoPositionLabel = styled.span`
+  color: ${colors.tertiaryText};
+  font-size: 14px;
+`;
+
+export const Positions = () => {
+  const vaultDatas = useVaultsData();
+  const { loading } = usePoolsAPR();
+  const usdcDecimals = getAssetDecimals("USDC");
+  const { loading: vaultLoading, vaultAccounts } = useVaultAccounts("lend");
+  const filteredList = VaultList.filter(
+    (pool) =>
+      !isPracticallyZero(
+        vaultDatas.data[pool].vaultBalanceInAsset,
+        usdcDecimals
+      )
+  );
+
+  if (!vaultAccounts) {
+    return <></>;
+  }
+  return filteredList.length > 0 ? (
+    <ListRow>
+      {filteredList.map((pool, i) => {
+        const balance = vaultDatas.data[pool].vaultBalanceInAsset;
+        const vaultAccount = vaultAccounts[pool];
+        const roi = () => {
+          if (
+            !vaultAccount ||
+            loading ||
+            vaultLoading ||
+            isPracticallyZero(vaultAccount.totalDeposits, usdcDecimals)
+          ) {
+            return 0;
+          }
+
+          return (
+            (parseFloat(
+              formatUnits(balance.sub(vaultAccount.totalDeposits), usdcDecimals)
+            ) /
+              parseFloat(
+                formatUnits(vaultAccount.totalDeposits, usdcDecimals)
+              )) *
+            100
+          );
+        };
+
+        const poolLogo = getMakerLogo(pool);
+        const asset = getAssets(pool);
+        const decimals = getAssetDecimals(asset);
+        const Logo = getAssetLogo(asset);
+
+        return (
+          <motion.div
+            key={i}
+            transition={{
+              duration: 0.5,
+              delay: (i + 1) / 10,
+              type: "keyframes",
+              ease: "easeInOut",
+            }}
+            initial={{
+              y: 50,
+              opacity: 0,
+            }}
+            animate={{
+              y: 0,
+              opacity: 1,
+            }}
+            exit={{
+              y: 50,
+              opacity: 0,
+            }}
+          >
+            <PoolWrapper key={i} to={`/app/pool/${pool.toLowerCase()}`}>
+              <PoolLogo>
+                <img src={poolLogo} alt={pool} />
+              </PoolLogo>
+              <PoolStats>
+                <Stat>
+                  <StyledTitle>{pool}</StyledTitle>
+                </Stat>
+                <Stat>
+                  <StyledTitle>
+                    <Logo height={24} />
+                    <span>{formatBigNumber(balance, decimals)}</span>
+                  </StyledTitle>
+                  <StyledSubtitle color={colors.green}>
+                    {loading ? "0.00" : roi().toFixed(2)}%
+                  </StyledSubtitle>
+                </Stat>
+              </PoolStats>
+              <PoolButton>
+                <i className="fas fa-chevron-right" />
+              </PoolButton>
+            </PoolWrapper>
+          </motion.div>
+        );
+      })}
+    </ListRow>
+  ) : (
+    <NoPositionsContainer>
+      <NoPositionLabel>
+        You do not have any positions at the moment
+      </NoPositionLabel>
+    </NoPositionsContainer>
   );
 };

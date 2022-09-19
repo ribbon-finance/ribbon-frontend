@@ -31,7 +31,7 @@ export const defaultVaultsData: VaultsSubgraphData = Object.fromEntries(
 ) as VaultsSubgraphData;
 
 export interface VaultAccount {
-  id: string;
+  id: VaultVersion;
   vault: Vault;
   account: string;
   updateCounter: number;

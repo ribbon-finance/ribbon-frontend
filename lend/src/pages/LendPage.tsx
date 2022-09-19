@@ -10,9 +10,13 @@ import sizes from "../designSystem/sizes";
 import Indicator from "shared/lib/components/Indicator/Indicator";
 import { ProductDisclaimer } from "../components/ProductDisclaimer";
 import { Balance } from "../components/Balance";
-import { Pools } from "../components/Pools";
+import { Pools, Positions } from "../components/Pools";
 import useWeb3Wallet from "shared/lib/hooks/useWeb3Wallet";
 import LendModal, { ModalContentEnum } from "../components/Common/LendModal";
+import { VaultList } from "../constants/constants";
+import { isPracticallyZero } from "../utils/math";
+import { useVaultsData } from "../hooks/web3DataContext";
+import { getAssetDecimals } from "../utils/asset";
 
 const HeroContainer = styled.div`
   display: flex;
@@ -139,7 +143,7 @@ const LendPage: React.FC = () => {
             <Balance />
           </Col>
           <Col xs={6}>
-            <Pools />
+            {activePage === PageEnum.POOLS ? <Pools /> : <Positions />}
           </Col>
         </Content>
         <Footer activePage={activePage} setPage={setPage} />
@@ -196,6 +200,15 @@ export const FooterButton = styled(Button)<{ isActive?: boolean }>`
 `;
 
 const Footer = ({ activePage, setPage }: FooterProps) => {
+  const vaultDatas = useVaultsData();
+  const usdcDecimals = getAssetDecimals("USDC");
+  const filteredList = VaultList.filter(
+    (pool) =>
+      !isPracticallyZero(
+        vaultDatas.data[pool].vaultBalanceInAsset,
+        usdcDecimals
+      )
+  ).length;
   return (
     <FooterRow>
       <Col xs={6}>
@@ -214,7 +227,7 @@ const Footer = ({ activePage, setPage }: FooterProps) => {
           isActive={activePage === PageEnum.POSITIONS}
           onClick={() => setPage(PageEnum.POSITIONS)}
         >
-          Positions
+          Positions({filteredList})
         </FooterButton>
       </Col>
     </FooterRow>
