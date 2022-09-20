@@ -14,13 +14,13 @@ const ExternalLinkIcon: React.FC<SVGProps<any>> = (props) => {
       <g>
         <path
           d="M4.66669 11.3333L11.3334 4.66667"
-          stroke-linecap="round"
-          stroke-linejoin="round"
+          strokeLinecap="round"
+          strokeLinejoin="round"
         />
         <path
           d="M4.66669 4.66667H11.3334V11.3333"
-          stroke-linecap="round"
-          stroke-linejoin="round"
+          strokeLinecap="round"
+          strokeLinejoin="round"
         />
       </g>
     </svg>

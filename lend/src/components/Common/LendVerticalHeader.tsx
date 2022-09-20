@@ -1,20 +1,17 @@
 import React, { useState } from "react";
 import styled from "styled-components";
 
-import Logo from "./Logo";
+import { AppLogo } from "./Logos";
 import colors from "shared/lib/designSystem/colors";
 import { Title } from "../../designSystem/index";
-import LendModal from "../../components/Common/LendModal";
+import LendModal, { ModalContentEnum } from "../../components/Common/LendModal";
 import sizes from "../../designSystem/sizes";
-import {
-  ModalContent,
-  ModalContentMode,
-} from "../../components/Common/ModalContent";
 import theme from "../../designSystem/theme";
+import { components } from "../../designSystem/components";
 
 const VerticalHeaderContainer = styled.div`
   display: flex;
-  width: 64px;
+  width: ${components.sidebar}px;
   height: 100vh;
   flex-direction: column;
   justify-content: space-between;
@@ -24,6 +21,8 @@ const VerticalHeaderContainer = styled.div`
   @media (max-width: ${sizes.lg}px) {
     display: none;
   }
+  z-index: 100;
+  background-color: ${colors.background.one};
 `;
 
 const LogoContainer = styled.div`
@@ -74,35 +73,31 @@ const VerticalHeaderTextContainer = styled.div`
 `;
 
 const LendVerticalHeader: React.FC = () => {
-  const [modalContentMode, setModalContentMode] = useState<ModalContentMode>();
+  const [modalContent, setModalContent] = useState<ModalContentEnum>();
 
   return (
     <>
       <LendModal
-        show={Boolean(modalContentMode)}
-        title={(modalContentMode ?? "").toUpperCase()}
-        onHide={() => setModalContentMode(undefined)}
-      >
-        <ModalContent modalContentMode={modalContentMode} />
-      </LendModal>
+        show={Boolean(modalContent)}
+        content={modalContent}
+        onHide={() => setModalContent(undefined)}
+      />
       <VerticalHeaderContainer>
         <LogoContainer>
-          <Logo />
+          <a href={"/"}>
+            <AppLogo />
+          </a>
         </LogoContainer>
         <VerticalHeaderTextContainer>
           <ButtonContainer
-            onClick={() => {
-              setModalContentMode("community");
-            }}
+            onClick={() => setModalContent(ModalContentEnum.COMMUNITY)}
           >
             <StyledTitle>Community</StyledTitle>
           </ButtonContainer>
         </VerticalHeaderTextContainer>
         <VerticalHeaderTextContainer>
           <ButtonContainer
-            onClick={() => {
-              setModalContentMode("about");
-            }}
+            onClick={() => setModalContent(ModalContentEnum.ABOUT)}
           >
             <StyledTitle>About</StyledTitle>
           </ButtonContainer>

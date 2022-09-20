@@ -32,8 +32,6 @@ import {
   EarnMiddleRing,
   EarnOuterRing,
 } from "shared/lib/assets/icons/icons";
-
-import { useAirtable } from "shared/lib/hooks/useAirtable";
 import ActionModal from "../../components/Vault/VaultActionsForm/EarnModal/ActionModal";
 import { usePendingTransactions } from "shared/lib/hooks/pendingTransactionsContext";
 import useEarnStrategyTime from "../../hooks/useEarnStrategyTime";
@@ -46,13 +44,17 @@ import {
   rotateAnticlockwise,
 } from "shared/lib/designSystem/keyframes";
 
+const delayedFade = css<{ delay?: number }>`
+  opacity: 0;
+  animation: ${fadeIn} 1s ease-in-out forwards;
+  animation-delay: ${({ delay }) => `${delay || 0}s`};
+`;
+
 const { formatUnits } = ethers.utils;
 
 const PendingOrLogoContainer = styled.div<{ delay?: number }>`
   display: flex;
-  opacity: 0;
-  animation: ${fadeIn} 1s ease-in-out forwards;
-  animation-delay: ${({ delay }) => `${delay || 0}s`};
+  ${delayedFade}
 `;
 
 const PendingDepositsContainer = styled.div<{ delay?: number }>`
@@ -79,9 +81,7 @@ const EarnCapacityText = styled(Title)<{ delay?: number }>`
   text-align: center;
   margin-top: 32px;
   height: 20px;
-  opacity: 0;
-  animation: ${fadeIn} 1s ease-in-out forwards;
-  animation-delay: ${({ delay }) => `${delay || 0}s`};
+  ${delayedFade}
 `;
 
 const TextContainer = styled.div`
@@ -173,9 +173,8 @@ const BalanceTitle = styled.div<{ delay?: number }>`
   text-align: center;
   letter-spacing: 1px;
   color: ${colors.primaryText}7A;
-  opacity: 0;
-  animation: ${fadeIn} 1s ease-in-out forwards;
-  animation-delay: ${({ delay }) => `${delay || 0}s`};
+  margin-top: 24px;
+  ${delayedFade}
 `;
 
 const PageContainer = styled.div<{ offset: number }>`
@@ -206,15 +205,11 @@ const HeroText = styled(Title)<{ delay?: number }>`
   font-size: 56px;
   line-height: 64px;
   margin-bottom: 16px;
-  opacity: 0;
-  animation: ${fadeIn} 1s ease-in-out forwards;
-  animation-delay: ${({ delay }) => `${delay || 0}s`};
+  ${delayedFade}
 `;
 
 const HeroSubtitle = styled(Subtitle)<{ delay?: number }>`
-  opacity: 0;
-  animation: ${fadeIn} 1s ease-in-out forwards;
-  animation-delay: ${({ delay }) => `${delay || 0}s`};
+  ${delayedFade}
 `;
 
 const ViewDetailsButton = styled.div<{ delay?: number }>`
@@ -238,17 +233,13 @@ const ViewDetailsButton = styled.div<{ delay?: number }>`
   line-height: 20px;
   font-size: 12px;
   z-index: 1;
-  opacity: 0;
-  animation: ${fadeIn} 1s ease-in-out forwards;
-  animation-delay: ${({ delay }) => `${delay || 0}s`};
+  ${delayedFade}
 `;
 
 const ButtonContainer = styled.div<{ delay?: number }>`
   z-index: 1;
   width: 240px;
-  opacity: 0;
-  animation: ${fadeIn} 1s ease-in-out forwards;
-  animation-delay: ${({ delay }) => `${delay || 0}s`};
+  ${delayedFade}
 `;
 const StyledActionButton = styled(ActionButton)`
   font-size: 14px;
@@ -512,9 +503,7 @@ const EarnPage = () => {
                     </ProductAssetLogoContainer>
                   )}
                 </PendingOrLogoContainer>
-                <BalanceTitle className={`mt-1 py-3`} delay={0.2}>
-                  Your Balance
-                </BalanceTitle>
+                <BalanceTitle delay={0.2}>Your Balance</BalanceTitle>
                 <HeroText delay={0.3}>
                   {isLoading || !account
                     ? "---"
