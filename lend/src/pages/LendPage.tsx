@@ -38,6 +38,7 @@ const HeroContainer = styled.div`
 export const HeaderRow = styled(Row)`
   height: ${components.header}px;
   border-bottom: 1px solid ${colors.border};
+  box-sizing: border-box;
   z-index: 1;
   margin-left: 0px;
 
@@ -53,7 +54,7 @@ export const HeaderRow = styled(Row)`
 export const FooterRow = styled(Row)`
   height: ${components.footer}px;
   border-top: 1px solid ${colors.border};
-  box-sizing: content-box;
+  box-sizing: border-box;
 
   > * {
     padding: 0;
