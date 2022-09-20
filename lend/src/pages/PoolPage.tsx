@@ -1,7 +1,11 @@
 import { useState } from "react";
 import { Col } from "react-bootstrap";
 import { useParams } from "react-router-dom";
-import { VaultOptions } from "../constants/constants";
+import {
+  getMakerLogo,
+  VaultAddressMap,
+  VaultOptions,
+} from "../constants/constants";
 import { Title } from "../designSystem";
 import NotFound from "./NotFound";
 import globe from "../assets/icons/globe.svg";
@@ -23,6 +27,10 @@ import Indicator from "shared/lib/components/Indicator/Indicator";
 import { truncateAddress } from "shared/lib/utils/address";
 import useWeb3Wallet from "../hooks/useWeb3Wallet";
 import LendModal, { ModalContentEnum } from "../components/Common/LendModal";
+import { useVaultsData } from "../hooks/web3DataContext";
+import { usePoolsAPR } from "../hooks/usePoolsAPR";
+import { getUtilizationDecimals } from "../utils/asset";
+import { formatBigNumber } from "../utils/math";
 
 const PoolContainer = styled.div`
   width: calc(100% - ${components.sidebar}px);
@@ -42,12 +50,50 @@ enum PageEnum {
   WITHDRAW,
 }
 
+const DetailsWrapper = styled.div`
+  display: flex;
+  height: 100%;
+  width: 100%;
+`;
+
+const Details = styled.div`
+  margin: auto;
+`;
+
+const MakerLogo = styled.img`
+  width: 120px;
+  height: 120px;
+  margin-bottom: 40px;
+`;
+
+const StatsWrapper = styled.div`
+  display: block;
+`;
+
 const PoolPage = () => {
   const { poolId }: { poolId: VaultOptions } = useParams();
   const [activePage, setPage] = useState<PageEnum>();
   const [triggerWalletModal, setWalletModal] = useState<boolean>(false);
+  const { data: vaultDatas } = useVaultsData();
+  const { aprs: poolAPRs } = usePoolsAPR();
+  const decimals = getUtilizationDecimals();
 
   if (!poolId) return <NotFound />;
+
+  const poolDetails = {
+    logo: getMakerLogo(poolId),
+    contract: VaultAddressMap[poolId].lend,
+    poolSize: formatBigNumber(vaultDatas[poolId].poolSize, decimals),
+    utilizationRate: formatBigNumber(
+      vaultDatas[poolId].utilizationRate,
+      decimals
+    ),
+    apr: poolAPRs[poolId],
+    twitter: "",
+    website: "",
+  };
+
+  console.log(poolDetails);
 
   return (
     <>
@@ -60,7 +106,16 @@ const PoolPage = () => {
         <Header setWalletModal={setWalletModal} pool={poolId} />
         <Content>
           <Col xs={6}>
-            <p>hi</p>
+            <DetailsWrapper>
+              <Details>
+                <MakerLogo src={poolDetails.logo} alt={poolId} />
+                <StatsWrapper>
+                  <div>Pool size: {poolDetails.poolSize}</div>
+                  <div>APR: {poolDetails.apr}</div>
+                  <div>Utilization rate: {poolDetails.utilizationRate}</div>
+                </StatsWrapper>
+              </Details>
+            </DetailsWrapper>
           </Col>
         </Content>
         <Footer activePage={activePage} setPage={setPage} />
