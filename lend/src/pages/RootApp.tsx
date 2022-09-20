@@ -12,8 +12,8 @@ import PoolPage from "./PoolPage";
 const Body = styled.div`
   background-color: ${colors.background.one};
   display: flex;
-  width: 100vw;
   height: 100vh;
+  overflow: hidden;
 `;
 
 const RootApp = () => {

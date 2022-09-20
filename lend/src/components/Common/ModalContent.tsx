@@ -46,10 +46,6 @@ const hoveredContentRow = css`
   transition: 0.2s ease-in-out;
   border: 1px solid ${colors.primaryText} !important;
   box-shadow: inset 0 0 5px ${colors.primaryText};
-
-  > svg:last-of-type {
-    transform: translate(4px, -4px);
-  }
 `;
 
 const ContentRow = styled.div<{ active?: boolean }>`
@@ -62,7 +58,7 @@ const ContentRow = styled.div<{ active?: boolean }>`
   border: 1px solid transparent;
 
   &:hover {
-    ${hoveredContentRow}
+    cursor: pointer;
   }
 
   ${({ active }) => {
@@ -74,12 +70,22 @@ const ContentRow = styled.div<{ active?: boolean }>`
     height: 32px;
     margin-right: 20px;
   }
+`;
+
+const CommunityContentRow = styled(ContentRow)`
+  &:hover {
+    > svg:last-of-type {
+      transform: translate(4px, -4px);
+    }
+  }
 
   > svg {
     transition: all 0.2s ease-in-out;
 
     &:first-of-type {
       margin-right: 20px;
+      height: 40px;
+      width: 40px;
     }
 
     &:last-of-type {
@@ -87,6 +93,39 @@ const ContentRow = styled.div<{ active?: boolean }>`
       width: 20px;
       height: 20px;
     }
+  }
+`;
+
+const ActionContentRow = styled(ContentRow)`
+  &:hover {
+    > svg:last-of-type {
+      transform: translate(4px, -4px);
+    }
+  }
+
+  > svg {
+    transition: all 0.2s ease-in-out;
+
+    &:first-of-type {
+      margin-right: 20px;
+      height: 40px;
+      width: 40px;
+    }
+
+    &:last-of-type {
+      margin-left: 8px;
+      width: 20px;
+      height: 20px;
+    }
+  }
+`;
+
+const WalletContentRow = styled(ContentRow)`
+  > svg {
+    transition: all 0.2s ease-in-out;
+    margin-right: 20px;
+    height: 40px;
+    width: 40px;
   }
 `;
 
@@ -191,11 +230,11 @@ const CommunityPage = () => {
   return (
     <ContentWrapper>
       {links.map((link) => (
-        <ContentRow onClick={() => window.open(link.url)}>
+        <CommunityContentRow onClick={() => window.open(link.url)}>
           <img src={link.img} alt={link.title} />
           <Title>{link.title}</Title>
           <ExternalLinkIcon />
-        </ContentRow>
+        </CommunityContentRow>
       ))}
       <ContentFooter>
         <ProductDisclaimer />
@@ -266,7 +305,7 @@ const AssetRowWrapper = styled.div`
 
 const AssetRow = styled.div`
   display: flex;
-  padding: 10px;
+  padding: 16px 24px;
 `;
 
 const AssetStat = styled.div`
@@ -345,15 +384,14 @@ const WalletPage = ({ onHide }: WalletPageProps) => {
         <>
           <ContentWrapper>
             {ETHEREUM_WALLETS.map((wallet) => (
-              <ContentRow
+              <WalletContentRow
                 key={wallet}
                 active={selectedWallet === wallet}
                 onClick={() => setWallet(wallet)}
               >
                 <WalletLogo wallet={wallet} />
                 <Title>{WALLET_TITLES[wallet]}</Title>
-                <ExternalLinkIcon />
-              </ContentRow>
+              </WalletContentRow>
             ))}
           </ContentWrapper>
           <ButtonWrapper>
@@ -424,13 +462,13 @@ const WalletPage = ({ onHide }: WalletPageProps) => {
           </AssetRowWrapper>
           <ContentWrapper>
             {actions.map((action) => (
-              <ContentRow onClick={() => action.onClick()}>
+              <ActionContentRow onClick={() => action.onClick()}>
                 <ContentLogoWrapper>
                   <img src={action.img} alt={action.title} />
                 </ContentLogoWrapper>
                 <Title>{action.title}</Title>
                 {action.showExternalIcon && <ExternalLinkIcon />}
-              </ContentRow>
+              </ActionContentRow>
             ))}
           </ContentWrapper>
         </>

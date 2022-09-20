@@ -145,7 +145,7 @@ const MarqueeItem = styled.div`
 const PoolMarquee = ({ pool }: any) => {
   return (
     <Marquee gradient={false} speed={100} delay={0} pauseOnHover>
-      {new Array(6).fill("").map((i) => (
+      {new Array(10).fill("").map((i) => (
         <MarqueeItem key={i}>
           <Title>{pool}</Title>
           <img src={globe} alt="globe" />
