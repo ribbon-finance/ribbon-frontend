@@ -23,6 +23,7 @@ import Indicator from "shared/lib/components/Indicator/Indicator";
 import { truncateAddress } from "shared/lib/utils/address";
 import useWeb3Wallet from "../hooks/useWeb3Wallet";
 import LendModal, { ModalContentEnum } from "../components/Common/LendModal";
+import DepositModal from "../components/DepositModal";
 
 const PoolContainer = styled.div`
   width: calc(100% - ${components.sidebar}px);
@@ -46,7 +47,7 @@ const PoolPage = () => {
   const { poolId }: { poolId: VaultOptions } = useParams();
   const [activePage, setPage] = useState<PageEnum>();
   const [triggerWalletModal, setWalletModal] = useState<boolean>(false);
-
+  console.log(activePage);
   if (!poolId) return <NotFound />;
 
   return (
@@ -55,6 +56,11 @@ const PoolPage = () => {
         show={triggerWalletModal}
         onHide={() => setWalletModal(false)}
         content={ModalContentEnum.WALLET}
+      />
+      <DepositModal
+        show={activePage === PageEnum.DEPOSIT}
+        onHide={() => setPage(undefined)}
+        pool={poolId}
       />
       <PoolContainer>
         <Header setWalletModal={setWalletModal} pool={poolId} />
