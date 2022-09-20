@@ -245,6 +245,10 @@ const Header = () => {
             variant="desktop"
             dropdownItems={[
               {
+                text: "CoinGecko",
+                link: URLS.coingecko,
+              },
+              {
                 text: "Token Terminal",
                 link: URLS.tokenterminal,
               },

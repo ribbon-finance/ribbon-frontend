@@ -300,6 +300,7 @@ const WalletPage = ({ onHide }: WalletPageProps) => {
   const [selectedWallet, setWallet] = useState<EthereumWallet>();
   const { active, activate, deactivate } = useWeb3Wallet();
   const balances = useAssetBalances();
+  
   useEffect(() => {
     setTimeout(() => {
       if (active) setPage(WalletPageEnum.ACCOUNT);
@@ -405,6 +406,7 @@ const WalletPage = ({ onHide }: WalletPageProps) => {
               const Logo = getAssetLogo(asset);
               const name = getAssetDisplay(asset);
               const decimals = getAssetDecimals(asset);
+
               return (
                 <AssetRow>
                   <Logo height={40} width={40} />

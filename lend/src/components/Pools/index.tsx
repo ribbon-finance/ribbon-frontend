@@ -16,6 +16,7 @@ import { Link } from "react-router-dom";
 import { isPracticallyZero } from "../../utils/math";
 import useVaultAccounts from "../../hooks/useVaultAccounts";
 import { formatUnits } from "ethers/lib/utils";
+
 const statSideContainer: number = 120;
 
 const ListRow = styled(Row)`

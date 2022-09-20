@@ -10,6 +10,7 @@ import theme from "../../designSystem/theme";
 import { components } from "../../designSystem/components";
 import { Link } from "react-router-dom";
 
+
 const VerticalHeaderContainer = styled.div`
   display: flex;
   width: ${components.sidebar}px;
