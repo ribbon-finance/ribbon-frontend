@@ -2,11 +2,12 @@ import { useState } from "react";
 import { Col } from "react-bootstrap";
 import { useParams } from "react-router-dom";
 import {
+  getAssets,
   getMakerLogo,
   VaultAddressMap,
   VaultOptions,
 } from "../constants/constants";
-import { Title } from "../designSystem";
+import { BaseButton, Title } from "../designSystem";
 import NotFound from "./NotFound";
 import globe from "../assets/icons/globe.svg";
 import Marquee from "react-fast-marquee/dist";
@@ -29,8 +30,11 @@ import useWeb3Wallet from "../hooks/useWeb3Wallet";
 import LendModal, { ModalContentEnum } from "../components/Common/LendModal";
 import { useVaultsData } from "../hooks/web3DataContext";
 import { usePoolsAPR } from "../hooks/usePoolsAPR";
-import { getUtilizationDecimals } from "../utils/asset";
+import { getAssetLogo, getUtilizationDecimals } from "../utils/asset";
 import { formatBigNumber } from "../utils/math";
+import colors from "shared/lib/designSystem/colors";
+import { Assets } from "../store/types";
+import ExternalLinkIcon from "../components/Common/ExternalLinkIcon";
 
 const PoolContainer = styled.div`
   width: calc(100% - ${components.sidebar}px);
@@ -42,6 +46,7 @@ const PoolContainer = styled.div`
   > .row {
     margin-left: 0 !important;
     width: 100%;
+    border-right: 1px solid ${colors.border};
   }
 `;
 
@@ -57,18 +62,103 @@ const DetailsWrapper = styled.div`
 `;
 
 const Details = styled.div`
-  margin: auto;
+  align-items: center;
+  margin: auto 0;
+  padding: 32px;
+  width: 100%;
 `;
 
-const MakerLogo = styled.img`
-  width: 120px;
-  height: 120px;
-  margin-bottom: 40px;
+const MakerLogo = styled.div`
+  display: flex;
+  justify-content: center;
+  width: 100%;
+
+  img {
+    width: 120px;
+    height: 120px;
+    text-align: center;
+    margin-bottom: 40px;
+  }
 `;
 
 const StatsWrapper = styled.div`
   display: block;
+  width: 100%;
 `;
+
+const Stat = styled.div`
+  display: flex;
+  justify-content: space-between;
+  padding: 30px 0;
+
+  &:not(:last-of-type) {
+    border-bottom: 1px solid ${colors.border};
+  }
+`;
+
+const Label = styled.span`
+  color: ${colors.tertiaryText};
+`;
+
+const Value = styled.span<{ color?: string }>`
+  display: flex;
+  font-family: VCR;
+  color: ${({ color }) => color ?? colors.primaryText};
+
+  > * {
+    margin: auto 0;
+  }
+
+  svg {
+    width: 20px;
+    height: 20px;
+    margin-right: 8px;
+  }
+`;
+
+const PillButton = styled(BaseButton)`
+  padding: 16px;
+  border: 1px solid white;
+  background-color: transparent;
+  border-radius: 100px;
+  color: ${colors.primaryText};
+  width: fit-content;
+
+  &:hover {
+    cursor: pointer;
+  }
+
+  > * {
+    margin: auto 0;
+
+    &:not(:last-child) {
+      margin-right: 8px;
+    }
+  }
+`;
+
+const SocialsWrapper = styled.div`
+  display: flex;
+  justify-content: center;
+  margin-bottom: 52px;
+
+  > ${PillButton} {
+    &:not(:last-of-type) {
+      margin-right: 16px;
+    }
+  }
+`;
+
+interface PoolDetails {
+  logo: string;
+  contract: string;
+  poolSize: string;
+  asset: Assets;
+  utilizationRate: string;
+  apr: string;
+  twitter: string;
+  website: string;
+}
 
 const PoolPage = () => {
   const { poolId }: { poolId: VaultOptions } = useParams();
@@ -80,21 +170,21 @@ const PoolPage = () => {
 
   if (!poolId) return <NotFound />;
 
-  const poolDetails = {
+  const details: PoolDetails = {
     logo: getMakerLogo(poolId),
     contract: VaultAddressMap[poolId].lend,
     poolSize: formatBigNumber(vaultDatas[poolId].poolSize, decimals),
+    asset: getAssets(poolId),
     utilizationRate: formatBigNumber(
       vaultDatas[poolId].utilizationRate,
       decimals
     ),
-    apr: poolAPRs[poolId],
+    apr: poolAPRs[poolId].toFixed(2),
     twitter: "",
     website: "",
   };
 
-  console.log(poolDetails);
-
+  const AssetLogo = getAssetLogo(details.asset);
   return (
     <>
       <LendModal
@@ -108,15 +198,43 @@ const PoolPage = () => {
           <Col xs={6}>
             <DetailsWrapper>
               <Details>
-                <MakerLogo src={poolDetails.logo} alt={poolId} />
+                <MakerLogo>
+                  <img src={details.logo} alt={poolId} />
+                </MakerLogo>
+                <SocialsWrapper>
+                  <PillButton>
+                    <span>Pool Contract</span>
+                    <ExternalLinkIcon />
+                  </PillButton>
+                  <PillButton>
+                    <span>Twitter</span>
+                    <ExternalLinkIcon />
+                  </PillButton>
+                  <PillButton>
+                    <span>Website</span>
+                    <ExternalLinkIcon />
+                  </PillButton>
+                </SocialsWrapper>
                 <StatsWrapper>
-                  <div>Pool size: {poolDetails.poolSize}</div>
-                  <div>APR: {poolDetails.apr}</div>
-                  <div>Utilization rate: {poolDetails.utilizationRate}</div>
+                  <Stat>
+                    <Label>Pool size:</Label>
+                    <Value>
+                      <AssetLogo /> {details.poolSize}
+                    </Value>
+                  </Stat>
+                  <Stat>
+                    <Label>APR:</Label>
+                    <Value>{details.apr}</Value>
+                  </Stat>
+                  <Stat>
+                    <Label>Utilization rate:</Label>
+                    <Value>{details.utilizationRate}%</Value>
+                  </Stat>
                 </StatsWrapper>
               </Details>
             </DetailsWrapper>
           </Col>
+          <Col></Col>
         </Content>
         <Footer activePage={activePage} setPage={setPage} />
       </PoolContainer>
@@ -203,7 +321,7 @@ const PoolMarquee = ({ pool }: any) => {
       {new Array(10).fill("").map((i) => (
         <MarqueeItem key={i}>
           <Title>{pool}</Title>
-          <img src={globe} alt="globe" />
+          <img src={getMakerLogo(pool)} alt={pool} height={20} width={20} />
         </MarqueeItem>
       ))}
     </Marquee>
