@@ -55,7 +55,6 @@ const ContentRow = styled.div<{ active?: boolean }>`
   padding: 0 24px;
   font-size: 14px;
   transition: 0.2s ease-in-out;
-  border: 1px solid transparent;
 
   &:hover {
     cursor: pointer;
@@ -73,6 +72,8 @@ const ContentRow = styled.div<{ active?: boolean }>`
 `;
 
 const CommunityContentRow = styled(ContentRow)`
+  border: 1px solid transparent;
+
   &:hover {
     > svg:last-of-type {
       transform: translate(4px, -4px);
@@ -97,6 +98,8 @@ const CommunityContentRow = styled(ContentRow)`
 `;
 
 const ActionContentRow = styled(ContentRow)`
+  border: 1px solid transparent;
+
   &:hover {
     > svg:last-of-type {
       transform: translate(4px, -4px);
@@ -120,7 +123,15 @@ const ActionContentRow = styled(ContentRow)`
   }
 `;
 
-const WalletContentRow = styled(ContentRow)`
+const WalletContentRow = styled(ContentRow)<{ active: boolean; color: string }>`
+  ${({ active, color }) => {
+    if (active)
+      return `
+        border-color: ${color} !important;
+        box-shadow: inset 0 0 5px ${color};
+      `;
+  }}
+
   > svg {
     transition: all 0.2s ease-in-out;
     margin-right: 20px;
@@ -380,6 +391,12 @@ const WalletPage = ({ onHide }: WalletPageProps) => {
     }
 
     if (page === WalletPageEnum.CONNECT_WALLET) {
+      const walletColors = {
+        [EthereumWallet.Metamask]: colors.wallets.Metamask,
+        [EthereumWallet.WalletConnect]: colors.wallets.WalletConnect,
+        [EthereumWallet.WalletLink]: colors.wallets.WalletLink,
+      };
+
       return (
         <>
           <ContentWrapper>
@@ -388,6 +405,7 @@ const WalletPage = ({ onHide }: WalletPageProps) => {
                 key={wallet}
                 active={selectedWallet === wallet}
                 onClick={() => setWallet(wallet)}
+                color={walletColors[wallet]}
               >
                 <WalletLogo wallet={wallet} />
                 <Title>{WALLET_TITLES[wallet]}</Title>

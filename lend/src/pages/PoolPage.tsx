@@ -309,6 +309,21 @@ const PoolPage = () => {
                 <Paragraph>{poolDetails.bio}</Paragraph>
               </Details>
               <Details>
+                <DetailsIndex>01</DetailsIndex>
+                <StyledTitle>{poolDetails.name}</StyledTitle>
+                <Paragraph>{poolDetails.bio}</Paragraph>
+              </Details>
+              <Details>
+                <DetailsIndex>01</DetailsIndex>
+                <StyledTitle>{poolDetails.name}</StyledTitle>
+                <Paragraph>{poolDetails.bio}</Paragraph>
+              </Details>
+              <Details>
+                <DetailsIndex>01</DetailsIndex>
+                <StyledTitle>{poolDetails.name}</StyledTitle>
+                <Paragraph>{poolDetails.bio}</Paragraph>
+              </Details>
+              <Details>
                 <DetailsIndex>02</DetailsIndex>
                 <StyledTitle>Credit Rating</StyledTitle>
                 <Paragraph>{poolDetails.bio}</Paragraph>
@@ -418,12 +433,12 @@ const MarqueeItem = styled.div`
   }
 `;
 
-const PoolMarquee = ({ pool }: any) => {
+const PoolMarquee = ({ pool }: { pool: VaultOptions }) => {
   return (
     <Marquee gradient={false} speed={50} delay={0} pauseOnHover>
       {new Array(10).fill("").map((i) => (
         <MarqueeItem key={i}>
-          <Title>{pool}</Title>
+          <Title>{VaultDetailsMap[pool].name}</Title>
           <img src={getMakerLogo(pool)} alt={pool} height={20} width={20} />
         </MarqueeItem>
       ))}
