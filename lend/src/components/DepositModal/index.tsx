@@ -588,9 +588,9 @@ export const Hero: React.FC<HeroProps> = ({
             }
             break;
           case "withdraw":
-            // if (amountBigNumber.gt(vaultBalanceInAsset)) {
-            //   return "withdrawLimitExceeded";
-            // }
+            if (amountBigNumber.gt(vaultBalanceInAsset)) {
+              return "withdrawLimitExceeded";
+            }
             if (amountBigNumber.gt(availableToWithdraw)) {
               return "insufficientPoolLiquidity";
             }
