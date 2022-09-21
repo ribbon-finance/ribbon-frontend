@@ -43,6 +43,7 @@ import { useWeb3React } from "@web3-react/core";
 import ExternalLinkIcon from "../Common/ExternalLinkIcon";
 import HeroContent from "../HeroContent";
 import { PoolValidationErrors } from "./types";
+import UtilizationBar from "../Common/UtilizationBar";
 const borderStyle = `1px solid ${colors.primaryText}1F`;
 
 export const FixedContainer = styled.div`
@@ -301,9 +302,18 @@ const Footer: React.FC<FooterProps> = ({ pool, page, txhash }) => {
           <Col xs={3}>
             <DetailContainer>
               <DetailTitle>Pool Utilization</DetailTitle>
-              <DetailText>
-                {formatBigNumber(utilizationRate, utilizationDecimals)}%
-              </DetailText>
+              <div className="d-flex">
+                <UtilizationBar
+                  percent={parseFloat(
+                    formatBigNumber(utilizationRate, utilizationDecimals)
+                  )}
+                  width={40}
+                  color="white"
+                />
+                <DetailText>
+                  {formatBigNumber(utilizationRate, utilizationDecimals)}%
+                </DetailText>
+              </div>
             </DetailContainer>
           </Col>
         </>

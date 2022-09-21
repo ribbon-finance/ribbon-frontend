@@ -41,6 +41,7 @@ import ExternalLinkIcon from "../components/Common/ExternalLinkIcon";
 import currency from "currency.js";
 import TooltipExplanation from "shared/lib/components/Common/TooltipExplanation";
 import HelpInfo from "shared/lib/components/Common/HelpInfo";
+import UtilizationBar from "../components/Common/UtilizationBar";
 const PoolContainer = styled.div`
   width: calc(100% - ${components.sidebar}px);
 
@@ -380,10 +381,19 @@ const PoolPage = () => {
                       {apr}%
                     </Value>
                   </Stat>
+                  {/* <Stat> */}
                   <Stat>
                     <Label>Utilization rate:</Label>
-                    <Value>{utilizationRate}%</Value>
+                    <div className="d-flex">
+                      <UtilizationBar
+                        percent={parseFloat(utilizationRate)}
+                        color="white"
+                        width={64}
+                      />
+                      <Value>{utilizationRate}%</Value>
+                    </div>
                   </Stat>
+                  {/* </Stat> */}
                 </StatsWrapper>
               </Details>
             </UserDetailsWrapper>
