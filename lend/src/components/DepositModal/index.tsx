@@ -369,7 +369,7 @@ const BalanceTitle = styled.div<{ delay?: number }>`
 const BalanceContainer = styled.div<{ delay?: number }>`
   display: flex;
   margin-top: 8px;
-  margin-bottom: 24px;
+  margin-bottom: 8px;
   font-size: 12px;
   ${delayedFade}
 `;
@@ -506,6 +506,7 @@ const FormButton = styled(ActionButton)<{
 
 const ErrorText = styled(SecondaryText)`
   text-align: center;
+  font-size: 12px;
   color: ${colors.red};
 `;
 
@@ -530,7 +531,8 @@ export const Hero: React.FC<HeroProps> = ({
   const [waitingApproval, setWaitingApproval] = useState(false);
   const { active, account } = useWeb3Wallet();
   const Logo = getAssetLogo("USDC");
-  const { vaultBalanceInAsset, currentExchangeRate } = useVaultData(pool);
+  const { vaultBalanceInAsset, currentExchangeRate, availableToWithdraw } =
+    useVaultData(pool);
   const decimals = getAssetDecimals("USDC");
   const { balance: userAssetBalance } = useAssetBalance("USDC");
   const usdc = useUSDC();
@@ -586,8 +588,11 @@ export const Hero: React.FC<HeroProps> = ({
             }
             break;
           case "withdraw":
-            if (amountBigNumber.gt(vaultBalanceInAsset)) {
-              return "withdrawLimitExceeded";
+            // if (amountBigNumber.gt(vaultBalanceInAsset)) {
+            //   return "withdrawLimitExceeded";
+            // }
+            if (amountBigNumber.gt(availableToWithdraw)) {
+              return "insufficientPoolLiquidity";
             }
         }
       }
@@ -599,11 +604,11 @@ export const Hero: React.FC<HeroProps> = ({
   }, [
     actionType,
     active,
+    availableToWithdraw,
     decimals,
     inputAmount,
     isInputNonZero,
     userAssetBalance,
-    vaultBalanceInAsset,
   ]);
 
   const renderErrorText = useCallback((_error: PoolValidationErrors) => {
@@ -612,6 +617,8 @@ export const Hero: React.FC<HeroProps> = ({
         return "Insufficient balance";
       case "withdrawLimitExceeded":
         return "Available limit exceeded";
+      case "insufficientPoolLiquidity":
+        return "Insufficient pool liquidity";
       default:
         return "";
     }
@@ -824,7 +831,12 @@ export const Hero: React.FC<HeroProps> = ({
                 ? "USDC Wallet Balance:"
                 : "Your Pool Balance:"}{" "}
             </BalanceLabel>
-            <BalanceValue error={Boolean(error)}>
+            <BalanceValue
+              error={Boolean(
+                error === "insufficientBalance" ||
+                  error === "withdrawLimitExceeded"
+              )}
+            >
               {!account
                 ? "---"
                 : actionType === "deposit"
@@ -832,6 +844,16 @@ export const Hero: React.FC<HeroProps> = ({
                 : formatBigNumber(vaultBalanceInAsset, decimals, 2)}
             </BalanceValue>
           </BalanceContainer>
+          {actionType === "withdraw" && (
+            <BalanceContainer delay={0.5}>
+              <BalanceLabel>Pool Max Withdraw Amount</BalanceLabel>
+              <BalanceValue
+                error={Boolean(error === "insufficientPoolLiquidity")}
+              >
+                {formatBigNumber(availableToWithdraw, decimals, 2)}
+              </BalanceValue>
+            </BalanceContainer>
+          )}
         </>
       ) : (
         <HeroContent

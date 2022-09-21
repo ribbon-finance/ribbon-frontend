@@ -85,7 +85,7 @@ const LendVerticalHeader: React.FC = () => {
       />
       <VerticalHeaderContainer>
         <LogoContainer>
-          <Link to="/">
+          <Link to="/app">
             <AppLogo />
           </Link>
         </LogoContainer>

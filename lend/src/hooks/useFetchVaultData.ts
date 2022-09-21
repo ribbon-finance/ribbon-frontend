@@ -65,6 +65,7 @@ const useFetchVaultData = (): VaultData => {
          */
         const unconnectedPromises: Promise<BigNumber>[] = [
           contract.poolSize(),
+          contract.availableToWithdraw(),
           contract.getUtilizationRate(),
           contract.availableToWithdraw(),
           contract.getCurrentExchangeRate(),
@@ -95,6 +96,7 @@ const useFetchVaultData = (): VaultData => {
 
         const [
           poolSize,
+          availableToWithdraw,
           utilizationRate,
           vaultMaxWithdrawableShares,
           currentExchangeRate,
@@ -112,6 +114,7 @@ const useFetchVaultData = (): VaultData => {
         return {
           vault,
           poolSize,
+          availableToWithdraw,
           utilizationRate,
           vaultMaxWithdrawableShares,
           currentExchangeRate,
@@ -133,6 +136,7 @@ const useFetchVaultData = (): VaultData => {
             responses.map(
               ({
                 vault,
+                availableToWithdraw,
                 utilizationRate,
                 vaultMaxWithdrawableShares,
                 currentExchangeRate,
@@ -148,6 +152,7 @@ const useFetchVaultData = (): VaultData => {
                 {
                   ...prev.responses[vault],
                   ...response,
+                  availableToWithdraw: availableToWithdraw,
                   utilizationRate: utilizationRate,
                   supplyRate: supplyRate,
                   rewardPerSecond: rewardPerSecond,

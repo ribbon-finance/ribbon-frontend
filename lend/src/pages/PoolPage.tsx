@@ -7,7 +7,7 @@ import {
   VaultDetailsMap,
   VaultOptions,
 } from "../constants/constants";
-import { Title } from "../designSystem";
+import { BaseLink, Title } from "../designSystem";
 import NotFound from "./NotFound";
 import Marquee from "react-fast-marquee/dist";
 import styled from "styled-components";
@@ -312,7 +312,7 @@ const PoolPage = () => {
                     <Value
                       color={parseFloat(apr) >= 0 ? colors.green : colors.red}
                     >
-                      {apr}
+                      {apr}%
                     </Value>
                   </Stat>
                   <Stat>
@@ -352,10 +352,17 @@ const PoolPage = () => {
                 </DetailsStatWrapper>
                 <CreditRating>
                   Credit ratings provided by{" "}
-                  <img
-                    src={poolDetails.creditRating.ratingProvider}
-                    alt={poolDetails.creditRating.ratingProvider}
-                  />
+                  <BaseLink
+                    color="white"
+                    target="_blank"
+                    rel="noreferrer noopener"
+                    to="https://credora.io/"
+                  >
+                    <img
+                      src={poolDetails.creditRating.ratingProvider}
+                      alt={poolDetails.creditRating.ratingProvider}
+                    />
+                  </BaseLink>
                 </CreditRating>
               </Details>
             </PoolDetailsWrapper>
