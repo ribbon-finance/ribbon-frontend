@@ -609,6 +609,7 @@ export const Hero: React.FC<HeroProps> = ({
     inputAmount,
     isInputNonZero,
     userAssetBalance,
+    vaultBalanceInAsset,
   ]);
 
   const renderErrorText = useCallback((_error: PoolValidationErrors) => {
