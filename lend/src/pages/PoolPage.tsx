@@ -30,7 +30,11 @@ import LendModal, { ModalContentEnum } from "../components/Common/LendModal";
 import DepositModal from "../components/DepositModal";
 import { useVaultsData } from "../hooks/web3DataContext";
 import { usePoolsAPR } from "../hooks/usePoolsAPR";
-import { getAssetLogo, getUtilizationDecimals } from "../utils/asset";
+import {
+  getAssetDecimals,
+  getAssetLogo,
+  getUtilizationDecimals,
+} from "../utils/asset";
 import { formatBigNumber } from "../utils/math";
 import colors from "shared/lib/designSystem/colors";
 import ExternalLinkIcon from "../components/Common/ExternalLinkIcon";
@@ -90,7 +94,7 @@ const Label = styled.span`
 const Value = styled.span<{ color?: string }>`
   display: flex;
   font-family: VCR;
-  color: ${({ color }) => color ?? colors.primaryText};
+  color: ${({ color }) => (color ? color : colors.primaryText)};
 
   > * {
     margin: auto 0;
@@ -217,16 +221,17 @@ const PoolPage = () => {
   const [triggerWalletModal, setWalletModal] = useState<boolean>(false);
   const { data: vaultDatas } = useVaultsData();
   const { aprs: poolAPRs } = usePoolsAPR();
-  const decimals = getUtilizationDecimals();
+  const utilizationDecimals = getUtilizationDecimals();
+  const usdcDecimals = getAssetDecimals("USDC");
   if (!poolId) return <NotFound />;
 
   const logo = getMakerLogo(poolId);
-  const poolSize = formatBigNumber(vaultDatas[poolId].poolSize, decimals);
+  const poolSize = formatBigNumber(vaultDatas[poolId].poolSize, usdcDecimals);
   const apr = poolAPRs[poolId].toFixed(2);
   const poolDetails = VaultDetailsMap[poolId];
   const utilizationRate = formatBigNumber(
     vaultDatas[poolId].utilizationRate,
-    decimals
+    utilizationDecimals
   );
 
   const AssetLogo = getAssetLogo(getAssets(poolId));
@@ -297,7 +302,11 @@ const PoolPage = () => {
                   </Stat>
                   <Stat>
                     <Label>APR:</Label>
-                    <Value>{apr}</Value>
+                    <Value
+                      color={parseFloat(apr) >= 0 ? colors.green : colors.red}
+                    >
+                      {apr}
+                    </Value>
                   </Stat>
                   <Stat>
                     <Label>Utilization rate:</Label>
