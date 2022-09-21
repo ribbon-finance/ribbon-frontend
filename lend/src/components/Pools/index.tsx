@@ -1,4 +1,4 @@
-import { getMakerLogo } from "../../constants/constants";
+import { getMakerLogo, VaultDetailsMap } from "../../constants/constants";
 import { getAssetLogo } from "shared/lib/utils/asset";
 import { getAssets } from "../../constants/constants";
 import { VaultList } from "../../constants/constants";
@@ -210,7 +210,7 @@ export const Pools = () => {
               </PoolLogo>
               <PoolStats>
                 <Stat>
-                  <StyledTitle>{pool}</StyledTitle>
+                  <StyledTitle>{VaultDetailsMap[pool].name}</StyledTitle>
                   <StyledSubtitle>
                     Utilization{" "}
                     {formatBigNumber(utilizationRate, utilizationDecimals)}%
