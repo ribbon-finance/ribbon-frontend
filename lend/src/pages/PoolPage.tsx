@@ -210,6 +210,23 @@ const Paragraph = styled.p`
   color: ${colors.text};
 `;
 
+const ScrollableContent = styled(Content)`
+  overflowy: scroll;
+  overflowx: hidden;
+
+  ::-webkit-scrollbar {
+    width: 0;
+    background: transparent;
+  }
+`;
+
+const StickyCol = styled(Col)`
+  display: flex;
+  position: sticky;
+  height: calc(100vh - ${components.header + components.footer}px);
+  top: 0;
+`;
+
 const PoolPage = () => {
   const { poolId }: { poolId: VaultOptions } = useParams();
   const [activePage, setPage] = useState<PageEnum>();
@@ -239,18 +256,8 @@ const PoolPage = () => {
       />
       <PoolContainer>
         <Header setWalletModal={setWalletModal} pool={poolId} />
-        <Content style={{ overflow: "scroll" }}>
-          <Col
-            xs={6}
-            style={{
-              display: "flex",
-              position: "sticky",
-              height: `calc(100vh - ${
-                components.header + components.footer
-              }px)`,
-              top: 0,
-            }}
-          >
+        <ScrollableContent>
+          <StickyCol xs={6}>
             <UserDetailsWrapper>
               <Details>
                 <MakerLogo>
@@ -300,7 +307,7 @@ const PoolPage = () => {
                 </StatsWrapper>
               </Details>
             </UserDetailsWrapper>
-          </Col>
+          </StickyCol>
           <Col>
             <PoolDetailsWrapper>
               <Details>
@@ -338,7 +345,7 @@ const PoolPage = () => {
               </Details>
             </PoolDetailsWrapper>
           </Col>
-        </Content>
+        </ScrollableContent>
         <Footer activePage={activePage} setPage={setPage} />
       </PoolContainer>
     </>
