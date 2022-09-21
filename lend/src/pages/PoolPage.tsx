@@ -33,6 +33,7 @@ import { getAssetLogo, getUtilizationDecimals } from "../utils/asset";
 import { formatBigNumber } from "../utils/math";
 import colors from "shared/lib/designSystem/colors";
 import ExternalLinkIcon from "../components/Common/ExternalLinkIcon";
+import currency from "currency.js";
 
 const PoolContainer = styled.div`
   width: calc(100% - ${components.sidebar}px);
@@ -52,28 +53,6 @@ enum PageEnum {
   DEPOSIT,
   WITHDRAW,
 }
-
-const Details = styled.div`
-  align-items: center;
-  padding: 32px;
-  width: 100%;
-`;
-
-const UserDetailsWrapper = styled.div`
-  display: flex;
-  height: 100%;
-  width: 100%;
-
-  > ${Details} {
-    margin: auto 0;
-  }
-`;
-
-const PoolDetailsWrapper = styled.div`
-  display: flex;
-  height: 100%;
-  width: 100%;
-`;
 
 const MakerLogo = styled.div`
   display: flex;
@@ -123,6 +102,58 @@ const Value = styled.span<{ color?: string }>`
   }
 `;
 
+const Details = styled.div`
+  align-items: center;
+  padding: 32px;
+  width: 100%;
+`;
+
+const DetailsStatWrapper = styled.div`
+  display: flex;
+  justify-content: space-between;
+  margin-top: 24px;
+
+  > ${Stat} {
+    display: inline-flex;
+    width: calc(50% - 16px);
+    border-top: 1px solid ${colors.border};
+    border-bottom: 1px solid ${colors.border};
+  }
+`;
+
+const CreditRating = styled.div`
+  margin: 24px auto;
+  color: ${colors.tertiaryText};
+
+  > * {
+    margin: auto 0;
+  }
+
+  img {
+    margin-left: 8px;
+  }
+`;
+
+const UserDetailsWrapper = styled.div`
+  display: flex;
+  margin: auto;
+  width: 100%;
+
+  > ${Details} {
+    margin: auto 0;
+  }
+`;
+
+const PoolDetailsWrapper = styled.div`
+  height: 100%;
+  width: 100%;
+
+  > ${Details} {
+    display: block;
+    width: 100%;
+  }
+`;
+
 const PillButton = styled.a`
   padding: 16px;
   border: 1px solid white;
@@ -164,6 +195,21 @@ const SocialsWrapper = styled.div`
   }
 `;
 
+const StyledTitle = styled(Title)`
+  font-size: 22px;
+`;
+
+const DetailsIndex = styled.span`
+  display: block;
+  color: ${colors.quaternaryText};
+  font-size: 12px;
+  font-family: VCR;
+`;
+
+const Paragraph = styled.p`
+  color: ${colors.text};
+`;
+
 const PoolPage = () => {
   const { poolId }: { poolId: VaultOptions } = useParams();
   const [activePage, setPage] = useState<PageEnum>();
@@ -193,8 +239,18 @@ const PoolPage = () => {
       />
       <PoolContainer>
         <Header setWalletModal={setWalletModal} pool={poolId} />
-        <Content>
-          <Col xs={6}>
+        <Content style={{ overflow: "scroll" }}>
+          <Col
+            xs={6}
+            style={{
+              display: "flex",
+              position: "sticky",
+              height: `calc(100vh - ${
+                components.header + components.footer
+              }px)`,
+              top: 0,
+            }}
+          >
             <UserDetailsWrapper>
               <Details>
                 <MakerLogo>
@@ -247,7 +303,39 @@ const PoolPage = () => {
           </Col>
           <Col>
             <PoolDetailsWrapper>
-              <Details></Details>
+              <Details>
+                <DetailsIndex>01</DetailsIndex>
+                <StyledTitle>{poolDetails.name}</StyledTitle>
+                <Paragraph>{poolDetails.bio}</Paragraph>
+              </Details>
+              <Details>
+                <DetailsIndex>02</DetailsIndex>
+                <StyledTitle>Credit Rating</StyledTitle>
+                <Paragraph>{poolDetails.bio}</Paragraph>
+
+                <DetailsStatWrapper>
+                  <Stat>
+                    <Label>Credit Rating:</Label>
+                    <Value>{poolDetails.creditRating.rating}</Value>
+                  </Stat>
+                  <Stat>
+                    <Label>Borrow Limit:</Label>
+                    <Value>
+                      <AssetLogo />{" "}
+                      {currency(poolDetails.creditRating.borrowLimit).format({
+                        symbol: "",
+                      })}
+                    </Value>
+                  </Stat>
+                </DetailsStatWrapper>
+                <CreditRating>
+                  Credit ratings provided by{" "}
+                  <img
+                    src={poolDetails.creditRating.ratingProvider}
+                    alt={poolDetails.creditRating.ratingProvider}
+                  />
+                </CreditRating>
+              </Details>
             </PoolDetailsWrapper>
           </Col>
         </Content>
