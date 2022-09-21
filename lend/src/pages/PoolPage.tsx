@@ -4,12 +4,11 @@ import { useParams } from "react-router-dom";
 import {
   getAssets,
   getMakerLogo,
-  VaultAddressMap,
+  VaultDetailsMap,
   VaultOptions,
 } from "../constants/constants";
-import { BaseButton, Title } from "../designSystem";
+import { Title } from "../designSystem";
 import NotFound from "./NotFound";
-import globe from "../assets/icons/globe.svg";
 import Marquee from "react-fast-marquee/dist";
 import styled from "styled-components";
 import { components } from "../designSystem/components";
@@ -33,7 +32,6 @@ import { usePoolsAPR } from "../hooks/usePoolsAPR";
 import { getAssetLogo, getUtilizationDecimals } from "../utils/asset";
 import { formatBigNumber } from "../utils/math";
 import colors from "shared/lib/designSystem/colors";
-import { Assets } from "../store/types";
 import ExternalLinkIcon from "../components/Common/ExternalLinkIcon";
 
 const PoolContainer = styled.div`
@@ -55,16 +53,25 @@ enum PageEnum {
   WITHDRAW,
 }
 
-const DetailsWrapper = styled.div`
-  display: flex;
-  height: 100%;
+const Details = styled.div`
+  align-items: center;
+  padding: 32px;
   width: 100%;
 `;
 
-const Details = styled.div`
-  align-items: center;
-  margin: auto 0;
-  padding: 32px;
+const UserDetailsWrapper = styled.div`
+  display: flex;
+  height: 100%;
+  width: 100%;
+
+  > ${Details} {
+    margin: auto 0;
+  }
+`;
+
+const PoolDetailsWrapper = styled.div`
+  display: flex;
+  height: 100%;
   width: 100%;
 `;
 
@@ -116,16 +123,24 @@ const Value = styled.span<{ color?: string }>`
   }
 `;
 
-const PillButton = styled(BaseButton)`
+const PillButton = styled.a`
   padding: 16px;
   border: 1px solid white;
   background-color: transparent;
   border-radius: 100px;
-  color: ${colors.primaryText};
   width: fit-content;
+  transition: 0.2s ease-in-out;
+  color: ${colors.primaryText};
 
   &:hover {
     cursor: pointer;
+    color: ${colors.primaryText} !important;
+    text-decoration: none !important;
+
+    svg {
+      transition: 0.2s ease-in-out;
+      transform: translate(4px, -4px);
+    }
   }
 
   > * {
@@ -149,17 +164,6 @@ const SocialsWrapper = styled.div`
   }
 `;
 
-interface PoolDetails {
-  logo: string;
-  contract: string;
-  poolSize: string;
-  asset: Assets;
-  utilizationRate: string;
-  apr: string;
-  twitter: string;
-  website: string;
-}
-
 const PoolPage = () => {
   const { poolId }: { poolId: VaultOptions } = useParams();
   const [activePage, setPage] = useState<PageEnum>();
@@ -170,21 +174,16 @@ const PoolPage = () => {
 
   if (!poolId) return <NotFound />;
 
-  const details: PoolDetails = {
-    logo: getMakerLogo(poolId),
-    contract: VaultAddressMap[poolId].lend,
-    poolSize: formatBigNumber(vaultDatas[poolId].poolSize, decimals),
-    asset: getAssets(poolId),
-    utilizationRate: formatBigNumber(
-      vaultDatas[poolId].utilizationRate,
-      decimals
-    ),
-    apr: poolAPRs[poolId].toFixed(2),
-    twitter: "",
-    website: "",
-  };
+  const logo = getMakerLogo(poolId);
+  const poolSize = formatBigNumber(vaultDatas[poolId].poolSize, decimals);
+  const apr = poolAPRs[poolId].toFixed(2);
+  const poolDetails = VaultDetailsMap[poolId];
+  const utilizationRate = formatBigNumber(
+    vaultDatas[poolId].utilizationRate,
+    decimals
+  );
 
-  const AssetLogo = getAssetLogo(details.asset);
+  const AssetLogo = getAssetLogo(getAssets(poolId));
   return (
     <>
       <LendModal
@@ -196,21 +195,33 @@ const PoolPage = () => {
         <Header setWalletModal={setWalletModal} pool={poolId} />
         <Content>
           <Col xs={6}>
-            <DetailsWrapper>
+            <UserDetailsWrapper>
               <Details>
                 <MakerLogo>
-                  <img src={details.logo} alt={poolId} />
+                  <img src={logo} alt={poolId} />
                 </MakerLogo>
                 <SocialsWrapper>
-                  <PillButton>
+                  <PillButton
+                    href={poolDetails.contract}
+                    target="_blank"
+                    rel="noreferrer noopener"
+                  >
                     <span>Pool Contract</span>
                     <ExternalLinkIcon />
                   </PillButton>
-                  <PillButton>
+                  <PillButton
+                    href={poolDetails.twitter}
+                    target="_blank"
+                    rel="noreferrer noopener"
+                  >
                     <span>Twitter</span>
                     <ExternalLinkIcon />
                   </PillButton>
-                  <PillButton>
+                  <PillButton
+                    href={poolDetails.website}
+                    target="_blank"
+                    rel="noreferrer noopener"
+                  >
                     <span>Website</span>
                     <ExternalLinkIcon />
                   </PillButton>
@@ -219,22 +230,26 @@ const PoolPage = () => {
                   <Stat>
                     <Label>Pool size:</Label>
                     <Value>
-                      <AssetLogo /> {details.poolSize}
+                      <AssetLogo /> {poolSize}
                     </Value>
                   </Stat>
                   <Stat>
                     <Label>APR:</Label>
-                    <Value>{details.apr}</Value>
+                    <Value>{apr}</Value>
                   </Stat>
                   <Stat>
                     <Label>Utilization rate:</Label>
-                    <Value>{details.utilizationRate}%</Value>
+                    <Value>{utilizationRate}%</Value>
                   </Stat>
                 </StatsWrapper>
               </Details>
-            </DetailsWrapper>
+            </UserDetailsWrapper>
           </Col>
-          <Col></Col>
+          <Col>
+            <PoolDetailsWrapper>
+              <Details></Details>
+            </PoolDetailsWrapper>
+          </Col>
         </Content>
         <Footer activePage={activePage} setPage={setPage} />
       </PoolContainer>
@@ -317,7 +332,7 @@ const MarqueeItem = styled.div`
 
 const PoolMarquee = ({ pool }: any) => {
   return (
-    <Marquee gradient={false} speed={100} delay={0} pauseOnHover>
+    <Marquee gradient={false} speed={50} delay={0} pauseOnHover>
       {new Array(10).fill("").map((i) => (
         <MarqueeItem key={i}>
           <Title>{pool}</Title>
