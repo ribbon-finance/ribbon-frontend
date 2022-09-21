@@ -193,7 +193,8 @@ const PoolPage = () => {
         content={ModalContentEnum.WALLET}
       />
       <DepositModal
-        show={activePage === PageEnum.DEPOSIT}
+        show={activePage !== undefined}
+        actionType={activePage === PageEnum.DEPOSIT ? "deposit" : "withdraw"}
         onHide={() => setPage(undefined)}
         pool={poolId}
       />

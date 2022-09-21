@@ -1,27 +1,48 @@
-import React, { useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { Col, Row } from "react-bootstrap";
 import colors from "shared/lib/designSystem/colors";
 import styled from "styled-components";
 import { components } from "../../designSystem/components";
-import { truncateAddress } from "shared/lib/utils/address";
-import { Button, Title } from "../../designSystem";
+import { PrimaryText, SecondaryText, Title } from "../../designSystem";
 import sizes from "../../designSystem/sizes";
-import Indicator from "shared/lib/components/Indicator/Indicator";
-import { Balance } from "../Balance";
-import { Pools, Positions } from "../Pools";
 import useWeb3Wallet from "shared/lib/hooks/useWeb3Wallet";
-import LendModal, { ModalContentEnum } from "../Common/LendModal";
 import {
-  VaultList,
+  getEtherscanURI,
+  VaultAddressMap,
   VaultOptions,
   vaultOptionToName,
 } from "../../constants/constants";
-import { formatBigNumber, isPracticallyZero } from "../../utils/math";
-import { useVaultsData } from "../../hooks/web3DataContext";
+import { formatBigNumber } from "../../utils/math";
 import { getAssetDecimals, getUtilizationDecimals } from "../../utils/asset";
 import { CloseIcon } from "shared/lib/assets/icons/icons";
 import { usePoolsAPR } from "../../hooks/usePoolsAPR";
-
+import { ActionType } from "./types";
+import { fadeIn } from "shared/lib/designSystem/keyframes";
+import { css } from "styled-components";
+import { getAssetLogo } from "../../utils/asset";
+import { useMemo } from "react";
+import { formatUnits, parseUnits } from "ethers/lib/utils";
+import {
+  BaseInput,
+  BaseInputContainer,
+  BaseUnderlineLink,
+} from "shared/lib/designSystem";
+import { BigNumber } from "ethers";
+import { ActionButton } from "../Common/buttons";
+import {
+  useVaultsData,
+  useAssetBalance,
+  useVaultData,
+} from "../../hooks/web3DataContext";
+import useUSDC, { DepositSignature } from "../../hooks/useUSDC";
+import useLoadingText from "shared/lib/hooks/useLoadingText";
+import useLendContract from "../../hooks/useLendContract";
+import { RibbonLendVault } from "../../codegen";
+import { usePendingTransactions } from "../../hooks/pendingTransactionsContext";
+import { useWeb3React } from "@web3-react/core";
+import ExternalLinkIcon from "../Common/ExternalLinkIcon";
+import HeroContent from "../HeroContent";
+import { PoolValidationErrors } from "./types";
 const borderStyle = `1px solid ${colors.primaryText}1F`;
 
 export const FixedContainer = styled.div`
@@ -141,27 +162,45 @@ const CloseButton = styled.button`
   border-left: ${borderStyle};
 `;
 
+export enum ActionModalEnum {
+  PREVIEW,
+  TRANSACTION_STEP,
+}
+
 interface DepositModalProps {
   show?: boolean;
+  actionType: ActionType;
   onHide: () => void;
   pool: VaultOptions;
 }
 
-const DepositModal: React.FC<DepositModalProps> = ({ show, onHide, pool }) => {
+const DepositModal: React.FC<DepositModalProps> = ({
+  show,
+  actionType,
+  onHide,
+  pool,
+}) => {
+  const [page, setPage] = useState<ActionModalEnum>(ActionModalEnum.PREVIEW);
+  const [txhash, setTxhashMain] = useState<string>();
   return show ? (
     <FixedContainer>
       <HeroContainer>
-        <Header>
+        <Header page={page} actionType={actionType}>
           <CloseButton onClick={() => onHide()}>
             <CloseIcon />
           </CloseButton>
         </Header>
         <Content>
-          <Col xs={12}>
-            <Balance />
-          </Col>
+          <Hero
+            actionType={actionType}
+            pool={pool}
+            page={page}
+            setPage={setPage}
+            setTxhashMain={setTxhashMain}
+            onHide={() => onHide()}
+          />
         </Content>
-        <Footer pool={pool} />
+        <Footer pool={pool} page={page} txhash={txhash} />
       </HeroContainer>
     </FixedContainer>
   ) : (
@@ -169,10 +208,21 @@ const DepositModal: React.FC<DepositModalProps> = ({ show, onHide, pool }) => {
   );
 };
 
-const Header: React.FC = ({ children }) => {
+interface HeaderProps {
+  actionType: ActionType;
+  page: ActionModalEnum;
+}
+
+const Header: React.FC<HeaderProps> = ({ page, actionType, children }) => {
   return (
     <HeaderContainer>
-      <HeaderText>Deposit USDC</HeaderText>
+      <HeaderText>
+        {actionType === "deposit" &&
+          (page === ActionModalEnum.PREVIEW ? "Deposit" : "Depositing")}
+        {actionType === "withdraw" &&
+          (page === ActionModalEnum.PREVIEW ? "Withdraw" : "Withdrawing")}{" "}
+        USDC
+      </HeaderText>
       {children}
     </HeaderContainer>
   );
@@ -189,47 +239,606 @@ export const DetailText = styled(Title)`
   line-height: 20px;
 `;
 
+export const StyledPrimaryText = styled(PrimaryText)`
+  font-size: 14px;
+  line-height: 20px;
+  text-decoration: underline;
+  margin-right: 4px;
+`;
+
+export const TransactionContainer = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  height: 100%;
+  width: 100%;
+`;
+
+const UnderlineLink = styled(BaseUnderlineLink)`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  width: 100%;
+`;
 interface FooterProps {
   pool: VaultOptions;
+  page: ActionModalEnum;
+  txhash: string | undefined;
 }
 
-const Footer: React.FC<FooterProps> = ({ pool }) => {
+const Footer: React.FC<FooterProps> = ({ pool, page, txhash }) => {
   const vaultDatas = useVaultsData();
-  const usdcDecimals = getAssetDecimals("USDC");
   const poolName = vaultOptionToName[pool];
   const { aprs } = usePoolsAPR();
+  const { chainId } = useWeb3React();
   const apr = aprs[pool];
   const utilizationDecimals = getUtilizationDecimals();
   const utilizationRate = vaultDatas.data[pool].utilizationRate;
   return (
     <FooterRow>
-      <Col xs={3}>
-        <DetailContainer>
-          <DetailTitle>Pool</DetailTitle>
-          <DetailText>{poolName}</DetailText>
-        </DetailContainer>
-      </Col>
-      <Col xs={3}>
-        <DetailContainer>
-          <DetailTitle>Deposit Asset</DetailTitle>
-          <DetailText>USDC</DetailText>
-        </DetailContainer>
-      </Col>
-      <Col xs={3}>
-        <DetailContainer>
-          <DetailTitle>Lending APR</DetailTitle>
-          <DetailText>{apr.toFixed(2)}%</DetailText>
-        </DetailContainer>
-      </Col>
-      <Col xs={3}>
-        <DetailContainer>
-          <DetailTitle>Pool Utilization</DetailTitle>
-          <DetailText>
-            {formatBigNumber(utilizationRate, utilizationDecimals)}%
-          </DetailText>
-        </DetailContainer>
-      </Col>
+      {page === ActionModalEnum.PREVIEW ? (
+        <>
+          <Col xs={3}>
+            <DetailContainer>
+              <DetailTitle>Pool</DetailTitle>
+              <DetailText>{poolName}</DetailText>
+            </DetailContainer>
+          </Col>
+          <Col xs={3}>
+            <DetailContainer>
+              <DetailTitle>Deposit Asset</DetailTitle>
+              <DetailText>USDC</DetailText>
+            </DetailContainer>
+          </Col>
+          <Col xs={3}>
+            <DetailContainer>
+              <DetailTitle>Lending APR</DetailTitle>
+              <DetailText>{apr.toFixed(2)}%</DetailText>
+            </DetailContainer>
+          </Col>
+          <Col xs={3}>
+            <DetailContainer>
+              <DetailTitle>Pool Utilization</DetailTitle>
+              <DetailText>
+                {formatBigNumber(utilizationRate, utilizationDecimals)}%
+              </DetailText>
+            </DetailContainer>
+          </Col>
+        </>
+      ) : (
+        <>
+          {chainId !== undefined && (
+            <UnderlineLink
+              to={`${getEtherscanURI(chainId)}/tx/${txhash}`}
+              target="_blank"
+              rel="noreferrer noopener"
+            >
+              <StyledPrimaryText>View on Etherscan</StyledPrimaryText>
+              <ExternalLinkIcon />
+            </UnderlineLink>
+          )}
+        </>
+      )}
     </FooterRow>
+  );
+};
+
+const delayedFade = css<{ delay?: number }>`
+  opacity: 0;
+  animation: ${fadeIn} 1s ease-in-out forwards;
+  animation-delay: ${({ delay }) => `${delay || 0}s`};
+`;
+
+const ModalContainer = styled.div`
+  height: 100%;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  min-width: 240px;
+  margin: auto;
+  overflow: hidden;
+`;
+
+const ProductAssetLogoContainer = styled.div<{ delay?: number }>`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 64px;
+  width: 64px;
+  background-color: ${colors.background.one};
+  border-radius: 50%;
+  position: relative;
+  ${delayedFade}
+`;
+
+const BalanceTitle = styled.div<{ delay?: number }>`
+  font-size: 14px;
+  font-family: VCR;
+  text-transform: uppercase;
+  text-align: center;
+  letter-spacing: 1px;
+  color: ${colors.primaryText}7A;
+  margin-top: 24px;
+  ${delayedFade}
+`;
+
+const BalanceContainer = styled.div<{ delay?: number }>`
+  display: flex;
+  margin-top: 8px;
+  margin-bottom: 24px;
+  font-size: 12px;
+  ${delayedFade}
+`;
+
+const BalanceLabel = styled.span`
+  color: ${colors.tertiaryText};
+  line-height: 20px;
+  margin-right: 8px;
+`;
+
+const BalanceValue = styled.span<{ error: boolean }>`
+  font-size: 14px;
+  color: ${(props) => (props.error ? colors.red : "white")};
+  font-family: VCR;
+`;
+
+const StyledBaseInput = styled(BaseInput)`
+  text-align: center;
+  font-size: 72px;
+`;
+
+export const BaseInputButton = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: ${colors.primaryText};
+  border-radius: 4px;
+  border: 1px solid ${colors.primaryText};
+  width: 54px;
+  height: 40px;
+  font-size: 12px;
+  line-height: 16px;
+  text-align: center;
+  letter-spacing: 1px;
+  cursor: pointer;
+  font-family: VCR, sans-serif;
+  &:hover {
+    color: black;
+    background: white;
+  }
+  &:focus {
+    color: black;
+    background: white;
+  }
+  tab-index: 1;
+`;
+
+const InputContainer = styled(BaseInputContainer)<{
+  delay?: number;
+  show?: boolean;
+}>`
+  display: flex;
+  input::-webkit-outer-spin-button,
+  input::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+    border: none;
+  }
+  border: none;
+  box-shadow: none;
+  margin: 0;
+  padding: 0;
+  max-width: 700px;
+  /* Firefox */
+  input[type="number"] {
+    background-color: black;
+    width: 100%;
+    -moz-appearance: textfield;
+  }
+  ${({ show, delay }) => {
+    return (
+      show &&
+      css`
+        opacity: 0;
+        animation: ${fadeIn} 1s ease-in-out forwards;
+        animation-delay: ${delay || 0}s;
+      `
+    );
+  }}
+`;
+
+const PercentagesContainer = styled.div`
+  display: flex;
+  flex-direction: row;
+  width: 240px;
+  justify-content: space-between;
+  margin-top: 32px;
+`;
+
+const FormButton = styled(ActionButton)<{
+  delay?: number;
+  show?: boolean;
+  approved?: boolean;
+}>`
+  display: flex;
+  width: 240px;
+  height: 64px;
+  justify-content: center;
+  border: 1px solid ${colors.primaryText};
+  background: black;
+  text-align: center;
+  border-radius: 0;
+  &:disabled {
+    pointer-events: none;
+  }
+  &:hover {
+    color: black;
+    background: white;
+  }
+  ${(props) =>
+    props.approved
+      ? `
+      pointer-events: none;
+      color: ${colors.green};
+      border: none;
+  `
+      : ``};
+  ${({ show, delay }) => {
+    return (
+      show &&
+      css`
+        opacity: 0;
+
+        &:disabled {
+          opacity: 0;
+        }
+
+        animation: ${fadeIn} 1s ease-in-out forwards;
+        animation-delay: ${delay || 0}s;
+      `
+    );
+  }}
+`;
+
+const ErrorText = styled(SecondaryText)`
+  text-align: center;
+  color: ${colors.red};
+`;
+
+interface HeroProps {
+  actionType: ActionType;
+  pool: VaultOptions;
+  page: ActionModalEnum;
+  setPage: (page: ActionModalEnum) => void;
+  setTxhashMain: (txhash: string) => void;
+  onHide: () => void;
+}
+
+export const Hero: React.FC<HeroProps> = ({
+  actionType,
+  pool,
+  page,
+  setPage,
+  setTxhashMain,
+  onHide,
+}) => {
+  const [inputAmount, setInputAmount] = useState<string>("");
+  const [waitingApproval, setWaitingApproval] = useState(false);
+  const { active, account } = useWeb3Wallet();
+  const Logo = getAssetLogo("USDC");
+  const { vaultBalanceInAsset, currentExchangeRate } = useVaultData(pool);
+  const decimals = getAssetDecimals("USDC");
+  const { balance: userAssetBalance } = useAssetBalance("USDC");
+  const usdc = useUSDC();
+  const loadingText = useLoadingText("permitting");
+  const [signature, setSignature] = useState<DepositSignature>();
+  const [txhash, setTxhash] = useState("");
+  const lendPool = useLendContract(pool) as RibbonLendVault;
+  const { pendingTransactions, addPendingTransaction } =
+    usePendingTransactions();
+
+  useEffect(() => {
+    // we check that the txhash and check if it had succeed
+    // so we can dismiss the modal
+    if (page === ActionModalEnum.TRANSACTION_STEP && txhash !== "") {
+      const pendingTx = pendingTransactions.find((tx) => tx.txhash === txhash);
+      if (pendingTx && pendingTx.status) {
+        setTimeout(() => {
+          onHide();
+          setPage(ActionModalEnum.PREVIEW);
+        }, 300);
+      }
+    }
+  }, [pendingTransactions, txhash, onHide, page, setPage]);
+
+  const isInputNonZero = useMemo((): boolean => {
+    return parseFloat(inputAmount) > 0;
+  }, [inputAmount]);
+
+  const amountStr = useMemo(() => {
+    try {
+      const amount = parseUnits(
+        parseFloat(inputAmount).toFixed(decimals),
+        decimals
+      );
+      return amount.toString();
+    } catch (err) {
+      return "0";
+    }
+  }, [decimals, inputAmount]);
+
+  const error = useMemo((): PoolValidationErrors | undefined => {
+    try {
+      /** Check block with input requirement */
+      if (isInputNonZero && active) {
+        const amountBigNumber = parseUnits(
+          parseFloat(inputAmount).toFixed(decimals),
+          decimals
+        );
+        switch (actionType) {
+          case "deposit":
+            if (amountBigNumber.gt(userAssetBalance)) {
+              return "insufficientBalance";
+            }
+            break;
+          case "withdraw":
+            if (amountBigNumber.gt(vaultBalanceInAsset)) {
+              return "withdrawLimitExceeded";
+            }
+        }
+      }
+    } catch (err) {
+      // Assume no error because empty input unable to parse
+    }
+
+    return undefined;
+  }, [
+    actionType,
+    active,
+    decimals,
+    inputAmount,
+    isInputNonZero,
+    userAssetBalance,
+    vaultBalanceInAsset,
+  ]);
+
+  const renderErrorText = useCallback((_error: PoolValidationErrors) => {
+    switch (_error) {
+      case "insufficientBalance":
+        return "Insufficient balance";
+      case "withdrawLimitExceeded":
+        return "Available limit exceeded";
+      default:
+        return "";
+    }
+  }, []);
+
+  const handleInputChange = useCallback(
+    (e: React.ChangeEvent<HTMLInputElement>) => {
+      const rawInput = e.target.value;
+      const previousInput = inputAmount;
+      setInputAmount(rawInput);
+      if (previousInput !== rawInput) {
+        setSignature(undefined);
+      }
+    },
+    [inputAmount]
+  );
+
+  const handlePercentageClick = useCallback(
+    (percentage: number) => {
+      let input: string = "";
+      const maxAmount =
+        actionType === "deposit" ? userAssetBalance : vaultBalanceInAsset;
+      switch (percentage) {
+        case 0.25:
+          input = formatUnits(maxAmount.div(BigNumber.from(4)), decimals);
+          break;
+        case 0.5:
+          input = formatUnits(maxAmount.div(BigNumber.from(2)), decimals);
+          break;
+        case 0.75:
+          input = formatUnits(
+            maxAmount.div(BigNumber.from(4)).mul(BigNumber.from(3)),
+            decimals
+          );
+          break;
+        case 1:
+          input = formatUnits(maxAmount, decimals);
+          break;
+        default:
+          return;
+      }
+      setInputAmount(input);
+      setSignature(undefined);
+    },
+    [actionType, decimals, userAssetBalance, vaultBalanceInAsset]
+  );
+
+  const handleApprove = useCallback(async () => {
+    setWaitingApproval(true);
+    try {
+      const approveToAddress = VaultAddressMap[pool]["lend"];
+      if (!approveToAddress) {
+        return;
+      }
+      const deadline = Math.round(Date.now() / 1000 + 60 * 60);
+      const signature = await usdc.showApproveAssetSignature(
+        approveToAddress,
+        amountStr,
+        deadline
+      );
+      if (signature) {
+        const depositSignature = {
+          deadline: deadline,
+          v: signature.v,
+          r: signature.r,
+          s: signature.s,
+        };
+        setWaitingApproval(false);
+        setSignature(depositSignature);
+      }
+    } catch (error) {
+      setWaitingApproval(false);
+      console.log(error);
+    }
+  }, [amountStr, pool, usdc]);
+
+  const handleConfirm = async () => {
+    if (lendPool !== null) {
+      try {
+        let res: any;
+        switch (actionType) {
+          case "deposit":
+            if (!signature || !account) {
+              return;
+            }
+
+            res = await lendPool.provideWithPermit(
+              amountStr,
+              account,
+              signature.deadline,
+              signature.v,
+              signature.r,
+              signature.s
+            );
+
+            addPendingTransaction({
+              txhash: res.hash,
+              type: "deposit",
+              amount: amountStr,
+              vault: pool,
+              asset: "USDC",
+            });
+
+            setTxhash(res.hash);
+            setTxhashMain(res.hash);
+            setPage(ActionModalEnum.TRANSACTION_STEP);
+            break;
+          case "withdraw":
+            const amountInShares = BigNumber.from(amountStr)
+              .mul(BigNumber.from(10).pow(18))
+              .div(currentExchangeRate)
+              .toString();
+            res = await lendPool.redeem(amountInShares);
+            addPendingTransaction({
+              txhash: res.hash,
+              type: "withdraw",
+              amount: amountInShares,
+              vault: pool,
+            });
+
+            setTxhash(res.hash);
+            setTxhashMain(res.hash);
+            setPage(ActionModalEnum.TRANSACTION_STEP);
+            break;
+        }
+      } catch (e) {
+        console.error(e);
+        onHide();
+      }
+    }
+  };
+  return (
+    <ModalContainer>
+      {page === ActionModalEnum.PREVIEW ? (
+        <>
+          <ProductAssetLogoContainer color={"white"} delay={0.1}>
+            <Logo height="100%" />
+          </ProductAssetLogoContainer>
+          <BalanceTitle delay={0.2}>Enter {actionType} Amount</BalanceTitle>
+          <InputContainer delay={0.4} className="mb-2">
+            <StyledBaseInput
+              type="number"
+              className="form-control"
+              placeholder="0"
+              value={inputAmount}
+              onChange={handleInputChange}
+              inputWidth={"100%"}
+              step={"0.000001"}
+            />
+          </InputContainer>
+          {error && <ErrorText>{renderErrorText(error)}</ErrorText>}
+          <PercentagesContainer>
+            <BaseInputButton onClick={() => handlePercentageClick(0.25)}>
+              25%
+            </BaseInputButton>
+            <BaseInputButton onClick={() => handlePercentageClick(0.5)}>
+              50%
+            </BaseInputButton>
+            <BaseInputButton onClick={() => handlePercentageClick(0.75)}>
+              75%
+            </BaseInputButton>
+            <BaseInputButton onClick={() => handlePercentageClick(1)}>
+              MAX
+            </BaseInputButton>
+          </PercentagesContainer>
+          {actionType === "deposit" ? (
+            <div>
+              {signature !== undefined ? (
+                <FormButton
+                  delay={1}
+                  className="btn py-3 mt-4 mb-3"
+                  approved={true}
+                >
+                  USDC READY TO DEPOSIT
+                </FormButton>
+              ) : (
+                <FormButton
+                  delay={1}
+                  onClick={handleApprove}
+                  disabled={Boolean(error) || !isInputNonZero}
+                  className="btn py-3 mt-4 mb-3"
+                >
+                  {waitingApproval ? loadingText : `PERMIT USDC`}
+                </FormButton>
+              )}
+              <FormButton
+                delay={1.2}
+                onClick={handleConfirm}
+                disabled={Boolean(error) || signature === undefined}
+                className="btn py-3 mb-3 mt-4"
+              >
+                {actionType}
+              </FormButton>
+            </div>
+          ) : (
+            <>
+              <FormButton
+                delay={1.2}
+                onClick={handleConfirm}
+                disabled={!isInputNonZero}
+                className="btn py-3 mb-3 mt-4"
+              >
+                {actionType}
+              </FormButton>
+            </>
+          )}
+          <BalanceContainer delay={0.5}>
+            <BalanceLabel>
+              {actionType === "deposit"
+                ? "USDC Wallet Balance:"
+                : "Your Pool Balance:"}{" "}
+            </BalanceLabel>
+            <BalanceValue error={Boolean(error)}>
+              {!account
+                ? "---"
+                : actionType === "deposit"
+                ? formatBigNumber(userAssetBalance, decimals, 2)
+                : formatBigNumber(vaultBalanceInAsset, decimals, 2)}
+            </BalanceValue>
+          </BalanceContainer>
+        </>
+      ) : (
+        <HeroContent
+          word={actionType === "deposit" ? "depositing" : "withdrawing"}
+        ></HeroContent>
+      )}
+    </ModalContainer>
   );
 };
 

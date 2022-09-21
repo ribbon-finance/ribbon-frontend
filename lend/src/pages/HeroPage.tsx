@@ -22,7 +22,7 @@ const HeroPage: React.FC = () => {
     <HeroContainer>
       <MobileHeader />
       <StepsHeader />
-      <HeroContent />
+      <HeroContent word="ribbon lend" />
       <Footer />
     </HeroContainer>
   );

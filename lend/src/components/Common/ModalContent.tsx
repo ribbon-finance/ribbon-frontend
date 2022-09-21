@@ -34,7 +34,7 @@ import { Chains } from "../../constants/constants";
 import { AssetsList } from "../../store/types";
 import { getAssetDisplay, getAssetLogo } from "../../utils/asset";
 import currency from "currency.js";
-import { useAssetBalances } from "../../hooks/useAssetBalance";
+import { useAssetsBalance } from "../../hooks/web3DataContext";
 
 const TextContent = styled.div`
   color: ${colors.primaryText}A3;
@@ -338,8 +338,9 @@ const WalletPage = ({ onHide }: WalletPageProps) => {
   const [page, setPage] = useState<WalletPageEnum>(WalletPageEnum.DISCLAIMER);
   const [selectedWallet, setWallet] = useState<EthereumWallet>();
   const { active, activate, deactivate } = useWeb3Wallet();
-  const balances = useAssetBalances();
+  const balances = useAssetsBalance();
 
+  console.log(balances);
   useEffect(() => {
     setTimeout(() => {
       if (active) setPage(WalletPageEnum.ACCOUNT);
@@ -452,7 +453,7 @@ const WalletPage = ({ onHide }: WalletPageProps) => {
                     <label>{name} Balance</label>
                     <span>
                       {currency(
-                        formatBigNumber(balances[asset], decimals, 2)
+                        formatBigNumber(balances.data[asset], decimals, 2)
                       ).format({ symbol: "" })}
                     </span>
                   </AssetStat>

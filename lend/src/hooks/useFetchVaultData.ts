@@ -151,6 +151,7 @@ const useFetchVaultData = (): VaultData => {
                   utilizationRate: utilizationRate,
                   supplyRate: supplyRate,
                   rewardPerSecond: rewardPerSecond,
+                  currentExchangeRate: currentExchangeRate,
                   accumulativeReward: accumulativeReward,
                   withdrawableReward: withdrawableReward,
                   withdrawnReward: withdrawnReward,
