@@ -309,21 +309,6 @@ const PoolPage = () => {
                 <Paragraph>{poolDetails.bio}</Paragraph>
               </Details>
               <Details>
-                <DetailsIndex>01</DetailsIndex>
-                <StyledTitle>{poolDetails.name}</StyledTitle>
-                <Paragraph>{poolDetails.bio}</Paragraph>
-              </Details>
-              <Details>
-                <DetailsIndex>01</DetailsIndex>
-                <StyledTitle>{poolDetails.name}</StyledTitle>
-                <Paragraph>{poolDetails.bio}</Paragraph>
-              </Details>
-              <Details>
-                <DetailsIndex>01</DetailsIndex>
-                <StyledTitle>{poolDetails.name}</StyledTitle>
-                <Paragraph>{poolDetails.bio}</Paragraph>
-              </Details>
-              <Details>
                 <DetailsIndex>02</DetailsIndex>
                 <StyledTitle>Credit Rating</StyledTitle>
                 <Paragraph>{poolDetails.bio}</Paragraph>
