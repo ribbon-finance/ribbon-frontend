@@ -1,16 +1,15 @@
 import React, { useCallback, useMemo, useState } from "react";
-import { useTranslation } from "react-i18next";
-
 import { getAssets } from "../../constants/constants";
 import { usePendingTransactions } from "../../hooks/pendingTransactionsContext";
 import { PendingTransaction } from "../../store/types";
-import { getAssetDisplay } from "../../utils/asset";
+import { getAssetDecimals, getAssetDisplay } from "../../utils/asset";
 import { capitalize } from "shared/lib/utils/text";
 import Toast from ".//BaseToast";
+import { formatBigNumber } from "../../utils/math";
+import { BigNumber } from "ethers";
 
 export const TxStatusToast = () => {
   const { pendingTransactions, transactionsCounter } = usePendingTransactions();
-  const { t } = useTranslation();
 
   const [showedPendingTxCounter, setShowPendingTxCounter] =
     useState(transactionsCounter);
@@ -29,7 +28,10 @@ export const TxStatusToast = () => {
     switch (_currentTx.type) {
       case "deposit":
       case "withdraw":
-        return undefined;
+        return formatBigNumber(
+          BigNumber.from(_currentTx.amount),
+          getAssetDecimals(getAssets(_currentTx.vault))
+        );
       default:
         return _currentTx.amount;
     }
@@ -52,22 +54,18 @@ export const TxStatusToast = () => {
         case "withdraw":
           return `${amountFormatted} ${getAssetDisplay(
             getAssets(_currentTx.vault)
-          )} withdrawn from ${t(
-            `shared:ProductCopies:${_currentTx.vault}:title`
-          )}`;
+          )} withdrawn`;
         case "deposit":
           return `${amountFormatted} ${getAssetDisplay(
             _currentTx.asset
-          )} deposited into ${t(
-            `shared:ProductCopies:${_currentTx.vault}:title`
-          )}`;
+          )} deposited`;
         case "claim":
           return `${amountFormatted} RBN claimed`;
         default:
           return "";
       }
     },
-    [getAmountFormatted, t]
+    [getAmountFormatted]
   );
 
   if (!status || !currentTx) {

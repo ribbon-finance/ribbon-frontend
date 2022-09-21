@@ -139,7 +139,8 @@ export const Balance = () => {
             color={roi === 0 ? "white" : roi > 0 ? colors.green : colors.red}
             delay={0.4}
           >
-            +{loading ? "0.00" : roi.toFixed(2)}%
+            {roi > 0 && "+"}
+            {loading ? "0.00" : roi.toFixed(2)}%
           </HeroSubtitle>
           <ClaimTextContainer delay={0.5}>
             <ClaimLabel>RBN Rewards Earned:</ClaimLabel>

@@ -29,11 +29,12 @@ const Panel = styled.div<{ marginLeft?: number; marginRight?: number }>`
     props.marginRight !== undefined ? `${props.marginRight}px` : `0px`};
 `;
 
-const SpecialText = styled(Title)<{ size: number }>`
+const SpecialText = styled(Title)<{ size: number; marginLeft: number }>`
   color: ${colors.primaryText};
   font-size: ${(props) => props.size}px;
   line-height: ${(props) => props.size}px;
   margin-bottom: 25px;
+  margin-left: ${(props) => props.marginLeft}px;
   font-family: VCR, sans-serif;
   @media (max-width: ${sizes.lg}px) {
     margin-bottom: 8px;
@@ -135,23 +136,41 @@ const HeroHeaderMobile: React.FC = ({ children }) => {
   );
 };
 
-const HeroContent: React.FC = () => {
+interface HeroContentInterface {
+  word: "depositing" | "withdrawing" | "ribbon lend";
+}
+const HeroContent: React.FC<HeroContentInterface> = ({ word }) => {
   return (
     <>
       <ContentContainer>
         <VideoBackground />
         <HeroHeaderMobile>
-          <SpecialText size={152}>Ribbon Lend</SpecialText>
+          <SpecialText
+            size={152}
+            marginLeft={word === "ribbon lend" ? 0 : -300}
+          >
+            {word}
+          </SpecialText>
         </HeroHeaderMobile>
         <div className="d-flex align-items-center justify-content-between w-100 h-100">
-          <Panel marginLeft={32} marginRight={50}>
+          <Panel marginLeft={32} marginRight={0}>
             <HeroHeader clockwise={false}>
-              <SpecialText size={256}>Ribbon Lend</SpecialText>
+              <SpecialText
+                size={256}
+                marginLeft={word === "ribbon lend" ? 0 : -600}
+              >
+                {word}
+              </SpecialText>
             </HeroHeader>
           </Panel>
           <Panel marginLeft={0} marginRight={32}>
             <HeroHeader clockwise={true}>
-              <SpecialText size={256}>Ribbon lend</SpecialText>
+              <SpecialText
+                size={256}
+                marginLeft={word === "ribbon lend" ? 0 : -600}
+              >
+                {word}
+              </SpecialText>
             </HeroHeader>
           </Panel>
         </div>
