@@ -351,7 +351,6 @@ const WalletPage = ({ onHide }: WalletPageProps) => {
   const { active, activate, deactivate } = useWeb3Wallet();
   const balances = useAssetsBalance();
 
-  console.log(balances);
   useEffect(() => {
     setTimeout(() => {
       if (active) setPage(WalletPageEnum.ACCOUNT);

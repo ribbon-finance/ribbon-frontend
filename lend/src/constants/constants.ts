@@ -147,23 +147,6 @@ export const hasVaultVersion = (
   return Boolean(VaultAddressMap[vaultOption][version]);
 };
 
-export const VaultNamesList = [
-  "Alameda",
-  "Jump Trading",
-  "Wintermute",
-  "Orthogonal",
-  "Folkvang",
-] as const;
-export type VaultName = typeof VaultNamesList[number];
-
-export const vaultOptionToName: { [vault in VaultOptions]: string } = {
-  alameda: "Alameda",
-  jumptrading: "Jump Trading",
-  wintermute: "Wintermute",
-  orthogonal: "Orthogonal",
-  folkvang: "Folkvang",
-};
-
 export const EVM_BLOCKCHAIN_EXPLORER_NAME: Record<number, string> = {
   [CHAINID.ETH_MAINNET]: "Etherscan",
 };

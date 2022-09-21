@@ -9,8 +9,8 @@ import useWeb3Wallet from "shared/lib/hooks/useWeb3Wallet";
 import {
   getEtherscanURI,
   VaultAddressMap,
+  VaultDetailsMap,
   VaultOptions,
-  vaultOptionToName,
 } from "../../constants/constants";
 import { formatBigNumber } from "../../utils/math";
 import { getAssetDecimals, getUtilizationDecimals } from "../../utils/asset";
@@ -270,7 +270,7 @@ interface FooterProps {
 
 const Footer: React.FC<FooterProps> = ({ pool, page, txhash }) => {
   const vaultDatas = useVaultsData();
-  const poolName = vaultOptionToName[pool];
+  const poolName = VaultDetailsMap[pool].name;
   const { aprs } = usePoolsAPR();
   const { chainId } = useWeb3React();
   const apr = aprs[pool];
