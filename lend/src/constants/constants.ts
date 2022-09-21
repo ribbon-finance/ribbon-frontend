@@ -147,35 +147,6 @@ export const hasVaultVersion = (
   return Boolean(VaultAddressMap[vaultOption][version]);
 };
 
-export const VaultNamesList = [
-  "alameda",
-  "jumptrading",
-  "wintermute",
-  "orthogonal",
-  "folkvang",
-] as const;
-export type VaultName = typeof VaultNamesList[number];
-export const VaultNameOptionMap: { [name in VaultName]: VaultOptions } = {
-  alameda: "alameda",
-  jumptrading: "jumptrading",
-  wintermute: "wintermute",
-  orthogonal: "orthogonal",
-  folkvang: "folkvang",
-};
-
-// Reverse lookup for VaultNameOptionMap
-export const vaultOptionToName = (option: VaultOptions) => {
-  const match = Object.entries(VaultNameOptionMap).find(
-    ([name, optionName]) => {
-      return optionName === option;
-    }
-  );
-  if (match) {
-    return match[0] as VaultName;
-  }
-  return undefined;
-};
-
 export const EVM_BLOCKCHAIN_EXPLORER_NAME: Record<number, string> = {
   [CHAINID.ETH_MAINNET]: "Etherscan",
 };

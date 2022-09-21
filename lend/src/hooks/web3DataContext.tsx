@@ -12,6 +12,7 @@ import useFetchAssetBalanceData, {
   defaultUserAssetBalanceData,
   UserAssetBalanceData,
 } from "./useFetchAssetBalanceData";
+import { Assets } from "../store/types";
 
 export type Web3DataContextType = {
   lend: VaultData;
@@ -45,6 +46,15 @@ export const useVaultData = (vault: VaultOptions) => {
       contextData.lend.loading || contextData.assetBalance.loading
         ? "loading"
         : "success",
+  };
+};
+
+export const useAssetBalance = (asset: Assets) => {
+  const contextData = useContext(Web3DataContext);
+
+  return {
+    balance: contextData.assetBalance.data[asset],
+    loading: contextData.assetBalance.loading,
   };
 };
 
