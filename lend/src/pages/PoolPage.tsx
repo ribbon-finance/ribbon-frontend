@@ -39,7 +39,8 @@ import { formatBigNumber } from "../utils/math";
 import colors from "shared/lib/designSystem/colors";
 import ExternalLinkIcon from "../components/Common/ExternalLinkIcon";
 import currency from "currency.js";
-
+import TooltipExplanation from "shared/lib/components/Common/TooltipExplanation";
+import HelpInfo from "shared/lib/components/Common/HelpInfo";
 const PoolContainer = styled.div`
   width: calc(100% - ${components.sidebar}px);
 
@@ -232,12 +233,45 @@ const StickyCol = styled(Col)`
   top: 0;
 `;
 
+const YieldExplainerTitle = styled.div<{ color: string }>`
+  color: ${(props) => props.color};
+  fontsize: 14px;
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 8px;
+  min-width: 224px;
+
+  > span {
+    &:last-child {
+      font-family: VCR;
+    }
+  }
+`;
+
+const YieldExplainerStat = styled.div`
+  fontsize: 14px;
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 8px;
+  margin-left: 8px;
+
+  > span {
+    &:first-child {
+      margin-left: 8px;
+    }
+
+    &:last-child {
+      font-family: VCR;
+    }
+  }
+`;
+
 const PoolPage = () => {
   const { poolId }: { poolId: VaultOptions } = useParams();
   const [activePage, setPage] = useState<PageEnum>();
   const [triggerWalletModal, setWalletModal] = useState<boolean>(false);
   const { data: vaultDatas } = useVaultsData();
-  const { aprs: poolAPRs } = usePoolsAPR();
+  const { aprs: poolAPRs, supplyAprs, rbnAprs } = usePoolsAPR();
   const utilizationDecimals = getUtilizationDecimals();
   const usdcDecimals = getAssetDecimals("USDC");
   if (!poolId) return <NotFound />;
@@ -245,6 +279,8 @@ const PoolPage = () => {
   const logo = getMakerLogo(poolId);
   const poolSize = formatBigNumber(vaultDatas[poolId].poolSize, usdcDecimals);
   const apr = poolAPRs[poolId].toFixed(2);
+  const supplyApr = supplyAprs[poolId].toFixed(2);
+  const rbnApr = rbnAprs[poolId].toFixed(2);
   const poolDetails = VaultDetailsMap[poolId];
   const utilizationRate = formatBigNumber(
     vaultDatas[poolId].utilizationRate,
@@ -308,7 +344,36 @@ const PoolPage = () => {
                     </Value>
                   </Stat>
                   <Stat>
-                    <Label>APR:</Label>
+                    <div className="d-flex justify-content-center align-items-center">
+                      <Label>APR:</Label>
+                      <TooltipExplanation
+                        explanation={
+                          <>
+                            <YieldExplainerTitle
+                              color={
+                                parseFloat(apr) >= 0 ? colors.green : colors.red
+                              }
+                            >
+                              <span>Total APR</span>
+                              <span>{apr}%</span>
+                            </YieldExplainerTitle>
+                            <YieldExplainerStat>
+                              <span>Supply APR</span>
+                              <span>{supplyApr}%</span>
+                            </YieldExplainerStat>
+                            <YieldExplainerStat>
+                              <span>RBN Rewards APR</span>
+                              <span>{rbnApr}%</span>
+                            </YieldExplainerStat>
+                          </>
+                        }
+                        renderContent={({ ref, ...triggerHandler }) => (
+                          <HelpInfo containerRef={ref} {...triggerHandler}>
+                            i
+                          </HelpInfo>
+                        )}
+                      />
+                    </div>
                     <Value
                       color={parseFloat(apr) >= 0 ? colors.green : colors.red}
                     >

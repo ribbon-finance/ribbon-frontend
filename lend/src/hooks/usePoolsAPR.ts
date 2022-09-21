@@ -10,7 +10,9 @@ export type APRMap = {
 };
 
 export const usePoolsAPR = () => {
-  const [aprs, setAPRs] = useState<APRMap>();
+  const [aprs, setAprs] = useState<APRMap>();
+  const [supplyAprs, setSupplyAprs] = useState<APRMap>();
+  const [rbnAprs, setRbnAprs] = useState<APRMap>();
   const { loading, data: vaultDatas } = useVaultsData();
   const { price: RBNPrice, loading: assetPriceLoading } = useAssetPrice({
     asset: "RBN",
@@ -19,6 +21,22 @@ export const usePoolsAPR = () => {
   useEffect(() => {
     // 1. When init load schedules
     let aprsTemp: APRMap = {
+      alameda: 0,
+      jumptrading: 0,
+      wintermute: 0,
+      orthogonal: 0,
+      folkvang: 0,
+    };
+
+    let supplyAprsTemp: APRMap = {
+      alameda: 0,
+      jumptrading: 0,
+      wintermute: 0,
+      orthogonal: 0,
+      folkvang: 0,
+    };
+
+    let rbnAprsTemp: APRMap = {
       alameda: 0,
       jumptrading: 0,
       wintermute: 0,
@@ -37,9 +55,14 @@ export const usePoolsAPR = () => {
         aprsTemp[pool] =
           (supplyRate + (rewardPerSecond * RBNPrice * 31536000) / poolSize) *
           100;
+        supplyAprsTemp[pool] = supplyRate / 100;
+        rbnAprsTemp[pool] =
+          ((rewardPerSecond * RBNPrice * 31536000) / poolSize) * 100;
         return;
       });
-      setAPRs(aprsTemp);
+      setAprs(aprsTemp);
+      setSupplyAprs(supplyAprsTemp);
+      setRbnAprs(rbnAprsTemp);
     }
   }, [loading, assetPriceLoading, RBNPrice, vaultDatas]);
 
@@ -47,11 +70,25 @@ export const usePoolsAPR = () => {
     return loading || assetPriceLoading || !aprs;
   }, [loading, assetPriceLoading, aprs]);
 
-  if (isLoading || !aprs) {
+  if (isLoading || !aprs || !supplyAprs || !rbnAprs) {
     //placeholder values while values are loading
     return {
       loading: isLoading,
       aprs: {
+        alameda: 0,
+        jumptrading: 0,
+        wintermute: 0,
+        orthogonal: 0,
+        folkvang: 0,
+      },
+      supplyAprs: {
+        alameda: 0,
+        jumptrading: 0,
+        wintermute: 0,
+        orthogonal: 0,
+        folkvang: 0,
+      },
+      rbnAprs: {
         alameda: 0,
         jumptrading: 0,
         wintermute: 0,
@@ -63,5 +100,7 @@ export const usePoolsAPR = () => {
   return {
     loading: isLoading,
     aprs: aprs,
+    supplyAprs: supplyAprs,
+    rbnAprs: rbnAprs,
   };
 };
