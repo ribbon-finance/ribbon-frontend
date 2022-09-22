@@ -42,6 +42,7 @@ import currency from "currency.js";
 import TooltipExplanation from "shared/lib/components/Common/TooltipExplanation";
 import HelpInfo from "shared/lib/components/Common/HelpInfo";
 import UtilizationBar from "../components/Common/UtilizationBar";
+import PoolActivity from "../components/Pools/PoolActivity";
 const PoolContainer = styled.div`
   width: calc(100% - ${components.sidebar}px);
 
@@ -218,9 +219,8 @@ const Paragraph = styled.p`
 `;
 
 const ScrollableContent = styled(Content)`
-  overflowy: scroll;
-  overflowx: hidden;
-
+  overflow-x: hidden;
+  overflow-y: scroll;
   ::-webkit-scrollbar {
     width: 0;
     background: transparent;
@@ -439,6 +439,16 @@ const PoolPage = () => {
                     />
                   </BaseLink>
                 </CreditRating>
+              </Details>
+              <Details>
+                <DetailsIndex>03</DetailsIndex>
+                <StyledTitle>Pool Activity</StyledTitle>
+                <PoolActivity
+                  vault={{
+                    vaultOption: poolId,
+                    vaultVersion: "lend",
+                  }}
+                />
               </Details>
             </PoolDetailsWrapper>
           </Col>
