@@ -218,8 +218,8 @@ const Paragraph = styled.p`
 `;
 
 const ScrollableContent = styled(Content)`
-  overflowy: scroll;
-  overflowx: hidden;
+  overflow-y: scroll;
+  overflow-x: hidden;
 
   ::-webkit-scrollbar {
     width: 0;
