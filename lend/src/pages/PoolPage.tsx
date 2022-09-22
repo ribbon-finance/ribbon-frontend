@@ -19,6 +19,8 @@ import {
   FooterButton,
   FooterRow,
   HeaderRow,
+  ScrollableContent,
+  StickyCol,
   WalletButton,
   WalletButtonText,
 } from "./LendPage";
@@ -217,23 +219,6 @@ const Paragraph = styled.p`
   color: ${colors.text};
 `;
 
-const ScrollableContent = styled(Content)`
-  overflow-y: scroll;
-  overflow-x: hidden;
-
-  ::-webkit-scrollbar {
-    width: 0;
-    background: transparent;
-  }
-`;
-
-const StickyCol = styled(Col)`
-  display: flex;
-  position: sticky;
-  height: calc(100vh - ${components.header + components.footer}px);
-  top: 0;
-`;
-
 const YieldExplainerTitle = styled.div<{ color: string }>`
   color: ${(props) => props.color};
   fontsize: 14px;
@@ -305,7 +290,7 @@ const PoolPage = () => {
       <PoolContainer>
         <Header setWalletModal={setWalletModal} pool={poolId} />
         <ScrollableContent>
-          <StickyCol xs={6}>
+          <StickyCol xs={12} md={6}>
             <UserDetailsWrapper>
               <Details>
                 <MakerLogo>
@@ -398,7 +383,7 @@ const PoolPage = () => {
               </Details>
             </UserDetailsWrapper>
           </StickyCol>
-          <Col>
+          <Col xs={12} md={6}>
             <PoolDetailsWrapper>
               <Details>
                 <DetailsIndex>01</DetailsIndex>
