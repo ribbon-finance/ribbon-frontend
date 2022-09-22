@@ -18,6 +18,7 @@ import { isPracticallyZero } from "../utils/math";
 import { useVaultsData } from "../hooks/web3DataContext";
 import { getAssetDecimals } from "../utils/asset";
 import useScreenSize from "shared/lib/hooks/useScreenSize";
+import { delayedFade } from "../components/animations";
 
 const HeroContainer = styled.div`
   display: flex;
@@ -78,13 +79,15 @@ export const FooterRow = styled(Row)`
   }
 `;
 
-export const WalletButton = styled.div`
+export const WalletButton = styled.div<{ delay: number }>`
   display: flex;
   margin: auto;
   height: 100%;
   justify-content: center;
   cursor: pointer;
   border-radius: 0;
+
+  ${delayedFade}
 
   @media (max-width: ${sizes.md}px) {
     background: black;
@@ -116,10 +119,12 @@ export const WalletButtonText = styled(Title)<{ connected: boolean }>`
   }}
 `;
 
-export const DisclaimerWrapper = styled.div`
+export const DisclaimerWrapper = styled.div<{ delay: number }>`
   display: flex;
   justify-content: center;
   height: 100%;
+
+  ${delayedFade}
 
   > * {
     margin: auto 0;
@@ -255,7 +260,7 @@ const Header = ({ setWalletModal }: HeaderProps) => {
         <StatsMarquee />
       </MarqueeCol>
       <WalletCol xs={0} md={6}>
-        <WalletButton onClick={() => setWalletModal(true)}>
+        <WalletButton delay={0.2} onClick={() => setWalletModal(true)}>
           {active && <Indicator connected={active} />}
           <WalletButtonText connected={active}>
             {account ? truncateAddress(account) : "Connect Wallet"}
@@ -272,7 +277,10 @@ interface FooterProps {
   setWalletModal: (trigger: boolean) => void;
 }
 
-export const FooterButton = styled(Button)<{ isActive?: boolean }>`
+export const FooterButton = styled(Button)<{
+  isActive?: boolean;
+  delay: number;
+}>`
   border: none;
   border-radius: 0;
   height: ${components.footer}px;
@@ -288,6 +296,8 @@ export const FooterButton = styled(Button)<{ isActive?: boolean }>`
   &:not(:last-of-type) {
     border-right: 1px solid ${colors.border};
   }
+
+  ${delayedFade}
 `;
 
 const Footer = ({ activePage, setPage, setWalletModal }: FooterProps) => {
@@ -304,7 +314,7 @@ const Footer = ({ activePage, setPage, setWalletModal }: FooterProps) => {
   return (
     <FooterRow>
       <Col xs={0} md={6}>
-        <DisclaimerWrapper>
+        <DisclaimerWrapper delay={0.1}>
           <ProductDisclaimer />
         </DisclaimerWrapper>
       </Col>
@@ -312,10 +322,12 @@ const Footer = ({ activePage, setPage, setWalletModal }: FooterProps) => {
         <FooterButton
           isActive={activePage === PageEnum.POOLS}
           onClick={() => setPage(PageEnum.POOLS)}
+          delay={0.2}
         >
           Pools
         </FooterButton>
         <FooterButton
+          delay={0.3}
           isActive={activePage === PageEnum.POSITIONS}
           onClick={() => setPage(PageEnum.POSITIONS)}
         >
@@ -323,7 +335,7 @@ const Footer = ({ activePage, setPage, setWalletModal }: FooterProps) => {
         </FooterButton>
       </Col>
       <FooterWalletCol xs={0} md={6}>
-        <WalletButton onClick={() => setWalletModal(true)}>
+        <WalletButton delay={0.4} onClick={() => setWalletModal(true)}>
           {active && <Indicator connected={active} />}
           <WalletButtonText connected={active}>
             {account ? truncateAddress(account) : "Connect Wallet"}

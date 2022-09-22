@@ -142,6 +142,10 @@ const PoolStats = styled.div`
   width: calc(100% - ${statSideContainer}px);
   padding: 16px 32px;
 
+  @media (max-width: ${sizes.md}px) {
+    padding: 16px;
+  }
+
   > ${Stat}:last-of-type {
     > * {
       display: flex;
