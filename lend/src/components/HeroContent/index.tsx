@@ -1,5 +1,5 @@
 import React from "react";
-import styled from "styled-components";
+import styled, { keyframes } from "styled-components";
 import colors from "shared/lib/designSystem/colors";
 import { Title } from "shared/lib/designSystem/index";
 import { AnimatePresence, motion } from "framer";
@@ -69,6 +69,51 @@ const HeroHeaderMobileContainer = styled.div`
     overflow: hidden;
     z-index: 1001;
     margin: auto 0;
+  }
+`;
+
+const livelyAnimation = (position: "top" | "bottom") => keyframes`
+  0% {
+    background-position-x: ${position === "top" ? 0 : 100}%;
+  }
+
+  50% {
+    background-position-x: ${position === "top" ? 100 : 0}%; 
+  }
+
+  100% {
+    background-position-x: ${position === "top" ? 0 : 100}%;
+  }
+`;
+
+const FrameBar = styled.div<{
+  color: string;
+  position: "top" | "bottom";
+  height: number;
+}>`
+  width: 100%;
+  height: ${(props) => props.height}px;
+  background: ${(props) => `linear-gradient(
+    270deg,
+    ${props.color}00 5%,
+    ${props.color} 50%,
+    ${props.color}00 95%
+  )`};
+  background-size: 200%;
+  animation: 10s ${(props) => livelyAnimation(props.position)} linear infinite;
+
+  &:before {
+    content: "";
+    z-index: -1;
+    position: absolute;
+    ${(props) => props.position}: 0;
+    right: 0;
+    left: 0;
+    background: inherit;
+    filter: blur(${(props) => props.height}px);
+    opacity: 1;
+    transition: opacity 0.3s;
+    height: ${(props) => props.height}px;
   }
 `;
 
@@ -143,6 +188,9 @@ const HeroContent: React.FC<HeroContentInterface> = ({ word }) => {
   return (
     <>
       <ContentContainer>
+        {word !== "ribbon lend" && (
+          <FrameBar color={colors.asset.USDC} position="top" height={4} />
+        )}
         <VideoBackground />
         <HeroHeaderMobile>
           <SpecialText
@@ -174,6 +222,9 @@ const HeroContent: React.FC<HeroContentInterface> = ({ word }) => {
             </HeroHeader>
           </Panel>
         </div>
+        {word !== "ribbon lend" && (
+          <FrameBar color={colors.asset.USDC} position="bottom" height={4} />
+        )}
       </ContentContainer>
     </>
   );
