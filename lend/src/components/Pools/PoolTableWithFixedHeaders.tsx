@@ -2,14 +2,12 @@ import { AnimatePresence, motion } from "framer";
 import React, { useEffect, useMemo, useRef, useState } from "react";
 import styled from "styled-components";
 
-import { BaseLink, SecondaryText } from "../../designSystem";
+import { BaseLink } from "../../designSystem";
 import colors from "shared/lib/designSystem/colors";
-import sizes from "../../designSystem/sizes";
-import theme from "../../designSystem/theme";
 import useElementSize from "shared/lib/hooks/useElementSize";
 import Pagination from "./Pagination";
 import ExternalLinkIcon from "../Common/ExternalLinkIcon";
-import { getAssetLogo } from "../../utils/asset";
+
 const logoContainerWidth = 24;
 const logoContainerMargin = 0;
 const linkContainerWidth = 0;
@@ -70,46 +68,6 @@ const TableRow = styled.div`
   }
 `;
 
-const LogoContainer = styled.div`
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  height: ${logoContainerWidth}px;
-  width: ${logoContainerWidth}px;
-`;
-
-const AssetContainer = styled.div`
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  height: ${logoContainerWidth}px;
-  width: ${logoContainerWidth}px;
-`;
-
-const ExternalLinkContainer = styled.div`
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  align-self: right;
-  width: ${linkContainerWidth}px;
-  height: ${linkContainerWidth}px;
-  margin: 0px 0px 0px ${linkContainerMargin}px;
-
-  svg {
-    opacity: 0.48;
-  }
-
-  &:hover {
-    svg {
-      opacity: 1;
-    }
-  }
-
-  @media (max-width: ${sizes.xl}px) {
-    margin: 0px 8px 0px 24px;
-  }
-`;
-
 const PaginationContainer = styled.div`
   display: flex;
   justify-content: center;
@@ -145,7 +103,7 @@ const PoolTableWithFixedHeader: React.FC<TableWithFixedHeaderProps> = ({
   const { width } = useElementSize(containerRef);
   const [page, _setPage] = useState<number>(1);
   const setPage = pageController ? pageController.setPage : _setPage;
-  const AssetLogo = getAssetLogo("USDC");
+
   // Sync page controller with local state
   useEffect(() => {
     if (pageController && pageController.page !== page) {

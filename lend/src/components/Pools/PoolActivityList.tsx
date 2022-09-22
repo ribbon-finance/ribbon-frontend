@@ -11,18 +11,9 @@ import {
 } from "../../constants/constants";
 import { SecondaryText, Title } from "shared/lib/designSystem";
 import colors from "shared/lib/designSystem/colors";
-import { VaultActivity, VaultActivityType } from "../../models/vault";
-import {
-  assetToUSD,
-  formatBigNumber,
-  formatOptionAmount,
-  formatOptionStrike,
-} from "shared/lib/utils/math";
-import { useAssetsPriceHistory } from "shared/lib/hooks/useAssetPrice";
-import sizes from "shared/lib/designSystem/sizes";
-import useScreenSize from "shared/lib/hooks/useScreenSize";
-import useLoadingText from "shared/lib/hooks/useLoadingText";
-import { getAssetDecimals, getAssetDisplay } from "shared/lib/utils/asset";
+import { VaultActivity } from "../../models/vault";
+import { formatBigNumber } from "shared/lib/utils/math";
+import { getAssetDecimals } from "shared/lib/utils/asset";
 import PoolTableWithFixedHeader from "./PoolTableWithFixedHeaders";
 import { PrimaryText } from "../../designSystem";
 import { getAssetLogo } from "../../utils/asset";
@@ -74,7 +65,7 @@ const PoolActivityList: React.FC<DesktopVaultActivityListProps> = ({
   setPage,
   perPage,
 }) => {
-  const { asset, decimals } = useMemo(() => {
+  const { decimals } = useMemo(() => {
     const asset = getAssets(vaultOption);
     return {
       asset: asset,
@@ -83,10 +74,6 @@ const PoolActivityList: React.FC<DesktopVaultActivityListProps> = ({
   }, [vaultOption]);
   const chain = getVaultChain(vaultOption);
 
-  const { searchAssetPriceFromTimestamp, histories } = useAssetsPriceHistory();
-
-  const { width: screenWidth } = useScreenSize();
-  const loadingText = useLoadingText();
   const AssetLogo = getAssetLogo("USDC");
   const getVaultActivityExternalURL = useCallback(
     (activity: VaultActivity) => {
