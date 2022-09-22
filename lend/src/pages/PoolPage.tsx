@@ -473,7 +473,7 @@ const PoolPage = () => {
                   </BaseLink>
                 </CreditRating>
               </Details>
-              <Details>
+              <Details delay={0.75}>
                 <DetailsIndex>03</DetailsIndex>
                 <StyledTitle>Pool Activity</StyledTitle>
                 <PoolActivity
