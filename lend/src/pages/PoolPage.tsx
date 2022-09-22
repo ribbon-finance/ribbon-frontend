@@ -350,7 +350,7 @@ const PoolPage = () => {
                     target="_blank"
                     rel="noreferrer noopener"
                   >
-                    <span>{width > sizes.lg ? "Pool" : "Pool Contract"}</span>
+                    <span>{width < sizes.lg ? "Pool" : "Pool Contract"}</span>
                     <ExternalLinkIcon />
                   </PillButton>
                   <PillButton
