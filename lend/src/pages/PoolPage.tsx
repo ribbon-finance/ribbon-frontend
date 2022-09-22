@@ -14,15 +14,17 @@ import styled from "styled-components";
 import { components } from "../designSystem/components";
 import sizes from "../designSystem/sizes";
 import {
-  Content,
   DisclaimerWrapper,
   FooterButton,
   FooterRow,
   HeaderRow,
+  MarqueeCol,
   ScrollableContent,
   StickyCol,
   WalletButton,
   WalletButtonText,
+  WalletCol,
+  FooterWalletCol,
 } from "./LendPage";
 import { ProductDisclaimer } from "../components/ProductDisclaimer";
 import Indicator from "shared/lib/components/Indicator/Indicator";
@@ -44,6 +46,8 @@ import currency from "currency.js";
 import TooltipExplanation from "shared/lib/components/Common/TooltipExplanation";
 import HelpInfo from "shared/lib/components/Common/HelpInfo";
 import UtilizationBar from "../components/Common/UtilizationBar";
+import useScreenSize from "shared/lib/hooks/useScreenSize";
+
 const PoolContainer = styled.div`
   width: calc(100% - ${components.sidebar}px);
 
@@ -115,6 +119,10 @@ const Details = styled.div`
   align-items: center;
   padding: 32px;
   width: 100%;
+
+  @media (max-width: ${sizes.md}px) {
+    padding: 16px;
+  }
 `;
 
 const DetailsStatWrapper = styled.div`
@@ -127,6 +135,18 @@ const DetailsStatWrapper = styled.div`
     width: calc(50% - 16px);
     border-top: 1px solid ${colors.border};
     border-bottom: 1px solid ${colors.border};
+  }
+
+  @media (max-width: ${sizes.md}px) {
+    display: block;
+
+    > ${Stat} {
+      &:first-of-type {
+        border-top: none;
+      }
+
+      width: 100%;
+    }
   }
 `;
 
@@ -161,6 +181,10 @@ const PoolDetailsWrapper = styled.div`
     display: block;
     width: 100%;
   }
+
+  @media (max-width: ${sizes.md}px) {
+    padding-bottom: ${components.footer * 3}px;
+  }
 `;
 
 const PillButton = styled.a`
@@ -188,6 +212,17 @@ const PillButton = styled.a`
 
     &:not(:last-child) {
       margin-right: 8px;
+    }
+  }
+
+  @media (max-width: ${sizes.lg}px) {
+    display: flex;
+    border-radius: 60px;
+    padding: 8px 12px;
+
+    svg {
+      width: 10px;
+      height: 10px;
     }
   }
 `;
@@ -260,6 +295,8 @@ const PoolPage = () => {
   const { aprs: poolAPRs, supplyAprs, rbnAprs } = usePoolsAPR();
   const utilizationDecimals = getUtilizationDecimals();
   const usdcDecimals = getAssetDecimals("USDC");
+  const { width } = useScreenSize();
+
   if (!poolId) return <NotFound />;
 
   const logo = getMakerLogo(poolId);
@@ -302,7 +339,7 @@ const PoolPage = () => {
                     target="_blank"
                     rel="noreferrer noopener"
                   >
-                    <span>Pool Contract</span>
+                    <span>{width > sizes.lg && "Pool"} Contract</span>
                     <ExternalLinkIcon />
                   </PillButton>
                   <PillButton
@@ -428,7 +465,11 @@ const PoolPage = () => {
             </PoolDetailsWrapper>
           </Col>
         </ScrollableContent>
-        <Footer activePage={activePage} setPage={setPage} />
+        <Footer
+          activePage={activePage}
+          setPage={setPage}
+          setWalletModal={setWalletModal}
+        />
       </PoolContainer>
     </>
   );
@@ -444,17 +485,17 @@ const Header = ({ pool, setWalletModal }: HeaderProps) => {
 
   return (
     <HeaderRow>
-      <Col xs={6}>
+      <MarqueeCol xs={12} md={6}>
         <PoolMarquee pool={pool} />
-      </Col>
-      <Col xs={6}>
+      </MarqueeCol>
+      <WalletCol xs={0} md={6}>
         <WalletButton onClick={() => setWalletModal(true)}>
           {active && <Indicator connected={active} />}
           <WalletButtonText connected={active}>
             {account ? truncateAddress(account) : "Connect Wallet"}
           </WalletButtonText>
         </WalletButton>
-      </Col>
+      </WalletCol>
     </HeaderRow>
   );
 };
@@ -462,17 +503,20 @@ const Header = ({ pool, setWalletModal }: HeaderProps) => {
 interface FooterProps {
   activePage?: PageEnum;
   setPage: (page: PageEnum) => void;
+  setWalletModal: (trigger: boolean) => void;
 }
 
-const Footer = ({ activePage, setPage }: FooterProps) => {
+const Footer = ({ activePage, setPage, setWalletModal }: FooterProps) => {
+  const { account, active } = useWeb3Wallet();
+
   return (
     <FooterRow>
-      <Col xs={6}>
+      <Col xs={0} md={6}>
         <DisclaimerWrapper>
           <ProductDisclaimer />
         </DisclaimerWrapper>
       </Col>
-      <Col xs={6}>
+      <Col xs={12} md={6}>
         <FooterButton
           isActive={activePage === PageEnum.DEPOSIT}
           onClick={() => setPage(PageEnum.DEPOSIT)}
@@ -486,6 +530,14 @@ const Footer = ({ activePage, setPage }: FooterProps) => {
           Withdraw
         </FooterButton>
       </Col>
+      <FooterWalletCol xs={0} md={6}>
+        <WalletButton onClick={() => setWalletModal(true)}>
+          {active && <Indicator connected={active} />}
+          <WalletButtonText connected={active}>
+            {account ? truncateAddress(account) : "Connect Wallet"}
+          </WalletButtonText>
+        </WalletButton>
+      </FooterWalletCol>
     </FooterRow>
   );
 };
@@ -510,7 +562,7 @@ const MarqueeItem = styled.div`
 const PoolMarquee = ({ pool }: { pool: VaultOptions }) => {
   return (
     <Marquee gradient={false} speed={50} delay={0} pauseOnHover>
-      {new Array(10).fill("").map((i) => (
+      {new Array(10).fill("").map((v, i) => (
         <MarqueeItem key={i}>
           <Title>{VaultDetailsMap[pool].name}</Title>
           <img src={getMakerLogo(pool)} alt={pool} height={20} width={20} />

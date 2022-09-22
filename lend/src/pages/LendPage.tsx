@@ -72,10 +72,9 @@ export const FooterRow = styled(Row)`
   }
 
   @media (max-width: ${sizes.md}px) {
+    height: ${components.header + components.footer}px;
     position: sticky;
-    bottom: ${components.header}px;
-    padding-bottom: ${components.header}px;
-    border-bottom: 1px solid ${colors.border};
+    bottom: 0;
   }
 `;
 
@@ -131,7 +130,7 @@ export const DisclaimerWrapper = styled.div`
   }
 `;
 
-export const Content = styled(Row)`
+const Content = styled(Row)`
   height: calc(100% - ${components.header}px - ${components.footer}px);
 
   @media (max-width: ${sizes.lg}px) {
@@ -162,21 +161,24 @@ export const StickyCol = styled(Col)`
   @media (max-width: ${sizes.md}px) {
     position: relative;
     height: fit-content;
-    border-bottom: 1px solid ${colors.border};
   }
 `;
 
-const MarqueeCol = styled(Col)`
+export const MarqueeCol = styled(Col)`
   height: ${components.header}px;
 `;
 
-const WalletCol = styled(Col)`
+export const WalletCol = styled(Col)`
   height: ${components.header}px;
 
   @media (max-width: ${sizes.md}px) {
-    position: absolute;
-    bottom: 0;
+    display: none;
   }
+`;
+
+export const FooterWalletCol = styled(Col)`
+  height: ${components.footer}px;
+  border-top: 1px solid ${colors.border};
 `;
 
 const BalanceWrapper = styled.div`
@@ -230,7 +232,11 @@ const LendPage: React.FC = () => {
             {activePage === PageEnum.POOLS ? <Pools /> : <Positions />}
           </Col>
         </ScrollableContent>
-        <Footer activePage={activePage} setPage={setPage} />
+        <Footer
+          activePage={activePage}
+          setPage={setPage}
+          setWalletModal={setWalletModal}
+        />
       </HeroContainer>
     </>
   );
@@ -263,6 +269,7 @@ const Header = ({ setWalletModal }: HeaderProps) => {
 interface FooterProps {
   activePage: PageEnum;
   setPage: (page: PageEnum) => void;
+  setWalletModal: (trigger: boolean) => void;
 }
 
 export const FooterButton = styled(Button)<{ isActive?: boolean }>`
@@ -283,7 +290,8 @@ export const FooterButton = styled(Button)<{ isActive?: boolean }>`
   }
 `;
 
-const Footer = ({ activePage, setPage }: FooterProps) => {
+const Footer = ({ activePage, setPage, setWalletModal }: FooterProps) => {
+  const { account, active } = useWeb3Wallet();
   const vaultDatas = useVaultsData();
   const usdcDecimals = getAssetDecimals("USDC");
   const positionsCount = VaultList.filter(
@@ -314,6 +322,14 @@ const Footer = ({ activePage, setPage }: FooterProps) => {
           Positions({positionsCount})
         </FooterButton>
       </Col>
+      <FooterWalletCol xs={0} md={6}>
+        <WalletButton onClick={() => setWalletModal(true)}>
+          {active && <Indicator connected={active} />}
+          <WalletButtonText connected={active}>
+            {account ? truncateAddress(account) : "Connect Wallet"}
+          </WalletButtonText>
+        </WalletButton>
+      </FooterWalletCol>
     </FooterRow>
   );
 };

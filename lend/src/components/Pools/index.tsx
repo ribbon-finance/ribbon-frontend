@@ -19,7 +19,6 @@ import { Link } from "react-router-dom";
 import { isPracticallyZero } from "../../utils/math";
 import useVaultAccounts from "../../hooks/useVaultAccounts";
 import { formatUnits } from "ethers/lib/utils";
-import { components } from "../../designSystem/components";
 import sizes from "../../designSystem/sizes";
 
 const statSideContainer: number = 120;
@@ -27,10 +26,6 @@ const statSideContainer: number = 120;
 const ListRow = styled(Row)`
   display: block;
   padding: 0;
-
-  @media (max-width: ${sizes.md}px) {
-    padding-bottom: ${components.footer}px;
-  }
 `;
 
 const PoolLogo = styled.div`
