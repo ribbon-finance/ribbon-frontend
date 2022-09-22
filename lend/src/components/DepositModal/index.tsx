@@ -1,7 +1,7 @@
 import React, { useCallback, useEffect, useState } from "react";
 import { Col, Row } from "react-bootstrap";
 import colors from "shared/lib/designSystem/colors";
-import styled from "styled-components";
+import styled, { keyframes } from "styled-components";
 import { components } from "../../designSystem/components";
 import { PrimaryText, SecondaryText, Title } from "../../designSystem";
 import sizes from "../../designSystem/sizes";
@@ -31,8 +31,8 @@ import { BigNumber } from "ethers";
 import { ActionButton } from "../Common/buttons";
 import {
   useVaultsData,
-  useVaultData,
   useAssetBalance,
+  useVaultData,
 } from "../../hooks/web3DataContext";
 import useUSDC, { DepositSignature } from "../../hooks/useUSDC";
 import useLoadingText from "shared/lib/hooks/useLoadingText";
@@ -44,9 +44,16 @@ import ExternalLinkIcon from "../Common/ExternalLinkIcon";
 import HeroContent from "../HeroContent";
 import { PoolValidationErrors } from "./types";
 import UtilizationBar from "../Common/UtilizationBar";
-import { delayedFade } from "../animations";
-
 const borderStyle = `1px solid ${colors.primaryText}1F`;
+
+export const fadeInDisabled = keyframes`
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 0.64;
+  }
+`;
 
 export const FixedContainer = styled.div`
   position: fixed;
@@ -92,27 +99,18 @@ export const HeaderRow = styled(Row)`
 `;
 
 export const FooterRow = styled(Row)`
-  height: ${components.footer}px;
+  min-height: ${components.footer}px;
   border-top: 1px solid ${colors.border};
   box-sizing: content-box;
-
-  > * {
-    padding: 0;
-
-    &:not(:last-child) {
-      border-right: 1px solid ${colors.border};
-    }
-  }
 `;
 
 export const HeaderContainer = styled.div`
   display: flex;
   margin: auto;
   width: 100%;
-  height: 100%;
   justify-content: center;
   border-radius: 0;
-  height: ${components.header}px;
+  min-height: ${components.header}px;
   border-bottom: 1px solid ${colors.border};
   z-index: 1;
   color: ${colors.primaryText};
@@ -165,6 +163,36 @@ const CloseButton = styled.button`
   border-left: ${borderStyle};
 `;
 
+const DesktopOnly = styled.div`
+  display: flex;
+  width: 100%;
+  > * {
+    padding: 0;
+
+    &:not(:last-child) {
+      border-right: 1px solid ${colors.border};
+    }
+  }
+  @media (max-width: ${sizes.lg}px) {
+    display: none;
+  }
+`;
+
+const MobileOnly = styled.div`
+  display: none;
+  width: 100%;
+  > * {
+    padding: 0;
+
+    &:not(:last-child) {
+      border-right: 1px solid ${colors.border};
+    }
+  }
+  @media (max-width: ${sizes.lg}px) {
+    display: flex;
+  }
+`;
+
 export enum ActionModalEnum {
   PREVIEW,
   TRANSACTION_STEP,
@@ -201,6 +229,7 @@ const DepositModal: React.FC<DepositModalProps> = ({
             setPage={setPage}
             setTxhashMain={setTxhashMain}
             onHide={() => onHide()}
+            show={show}
           />
         </Content>
         <Footer pool={pool} page={page} txhash={txhash} />
@@ -280,47 +309,63 @@ const Footer: React.FC<FooterProps> = ({ pool, page, txhash }) => {
   const utilizationDecimals = getUtilizationDecimals();
   const utilizationRate = vaultDatas.data[pool].utilizationRate;
   return (
-    <FooterRow>
+    <>
       {page === ActionModalEnum.PREVIEW ? (
-        <>
-          <Col xs={3}>
-            <DetailContainer>
-              <DetailTitle>Pool</DetailTitle>
-              <DetailText>{poolName}</DetailText>
-            </DetailContainer>
-          </Col>
-          <Col xs={3}>
-            <DetailContainer>
-              <DetailTitle>Deposit Asset</DetailTitle>
-              <DetailText>USDC</DetailText>
-            </DetailContainer>
-          </Col>
-          <Col xs={3}>
-            <DetailContainer>
-              <DetailTitle>Lending APR</DetailTitle>
-              <DetailText>{apr.toFixed(2)}%</DetailText>
-            </DetailContainer>
-          </Col>
-          <Col xs={3}>
-            <DetailContainer>
-              <DetailTitle>Pool Utilization</DetailTitle>
-              <div className="d-flex">
-                <UtilizationBar
-                  percent={parseFloat(
-                    formatBigNumber(utilizationRate, utilizationDecimals)
-                  )}
-                  width={40}
-                  color="white"
-                />
-                <DetailText>
-                  {formatBigNumber(utilizationRate, utilizationDecimals)}%
-                </DetailText>
-              </div>
-            </DetailContainer>
-          </Col>
-        </>
+        <FooterRow>
+          <DesktopOnly>
+            <Col xs={3}>
+              <DetailContainer>
+                <DetailTitle>Pool</DetailTitle>
+                <DetailText>{poolName}</DetailText>
+              </DetailContainer>
+            </Col>
+            <Col xs={3}>
+              <DetailContainer>
+                <DetailTitle>Deposit Asset</DetailTitle>
+                <DetailText>USDC</DetailText>
+              </DetailContainer>
+            </Col>
+            <Col xs={3}>
+              <DetailContainer>
+                <DetailTitle>Lending APR</DetailTitle>
+                <DetailText>{apr.toFixed(2)}%</DetailText>
+              </DetailContainer>
+            </Col>
+            <Col xs={3}>
+              <DetailContainer>
+                <DetailTitle>Pool Utilization</DetailTitle>
+                <div className="d-flex">
+                  <UtilizationBar
+                    percent={parseFloat(
+                      formatBigNumber(utilizationRate, utilizationDecimals)
+                    )}
+                    width={40}
+                    color="white"
+                  />
+                  <DetailText>
+                    {formatBigNumber(utilizationRate, utilizationDecimals)}%
+                  </DetailText>
+                </div>
+              </DetailContainer>
+            </Col>
+          </DesktopOnly>
+          <MobileOnly>
+            <Col xs={6}>
+              <DetailContainer>
+                <DetailTitle>Pool</DetailTitle>
+                <DetailText>{poolName}</DetailText>
+              </DetailContainer>
+            </Col>
+            <Col xs={6}>
+              <DetailContainer>
+                <DetailTitle>Lending APR</DetailTitle>
+                <DetailText>{apr.toFixed(2)}%</DetailText>
+              </DetailContainer>
+            </Col>
+          </MobileOnly>
+        </FooterRow>
       ) : (
-        <>
+        <FooterRow>
           {chainId !== undefined && (
             <UnderlineLink
               to={`${getEtherscanURI(chainId)}/tx/${txhash}`}
@@ -331,11 +376,17 @@ const Footer: React.FC<FooterProps> = ({ pool, page, txhash }) => {
               <ExternalLinkIcon />
             </UnderlineLink>
           )}
-        </>
+        </FooterRow>
       )}
-    </FooterRow>
+    </>
   );
 };
+
+const delayedFade = css<{ delay?: number }>`
+  opacity: 0;
+  animation: ${fadeIn} 1s ease-in-out forwards;
+  animation-delay: ${({ delay }) => `${delay || 0}s`};
+`;
 
 const ModalContainer = styled.div`
   height: 100%;
@@ -425,7 +476,6 @@ export const BaseInputButton = styled.div`
 
 const InputContainer = styled(BaseInputContainer)<{
   delay?: number;
-  show?: boolean;
 }>`
   display: flex;
   input::-webkit-outer-spin-button,
@@ -445,29 +495,23 @@ const InputContainer = styled(BaseInputContainer)<{
     width: 100%;
     -moz-appearance: textfield;
   }
-  ${({ show, delay }) => {
-    return (
-      show &&
-      css`
-        opacity: 0;
-        animation: ${fadeIn} 1s ease-in-out forwards;
-        animation-delay: ${delay || 0}s;
-      `
-    );
-  }}
+  ${delayedFade}
 `;
 
-const PercentagesContainer = styled.div`
+const PercentagesContainer = styled.div<{
+  delay?: number;
+}>`
   display: flex;
   flex-direction: row;
   width: 240px;
   justify-content: space-between;
   margin-top: 32px;
+  ${delayedFade}
 `;
 
 const FormButton = styled(ActionButton)<{
-  delay?: number;
   show?: boolean;
+  delay?: number;
   approved?: boolean;
 }>`
   display: flex;
@@ -492,7 +536,13 @@ const FormButton = styled(ActionButton)<{
       color: ${colors.green};
       border: none;
   `
-      : ``};
+      : ``}
+`;
+
+const FormButtonFade = styled.div<{
+  show?: boolean;
+  delay?: number;
+}>`
   ${({ show, delay }) => {
     return (
       show &&
@@ -508,6 +558,7 @@ const FormButton = styled(ActionButton)<{
       `
     );
   }}
+  display: flex;
 `;
 
 const ErrorText = styled(SecondaryText)`
@@ -523,6 +574,7 @@ interface HeroProps {
   setPage: (page: ActionModalEnum) => void;
   setTxhashMain: (txhash: string) => void;
   onHide: () => void;
+  show: boolean;
 }
 
 export const Hero: React.FC<HeroProps> = ({
@@ -532,6 +584,7 @@ export const Hero: React.FC<HeroProps> = ({
   setPage,
   setTxhashMain,
   onHide,
+  show,
 }) => {
   const [inputAmount, setInputAmount] = useState<string>("");
   const [waitingApproval, setWaitingApproval] = useState(false);
@@ -777,7 +830,7 @@ export const Hero: React.FC<HeroProps> = ({
             />
           </InputContainer>
           {error && <ErrorText>{renderErrorText(error)}</ErrorText>}
-          <PercentagesContainer>
+          <PercentagesContainer delay={0.6}>
             <BaseInputButton onClick={() => handlePercentageClick(0.25)}>
               25%
             </BaseInputButton>
@@ -794,45 +847,48 @@ export const Hero: React.FC<HeroProps> = ({
           {actionType === "deposit" ? (
             <div>
               {signature !== undefined ? (
-                <FormButton
-                  delay={1}
-                  className="btn py-3 mt-4 mb-3"
-                  approved={true}
-                >
-                  USDC READY TO DEPOSIT
-                </FormButton>
+                <FormButtonFade show={show} delay={0.8} className="mt-4 mb-3">
+                  <FormButton className="btn py-3" approved={true}>
+                    USDC READY TO DEPOSIT
+                  </FormButton>
+                </FormButtonFade>
               ) : (
-                <FormButton
-                  delay={1}
-                  onClick={handleApprove}
-                  disabled={Boolean(error) || !isInputNonZero}
-                  className="btn py-3 mt-4 mb-3"
-                >
-                  {waitingApproval ? loadingText : `PERMIT USDC`}
-                </FormButton>
+                <FormButtonFade show={show} delay={0.8} className="mt-4 mb-3">
+                  <FormButton
+                    onClick={handleApprove}
+                    disabled={Boolean(error) || !isInputNonZero}
+                    className="btn py-3"
+                  >
+                    {waitingApproval ? loadingText : `PERMIT USDC`}
+                  </FormButton>
+                </FormButtonFade>
               )}
-              <FormButton
-                delay={1.2}
-                onClick={handleConfirm}
-                disabled={Boolean(error) || signature === undefined}
-                className="btn py-3 mb-3 mt-4"
-              >
-                {actionType}
-              </FormButton>
+              <FormButtonFade show={show} delay={1.0} className="mt-4 mb-3">
+                <FormButton
+                  onClick={handleConfirm}
+                  disabled={Boolean(error) || signature === undefined}
+                  className="btn py-3"
+                >
+                  {actionType}
+                </FormButton>
+              </FormButtonFade>
             </div>
           ) : (
             <>
-              <FormButton
-                delay={1.2}
-                onClick={handleConfirm}
-                disabled={!isInputNonZero}
-                className="btn py-3 mb-3 mt-4"
-              >
-                {actionType}
-              </FormButton>
+              <FormButtonFade show={show} delay={0.8} className="mt-4 mb-3">
+                <FormButton
+                  delay={0.8}
+                  show={show}
+                  onClick={handleConfirm}
+                  disabled={!isInputNonZero}
+                  className="btn py-3"
+                >
+                  {actionType}
+                </FormButton>
+              </FormButtonFade>
             </>
           )}
-          <BalanceContainer delay={0.5}>
+          <BalanceContainer delay={actionType === "deposit" ? 1.2 : 1.0}>
             <BalanceLabel>
               {actionType === "deposit"
                 ? "USDC Wallet Balance:"
@@ -852,7 +908,7 @@ export const Hero: React.FC<HeroProps> = ({
             </BalanceValue>
           </BalanceContainer>
           {actionType === "withdraw" && (
-            <BalanceContainer delay={0.5}>
+            <BalanceContainer delay={1.2}>
               <BalanceLabel>Pool Max Withdraw Amount</BalanceLabel>
               <BalanceValue
                 error={Boolean(error === "insufficientPoolLiquidity")}

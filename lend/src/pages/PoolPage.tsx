@@ -46,6 +46,7 @@ import currency from "currency.js";
 import TooltipExplanation from "shared/lib/components/Common/TooltipExplanation";
 import HelpInfo from "shared/lib/components/Common/HelpInfo";
 import UtilizationBar from "../components/Common/UtilizationBar";
+import PoolActivity from "../components/Pools/PoolActivity";
 import useScreenSize from "shared/lib/hooks/useScreenSize";
 import { delayedFade, delayedUpwardFade } from "../components/animations";
 import credora from "../assets/icons/credora.svg";
@@ -471,6 +472,16 @@ const PoolPage = () => {
                     <img src={credora} alt="credora" />
                   </BaseLink>
                 </CreditRating>
+              </Details>
+              <Details>
+                <DetailsIndex>03</DetailsIndex>
+                <StyledTitle>Pool Activity</StyledTitle>
+                <PoolActivity
+                  vault={{
+                    vaultOption: poolId,
+                    vaultVersion: "lend",
+                  }}
+                />
               </Details>
             </PoolDetailsWrapper>
           </Col>
