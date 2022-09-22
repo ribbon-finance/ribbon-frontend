@@ -3,7 +3,7 @@ import { css, keyframes } from "styled-components";
 
 export const delayedFade = css<{ delay?: number; duration?: number }>`
   opacity: 0;
-  animation: ${fadeIn} ${({ duration }) => duration || 0}s ease-in-out forwards;
+  animation: ${fadeIn} ${({ duration }) => duration || 1}s ease-in-out forwards;
   animation-delay: ${({ delay }) => `${delay || 0}s`};
 `;
 
