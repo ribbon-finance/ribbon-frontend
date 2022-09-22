@@ -211,9 +211,7 @@ const DepositModal: React.FC<DepositModalProps> = ({
   onHide,
   pool,
 }) => {
-  const [page, setPage] = useState<ActionModalEnum>(
-    ActionModalEnum.TRANSACTION_STEP
-  );
+  const [page, setPage] = useState<ActionModalEnum>(ActionModalEnum.PREVIEW);
   const [txhash, setTxhashMain] = useState<string>();
   return show ? (
     <FixedContainer>
@@ -865,7 +863,7 @@ export const Hero: React.FC<HeroProps> = ({
                   </FormButton>
                 </FormButtonFade>
               )}
-              <FormButtonFade show={show} delay={0.8} className="mt-4 mb-3">
+              <FormButtonFade show={show} delay={1.0} className="mt-4 mb-3">
                 <FormButton
                   onClick={handleConfirm}
                   disabled={Boolean(error) || signature === undefined}
