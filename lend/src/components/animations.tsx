@@ -10,7 +10,7 @@ export const delayedFade = css<{ delay?: number; duration?: number }>`
 export const upwards = keyframes`
   from {
     opacity: 0;
-    transform: translateY(25px);
+    transform: translateY(15px);
   }
   to {
     opacity: 1;
@@ -20,6 +20,7 @@ export const upwards = keyframes`
 
 export const delayedUpwardFade = css<{ delay?: number; duration?: number }>`
   opacity: 0;
-  animation: ${upwards} ${({ duration }) => duration || 1}s ease-in-out forwards;
+  animation: ${upwards} ${({ duration }) => duration || 0.5}s ease-in-out
+    forwards;
   animation-delay: ${({ delay }) => `${delay || 0}s`} !important;
 `;

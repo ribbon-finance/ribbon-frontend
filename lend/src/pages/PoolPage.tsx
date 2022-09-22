@@ -435,12 +435,12 @@ const PoolPage = () => {
           </StickyCol>
           <Col xs={12} md={6}>
             <PoolDetailsWrapper>
-              <Details delay={0.1}>
+              <Details delay={0.25}>
                 <DetailsIndex>01</DetailsIndex>
                 <StyledTitle>{poolDetails.name}</StyledTitle>
                 <Paragraph>{poolDetails.bio}</Paragraph>
               </Details>
-              <Details delay={0.2}>
+              <Details delay={0.5}>
                 <DetailsIndex>02</DetailsIndex>
                 <StyledTitle>Credit Rating</StyledTitle>
                 <Paragraph>{poolDetails.bio}</Paragraph>
