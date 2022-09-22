@@ -48,6 +48,7 @@ import HelpInfo from "shared/lib/components/Common/HelpInfo";
 import UtilizationBar from "../components/Common/UtilizationBar";
 import useScreenSize from "shared/lib/hooks/useScreenSize";
 import { delayedFade, delayedUpwardFade } from "../components/animations";
+import credora from "../assets/icons/credora.svg";
 
 const PoolContainer = styled.div`
   width: calc(100% - ${components.sidebar}px);
@@ -349,7 +350,7 @@ const PoolPage = () => {
                     target="_blank"
                     rel="noreferrer noopener"
                   >
-                    <span>{width > sizes.lg && "Pool"} Contract</span>
+                    <span>{width > sizes.lg ? "Pool" : "Pool Contract"}</span>
                     <ExternalLinkIcon />
                   </PillButton>
                   <PillButton
@@ -447,13 +448,13 @@ const PoolPage = () => {
                 <DetailsStatWrapper>
                   <Stat>
                     <Label>Credit Rating:</Label>
-                    <Value>{poolDetails.creditRating.rating}</Value>
+                    <Value>{poolDetails.credit.rating}</Value>
                   </Stat>
                   <Stat>
                     <Label>Borrow Limit:</Label>
                     <Value>
                       <AssetLogo />{" "}
-                      {currency(poolDetails.creditRating.borrowLimit).format({
+                      {currency(poolDetails.credit.borrowLimit).format({
                         symbol: "",
                       })}
                     </Value>
@@ -467,10 +468,7 @@ const PoolPage = () => {
                     rel="noreferrer noopener"
                     to="https://credora.io/"
                   >
-                    <img
-                      src={poolDetails.creditRating.ratingProvider}
-                      alt={poolDetails.creditRating.ratingProvider}
-                    />
+                    <img src={credora} alt="credora" />
                   </BaseLink>
                 </CreditRating>
               </Details>

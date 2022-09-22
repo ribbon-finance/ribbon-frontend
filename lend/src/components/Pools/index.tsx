@@ -184,7 +184,7 @@ export const Pools = () => {
       {VaultList.map((pool, i) => {
         const poolSize = vaultDatas.data[pool].poolSize;
         const utilizationRate = vaultDatas.data[pool].utilizationRate;
-        const rating = VaultDetailsMap[pool].creditRating.rating;
+        const rating = VaultDetailsMap[pool].credit.rating;
         const poolLogo = getMakerLogo(pool);
         const asset = getAssets(pool);
         const decimals = getAssetDecimals(asset);
