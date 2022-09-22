@@ -20,6 +20,7 @@ import { isPracticallyZero } from "../../utils/math";
 import useVaultAccounts from "../../hooks/useVaultAccounts";
 import { formatUnits } from "ethers/lib/utils";
 import sizes from "../../designSystem/sizes";
+import { delayedFade } from "../animations";
 
 const statSideContainer: number = 120;
 
@@ -257,9 +258,11 @@ const NoPositionsContainer = styled.div`
   }
 `;
 
-const NoPositionLabel = styled.span`
+const NoPositionLabel = styled.span<{ delay: number; duration: number }>`
   color: ${colors.tertiaryText};
   font-size: 14px;
+
+  ${delayedFade}
 `;
 
 export const Positions = () => {
@@ -359,7 +362,7 @@ export const Positions = () => {
     </ListRow>
   ) : (
     <NoPositionsContainer>
-      <NoPositionLabel>
+      <NoPositionLabel delay={0.1} duration={0.5}>
         You do not have any positions at the moment
       </NoPositionLabel>
     </NoPositionsContainer>
