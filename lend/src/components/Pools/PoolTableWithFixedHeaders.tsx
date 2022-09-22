@@ -154,7 +154,7 @@ const PoolTableWithFixedHeader: React.FC<TableWithFixedHeaderProps> = ({
   }, [page, pageController]);
 
   const availableContentWidth = useMemo(() => {
-    let calculatedWidth = width - 32;
+    let calculatedWidth = width;
 
     if (logos) {
       calculatedWidth =

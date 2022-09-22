@@ -19,6 +19,8 @@ import { Link } from "react-router-dom";
 import { isPracticallyZero } from "../../utils/math";
 import useVaultAccounts from "../../hooks/useVaultAccounts";
 import { formatUnits } from "ethers/lib/utils";
+import sizes from "../../designSystem/sizes";
+import { delayedFade } from "../animations";
 
 const statSideContainer: number = 120;
 
@@ -141,6 +143,10 @@ const PoolStats = styled.div`
   width: calc(100% - ${statSideContainer}px);
   padding: 16px 32px;
 
+  @media (max-width: ${sizes.md}px) {
+    padding: 16px;
+  }
+
   > ${Stat}:last-of-type {
     > * {
       display: flex;
@@ -178,7 +184,7 @@ export const Pools = () => {
       {VaultList.map((pool, i) => {
         const poolSize = vaultDatas.data[pool].poolSize;
         const utilizationRate = vaultDatas.data[pool].utilizationRate;
-        const rating = VaultDetailsMap[pool].creditRating.rating;
+        const rating = VaultDetailsMap[pool].credit.rating;
         const poolLogo = getMakerLogo(pool);
         const asset = getAssets(pool);
         const decimals = getAssetDecimals(asset);
@@ -246,11 +252,17 @@ const NoPositionsContainer = styled.div`
   align-items: center;
   text-align: center;
   height: 100%;
+
+  @media (max-width: ${sizes.md}px) {
+    height: fit-content;
+  }
 `;
 
-const NoPositionLabel = styled.span`
+const NoPositionLabel = styled.span<{ delay: number; duration: number }>`
   color: ${colors.tertiaryText};
   font-size: 14px;
+
+  ${delayedFade}
 `;
 
 export const Positions = () => {
@@ -350,7 +362,7 @@ export const Positions = () => {
     </ListRow>
   ) : (
     <NoPositionsContainer>
-      <NoPositionLabel>
+      <NoPositionLabel delay={0.1} duration={0.5}>
         You do not have any positions at the moment
       </NoPositionLabel>
     </NoPositionsContainer>

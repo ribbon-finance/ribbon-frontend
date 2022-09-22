@@ -1,7 +1,6 @@
 import colors from "shared/lib/designSystem/colors";
-import { fadeIn } from "shared/lib/designSystem/keyframes";
 import useWeb3Wallet from "../../hooks/useWeb3Wallet";
-import styled, { css } from "styled-components";
+import styled from "styled-components";
 import { Title, Subtitle, Button } from "../../designSystem";
 import { useVaultAccountBalances } from "../../hooks/useVaultAccountBalances";
 import { getAssetDecimals, getAssetLogo } from "../../utils/asset";
@@ -10,12 +9,7 @@ import { useMemo, useState } from "react";
 import { useVaultTotalDeposits } from "../../hooks/useVaultTotalDeposits";
 import { formatUnits } from "ethers/lib/utils";
 import LendModal, { ModalContentEnum } from "../Common/LendModal";
-
-const delayedFade = css<{ delay?: number }>`
-  opacity: 0;
-  animation: ${fadeIn} 1s ease-in-out forwards;
-  animation-delay: ${({ delay }) => `${delay || 0}s`};
-`;
+import { delayedFade } from "../animations";
 
 const BalanceWrapper = styled.div`
   height: 100%;

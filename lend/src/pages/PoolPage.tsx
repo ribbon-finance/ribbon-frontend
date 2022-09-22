@@ -14,13 +14,17 @@ import styled from "styled-components";
 import { components } from "../designSystem/components";
 import sizes from "../designSystem/sizes";
 import {
-  Content,
   DisclaimerWrapper,
   FooterButton,
   FooterRow,
   HeaderRow,
+  MarqueeCol,
+  ScrollableContent,
+  StickyCol,
   WalletButton,
   WalletButtonText,
+  WalletCol,
+  FooterWalletCol,
 } from "./LendPage";
 import { ProductDisclaimer } from "../components/ProductDisclaimer";
 import Indicator from "shared/lib/components/Indicator/Indicator";
@@ -43,6 +47,10 @@ import TooltipExplanation from "shared/lib/components/Common/TooltipExplanation"
 import HelpInfo from "shared/lib/components/Common/HelpInfo";
 import UtilizationBar from "../components/Common/UtilizationBar";
 import PoolActivity from "../components/Pools/PoolActivity";
+import useScreenSize from "shared/lib/hooks/useScreenSize";
+import { delayedFade, delayedUpwardFade } from "../components/animations";
+import credora from "../assets/icons/credora.svg";
+
 const PoolContainer = styled.div`
   width: calc(100% - ${components.sidebar}px);
 
@@ -62,10 +70,12 @@ enum PageEnum {
   WITHDRAW,
 }
 
-const MakerLogo = styled.div`
+const MakerLogo = styled.div<{ delay: number }>`
   display: flex;
   justify-content: center;
   width: 100%;
+
+  ${delayedUpwardFade}
 
   img {
     width: 120px;
@@ -80,10 +90,12 @@ const StatsWrapper = styled.div`
   width: 100%;
 `;
 
-const Stat = styled.div`
+const Stat = styled.div<{ delay?: number }>`
   display: flex;
   justify-content: space-between;
   padding: 30px 0;
+
+  ${delayedUpwardFade}
 
   &:not(:last-of-type) {
     border-bottom: 1px solid ${colors.border};
@@ -110,10 +122,16 @@ const Value = styled.span<{ color?: string }>`
   }
 `;
 
-const Details = styled.div`
+const Details = styled.div<{ delay?: number }>`
   align-items: center;
   padding: 32px;
   width: 100%;
+
+  ${delayedUpwardFade}
+
+  @media (max-width: ${sizes.md}px) {
+    padding: 16px;
+  }
 `;
 
 const DetailsStatWrapper = styled.div`
@@ -126,6 +144,18 @@ const DetailsStatWrapper = styled.div`
     width: calc(50% - 16px);
     border-top: 1px solid ${colors.border};
     border-bottom: 1px solid ${colors.border};
+  }
+
+  @media (max-width: ${sizes.md}px) {
+    display: block;
+
+    > ${Stat} {
+      &:first-of-type {
+        border-top: none;
+      }
+
+      width: 100%;
+    }
   }
 `;
 
@@ -160,9 +190,13 @@ const PoolDetailsWrapper = styled.div`
     display: block;
     width: 100%;
   }
+
+  @media (max-width: ${sizes.md}px) {
+    padding-bottom: ${components.footer * 3}px;
+  }
 `;
 
-const PillButton = styled.a`
+const PillButton = styled.a<{ delay: number }>`
   padding: 16px;
   border: 1px solid white;
   background-color: transparent;
@@ -170,6 +204,8 @@ const PillButton = styled.a`
   width: fit-content;
   transition: 0.2s ease-in-out;
   color: ${colors.primaryText};
+
+  ${delayedUpwardFade}
 
   &:hover {
     cursor: pointer;
@@ -187,6 +223,17 @@ const PillButton = styled.a`
 
     &:not(:last-child) {
       margin-right: 8px;
+    }
+  }
+
+  @media (max-width: ${sizes.lg}px) {
+    display: flex;
+    border-radius: 60px;
+    padding: 8px 12px;
+
+    svg {
+      width: 10px;
+      height: 10px;
     }
   }
 `;
@@ -216,22 +263,6 @@ const DetailsIndex = styled.span`
 
 const Paragraph = styled.p`
   color: ${colors.text};
-`;
-
-const ScrollableContent = styled(Content)`
-  overflow-x: hidden;
-  overflow-y: scroll;
-  ::-webkit-scrollbar {
-    width: 0;
-    background: transparent;
-  }
-`;
-
-const StickyCol = styled(Col)`
-  display: flex;
-  position: sticky;
-  height: calc(100vh - ${components.header + components.footer}px);
-  top: 0;
 `;
 
 const YieldExplainerTitle = styled.div<{ color: string }>`
@@ -275,6 +306,8 @@ const PoolPage = () => {
   const { aprs: poolAPRs, supplyAprs, rbnAprs } = usePoolsAPR();
   const utilizationDecimals = getUtilizationDecimals();
   const usdcDecimals = getAssetDecimals("USDC");
+  const { width } = useScreenSize();
+
   if (!poolId) return <NotFound />;
 
   const logo = getMakerLogo(poolId);
@@ -305,22 +338,24 @@ const PoolPage = () => {
       <PoolContainer>
         <Header setWalletModal={setWalletModal} pool={poolId} />
         <ScrollableContent>
-          <StickyCol xs={6}>
+          <StickyCol xs={12} md={6}>
             <UserDetailsWrapper>
               <Details>
-                <MakerLogo>
+                <MakerLogo delay={0.1}>
                   <img src={logo} alt={poolId} />
                 </MakerLogo>
                 <SocialsWrapper>
                   <PillButton
+                    delay={0.2}
                     href={poolDetails.contract}
                     target="_blank"
                     rel="noreferrer noopener"
                   >
-                    <span>Pool Contract</span>
+                    <span>{width < sizes.lg ? "Pool" : "Pool Contract"}</span>
                     <ExternalLinkIcon />
                   </PillButton>
                   <PillButton
+                    delay={0.3}
                     href={poolDetails.twitter}
                     target="_blank"
                     rel="noreferrer noopener"
@@ -329,6 +364,7 @@ const PoolPage = () => {
                     <ExternalLinkIcon />
                   </PillButton>
                   <PillButton
+                    delay={0.4}
                     href={poolDetails.website}
                     target="_blank"
                     rel="noreferrer noopener"
@@ -338,13 +374,13 @@ const PoolPage = () => {
                   </PillButton>
                 </SocialsWrapper>
                 <StatsWrapper>
-                  <Stat>
+                  <Stat delay={0.5}>
                     <Label>Pool size:</Label>
                     <Value>
                       <AssetLogo /> {poolSize}
                     </Value>
                   </Stat>
-                  <Stat>
+                  <Stat delay={0.6}>
                     <div className="d-flex justify-content-center align-items-center">
                       <Label>APR:</Label>
                       <TooltipExplanation
@@ -382,7 +418,7 @@ const PoolPage = () => {
                     </Value>
                   </Stat>
                   {/* <Stat> */}
-                  <Stat>
+                  <Stat delay={0.7}>
                     <Label>Utilization rate:</Label>
                     <div className="d-flex">
                       <UtilizationBar
@@ -398,14 +434,14 @@ const PoolPage = () => {
               </Details>
             </UserDetailsWrapper>
           </StickyCol>
-          <Col>
+          <Col xs={12} md={6}>
             <PoolDetailsWrapper>
-              <Details>
+              <Details delay={0.1}>
                 <DetailsIndex>01</DetailsIndex>
                 <StyledTitle>{poolDetails.name}</StyledTitle>
                 <Paragraph>{poolDetails.bio}</Paragraph>
               </Details>
-              <Details>
+              <Details delay={0.2}>
                 <DetailsIndex>02</DetailsIndex>
                 <StyledTitle>Credit Rating</StyledTitle>
                 <Paragraph>{poolDetails.bio}</Paragraph>
@@ -413,13 +449,13 @@ const PoolPage = () => {
                 <DetailsStatWrapper>
                   <Stat>
                     <Label>Credit Rating:</Label>
-                    <Value>{poolDetails.creditRating.rating}</Value>
+                    <Value>{poolDetails.credit.rating}</Value>
                   </Stat>
                   <Stat>
                     <Label>Borrow Limit:</Label>
                     <Value>
                       <AssetLogo />{" "}
-                      {currency(poolDetails.creditRating.borrowLimit).format({
+                      {currency(poolDetails.credit.borrowLimit).format({
                         symbol: "",
                       })}
                     </Value>
@@ -433,10 +469,7 @@ const PoolPage = () => {
                     rel="noreferrer noopener"
                     to="https://credora.io/"
                   >
-                    <img
-                      src={poolDetails.creditRating.ratingProvider}
-                      alt={poolDetails.creditRating.ratingProvider}
-                    />
+                    <img src={credora} alt="credora" />
                   </BaseLink>
                 </CreditRating>
               </Details>
@@ -453,7 +486,11 @@ const PoolPage = () => {
             </PoolDetailsWrapper>
           </Col>
         </ScrollableContent>
-        <Footer activePage={activePage} setPage={setPage} />
+        <Footer
+          activePage={activePage}
+          setPage={setPage}
+          setWalletModal={setWalletModal}
+        />
       </PoolContainer>
     </>
   );
@@ -469,17 +506,17 @@ const Header = ({ pool, setWalletModal }: HeaderProps) => {
 
   return (
     <HeaderRow>
-      <Col xs={6}>
+      <MarqueeCol xs={12} md={6}>
         <PoolMarquee pool={pool} />
-      </Col>
-      <Col xs={6}>
-        <WalletButton onClick={() => setWalletModal(true)}>
+      </MarqueeCol>
+      <WalletCol xs={0} md={6}>
+        <WalletButton delay={0.2} onClick={() => setWalletModal(true)}>
           {active && <Indicator connected={active} />}
           <WalletButtonText connected={active}>
             {account ? truncateAddress(account) : "Connect Wallet"}
           </WalletButtonText>
         </WalletButton>
-      </Col>
+      </WalletCol>
     </HeaderRow>
   );
 };
@@ -487,30 +524,43 @@ const Header = ({ pool, setWalletModal }: HeaderProps) => {
 interface FooterProps {
   activePage?: PageEnum;
   setPage: (page: PageEnum) => void;
+  setWalletModal: (trigger: boolean) => void;
 }
 
-const Footer = ({ activePage, setPage }: FooterProps) => {
+const Footer = ({ activePage, setPage, setWalletModal }: FooterProps) => {
+  const { account, active } = useWeb3Wallet();
+
   return (
     <FooterRow>
-      <Col xs={6}>
-        <DisclaimerWrapper>
+      <Col xs={0} md={6}>
+        <DisclaimerWrapper delay={0.1}>
           <ProductDisclaimer />
         </DisclaimerWrapper>
       </Col>
-      <Col xs={6}>
+      <Col xs={12} md={6}>
         <FooterButton
+          delay={0.2}
           isActive={activePage === PageEnum.DEPOSIT}
           onClick={() => setPage(PageEnum.DEPOSIT)}
         >
           Deposit
         </FooterButton>
         <FooterButton
+          delay={0.3}
           isActive={activePage === PageEnum.WITHDRAW}
           onClick={() => setPage(PageEnum.WITHDRAW)}
         >
           Withdraw
         </FooterButton>
       </Col>
+      <FooterWalletCol xs={0} md={6}>
+        <WalletButton delay={0.4} onClick={() => setWalletModal(true)}>
+          {active && <Indicator connected={active} />}
+          <WalletButtonText connected={active}>
+            {account ? truncateAddress(account) : "Connect Wallet"}
+          </WalletButtonText>
+        </WalletButton>
+      </FooterWalletCol>
     </FooterRow>
   );
 };
@@ -532,16 +582,21 @@ const MarqueeItem = styled.div`
   }
 `;
 
+const StyledMarquee = styled(Marquee)<{ delay: number }>`
+  height: 100%;
+  ${delayedFade}
+`;
+
 const PoolMarquee = ({ pool }: { pool: VaultOptions }) => {
   return (
-    <Marquee gradient={false} speed={50} delay={0} pauseOnHover>
-      {new Array(10).fill("").map((i) => (
+    <StyledMarquee gradient={false} speed={50} delay={0.1} pauseOnHover>
+      {new Array(10).fill("").map((v, i) => (
         <MarqueeItem key={i}>
           <Title>{VaultDetailsMap[pool].name}</Title>
           <img src={getMakerLogo(pool)} alt={pool} height={20} width={20} />
         </MarqueeItem>
       ))}
-    </Marquee>
+    </StyledMarquee>
   );
 };
 export default PoolPage;

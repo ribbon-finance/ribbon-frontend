@@ -117,13 +117,15 @@ const PoolActivityList: React.FC<DesktopVaultActivityListProps> = ({
                 </VaultSecondaryText>
               </VaultSecondaryTextContainer>
             </>,
-            <div className="d-flex justify-content-end mr-2">
+            <div className="d-flex justify-content-end mr-3">
               <LogoContainer>
                 <AssetLogo />
               </LogoContainer>
-              <StyledTitle>
-                {formatBigNumber(activity.borrowAmount, decimals)}
-              </StyledTitle>
+              <div className="ml-2">
+                <StyledTitle>
+                  {formatBigNumber(activity.borrowAmount, decimals)}
+                </StyledTitle>
+              </div>
             </div>,
           ];
         case "repay":
@@ -136,13 +138,15 @@ const PoolActivityList: React.FC<DesktopVaultActivityListProps> = ({
                 </VaultSecondaryText>
               </VaultSecondaryTextContainer>
             </>,
-            <div className="d-flex justify-content-end mr-2">
+            <div className="d-flex justify-content-end mr-3">
               <LogoContainer>
                 <AssetLogo />
               </LogoContainer>
-              <StyledTitle>
-                {formatBigNumber(activity.repaidAmount, decimals)}
-              </StyledTitle>
+              <div className="ml-2">
+                <StyledTitle>
+                  {formatBigNumber(activity.repaidAmount, decimals)}
+                </StyledTitle>
+              </div>
             </div>,
           ];
       }

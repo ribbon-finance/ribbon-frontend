@@ -31,8 +31,8 @@ import { BigNumber } from "ethers";
 import { ActionButton } from "../Common/buttons";
 import {
   useVaultsData,
-  useAssetBalance,
   useVaultData,
+  useAssetBalance,
 } from "../../hooks/web3DataContext";
 import useUSDC, { DepositSignature } from "../../hooks/useUSDC";
 import useLoadingText from "shared/lib/hooks/useLoadingText";
@@ -44,6 +44,8 @@ import ExternalLinkIcon from "../Common/ExternalLinkIcon";
 import HeroContent from "../HeroContent";
 import { PoolValidationErrors } from "./types";
 import UtilizationBar from "../Common/UtilizationBar";
+import { delayedFade } from "../animations";
+
 const borderStyle = `1px solid ${colors.primaryText}1F`;
 
 export const FixedContainer = styled.div`
@@ -334,12 +336,6 @@ const Footer: React.FC<FooterProps> = ({ pool, page, txhash }) => {
     </FooterRow>
   );
 };
-
-const delayedFade = css<{ delay?: number }>`
-  opacity: 0;
-  animation: ${fadeIn} 1s ease-in-out forwards;
-  animation-delay: ${({ delay }) => `${delay || 0}s`};
-`;
 
 const ModalContainer = styled.div`
   height: 100%;
