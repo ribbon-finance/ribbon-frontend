@@ -1,7 +1,10 @@
-import { getMakerLogo, VaultDetailsMap } from "../../constants/constants";
 import { getAssetLogo } from "shared/lib/utils/asset";
-import { getAssets } from "../../constants/constants";
-import { VaultList } from "../../constants/constants";
+import {
+  getAssets,
+  getMakerLogo,
+  VaultList,
+  VaultDetailsMap,
+} from "../../constants/constants";
 import { useVaultsData } from "../../hooks/web3DataContext";
 import { formatBigNumber } from "../../utils/math";
 import { getAssetDecimals, getUtilizationDecimals } from "../../utils/asset";
@@ -175,7 +178,7 @@ export const Pools = () => {
       {VaultList.map((pool, i) => {
         const poolSize = vaultDatas.data[pool].poolSize;
         const utilizationRate = vaultDatas.data[pool].utilizationRate;
-
+        const rating = VaultDetailsMap[pool].creditRating.rating;
         const poolLogo = getMakerLogo(pool);
         const asset = getAssets(pool);
         const decimals = getAssetDecimals(asset);
@@ -212,7 +215,7 @@ export const Pools = () => {
                 <Stat>
                   <StyledTitle>{VaultDetailsMap[pool].name}</StyledTitle>
                   <StyledSubtitle>
-                    Utilization{" "}
+                    Rating {rating} - Utilization{" "}
                     {formatBigNumber(utilizationRate, utilizationDecimals)}%
                   </StyledSubtitle>
                 </Stat>

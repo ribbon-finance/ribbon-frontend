@@ -131,6 +131,7 @@ export const defaultVaultActivitiesData: VaultActivitiesData =
 
 export interface UnconnectedVaultData {
   poolSize: BigNumber;
+  availableToWithdraw: BigNumber;
   utilizationRate: BigNumber;
   vaultLimit: BigNumber;
   currentExchangeRate: BigNumber;
@@ -163,6 +164,7 @@ export const defaultVaultData: VaultData = {
       vault,
       {
         poolSize: BigNumber.from("0"),
+        availableToWithdraw: BigNumber.from("0"),
         utilizationRate: BigNumber.from("0"),
         vaultLimit: BigNumber.from("0"),
         currentExchangeRate: BigNumber.from("0"),
