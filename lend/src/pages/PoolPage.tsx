@@ -129,7 +129,7 @@ const Details = styled.div<{ delay?: number }>`
 
   ${delayedUpwardFade}
 
-  @media (max-width: ${sizes.md}px) {
+  @media (max-width: ${sizes.lg}px) {
     padding: 16px;
   }
 `;
@@ -146,7 +146,7 @@ const DetailsStatWrapper = styled.div`
     border-bottom: 1px solid ${colors.border};
   }
 
-  @media (max-width: ${sizes.md}px) {
+  @media (max-width: ${sizes.lg + 400}px) {
     display: block;
 
     > ${Stat} {
@@ -191,7 +191,7 @@ const PoolDetailsWrapper = styled.div`
     width: 100%;
   }
 
-  @media (max-width: ${sizes.md}px) {
+  @media (max-width: ${sizes.lg}px) {
     padding-bottom: ${components.footer * 3}px;
   }
 `;
@@ -351,7 +351,9 @@ const PoolPage = () => {
                     target="_blank"
                     rel="noreferrer noopener"
                   >
-                    <span>{width < sizes.lg ? "Pool" : "Pool Contract"}</span>
+                    <span>
+                      {width < sizes.lg + 200 ? "Pool" : "Pool Contract"}
+                    </span>
                     <ExternalLinkIcon />
                   </PillButton>
                   <PillButton
@@ -506,10 +508,10 @@ const Header = ({ pool, setWalletModal }: HeaderProps) => {
 
   return (
     <HeaderRow>
-      <MarqueeCol xs={12} md={6}>
+      <MarqueeCol md={12} lg={6}>
         <PoolMarquee pool={pool} />
       </MarqueeCol>
-      <WalletCol xs={0} md={6}>
+      <WalletCol md={0} lg={6}>
         <WalletButton delay={0.2} onClick={() => setWalletModal(true)}>
           {active && <Indicator connected={active} />}
           <WalletButtonText connected={active}>
@@ -532,12 +534,12 @@ const Footer = ({ activePage, setPage, setWalletModal }: FooterProps) => {
 
   return (
     <FooterRow>
-      <Col xs={0} md={6}>
+      <Col md={0} lg={6}>
         <DisclaimerWrapper delay={0.1}>
           <ProductDisclaimer />
         </DisclaimerWrapper>
       </Col>
-      <Col xs={12} md={6}>
+      <Col md={12} lg={6}>
         <FooterButton
           delay={0.2}
           isActive={activePage === PageEnum.DEPOSIT}
@@ -553,7 +555,7 @@ const Footer = ({ activePage, setPage, setWalletModal }: FooterProps) => {
           Withdraw
         </FooterButton>
       </Col>
-      <FooterWalletCol xs={0} md={6}>
+      <FooterWalletCol md={0} lg={0}>
         <WalletButton delay={0.4} onClick={() => setWalletModal(true)}>
           {active && <Indicator connected={active} />}
           <WalletButtonText connected={active}>

@@ -62,8 +62,14 @@ const HeroSubtitle = styled(Subtitle)<{ delay?: number; color: string }>`
 
 const ClaimButton = styled(Button)<{ delay?: number }>`
   border-radius: 64px;
-  background: white;
-  color: ${colors.background.one};
+  font-size: 14px;
+  border: 1px solid ${colors.primaryText};
+  background: ${colors.background.one};
+  color: ${colors.primaryText};
+  &:hover {
+    background: ${colors.primaryText};
+    color: ${colors.background.one};
+  }
   ${delayedFade}
 `;
 

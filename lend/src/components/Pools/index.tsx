@@ -21,7 +21,7 @@ import useVaultAccounts from "../../hooks/useVaultAccounts";
 import { formatUnits } from "ethers/lib/utils";
 import sizes from "../../designSystem/sizes";
 import { delayedFade } from "../animations";
-
+import currency from "currency.js";
 const statSideContainer: number = 120;
 
 const ListRow = styled(Row)`
@@ -48,7 +48,8 @@ const PoolButton = styled(BaseButton)`
   opacity: 0;
   width: 0;
   padding: 0;
-
+  border-radius: 0;
+  border-left: 1px solid ${colors.border};
   > * {
     overflow: hidden;
   }
@@ -231,7 +232,10 @@ export const Pools = () => {
                     <span>{formatBigNumber(poolSize, decimals)}</span>
                   </StyledTitle>
                   <StyledSubtitle color={colors.green}>
-                    {loading ? "0.00" : apr.toFixed(2)}%
+                    {loading
+                      ? "0.00"
+                      : currency(apr.toFixed(2), { symbol: "" }).format()}
+                    %
                   </StyledSubtitle>
                 </Stat>
               </PoolStats>

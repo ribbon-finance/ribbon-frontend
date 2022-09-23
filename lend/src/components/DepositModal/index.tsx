@@ -44,6 +44,7 @@ import ExternalLinkIcon from "../Common/ExternalLinkIcon";
 import HeroContent from "../HeroContent";
 import { PoolValidationErrors } from "./types";
 import UtilizationBar from "../Common/UtilizationBar";
+import currency from "currency.js";
 const borderStyle = `1px solid ${colors.primaryText}1F`;
 
 export const fadeInDisabled = keyframes`
@@ -328,7 +329,9 @@ const Footer: React.FC<FooterProps> = ({ pool, page, txhash }) => {
             <Col xs={3}>
               <DetailContainer>
                 <DetailTitle>Lending APR</DetailTitle>
-                <DetailText>{apr.toFixed(2)}%</DetailText>
+                <DetailText>
+                  {currency(apr.toFixed(2), { symbol: "" }).format()}%
+                </DetailText>
               </DetailContainer>
             </Col>
             <Col xs={3}>
@@ -359,7 +362,9 @@ const Footer: React.FC<FooterProps> = ({ pool, page, txhash }) => {
             <Col xs={6}>
               <DetailContainer>
                 <DetailTitle>Lending APR</DetailTitle>
-                <DetailText>{apr.toFixed(2)}%</DetailText>
+                <DetailText>
+                  {currency(apr.toFixed(2), { symbol: "" }).format()}%
+                </DetailText>
               </DetailContainer>
             </Col>
           </MobileOnly>
@@ -818,7 +823,7 @@ export const Hero: React.FC<HeroProps> = ({
             <Logo height="100%" />
           </ProductAssetLogoContainer>
           <BalanceTitle delay={0.2}>Enter {actionType} Amount</BalanceTitle>
-          <InputContainer delay={0.4} className="mb-2">
+          <InputContainer delay={0.4} className="mt-3 mb-2">
             <StyledBaseInput
               type="number"
               className="form-control"
