@@ -360,7 +360,7 @@ const EarnPage = () => {
         parseFloat(formatUnits(vaultAccount.totalDeposits, decimals))) *
       100;
 
-    const roiColor = roiTemp < 0 ? colors.primaryText : colors.green;
+    const roiColor = roiTemp >= 0 ? colors.green : colors.red;
     return [
       (parseFloat(
         formatUnits(
@@ -515,7 +515,7 @@ const EarnPage = () => {
                       )}
                 </HeroText>
                 <HeroSubtitle color={yieldColor} delay={0.4}>
-                  {isLoading || roi <= 0 ? "0.00" : roi.toFixed(4)}%
+                  +{isLoading || roi === 0 ? "0.00" : roi.toFixed(4)}%
                 </HeroSubtitle>
                 <ViewDetailsButton
                   role="button"
