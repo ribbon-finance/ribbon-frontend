@@ -13,7 +13,6 @@
     "@types/react": "^17.0.0",
     "@types/react-dom": "^17.0.0",
     "@types/react-router-dom": "^5.1.7",
-    "@types/styled-components": "^5.1.7",
     "@web3-react/core": "^6.1.9",
     "@web3-react/injected-connector": "^6.0.7",
     "@web3-react/walletconnect-connector": "^6.1.9",
@@ -39,7 +38,8 @@
     "build": "craco build",
     "test": "craco test",
     "eject": "react-scripts eject",
-    "lint": "eslint --fix --ext .tsx,.ts ."
+    "lint": "eslint --fix --ext .tsx,.ts .",
+    "codegen": "typechain --target=ethers-v5 --out-dir src/codegen 'src/constants/abis/*.json'"
   },
   "eslintConfig": {
     "extends": [
@@ -58,5 +58,13 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
+  },
+  "devDependencies": {
+    "@typechain/ethers-v5": "^9.0.0",
+    "@types/react-router-dom": "^5.1.7",
+    "@types/styled-components": "^5.1.9",
+    "eslint-plugin-react-hooks": "^4.6.0",
+    "copyfiles": "^2.4.1",
+    "typechain": "^7.0.0"
   }
 }

@@ -1,17 +1,17 @@
 import React from "react";
 import styled from "styled-components";
 import colors from "shared/lib/designSystem/colors";
-import { URLS } from "shared/lib/constants/constants";
-import { SecondaryText, Title } from "shared/lib/designSystem/index";
-import Marquee from "react-fast-marquee/dist";
 import sizes from "../../designSystem/sizes";
 import theme from "../../designSystem/theme";
-import ExternalLinkIcon from "../Common/ExternalLinkIcon";
+import { components } from "../../designSystem/components";
+import { ProductDisclaimer } from "../ProductDisclaimer";
+// import { StatsMarquee } from "../StatsMarquee";
+
 const FooterContainer = styled.div`
   display: flex;
   width: 100%;
   height: 64px;
-  min-height: 64px;
+  min-height: ${components.footer}px;
   align-items: center;
   z-index: 1001;
   background: black;
@@ -60,116 +60,12 @@ const OpenAppButton = styled.div`
   // }
 `;
 
-const StyledTitle = styled(Title)<{
-  size?: number;
-  marginLeft?: number;
-  marginRight?: number;
-  color?: string;
-}>`
-  text-align: center;
-  color: ${(props) =>
-    props.color === undefined ? `${colors.primaryText}` : `${props.color}`};
-  margin-right: ${(props) =>
-    props.marginRight === undefined ? `0px` : `${props.marginRight}px`};
-  margin-left: ${(props) =>
-    props.marginLeft === undefined ? `0px` : `${props.marginLeft}px`};
-  font-size: ${(props) =>
-    props.size === undefined ? `14px` : `${props.size}px`};
-  line-height: 20px;
-`;
-
-const StyledSecondaryText = styled(SecondaryText)<{ color?: string }>`
-  color: ${(props) =>
-    props.color === undefined ? `${colors.primaryText}` : `${props.color}`};
-  font-size: 12px;
-`;
-
-const FooterTextContainer = styled.div`
-  display: flex;
-  align-items: center;
-  align-self: center;
-  justify-content: center;
-  width: calc(100% / 3);
-  min-width: 350px;
-  text-align: center;
-  height: 16px;
-  border-right: 1px solid ${colors.tertiaryText};
-  margin: auto;
-  overflow: hidden;
-`;
-
-const FooterText = styled.div`
-  font-size: 12px;
-  color: ${colors.primaryText}52;
-  flex: 1;
-  text-align: center;
-  svg {
-    transition: all 0.2s ease-in-out;
-    margin-left: 4px;
-    opacity: 0.32;
-  }
-  > a {
-    color: ${colors.primaryText}52;
-    text-decoration: underline;
-    &:hover {
-      svg {
-        transform: translate(2px, -2px);
-      }
-    }
-  }
-`;
-
-interface Stat {
-  title: string | JSX.Element;
-  value: string | JSX.Element;
-}
-
 const Footer: React.FC = () => {
-  const footerStats: Stat[] = [
-    {
-      title: "Total Value Locked",
-      value: "$112,458,199.02",
-    },
-    {
-      title: "Total Loans Originated",
-      value: "$112,458,199.02",
-    },
-    {
-      title: "Total Interest Accrued",
-      value: "$112,458,199.02",
-    },
-    {
-      title: "Total Insurance Accrued",
-      value: "$112,458,199.02",
-    },
-  ];
   return (
     <>
       <FooterContainer>
-        {/* uncomment when tvl high */}
-        {/* <Marquee gradient={false} speed={100} delay={0} pauseOnHover>
-          {footerStats.map((stat) => (
-            <FooterTextContainer>
-              <StyledSecondaryText color={colors.tertiaryText}>
-                {stat.title}:
-              </StyledSecondaryText>
-              <StyledTitle marginLeft={8} size={14}>
-                {stat.value}
-              </StyledTitle>
-            </FooterTextContainer>
-          ))}
-        </Marquee> */}
-        <FooterText>
-          Ribbon Lend is a product build by&nbsp;
-          <a
-            href={URLS.ribbonFinance}
-            target="_blank"
-            rel="noreferrer noopener"
-          >
-            Ribbon Finance
-            <ExternalLinkIcon />
-          </a>
-        </FooterText>
+        {/* <StatsMarquee/> */}
+        <ProductDisclaimer />
       </FooterContainer>
       <ButtonContainer>
         {/* uncomment on launch */}

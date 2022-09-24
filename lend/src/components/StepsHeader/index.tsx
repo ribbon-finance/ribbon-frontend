@@ -1,6 +1,5 @@
 import React, { useCallback, useEffect, useState } from "react";
 import styled from "styled-components";
-import { URLS } from "shared/lib/constants/constants";
 import colors from "shared/lib/designSystem/colors";
 import { SecondaryText, Title } from "shared/lib/designSystem/index";
 import { AnimatePresence, motion } from "framer";
@@ -167,11 +166,11 @@ const StepsHeader: React.FC = () => {
       </StepsHeaderTextContainer>
       <ButtonContainer>
         {/* uncomment on launch */}
-        {/* <a href={URLS.lendApp}> */}
-        <OpenAppButton>
-          <ButtonText>OPEN APP</ButtonText>
-        </OpenAppButton>
-        {/* </a> */}
+        <a href={"/app"}>
+          <OpenAppButton>
+            <ButtonText>OPEN APP</ButtonText>
+          </OpenAppButton>
+        </a>
       </ButtonContainer>
     </HeaderContainer>
   );

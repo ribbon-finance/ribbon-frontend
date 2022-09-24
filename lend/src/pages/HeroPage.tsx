@@ -1,10 +1,10 @@
 import React from "react";
 import styled from "styled-components";
-import StepsHeader from "../StepsHeader";
-import Footer from "../Footer";
-import HeroContent from "../HeroContent";
-import MobileHeader from "../MobileHeader";
-import sizes from "../../designSystem/sizes";
+import StepsHeader from "../components/StepsHeader";
+import Footer from "../components/Footer";
+import HeroContent from "../components/HeroContent";
+import MobileHeader from "../components/MobileHeader";
+import sizes from "../designSystem/sizes";
 
 const HeroContainer = styled.div`
   display: flex;

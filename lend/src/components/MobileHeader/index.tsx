@@ -4,17 +4,19 @@ import styled from "styled-components";
 import colors from "shared/lib/designSystem/colors";
 import { Title } from "shared/lib/designSystem";
 import MobileOverlayMenu from "shared/lib/components/Common/MobileOverlayMenu";
-import LendModal from "../Common/LendModal";
+import LendModal, { ModalContentEnum } from "../Common/LendModal";
 import { URLS } from "shared/lib/constants/constants";
 import ExternalLinkIcon from "../Common/ExternalLinkIcon";
-import Logo from "../Common/Logo";
+import { AppLogo } from "../Common/Logos";
 import sizes from "../../designSystem/sizes";
 import MenuButton from "./MenuButton";
 import { MobileMenuOpenProps } from "./types";
 import theme from "../../designSystem/theme";
-import { ModalContent, ModalContentMode } from "../Common/ModalContent";
 
 const HeaderContainer = styled.div<MobileMenuOpenProps>`
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
   display: none;
   @media (max-width: ${sizes.lg}px) {
     height: 64px;
@@ -48,6 +50,7 @@ const HeaderContainer = styled.div<MobileMenuOpenProps>`
 
 const LogoContainer = styled.div`
   display: none;
+
   @media (max-width: ${sizes.lg}px) {
     position: relative;
     display: flex;
@@ -118,27 +121,22 @@ const MobileOnly = styled.div`
 
 const MobileHeader: React.FC = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const [modalContentMode, setModalContentMode] = useState<ModalContentMode>();
+  const [modalContent, setModalContent] = useState<ModalContentEnum>();
 
   const onToggleMenu = () => {
     setIsMenuOpen(!isMenuOpen);
   };
 
   return (
-    <HeaderContainer
-      isMenuOpen={isMenuOpen}
-      className="d-flex align-items-center justify-content-between"
-    >
+    <HeaderContainer isMenuOpen={isMenuOpen} className="">
       <LogoContainer>
-        <Logo />
+        <AppLogo />
       </LogoContainer>
       <LendModal
-        show={Boolean(modalContentMode)}
-        title={(modalContentMode ?? "").toUpperCase()}
-        onHide={() => setModalContentMode(undefined)}
-      >
-        <ModalContent modalContentMode={modalContentMode} />
-      </LendModal>
+        show={Boolean(modalContent)}
+        onHide={() => setModalContent(undefined)}
+        content={ModalContentEnum.WALLET}
+      />
 
       <MobileOnly>
         <MenuButton onToggle={onToggleMenu} isOpen={isMenuOpen} />
@@ -161,18 +159,18 @@ const MobileHeader: React.FC = () => {
             <NavItem
               onClick={() => {
                 setIsMenuOpen(false);
-                setModalContentMode("about");
+                setModalContent(ModalContentEnum.ABOUT);
               }}
             >
-              <NavLinkText>ABOUT</NavLinkText>
+              <NavLinkText>{ModalContentEnum.ABOUT}</NavLinkText>
             </NavItem>
             <NavItem
               onClick={() => {
                 setIsMenuOpen(false);
-                setModalContentMode("community");
+                setModalContent(ModalContentEnum.COMMUNITY);
               }}
             >
-              <NavLinkText>COMMUNITY</NavLinkText>
+              <NavLinkText>{ModalContentEnum.COMMUNITY}</NavLinkText>
             </NavItem>
             <Footer>
               Ribbon Lend is a product built by&nbsp;
