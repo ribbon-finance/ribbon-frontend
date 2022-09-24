@@ -101,7 +101,6 @@ export interface VaultCloseLoan {
   id: string;
   paidAmount: BigNumber;
   _yield: BigNumber;
-  loanAmount: BigNumber;
   timestamp: number;
   closedAt: number;
   closeTxhash: string;
