@@ -21,26 +21,17 @@ export const usePoolsAPR = () => {
   useEffect(() => {
     // 1. When init load schedules
     let aprsTemp: APRMap = {
-      alameda: 0,
-      jumptrading: 0,
       wintermute: 0,
-      orthogonal: 0,
       folkvang: 0,
     };
 
     let supplyAprsTemp: APRMap = {
-      alameda: 0,
-      jumptrading: 0,
       wintermute: 0,
-      orthogonal: 0,
       folkvang: 0,
     };
 
     let rbnAprsTemp: APRMap = {
-      alameda: 0,
-      jumptrading: 0,
       wintermute: 0,
-      orthogonal: 0,
       folkvang: 0,
     };
 
@@ -75,24 +66,15 @@ export const usePoolsAPR = () => {
     return {
       loading: isLoading,
       aprs: {
-        alameda: 0,
-        jumptrading: 0,
         wintermute: 0,
-        orthogonal: 0,
         folkvang: 0,
       },
       supplyAprs: {
-        alameda: 0,
-        jumptrading: 0,
         wintermute: 0,
-        orthogonal: 0,
         folkvang: 0,
       },
       rbnAprs: {
-        alameda: 0,
-        jumptrading: 0,
         wintermute: 0,
-        orthogonal: 0,
         folkvang: 0,
       },
     };

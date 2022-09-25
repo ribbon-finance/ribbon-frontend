@@ -142,7 +142,7 @@ export const Balance = () => {
             {loading ? "0.00" : roi.toFixed(2)}%
           </HeroSubtitle>
           <ClaimTextContainer delay={0.5}>
-            <ClaimLabel>RBN Rewards Earned:</ClaimLabel>
+            <ClaimLabel>Unclaimed RBN Rewards:</ClaimLabel>
             <ClaimValue>
               {loading || !account
                 ? "---"
