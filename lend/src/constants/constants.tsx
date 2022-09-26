@@ -5,10 +5,7 @@ import { getAssetDecimals } from "../utils/asset";
 import { CHAINID, getSubgraphqlURI } from "../utils/env";
 import deployment from "./deployments.json";
 import addresses from "shared/lib/constants/externalAddresses.json";
-import alameda from "../assets/icons/makers/alameda.svg";
-import jumptrading from "../assets/icons/makers/jumptrading.svg";
 import wintermute from "../assets/icons/makers/wintermute.svg";
-import orthogonal from "../assets/icons/makers/orthogonal.svg";
 import folkvang from "../assets/icons/makers/folkvang.svg";
 import ExternalLinkIcon from "../components/Common/ExternalLinkIcon";
 
@@ -55,13 +52,7 @@ export const isNativeToken = (token: string): boolean =>
 export const VaultVersionList = ["lend"] as const;
 export type VaultVersion = typeof VaultVersionList[number];
 
-export const EVMVaultList = [
-  "alameda",
-  "jumptrading",
-  "wintermute",
-  "orthogonal",
-  "folkvang",
-] as const;
+export const EVMVaultList = ["wintermute", "folkvang"] as const;
 
 const AllVaultOptions = [...EVMVaultList];
 
@@ -75,25 +66,7 @@ export const GAS_LIMITS: {
     lend: { deposit: number; withdraw: number };
   }>;
 } = {
-  alameda: {
-    lend: {
-      deposit: 80000,
-      withdraw: 100000,
-    },
-  },
-  jumptrading: {
-    lend: {
-      deposit: 80000,
-      withdraw: 100000,
-    },
-  },
   wintermute: {
-    lend: {
-      deposit: 80000,
-      withdraw: 100000,
-    },
-  },
-  orthogonal: {
     lend: {
       deposit: 80000,
       withdraw: 100000,
@@ -113,20 +86,8 @@ export const VaultAddressMap: {
     chainId: number;
   };
 } = {
-  alameda: {
-    lend: deployment.mainnet.alameda,
-    chainId: CHAINID.ETH_MAINNET,
-  },
-  jumptrading: {
-    lend: deployment.mainnet.jumptrading,
-    chainId: CHAINID.ETH_MAINNET,
-  },
   wintermute: {
     lend: deployment.mainnet.wintermute,
-    chainId: CHAINID.ETH_MAINNET,
-  },
-  orthogonal: {
-    lend: deployment.mainnet.orthogonal,
     chainId: CHAINID.ETH_MAINNET,
   },
   folkvang: {
@@ -186,14 +147,8 @@ export const getDisplayAssets = (vault: VaultOptions): Assets => {
 
 export const getMakerLogo = (vault: VaultOptions): string => {
   switch (vault) {
-    case "alameda":
-      return alameda;
-    case "jumptrading":
-      return jumptrading;
     case "wintermute":
       return wintermute;
-    case "orthogonal":
-      return orthogonal;
     case "folkvang":
       return folkvang;
   }
@@ -201,15 +156,12 @@ export const getMakerLogo = (vault: VaultOptions): string => {
 
 export const VaultAllowedDepositAssets: { [vault in VaultOptions]: Assets[] } =
   {
-    alameda: ["USDC"],
-    jumptrading: ["USDC"],
     wintermute: ["USDC"],
-    orthogonal: ["USDC"],
     folkvang: ["USDC"],
   };
 
 export const VaultMaxDeposit: BigNumber = BigNumber.from(100000000).mul(
-  BigNumber.from(10).pow(getAssetDecimals(getAssets("alameda")))
+  BigNumber.from(10).pow(getAssetDecimals(getAssets("wintermute")))
 );
 
 export const VaultFees = {
@@ -270,36 +222,6 @@ interface VaultDetails {
 }
 
 export const VaultDetailsMap: Record<VaultOptions, VaultDetails> = {
-  alameda: {
-    name: "Alameda Research",
-    bio: "Lorem ipsum dolor sit amet, consectetur adipiscing elit ut aliquam, purus sit amet luctus venenatis, lectus magna fringilla urna, porttitor rhoncus dolor purus non enim praesent elementum facilisis leo, vel fringilla est ullamcorper eget nulla facilisi etiam dignissim diam quis enim lobortis scelerisque fermentum dui faucibus in ornare quam viverra orci sagittis eu volutpat odio facilisis mauris sit amet massa vitae tortor condimentum lacinia quis vel eros donec ac odio tempor orci dapibus ultrices in iaculis nunc sed augue lacus, viverra vitae congue eu, consequat ac felis donec et odio pellentesque diam volutpat commodo sed egestas egestas fringilla phasellus faucibus",
-    contract: `${getExplorerURI(Chains.Ethereum)}/address/${
-      VaultAddressMap.alameda.lend
-    }`,
-    twitter: "",
-    website: "",
-    credit: {
-      rating: "AA",
-      borrowLimit: 1000000,
-      content:
-        "Lorem ipsum dolor sit amet, consectetur adipiscing elit ut aliquam, purus sit amet luctus venenatis, lectus magna fringilla urna, porttitor rhoncus dolor purus non enim praesent elementum facilisis leo, vel fringilla est ullamcorper eget nulla facilisi etiam dignissim diam quis enim lobortis scelerisque fermentum dui faucibus in ornare quam viverra orci sagittis eu volutpat odio facilisis mauris sit amet massa vitae tortor condimentum lacinia quis vel eros donec ac odio tempor orci dapibus ultrices in iaculis nunc sed augue lacus, viverra vitae congue eu, consequat ac felis donec et odio pellentesque diam volutpat commodo sed egestas egestas fringilla phasellus faucibus",
-    },
-  },
-  jumptrading: {
-    name: "Jump Trading",
-    bio: "Lorem ipsum dolor sit amet, consectetur adipiscing elit ut aliquam, purus sit amet luctus venenatis, lectus magna fringilla urna, porttitor rhoncus dolor purus non enim praesent elementum facilisis leo, vel fringilla est ullamcorper eget nulla facilisi etiam dignissim diam quis enim lobortis scelerisque fermentum dui faucibus in ornare quam viverra orci sagittis eu volutpat odio facilisis mauris sit amet massa vitae tortor condimentum lacinia quis vel eros donec ac odio tempor orci dapibus ultrices in iaculis nunc sed augue lacus, viverra vitae congue eu, consequat ac felis donec et odio pellentesque diam volutpat commodo sed egestas egestas fringilla phasellus faucibus",
-    contract: `${getExplorerURI(Chains.Ethereum)}/address/${
-      VaultAddressMap.jumptrading.lend
-    }`,
-    twitter: "",
-    website: "",
-    credit: {
-      rating: "AA",
-      borrowLimit: 1000000,
-      content:
-        "Lorem ipsum dolor sit amet, consectetur adipiscing elit ut aliquam, purus sit amet luctus venenatis, lectus magna fringilla urna, porttitor rhoncus dolor purus non enim praesent elementum facilisis leo, vel fringilla est ullamcorper eget nulla facilisi etiam dignissim diam quis enim lobortis scelerisque fermentum dui faucibus in ornare quam viverra orci sagittis eu volutpat odio facilisis mauris sit amet massa vitae tortor condimentum lacinia quis vel eros donec ac odio tempor orci dapibus ultrices in iaculis nunc sed augue lacus, viverra vitae congue eu, consequat ac felis donec et odio pellentesque diam volutpat commodo sed egestas egestas fringilla phasellus faucibus",
-    },
-  },
   wintermute: {
     name: "Wintermute",
     bio: (
@@ -392,21 +314,6 @@ export const VaultDetailsMap: Record<VaultOptions, VaultDetails> = {
           </p>
         </>
       ),
-    },
-  },
-  orthogonal: {
-    name: "Orthogonal",
-    bio: "Lorem ipsum dolor sit amet, consectetur adipiscing elit ut aliquam, purus sit amet luctus venenatis, lectus magna fringilla urna, porttitor rhoncus dolor purus non enim praesent elementum facilisis leo, vel fringilla est ullamcorper eget nulla facilisi etiam dignissim diam quis enim lobortis scelerisque fermentum dui faucibus in ornare quam viverra orci sagittis eu volutpat odio facilisis mauris sit amet massa vitae tortor condimentum lacinia quis vel eros donec ac odio tempor orci dapibus ultrices in iaculis nunc sed augue lacus, viverra vitae congue eu, consequat ac felis donec et odio pellentesque diam volutpat commodo sed egestas egestas fringilla phasellus faucibus",
-    contract: `${getExplorerURI(Chains.Ethereum)}/address/${
-      VaultAddressMap.orthogonal.lend
-    }`,
-    twitter: "",
-    website: "",
-    credit: {
-      rating: "AA",
-      borrowLimit: 1000000,
-      content:
-        "Lorem ipsum dolor sit amet, consectetur adipiscing elit ut aliquam, purus sit amet luctus venenatis, lectus magna fringilla urna, porttitor rhoncus dolor purus non enim praesent elementum facilisis leo, vel fringilla est ullamcorper eget nulla facilisi etiam dignissim diam quis enim lobortis scelerisque fermentum dui faucibus in ornare quam viverra orci sagittis eu volutpat odio facilisis mauris sit amet massa vitae tortor condimentum lacinia quis vel eros donec ac odio tempor orci dapibus ultrices in iaculis nunc sed augue lacus, viverra vitae congue eu, consequat ac felis donec et odio pellentesque diam volutpat commodo sed egestas egestas fringilla phasellus faucibus",
     },
   },
   folkvang: {

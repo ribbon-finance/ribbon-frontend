@@ -159,9 +159,14 @@ const ContentFooter = styled.div`
 interface ModalContentProps {
   content?: ModalContentEnum;
   onHide: () => void;
+  setWalletStep?: (walletStep: WalletPageEnum) => void;
 }
 
-export const ModalContent = ({ content, onHide }: ModalContentProps) => {
+export const ModalContent = ({
+  content,
+  onHide,
+  setWalletStep,
+}: ModalContentProps) => {
   const modalContent = useMemo(() => {
     switch (content) {
       case ModalContentEnum.ABOUT:
@@ -169,11 +174,11 @@ export const ModalContent = ({ content, onHide }: ModalContentProps) => {
       case ModalContentEnum.COMMUNITY:
         return <CommunityPage />;
       case ModalContentEnum.WALLET:
-        return <WalletPage onHide={onHide} />;
+        return <WalletPage onHide={onHide} setWalletStep={setWalletStep} />;
       default:
         return null;
     }
-  }, [content, onHide]);
+  }, [content, onHide, setWalletStep]);
 
   return (
     <motion.div
@@ -254,10 +259,10 @@ const CommunityPage = () => {
   );
 };
 
-enum WalletPageEnum {
-  DISCLAIMER,
-  CONNECT_WALLET,
-  ACCOUNT,
+export enum WalletPageEnum {
+  DISCLAIMER = "IMPORTANT",
+  CONNECT_WALLET = "SELECT YOUR WALLET",
+  ACCOUNT = "ACCOUNT",
 }
 
 const ButtonWrapper = styled.div`
@@ -310,15 +315,6 @@ const ContentLogoWrapper = styled.div`
   }
 `;
 
-const AssetRowWrapper = styled.div`
-  border-bottom: 1px solid ${colors.primaryText}1F;
-`;
-
-const AssetRow = styled.div`
-  display: flex;
-  padding: 16px 24px;
-`;
-
 const AssetStat = styled.div`
   display: block;
   flex-direction: column;
@@ -341,11 +337,28 @@ const AssetStat = styled.div`
   }
 `;
 
+const AssetRow = styled.div`
+  display: flex;
+`;
+
+const AssetRowWrapper = styled.div`
+  padding-top: 24px;
+  padding-bottom: 24px;
+  border-bottom: 1px solid ${colors.primaryText}1F;
+  margin-left: 16px;
+  > ${AssetRow} {
+    &:not(:last-of-type) {
+      margin-bottom: 16px;
+    }
+  }
+`;
+
 interface WalletPageProps {
   onHide: () => void;
+  setWalletStep?: (walletStep: WalletPageEnum) => void;
 }
 
-const WalletPage = ({ onHide }: WalletPageProps) => {
+const WalletPage = ({ onHide, setWalletStep }: WalletPageProps) => {
   const [page, setPage] = useState<WalletPageEnum>(WalletPageEnum.DISCLAIMER);
   const [selectedWallet, setWallet] = useState<EthereumWallet>();
   const { active, activate, deactivate } = useWeb3Wallet();
@@ -381,7 +394,11 @@ const WalletPage = ({ onHide }: WalletPageProps) => {
           </TextContent>
           <ButtonWrapper>
             <ContinueButton
-              onClick={() => setPage(WalletPageEnum.CONNECT_WALLET)}
+              onClick={() => {
+                setPage(WalletPageEnum.CONNECT_WALLET);
+                setWalletStep !== undefined &&
+                  setWalletStep(WalletPageEnum.CONNECT_WALLET);
+              }}
             >
               Continue
             </ContinueButton>
@@ -494,7 +511,15 @@ const WalletPage = ({ onHide }: WalletPageProps) => {
     }
 
     return <></>;
-  }, [balances, deactivate, onActivate, onHide, page, selectedWallet]);
+  }, [
+    balances.data,
+    deactivate,
+    onActivate,
+    onHide,
+    page,
+    selectedWallet,
+    setWalletStep,
+  ]);
 
   return content;
 };

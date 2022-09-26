@@ -3,7 +3,12 @@ import { Title } from "shared/lib/designSystem";
 import colors from "shared/lib/designSystem/colors";
 import { CloseIcon } from "shared/lib/assets/icons/icons";
 import styled from "styled-components";
-import { ClaimRbn, ClaimRbnPageEnum, ModalContent } from "./ModalContent";
+import {
+  ClaimRbn,
+  ClaimRbnPageEnum,
+  ModalContent,
+  WalletPageEnum,
+} from "./ModalContent";
 import { useCallback, useState } from "react";
 import { useMemo } from "react";
 import useWeb3Wallet from "../../hooks/useWeb3Wallet";
@@ -62,6 +67,10 @@ const LendModal: React.FC<InfoModalProps> = ({ show, onHide, content }) => {
     ClaimRbnPageEnum.CLAIM_RBN
   );
 
+  const [walletStep, setWalletStep] = useState<WalletPageEnum>(
+    WalletPageEnum.DISCLAIMER
+  );
+
   const { active, account } = useWeb3Wallet();
 
   const modalTitle = useMemo(() => {
@@ -94,7 +103,6 @@ const LendModal: React.FC<InfoModalProps> = ({ show, onHide, content }) => {
       switch (content) {
         case ModalContentEnum.ABOUT:
         case ModalContentEnum.COMMUNITY:
-        case ModalContentEnum.WALLET:
           return (
             <>
               <Header>
@@ -104,6 +112,26 @@ const LendModal: React.FC<InfoModalProps> = ({ show, onHide, content }) => {
                 </CloseButton>
               </Header>
               <ModalContent onHide={onHide} content={content} />
+            </>
+          );
+        case ModalContentEnum.WALLET:
+          return (
+            <>
+              <Header>
+                <Title>
+                  {walletStep === WalletPageEnum.ACCOUNT
+                    ? modalTitle
+                    : walletStep}
+                </Title>
+                <CloseButton onClick={onHide}>
+                  <CloseIcon />
+                </CloseButton>
+              </Header>
+              <ModalContent
+                onHide={onHide}
+                content={content}
+                setWalletStep={setWalletStep}
+              />
             </>
           );
         case ModalContentEnum.CLAIMRBN:
@@ -122,7 +150,7 @@ const LendModal: React.FC<InfoModalProps> = ({ show, onHide, content }) => {
           return <></>;
       }
     },
-    [onHide, rbnClaimStep, renderRbnClaimTitle, modalTitle]
+    [modalTitle, onHide, walletStep, renderRbnClaimTitle, rbnClaimStep]
   );
 
   return (

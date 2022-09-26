@@ -72,7 +72,7 @@ export const FooterRow = styled(Row)`
     }
   }
 
-  @media (max-width: ${sizes.md}px) {
+  @media (max-width: ${sizes.lg}px) {
     height: ${components.header + components.footer}px;
     position: sticky;
     bottom: 0;
@@ -130,7 +130,7 @@ export const DisclaimerWrapper = styled.div<{ delay: number }>`
     margin: auto 0;
   }
 
-  @media (max-width: ${sizes.md}px) {
+  @media (max-width: ${sizes.lg}px) {
     display: none;
   }
 `;
@@ -176,7 +176,7 @@ export const MarqueeCol = styled(Col)`
 export const WalletCol = styled(Col)`
   height: ${components.header}px;
 
-  @media (max-width: ${sizes.md}px) {
+  @media (max-width: ${sizes.lg}px) {
     display: none;
   }
 `;
@@ -256,10 +256,10 @@ const Header = ({ setWalletModal }: HeaderProps) => {
 
   return (
     <HeaderRow>
-      <MarqueeCol xs={12} md={6}>
+      <MarqueeCol md={12} lg={6}>
         <StatsMarquee />
       </MarqueeCol>
-      <WalletCol xs={0} md={6}>
+      <WalletCol md={0} lg={6}>
         <WalletButton delay={0.2} onClick={() => setWalletModal(true)}>
           {active && <Indicator connected={active} />}
           <WalletButtonText connected={active}>
@@ -281,6 +281,7 @@ export const FooterButton = styled(Button)<{
   isActive?: boolean;
   delay: number;
 }>`
+  font-size: 14px;
   border: none;
   border-radius: 0;
   height: ${components.footer}px;
@@ -313,12 +314,12 @@ const Footer = ({ activePage, setPage, setWalletModal }: FooterProps) => {
   ).length;
   return (
     <FooterRow>
-      <Col xs={0} md={6}>
+      <Col md={0} lg={6}>
         <DisclaimerWrapper delay={0.1}>
           <ProductDisclaimer />
         </DisclaimerWrapper>
       </Col>
-      <Col xs={12} md={6}>
+      <Col md={12} lg={6}>
         <FooterButton
           isActive={activePage === PageEnum.POOLS}
           onClick={() => setPage(PageEnum.POOLS)}
@@ -334,7 +335,7 @@ const Footer = ({ activePage, setPage, setWalletModal }: FooterProps) => {
           Positions({positionsCount})
         </FooterButton>
       </Col>
-      <FooterWalletCol xs={0} md={6}>
+      <FooterWalletCol md={0} lg={6}>
         <WalletButton delay={0.4} onClick={() => setWalletModal(true)}>
           {active && <Indicator connected={active} />}
           <WalletButtonText connected={active}>

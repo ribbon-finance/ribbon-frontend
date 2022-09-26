@@ -91,14 +91,17 @@ const FrameBar = styled.div<{
   position: "top" | "bottom";
   height: number;
 }>`
+  display: flex;
   width: 100%;
   height: ${(props) => props.height}px;
   background: ${(props) => `linear-gradient(
     270deg,
-    ${props.color}00 5%,
+    ${props.color}00 8%,
     ${props.color} 50%,
-    ${props.color}00 95%
+    ${props.color}00 92%
   )`};
+
+  box-shadow: 4px 8px 80px 4px rgba(62, 115, 196, 0.43);
   background-size: 200%;
   animation: 10s ${(props) => livelyAnimation(props.position)} linear infinite;
 
@@ -110,7 +113,7 @@ const FrameBar = styled.div<{
     right: 0;
     left: 0;
     background: inherit;
-    filter: blur(${(props) => props.height}px);
+    filter: blur(${(props) => props.height / 2}px);
     opacity: 1;
     transition: opacity 0.3s;
     height: ${(props) => props.height}px;
@@ -187,10 +190,10 @@ interface HeroContentInterface {
 const HeroContent: React.FC<HeroContentInterface> = ({ word }) => {
   return (
     <>
+      {word !== "ribbon lend" && (
+        <FrameBar color={colors.asset.USDC} position="top" height={4} />
+      )}
       <ContentContainer>
-        {word !== "ribbon lend" && (
-          <FrameBar color={colors.asset.USDC} position="top" height={4} />
-        )}
         <VideoBackground />
         <HeroHeaderMobile>
           <SpecialText
@@ -222,10 +225,10 @@ const HeroContent: React.FC<HeroContentInterface> = ({ word }) => {
             </HeroHeader>
           </Panel>
         </div>
-        {word !== "ribbon lend" && (
-          <FrameBar color={colors.asset.USDC} position="bottom" height={4} />
-        )}
       </ContentContainer>
+      {word !== "ribbon lend" && (
+        <FrameBar color={colors.asset.USDC} position="bottom" height={4} />
+      )}
     </>
   );
 };
