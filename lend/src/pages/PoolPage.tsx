@@ -328,6 +328,10 @@ const PoolPage = () => {
 
   const logo = getMakerLogo(poolId);
   const poolSize = formatBigNumber(vaultDatas[poolId].poolSize, usdcDecimals);
+  const borrowLimit = formatBigNumber(
+    vaultDatas[poolId].availableToBorrow,
+    usdcDecimals
+  );
   const apr = poolAPRs[poolId].toFixed(2);
   const supplyApr = supplyAprs[poolId].toFixed(2);
   const rbnApr = rbnAprs[poolId].toFixed(2);
@@ -395,7 +399,8 @@ const PoolPage = () => {
                   <Stat delay={0.5}>
                     <Label>Pool size:</Label>
                     <Value>
-                      <AssetLogo /> {poolSize}
+                      <AssetLogo />{" "}
+                      {currency(poolSize, { symbol: "" }).format()}
                     </Value>
                   </Stat>
                   <Stat delay={0.6}>
@@ -479,7 +484,7 @@ const PoolPage = () => {
                     <Label>Borrow Limit:</Label>
                     <Value>
                       <AssetLogo />{" "}
-                      {currency(poolDetails.credit.borrowLimit).format({
+                      {currency(borrowLimit).format({
                         symbol: "",
                       })}
                     </Value>

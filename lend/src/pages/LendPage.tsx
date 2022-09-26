@@ -328,7 +328,7 @@ const Footer = ({ activePage, setPage, setWalletModal }: FooterProps) => {
       </Col>
       <Col md={12} lg={6}>
         <FooterButton
-          disabled={!active || !account}
+          disabled={false}
           isActive={activePage === PageEnum.POOLS}
           onClick={() => setPage(PageEnum.POOLS)}
           delay={0.2}
@@ -336,7 +336,7 @@ const Footer = ({ activePage, setPage, setWalletModal }: FooterProps) => {
           Pools
         </FooterButton>
         <FooterButton
-          disabled={!active || !account}
+          disabled={false}
           delay={0.3}
           isActive={activePage === PageEnum.POSITIONS}
           onClick={() => setPage(PageEnum.POSITIONS)}

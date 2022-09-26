@@ -216,7 +216,6 @@ interface VaultDetails {
 
   credit: {
     rating: string;
-    borrowLimit: number;
     content: string | JSX.Element;
   };
 }
@@ -268,7 +267,6 @@ export const VaultDetailsMap: Record<VaultOptions, VaultDetails> = {
     website: "https://www.wintermute.com",
     credit: {
       rating: "A",
-      borrowLimit: 223000000,
       content: (
         <>
           <p>
@@ -336,7 +334,6 @@ export const VaultDetailsMap: Record<VaultOptions, VaultDetails> = {
     website: "https://folkvang.io",
     credit: {
       rating: "AA",
-      borrowLimit: 105000000,
       content: (
         <>
           <p>
