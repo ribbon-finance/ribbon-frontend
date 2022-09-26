@@ -3,7 +3,9 @@ import { Title } from "shared/lib/designSystem";
 import colors from "shared/lib/designSystem/colors";
 import { CloseIcon } from "shared/lib/assets/icons/icons";
 import styled from "styled-components";
-import { ClaimRbnPage, WalletPage, ModalContent } from "./ModalContent";
+import { ModalContent } from "./ModalContent";
+import { ClaimRbnPage } from "../ClaimRbnPage";
+import { WalletPage } from "../WalletPage";
 import { useCallback } from "react";
 import { useMemo } from "react";
 import useWeb3Wallet from "../../hooks/useWeb3Wallet";
@@ -94,21 +96,6 @@ const LendModal: React.FC<InfoModalProps> = ({ show, onHide, content }) => {
           return (
             <>
               <WalletPage onHide={onHide} />
-              {/* <Header>
-                <Title>
-                  {walletStep === WalletPageEnum.ACCOUNT
-                    ? modalTitle
-                    : walletStep}
-                </Title>
-                <CloseButton onClick={onHide}>
-                  <CloseIcon />
-                </CloseButton>
-              </Header>
-              <ModalContent
-                onHide={onHide}
-                content={content}
-                setWalletStep={setWalletStep}
-              /> */}
             </>
           );
         case ModalContentEnum.CLAIMRBN:
