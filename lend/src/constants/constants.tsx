@@ -7,6 +7,7 @@ import deployment from "./deployments.json";
 import addresses from "shared/lib/constants/externalAddresses.json";
 import wintermute from "../assets/icons/makers/wintermute.svg";
 import folkvang from "../assets/icons/makers/folkvang.svg";
+import ExternalLinkIcon from "../components/Common/ExternalLinkIcon";
 
 export type NETWORK_NAMES = "mainnet";
 export type TESTNET_NAMES = "kovan";
@@ -208,7 +209,7 @@ export const COINGECKO_CURRENCIES: { [key in Assets]: string | undefined } = {
 
 interface VaultDetails {
   name: string;
-  bio: string;
+  bio: string | JSX.Element;
   contract: string;
   twitter: string;
   website: string;
@@ -223,32 +224,164 @@ interface VaultDetails {
 export const VaultDetailsMap: Record<VaultOptions, VaultDetails> = {
   wintermute: {
     name: "Wintermute",
-    bio: "Lorem ipsum dolor sit amet, consectetur adipiscing elit ut aliquam, purus sit amet luctus venenatis, lectus magna fringilla urna, porttitor rhoncus dolor purus non enim praesent elementum facilisis leo, vel fringilla est ullamcorper eget nulla facilisi etiam dignissim diam quis enim lobortis scelerisque fermentum dui faucibus in ornare quam viverra orci sagittis eu volutpat odio facilisis mauris sit amet massa vitae tortor condimentum lacinia quis vel eros donec ac odio tempor orci dapibus ultrices in iaculis nunc sed augue lacus, viverra vitae congue eu, consequat ac felis donec et odio pellentesque diam volutpat commodo sed egestas egestas fringilla phasellus faucibus",
-    contract: `${getExplorerURI(Chains.Ethereum)}/address/${
-      VaultAddressMap.wintermute.lend
-    }`,
-    twitter: "",
-    website: "",
+    bio: (
+      <>
+        <p>
+          Wintermute is a leading global algorithmic trading firm and one of the
+          largest players in digital asset markets.
+        </p>
+        <p>
+          Founded in 2017, the company is one of the most tenured crypto-native
+          trading firms. The company is led by Evgeny Gaevoy, founder and CEO,
+          previously at Optiver, and a team of people with top-tier algo trading
+          backgrounds from traditional markets, as well as blockchain experts.
+        </p>
+        <p>
+          Wintermute is one of the largest market makers globally, running
+          delta-neutral strategies covering over 70 exchanges and 200 tokens
+          with an average daily trading volume of $5B. Wintermute also runs an
+          OTC desk for institutional as well as crypto-native counterparties and
+          is one of the largest providers of market-making services for
+          blockchain projects.
+        </p>
+        <p>
+          With a team of 100+ engineers, traders, and other professionals,
+          Wintermute is on a mission to enable, empower and advance the truly
+          decentralized world for more transparent, fair, and efficient markets
+          and products. The company operates around the clock, with offices in
+          London and Singapore.
+        </p>
+        <p>
+          Wintermute is an active player in the ecosystem, it invests in,
+          supports, and incubates Defi projects and overall supports builders of
+          decentralized finance.
+        </p>
+        <p>
+          The funds will be deployed in delta-neutral strategies for the
+          proprietary trading business.
+        </p>
+      </>
+    ),
+    contract:
+      "https://etherscan.io/address/0x0aea75705be8281f4c24c3e954d1f8b1d0f8044c",
+    twitter: "https://twitter.com/wintermute_t",
+    website: "https://www.wintermute.com",
     credit: {
-      rating: "AA",
-      borrowLimit: 1000000,
-      content:
-        "Lorem ipsum dolor sit amet, consectetur adipiscing elit ut aliquam, purus sit amet luctus venenatis, lectus magna fringilla urna, porttitor rhoncus dolor purus non enim praesent elementum facilisis leo, vel fringilla est ullamcorper eget nulla facilisi etiam dignissim diam quis enim lobortis scelerisque fermentum dui faucibus in ornare quam viverra orci sagittis eu volutpat odio facilisis mauris sit amet massa vitae tortor condimentum lacinia quis vel eros donec ac odio tempor orci dapibus ultrices in iaculis nunc sed augue lacus, viverra vitae congue eu, consequat ac felis donec et odio pellentesque diam volutpat commodo sed egestas egestas fringilla phasellus faucibus",
+      rating: "A",
+      borrowLimit: 223000000,
+      content: (
+        <>
+          <p>
+            Credora provides real-time privacy preserving portfolio risk metrics
+            for lenders, and has built a Credit Evaluation Methodology for
+            digital asset firms.
+          </p>
+          <p>
+            The evaluation is split into three main parts, totaling{" "}
+            <strong>[1000]</strong> points in aggregate, which is then converted
+            to a letter rating:
+          </p>
+          <p>
+            <strong>Operations and Due Diligence [200]</strong>: Evaluation of a
+            borrower's corporate and operational risk
+          </p>
+          <p>
+            <strong>Financial Analysis [400]</strong>: Evaluation of a
+            borrower's reported financial data
+          </p>
+          <p>
+            <strong>Risk Monitoring [400]</strong>: Real-time evaluation of a
+            borrower's asset and liability visibility
+          </p>
+          <p>
+            Credora relies on these underlying factors, as they have high
+            correlation to a trading firm's creditworthiness. Through real-time
+            credit evaluation, Credora infrastructure supports data-driven
+            lending for any pool of capital. Applications include streamlined
+            bilateral lending and the transparent operation of credit vehicles
+            in DeFi.
+          </p>
+          <p>
+            Read more{" "}
+            <a
+              href="https://credora.gitbook.io/credit-methodology/SbLmTxogePkrzsF4z9IK"
+              target="_blank"
+              rel="noreferrer noopener"
+            >
+              here
+              <ExternalLinkIcon />
+            </a>
+          </p>
+        </>
+      ),
     },
   },
   folkvang: {
     name: "Folkvang",
-    bio: "Lorem ipsum dolor sit amet, consectetur adipiscing elit ut aliquam, purus sit amet luctus venenatis, lectus magna fringilla urna, porttitor rhoncus dolor purus non enim praesent elementum facilisis leo, vel fringilla est ullamcorper eget nulla facilisi etiam dignissim diam quis enim lobortis scelerisque fermentum dui faucibus in ornare quam viverra orci sagittis eu volutpat odio facilisis mauris sit amet massa vitae tortor condimentum lacinia quis vel eros donec ac odio tempor orci dapibus ultrices in iaculis nunc sed augue lacus, viverra vitae congue eu, consequat ac felis donec et odio pellentesque diam volutpat commodo sed egestas egestas fringilla phasellus faucibus",
-    contract: `${getExplorerURI(Chains.Ethereum)}/address/${
-      VaultAddressMap.folkvang.lend
-    }`,
-    twitter: "",
-    website: "",
+    bio: (
+      <>
+        <p>
+          Folkvang is a quantitative trading firm and liquidity provider active
+          in all leading crypto markets.
+        </p>
+        <p>
+          Folkvang trades all major coins on all major exchanges with a constant
+          global presence.
+        </p>
+      </>
+    ),
+    contract:
+      "https://etherscan.io/address/0x3cd0ecf1552d135b8da61c7f44cefe93485c616d",
+    twitter: "https://twitter.com/folkvangtrading",
+    website: "https://folkvang.io",
     credit: {
       rating: "AA",
-      borrowLimit: 1000000,
-      content:
-        "Lorem ipsum dolor sit amet, consectetur adipiscing elit ut aliquam, purus sit amet luctus venenatis, lectus magna fringilla urna, porttitor rhoncus dolor purus non enim praesent elementum facilisis leo, vel fringilla est ullamcorper eget nulla facilisi etiam dignissim diam quis enim lobortis scelerisque fermentum dui faucibus in ornare quam viverra orci sagittis eu volutpat odio facilisis mauris sit amet massa vitae tortor condimentum lacinia quis vel eros donec ac odio tempor orci dapibus ultrices in iaculis nunc sed augue lacus, viverra vitae congue eu, consequat ac felis donec et odio pellentesque diam volutpat commodo sed egestas egestas fringilla phasellus faucibus",
+      borrowLimit: 105000000,
+      content: (
+        <>
+          <p>
+            Credora provides real-time privacy preserving portfolio risk metrics
+            for lenders, and has built a Credit Evaluation Methodology for
+            digital asset firms.
+          </p>
+          <p>
+            The evaluation is split into three main parts, totaling{" "}
+            <strong>[1000]</strong> points in aggregate, which is then converted
+            to a letter rating:
+          </p>
+          <p>
+            <strong>Operations and Due Diligence [200]</strong>: Evaluation of a
+            borrower's corporate and operational risk
+          </p>
+          <p>
+            <strong>Financial Analysis [400]</strong>: Evaluation of a
+            borrower's reported financial data
+          </p>
+          <p>
+            <strong>Risk Monitoring [400]</strong>: Real-time evaluation of a
+            borrower's asset and liability visibility
+          </p>
+          <p>
+            Credora relies on these underlying factors, as they have high
+            correlation to a trading firm's creditworthiness. Through real-time
+            credit evaluation, Credora infrastructure supports data-driven
+            lending for any pool of capital. Applications include streamlined
+            bilateral lending and the transparent operation of credit vehicles
+            in DeFi.
+          </p>
+          <p>
+            Read more{" "}
+            <a
+              href="https://credora.gitbook.io/credit-methodology/SbLmTxogePkrzsF4z9IK"
+              target="_blank"
+              rel="noreferrer noopener"
+            >
+              here
+              <ExternalLinkIcon />
+            </a>
+          </p>
+        </>
+      ),
     },
   },
 };
