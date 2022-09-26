@@ -4,8 +4,9 @@ import colors from "shared/lib/designSystem/colors";
 import sizes from "../../designSystem/sizes";
 import { components } from "../../designSystem/components";
 import { ProductDisclaimer } from "../ProductDisclaimer";
-// import { Link } from "react-router-dom";
-// import { StatsMarquee } from "../StatsMarquee";
+import { Link } from "react-router-dom";
+import { StatsMarquee } from "../StatsMarquee";
+import theme from "../../designSystem/theme";
 
 const FooterContainer = styled.div`
   display: flex;
@@ -18,16 +19,16 @@ const FooterContainer = styled.div`
   border-top: 1px solid ${colors.border};
 `;
 
-// const ButtonText = styled.span`
-//   font-family: VCR;
-//   font-style: normal;
-//   font-weight: normal;
-//   font-size: 14px;
-//   line-height: 24px;
-//   text-align: center;
-//   text-transform: capitalize;
-//   color: ${colors.green};
-// `;
+const ButtonText = styled.span`
+  font-family: VCR;
+  font-style: normal;
+  font-weight: normal;
+  font-size: 14px;
+  line-height: 24px;
+  text-align: center;
+  text-transform: capitalize;
+  color: ${colors.green};
+`;
 
 const ButtonContainer = styled.div`
   display: none;
@@ -46,19 +47,18 @@ const ButtonContainer = styled.div`
   }
 `;
 
-// const OpenAppButton = styled.div`
-//   display: flex;
-//   width: 100vw;
-//   height: 64px;
-//   justify-content: center;
-//   align-items: center;
-//   text-align: center;
-//   // uncomment on launch
-//   // &:hover {
-//   //   cursor: pointer;
-//   //   opacity: ${theme.hover.opacity};
-//   // }
-// `;
+const OpenAppButton = styled.div`
+  display: flex;
+  width: 100vw;
+  height: 64px;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  &:hover {
+    cursor: pointer;
+    opacity: ${theme.hover.opacity};
+  }
+`;
 
 const Footer: React.FC = () => {
   return (
@@ -68,12 +68,11 @@ const Footer: React.FC = () => {
         <ProductDisclaimer />
       </FooterContainer>
       <ButtonContainer>
-        {/* uncomment on launch */}
-        {/* <Link to={"/app"}>
+        <Link to={"/app"}>
           <OpenAppButton>
             <ButtonText>OPEN APP</ButtonText>
           </OpenAppButton>
-        </Link> */}
+        </Link>
       </ButtonContainer>
     </>
   );

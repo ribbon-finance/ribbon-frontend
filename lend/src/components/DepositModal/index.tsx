@@ -28,7 +28,6 @@ import {
   BaseUnderlineLink,
 } from "shared/lib/designSystem";
 import { BigNumber } from "ethers";
-import { ActionButton } from "../Common/buttons";
 import {
   useVaultsData,
   useAssetBalance,
@@ -45,6 +44,8 @@ import HeroContent from "../HeroContent";
 import { PoolValidationErrors } from "./types";
 import UtilizationBar from "../Common/UtilizationBar";
 import currency from "currency.js";
+import { Button } from "../../designSystem";
+
 const borderStyle = `1px solid ${colors.primaryText}1F`;
 
 export const fadeInDisabled = keyframes`
@@ -130,13 +131,28 @@ export const HeaderText = styled(Title)`
   line-height: 20px;
 `;
 
-export const DetailContainer = styled.div`
+export const DetailContainer = styled.div<{ show?: boolean; delay?: number }>`
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
   text-align: center;
   height: 100%;
+  ${({ show, delay }) => {
+    return (
+      show &&
+      css`
+        opacity: 0;
+
+        &:disabled {
+          opacity: 0;
+        }
+
+        animation: ${fadeIn} 1s ease-in-out forwards;
+        animation-delay: ${delay || 0}s;
+      `
+    );
+  }}
 `;
 
 export const Content = styled(Row)`
@@ -233,7 +249,7 @@ const DepositModal: React.FC<DepositModalProps> = ({
             show={show}
           />
         </Content>
-        <Footer pool={pool} page={page} txhash={txhash} />
+        <Footer pool={pool} page={page} txhash={txhash} show={show} />
       </HeroContainer>
     </FixedContainer>
   ) : (
@@ -298,10 +314,11 @@ const UnderlineLink = styled(BaseUnderlineLink)`
 interface FooterProps {
   pool: VaultOptions;
   page: ActionModalEnum;
+  show: boolean;
   txhash: string | undefined;
 }
 
-const Footer: React.FC<FooterProps> = ({ pool, page, txhash }) => {
+const Footer: React.FC<FooterProps> = ({ show, pool, page, txhash }) => {
   const vaultDatas = useVaultsData();
   const poolName = VaultDetailsMap[pool].name;
   const { aprs } = usePoolsAPR();
@@ -315,19 +332,19 @@ const Footer: React.FC<FooterProps> = ({ pool, page, txhash }) => {
         <FooterRow>
           <DesktopOnly>
             <Col xs={3}>
-              <DetailContainer>
+              <DetailContainer show={show} delay={0.1}>
                 <DetailTitle>Pool</DetailTitle>
                 <DetailText>{poolName}</DetailText>
               </DetailContainer>
             </Col>
             <Col xs={3}>
-              <DetailContainer>
+              <DetailContainer show={show} delay={0.2}>
                 <DetailTitle>Deposit Asset</DetailTitle>
                 <DetailText>USDC</DetailText>
               </DetailContainer>
             </Col>
             <Col xs={3}>
-              <DetailContainer>
+              <DetailContainer show={show} delay={0.3}>
                 <DetailTitle>Lending APR</DetailTitle>
                 <DetailText>
                   {currency(apr.toFixed(2), { symbol: "" }).format()}%
@@ -335,7 +352,7 @@ const Footer: React.FC<FooterProps> = ({ pool, page, txhash }) => {
               </DetailContainer>
             </Col>
             <Col xs={3}>
-              <DetailContainer>
+              <DetailContainer show={show} delay={0.4}>
                 <DetailTitle>Pool Utilization</DetailTitle>
                 <div className="d-flex">
                   <UtilizationBar
@@ -354,13 +371,13 @@ const Footer: React.FC<FooterProps> = ({ pool, page, txhash }) => {
           </DesktopOnly>
           <MobileOnly>
             <Col xs={6}>
-              <DetailContainer>
+              <DetailContainer show={show} delay={0.1}>
                 <DetailTitle>Pool</DetailTitle>
                 <DetailText>{poolName}</DetailText>
               </DetailContainer>
             </Col>
             <Col xs={6}>
-              <DetailContainer>
+              <DetailContainer show={show} delay={0.2}>
                 <DetailTitle>Lending APR</DetailTitle>
                 <DetailText>
                   {currency(apr.toFixed(2), { symbol: "" }).format()}%
@@ -514,34 +531,30 @@ const PercentagesContainer = styled.div<{
   ${delayedFade}
 `;
 
-const FormButton = styled(ActionButton)<{
-  show?: boolean;
-  delay?: number;
-  approved?: boolean;
-}>`
-  display: flex;
-  width: 240px;
+const ApprovedButton = styled(Button)`
   height: 64px;
-  justify-content: center;
-  border: 1px solid ${colors.primaryText};
-  background: black;
-  text-align: center;
+  width: 240px;
   border-radius: 0;
+  border-style: none;
+  pointer-events: none;
+  font-size: 14px;
+  color: ${colors.green};
+  background-color: ${colors.background.one};
+`;
+
+const FormButton = styled(Button)`
+  background-color: ${colors.primaryText};
+  color: #000000;
+  height: 64px;
+  width: 240px;
+  border-radius: 0;
+  font-size: 14px;
   &:disabled {
     pointer-events: none;
+    opacity: 1;
+    background-color: ${colors.background.one};
+    color: ${colors.primaryText};
   }
-  &:hover {
-    color: black;
-    background: white;
-  }
-  ${(props) =>
-    props.approved
-      ? `
-      pointer-events: none;
-      color: ${colors.green};
-      border: none;
-  `
-      : ``}
 `;
 
 const FormButtonFade = styled.div<{
@@ -850,12 +863,12 @@ export const Hero: React.FC<HeroProps> = ({
             </BaseInputButton>
           </PercentagesContainer>
           {actionType === "deposit" ? (
-            <div>
+            <div className="justify-content-center">
               {signature !== undefined ? (
                 <FormButtonFade show={show} delay={0.8} className="mt-4 mb-3">
-                  <FormButton className="btn py-3" approved={true}>
+                  <ApprovedButton className="btn py-3">
                     USDC READY TO DEPOSIT
-                  </FormButton>
+                  </ApprovedButton>
                 </FormButtonFade>
               ) : (
                 <FormButtonFade show={show} delay={0.8} className="mt-4 mb-3">
@@ -882,8 +895,6 @@ export const Hero: React.FC<HeroProps> = ({
             <>
               <FormButtonFade show={show} delay={0.8} className="mt-4 mb-3">
                 <FormButton
-                  delay={0.8}
-                  show={show}
                   onClick={handleConfirm}
                   disabled={!isInputNonZero}
                   className="btn py-3"

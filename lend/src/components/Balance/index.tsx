@@ -64,12 +64,22 @@ const ClaimButton = styled(Button)<{ delay?: number }>`
   border-radius: 64px;
   font-size: 14px;
   border: 1px solid ${colors.primaryText};
-  background: ${colors.background.one};
-  color: ${colors.primaryText};
-  &:hover {
-    background: ${colors.primaryText};
-    color: ${colors.background.one};
+  background: ${colors.primaryText};
+  color: ${colors.background.one};
+  &:disabled {
+    background: ${colors.background.one};
+    color: ${colors.primaryText};
+    pointer-events: none;
   }
+  ${delayedFade}
+`;
+
+const ConnectButton = styled(Button)<{ delay?: number }>`
+  border-radius: 64px;
+  font-size: 14px;
+  border-style: none;
+  background: ${colors.buttons.secondaryBackground};
+  color: ${colors.buttons.secondaryText};
   ${delayedFade}
 `;
 
@@ -99,6 +109,7 @@ export const Balance = () => {
   const rbnDecimals = getAssetDecimals("RBN");
   const yourDeposits = useVaultTotalDeposits();
   const decimals = getAssetDecimals("USDC");
+  const [triggerWalletModal, setWalletModal] = useState<boolean>(false);
 
   const roi = useMemo(() => {
     if (
@@ -122,6 +133,11 @@ export const Balance = () => {
         show={triggerClaimModal}
         onHide={() => setClaimModal(false)}
         content={ModalContentEnum.CLAIMRBN}
+      />
+      <LendModal
+        show={Boolean(triggerWalletModal)}
+        onHide={() => setWalletModal(false)}
+        content={ModalContentEnum.WALLET}
       />
       <BalanceWrapper>
         <VaultContainer>
@@ -148,10 +164,20 @@ export const Balance = () => {
                 : formatBigNumber(rbnClaimableRewards, rbnDecimals, 2)}
             </ClaimValue>
           </ClaimTextContainer>
-          {!isPracticallyZero(rbnClaimableRewards, rbnDecimals) && (
-            <ClaimButton onClick={() => setClaimModal(true)} delay={0.6}>
+          {account ? (
+            <ClaimButton
+              disabled={isPracticallyZero(rbnClaimableRewards, rbnDecimals)}
+              onClick={() => setClaimModal(true)}
+              delay={0.6}
+            >
               Claim RBN
             </ClaimButton>
+          ) : (
+            <>
+              <ConnectButton onClick={() => setWalletModal(true)}>
+                Connect Wallet
+              </ConnectButton>
+            </>
           )}
         </VaultContainer>
       </BalanceWrapper>

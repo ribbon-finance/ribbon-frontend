@@ -19,6 +19,7 @@ import { useVaultsData } from "../hooks/web3DataContext";
 import { getAssetDecimals } from "../utils/asset";
 import useScreenSize from "shared/lib/hooks/useScreenSize";
 import { delayedFade } from "../components/animations";
+import StepsCarousel from "../components/StepsHeader/StepsCarousel";
 
 const HeroContainer = styled.div`
   display: flex;
@@ -257,7 +258,9 @@ const Header = ({ setWalletModal }: HeaderProps) => {
   return (
     <HeaderRow>
       <MarqueeCol md={12} lg={6}>
-        <StatsMarquee />
+        {/* <StatsMarquee /> */}
+        <StepsCarousel />
+        <></>
       </MarqueeCol>
       <WalletCol md={0} lg={6}>
         <WalletButton delay={0.2} onClick={() => setWalletModal(true)}>
@@ -280,6 +283,7 @@ interface FooterProps {
 export const FooterButton = styled(Button)<{
   isActive?: boolean;
   delay: number;
+  disabled?: boolean;
 }>`
   font-size: 14px;
   border: none;
@@ -293,7 +297,10 @@ export const FooterButton = styled(Button)<{
     transition: 0.2s;
     color: ${colors.primaryText};
   }
-
+  &:disabled {
+    color: ${colors.tertiaryText};
+    pointer-events: none;
+  }
   &:not(:last-of-type) {
     border-right: 1px solid ${colors.border};
   }
@@ -321,6 +328,7 @@ const Footer = ({ activePage, setPage, setWalletModal }: FooterProps) => {
       </Col>
       <Col md={12} lg={6}>
         <FooterButton
+          disabled={!active || !account}
           isActive={activePage === PageEnum.POOLS}
           onClick={() => setPage(PageEnum.POOLS)}
           delay={0.2}
@@ -328,6 +336,7 @@ const Footer = ({ activePage, setPage, setWalletModal }: FooterProps) => {
           Pools
         </FooterButton>
         <FooterButton
+          disabled={!active || !account}
           delay={0.3}
           isActive={activePage === PageEnum.POSITIONS}
           onClick={() => setPage(PageEnum.POSITIONS)}

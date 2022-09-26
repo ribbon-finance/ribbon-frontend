@@ -37,14 +37,13 @@ const hoveredContentRow = css`
   cursor: pointer;
   transition: 0.2s ease-in-out;
   border: 1px solid ${colors.primaryText} !important;
-  box-shadow: inset 0 0 5px ${colors.primaryText};
 `;
 
 const ContentRow = styled.div<{ active?: boolean }>`
   display: flex;
   align-items: center;
   height: 80px;
-  padding: 0 24px;
+  padding: 0 16px;
   font-size: 14px;
   transition: 0.2s ease-in-out;
 
@@ -94,7 +93,7 @@ const WalletContentRow = styled(ContentRow)<{ active: boolean; color: string }>`
     if (active)
       return `
         border-color: ${color} !important;
-        box-shadow: inset 0 0 5px ${color};
+        background-color: ${color}08;
       `;
   }}
 

@@ -22,11 +22,15 @@ import { formatUnits } from "ethers/lib/utils";
 import sizes from "../../designSystem/sizes";
 import { delayedFade } from "../animations";
 import currency from "currency.js";
+import useWeb3Wallet from "../../hooks/useWeb3Wallet";
 const statSideContainer: number = 120;
 
 const ListRow = styled(Row)`
   display: block;
   padding: 0;
+  @media (max-width: ${sizes.md}px) {
+    border-top: 1px solid ${colors.border};
+  }
 `;
 
 const PoolLogo = styled.div`
@@ -273,6 +277,7 @@ export const Positions = () => {
   const vaultDatas = useVaultsData();
   const { loading } = usePoolsAPR();
   const usdcDecimals = getAssetDecimals("USDC");
+  const { account, active } = useWeb3Wallet();
   const { loading: vaultLoading, vaultAccounts } = useVaultAccounts("lend");
   const filteredList = VaultList.filter(
     (pool) =>
@@ -367,7 +372,9 @@ export const Positions = () => {
   ) : (
     <NoPositionsContainer>
       <NoPositionLabel delay={0.1} duration={0.5}>
-        You do not have any positions at the moment
+        {account && active
+          ? "You do not have any positions at the moment"
+          : "Please connect your wallet to view your positions"}
       </NoPositionLabel>
     </NoPositionsContainer>
   );
