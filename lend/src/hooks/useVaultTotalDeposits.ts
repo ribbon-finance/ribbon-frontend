@@ -11,7 +11,7 @@ export const useVaultTotalDeposits = () => {
   const { loading, vaultAccounts } = useVaultAccounts("lend");
 
   useEffect(() => {
-    if (!loading) {
+    if (!loading && vaultAccounts) {
       try {
         let deposits = BigNumber.from(0.0);
         VaultList.forEach((pool) => {
@@ -24,5 +24,8 @@ export const useVaultTotalDeposits = () => {
     }
   }, [loading, vaultAccounts]);
 
-  return totalDeposits;
+  return {
+    loading,
+    totalDeposits,
+  };
 };

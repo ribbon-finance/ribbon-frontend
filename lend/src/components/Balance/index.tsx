@@ -107,14 +107,15 @@ export const Balance = () => {
   const yourBalance = accountBalances.totalBalance;
   const rbnClaimableRewards = accountBalances.rbnClaimable;
   const rbnDecimals = getAssetDecimals("RBN");
-  const yourDeposits = useVaultTotalDeposits();
+  const { totalDeposits: yourDeposits } = useVaultTotalDeposits();
   const decimals = getAssetDecimals("USDC");
   const [triggerWalletModal, setWalletModal] = useState<boolean>(false);
 
   const roi = useMemo(() => {
     if (
       isPracticallyZero(yourDeposits, decimals) ||
-      isPracticallyZero(yourBalance, decimals)
+      isPracticallyZero(yourBalance, decimals) ||
+      !account
     ) {
       return 0;
     }
@@ -124,7 +125,8 @@ export const Balance = () => {
         parseFloat(formatUnits(yourDeposits, decimals))) *
       100
     );
-  }, [yourDeposits, decimals, yourBalance]);
+  }, [yourDeposits, decimals, yourBalance, account]);
+
   const [triggerClaimModal, setClaimModal] = useState<boolean>(false);
 
   return (

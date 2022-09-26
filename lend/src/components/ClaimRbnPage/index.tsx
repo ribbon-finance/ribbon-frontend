@@ -18,20 +18,28 @@ import useWeb3Wallet from "../../hooks/useWeb3Wallet";
 
 const borderStyle = `1px solid ${colors.primaryText}1F`;
 
-const LogoContent = styled.div<{ padding?: number; height?: number }>`
+const ProductAssetLogoContainer = styled.div<{ size: number; delay?: number }>`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: ${(props) => props.size}px;
+  width: ${(props) => props.size}px;
+  border-radius: 50%;
+  position: relative;
+`;
+
+const AssetContainer = styled.div<{ size: number }>`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: ${(props) => props.size}px;
   width: 100%;
-  height: ${(props) =>
-    props.padding !== undefined ? `${props.height}px` : ``};
-  padding: ${(props) =>
-    props.padding !== undefined
-      ? `${props.padding}px`
-      : `40px 132px 40px 132px`};
-  border-bottom: 1px solid ${colors.primaryText}1F;
   background: linear-gradient(
     102.28deg,
     rgba(252, 10, 84, 0.04) 0%,
     rgba(252, 10, 84, 0) 100%
   );
+  border-bottom: 1px solid ${colors.primaryText}1F;
 `;
 
 const StyledTitle = styled(Title)<{ color?: string; position?: string }>`
@@ -102,9 +110,9 @@ const BottomTextContainer = styled.div`
   display: flex;
   flex: 1;
   justify-content: center;
+  align-items: center;
   width: 100%;
-  margin-bottom: 24px;
-  margin-top: 24px;
+  height: 64px;
 `;
 
 const BottomText = styled(PrimaryText)`
@@ -154,10 +162,6 @@ const FrameBar = styled.div<{
     transition: opacity 0.3s;
     height: ${(props) => props.height * 2}px;
   }
-`;
-
-const LogoContainer = styled.div`
-  width: 100%;
 `;
 
 const StyledExternalLinkIcon = styled(ExternalLinkIcon)`
@@ -276,10 +280,11 @@ export const ClaimRbnPage: React.FC<ClaimRbnPageProps> = ({ onHide }) => {
     if (rbnClaimStep === ClaimRbnPageEnum.CLAIM_RBN) {
       return (
         <>
-          <header />
-          <LogoContent height={160}>
-            <Logo width={80} height={80} />
-          </LogoContent>
+          <AssetContainer size={160}>
+            <ProductAssetLogoContainer size={80}>
+              <Logo width={80} height={80} />
+            </ProductAssetLogoContainer>
+          </AssetContainer>
           <ClaimTextContent>
             <div className="d-flex w-100 flex-row align-items-center justify-content-between">
               <StyledSecondaryText color={colors.tertiaryText}>
@@ -333,13 +338,13 @@ export const ClaimRbnPage: React.FC<ClaimRbnPageProps> = ({ onHide }) => {
     if (rbnClaimStep === ClaimRbnPageEnum.SUCCESS_STEP) {
       return (
         <>
-          <LogoContainer>
-            <FrameBar color={colors.asset.RBN} position="top" height={4} />
-            <LogoContent>
+          <FrameBar color={colors.asset.RBN} position="top" height={4} />
+          <AssetContainer size={352}>
+            <ProductAssetLogoContainer size={96}>
               <Logo width={96} height={96} />
-            </LogoContent>
-            <FrameBar color={colors.asset.RBN} position="bottom" height={4} />
-          </LogoContainer>
+            </ProductAssetLogoContainer>
+          </AssetContainer>
+          <FrameBar color={colors.asset.RBN} position="bottom" height={4} />
           <BottomTextContainer>
             <BottomText>Thank you for being part of the community</BottomText>
           </BottomTextContainer>
@@ -361,10 +366,10 @@ export const ClaimRbnPage: React.FC<ClaimRbnPageProps> = ({ onHide }) => {
 
   const claimPage = useMemo(() => {
     return (
-      <>
+      <div style={{ minHeight: 480 }}>
         {claimHeader}
         {claimContent}
-      </>
+      </div>
     );
   }, [claimHeader, claimContent]);
 

@@ -46,6 +46,40 @@ import UtilizationBar from "../Common/UtilizationBar";
 import currency from "currency.js";
 import { Button } from "../../designSystem";
 
+const livelyAnimation = (position: "top" | "bottom") => keyframes`
+  0% {
+    background-position-x: ${position === "top" ? 0 : 100}%;
+  }
+
+  50% {
+    background-position-x: ${position === "top" ? 100 : 0}%; 
+  }
+
+  100% {
+    background-position-x: ${position === "top" ? 0 : 100}%;
+  }
+`;
+
+const FrameBar = styled.div<{
+  color: string;
+  position: "top" | "bottom";
+  height: number;
+}>`
+  display: flex;
+  width: 100%;
+  height: ${(props) => props.height}px;
+  background: ${(props) => `linear-gradient(
+    270deg,
+    ${props.color}00 8%,
+    ${props.color} 50%,
+    ${props.color}00 92%
+  )`};
+
+  box-shadow: 4px 8px 80px 4px rgba(62, 115, 196, 0.43);
+  background-size: 200%;
+  animation: 10s ${(props) => livelyAnimation(props.position)} linear infinite;
+`;
+
 const borderStyle = `1px solid ${colors.primaryText}1F`;
 
 export const fadeInDisabled = keyframes`
@@ -215,14 +249,14 @@ export enum ActionModalEnum {
   TRANSACTION_STEP,
 }
 
-interface DepositModalProps {
+interface ActionModalProps {
   show?: boolean;
   actionType: ActionType;
   onHide: () => void;
   pool: VaultOptions;
 }
 
-const DepositModal: React.FC<DepositModalProps> = ({
+const ActionModal: React.FC<ActionModalProps> = ({
   show,
   actionType,
   onHide,
@@ -935,12 +969,16 @@ export const Hero: React.FC<HeroProps> = ({
           )}
         </>
       ) : (
-        <HeroContent
-          word={actionType === "deposit" ? "depositing" : "withdrawing"}
-        ></HeroContent>
+        <>
+          <FrameBar color={colors.asset.USDC} position="top" height={4} />
+          <HeroContent
+            word={actionType === "deposit" ? "depositing" : "withdrawing"}
+          ></HeroContent>
+          <FrameBar color={colors.asset.USDC} position="bottom" height={4} />
+        </>
       )}
     </ModalContainer>
   );
 };
 
-export default DepositModal;
+export default ActionModal;

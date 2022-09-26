@@ -31,7 +31,7 @@ import Indicator from "shared/lib/components/Indicator/Indicator";
 import { truncateAddress } from "shared/lib/utils/address";
 import useWeb3Wallet from "../hooks/useWeb3Wallet";
 import LendModal, { ModalContentEnum } from "../components/Common/LendModal";
-import DepositModal from "../components/DepositModal";
+import DepositModal from "../components/ActionModal";
 import { useVaultsData } from "../hooks/web3DataContext";
 import { usePoolsAPR } from "../hooks/usePoolsAPR";
 import {
