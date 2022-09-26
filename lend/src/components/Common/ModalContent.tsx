@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
+import { CloseIcon } from "shared/lib/assets/icons/icons";
 import { Title } from "shared/lib/designSystem";
 import colors from "shared/lib/designSystem/colors";
 import { getExplorerURI, URLS } from "shared/lib/constants/constants";
@@ -35,6 +36,10 @@ import { AssetsList } from "../../store/types";
 import { getAssetDisplay, getAssetLogo } from "../../utils/asset";
 import currency from "currency.js";
 import { useAssetsBalance } from "../../hooks/web3DataContext";
+import Indicator from "shared/lib/components/Indicator/Indicator";
+import { truncateAddress } from "shared/lib/utils/address";
+
+const borderStyle = `1px solid ${colors.primaryText}1F`;
 
 const TextContent = styled.div`
   color: ${colors.primaryText}A3;
@@ -173,12 +178,10 @@ export const ModalContent = ({
         return <AboutPage />;
       case ModalContentEnum.COMMUNITY:
         return <CommunityPage />;
-      case ModalContentEnum.WALLET:
-        return <WalletPage onHide={onHide} setWalletStep={setWalletStep} />;
       default:
         return null;
     }
-  }, [content, onHide, setWalletStep]);
+  }, [content]);
 
   return (
     <motion.div
@@ -258,12 +261,6 @@ const CommunityPage = () => {
     </ContentWrapper>
   );
 };
-
-export enum WalletPageEnum {
-  DISCLAIMER = "IMPORTANT",
-  CONNECT_WALLET = "SELECT YOUR WALLET",
-  ACCOUNT = "ACCOUNT",
-}
 
 const ButtonWrapper = styled.div`
   border-top: 1px solid ${colors.primaryText}1F;
@@ -353,20 +350,40 @@ const AssetRowWrapper = styled.div`
   }
 `;
 
-interface WalletPageProps {
-  onHide: () => void;
-  setWalletStep?: (walletStep: WalletPageEnum) => void;
+const WalletButton = styled.div`
+  display: flex;
+  margin: auto;
+  height: 100%;
+  justify-content: center;
+  cursor: pointer;
+
+  > * {
+    margin: auto 0;
+    margin-right: 8px;
+  }
+`;
+
+export enum WalletPageEnum {
+  DISCLAIMER = "IMPORTANT",
+  CONNECT_WALLET = "SELECT YOUR WALLET",
+  ACCOUNT = "ACCOUNT",
 }
 
-const WalletPage = ({ onHide, setWalletStep }: WalletPageProps) => {
-  const [page, setPage] = useState<WalletPageEnum>(WalletPageEnum.DISCLAIMER);
+interface WalletPageProps {
+  onHide: () => void;
+}
+
+export const WalletPage = ({ onHide }: WalletPageProps) => {
+  const { active, account, activate, deactivate } = useWeb3Wallet();
+  const [walletStep, setWalletStep] = useState<WalletPageEnum>(
+    active ? WalletPageEnum.ACCOUNT : WalletPageEnum.DISCLAIMER
+  );
   const [selectedWallet, setWallet] = useState<EthereumWallet>();
-  const { active, activate, deactivate } = useWeb3Wallet();
   const balances = useAssetsBalance();
 
   useEffect(() => {
     setTimeout(() => {
-      if (active) setPage(WalletPageEnum.ACCOUNT);
+      if (active) setWalletStep(WalletPageEnum.ACCOUNT);
     }, 200);
   });
 
@@ -381,8 +398,33 @@ const WalletPage = ({ onHide, setWalletStep }: WalletPageProps) => {
     }
   }, [activate, onHide, selectedWallet]);
 
-  const content = useMemo(() => {
-    if (page === WalletPageEnum.DISCLAIMER) {
+  const modalTitle = useMemo(() => {
+    if (walletStep === WalletPageEnum.ACCOUNT) {
+      return account ? (
+        <WalletButton>
+          <Indicator connected={active} /> {truncateAddress(account)}
+        </WalletButton>
+      ) : (
+        walletStep
+      );
+    }
+
+    return walletStep;
+  }, [account, active, walletStep]);
+
+  const walletHeader = useMemo(() => {
+    return (
+      <Header>
+        <Title>{modalTitle}</Title>
+        <CloseButton onClick={onHide}>
+          <CloseIcon />
+        </CloseButton>
+      </Header>
+    );
+  }, [modalTitle, onHide]);
+
+  const walletContent = useMemo(() => {
+    if (walletStep === WalletPageEnum.DISCLAIMER) {
       return (
         <ContentWrapper>
           <TextContent>
@@ -395,7 +437,6 @@ const WalletPage = ({ onHide, setWalletStep }: WalletPageProps) => {
           <ButtonWrapper>
             <ContinueButton
               onClick={() => {
-                setPage(WalletPageEnum.CONNECT_WALLET);
                 setWalletStep !== undefined &&
                   setWalletStep(WalletPageEnum.CONNECT_WALLET);
               }}
@@ -407,7 +448,7 @@ const WalletPage = ({ onHide, setWalletStep }: WalletPageProps) => {
       );
     }
 
-    if (page === WalletPageEnum.CONNECT_WALLET) {
+    if (walletStep === WalletPageEnum.CONNECT_WALLET) {
       const walletColors = {
         [EthereumWallet.Metamask]: colors.wallets.Metamask,
         [EthereumWallet.WalletConnect]: colors.wallets.WalletConnect,
@@ -442,7 +483,7 @@ const WalletPage = ({ onHide, setWalletStep }: WalletPageProps) => {
       );
     }
 
-    if (page === WalletPageEnum.ACCOUNT) {
+    if (walletStep === WalletPageEnum.ACCOUNT) {
       const actions = [
         {
           img: etherscan,
@@ -450,7 +491,7 @@ const WalletPage = ({ onHide, setWalletStep }: WalletPageProps) => {
           showExternalIcon: false,
           onClick: async () => {
             await deactivate().then(() => {
-              setPage(WalletPageEnum.CONNECT_WALLET);
+              setWalletStep(WalletPageEnum.CONNECT_WALLET);
             });
           },
         },
@@ -516,12 +557,20 @@ const WalletPage = ({ onHide, setWalletStep }: WalletPageProps) => {
     deactivate,
     onActivate,
     onHide,
-    page,
     selectedWallet,
-    setWalletStep,
+    walletStep,
   ]);
 
-  return content;
+  const walletPage = useMemo(() => {
+    return (
+      <>
+        {walletHeader}
+        {walletContent}
+      </>
+    );
+  }, [walletContent, walletHeader]);
+
+  return walletPage;
 };
 
 const LogoContent = styled.div<{ padding?: number; height?: number }>`
@@ -669,21 +718,37 @@ const LogoContainer = styled.div`
 const StyledExternalLinkIcon = styled(ExternalLinkIcon)`
   margin-left: 4px;
 `;
+
+const Header = styled.div`
+  padding-left: 24px;
+  border-bottom: ${borderStyle};
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+`;
+
+const CloseButton = styled.button`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: none;
+  border: none;
+  width: 80px;
+  height: 80px;
+  border-left: ${borderStyle};
+`;
+
 export enum ClaimRbnPageEnum {
-  CLAIM_RBN,
-  TRANSACTION_STEP,
-  SUCCESS_STEP,
+  CLAIM_RBN = "CLAIM RBN",
+  TRANSACTION_STEP = "CLAIMING RBN",
+  SUCCESS_STEP = "RBN CLAIMED",
 }
 
-interface ClaimRbnProps {
-  setRbnClaimStep: (step: ClaimRbnPageEnum) => void;
+interface ClaimRbnPageProps {
   onHide: () => void;
 }
 
-export const ClaimRbn: React.FC<ClaimRbnProps> = ({
-  setRbnClaimStep,
-  onHide,
-}) => {
+export const ClaimRbnPage: React.FC<ClaimRbnPageProps> = ({ onHide }) => {
   const { pendingTransactions, addPendingTransaction } =
     usePendingTransactions();
 
@@ -694,30 +759,33 @@ export const ClaimRbn: React.FC<ClaimRbnProps> = ({
   const claimedRbn = accountBalances.rbnClaimed;
   const poolFactory = usePoolFactoryContract();
   const rbnDecimals = getAssetDecimals("RBN");
-  const [page, setPage] = useState<ClaimRbnPageEnum>(
+  const [rbnClaimStep, setRbnClaimStep] = useState<ClaimRbnPageEnum>(
     ClaimRbnPageEnum.CLAIM_RBN
   );
+
+  const cleanupEffects = useCallback(() => {
+    setRbnClaimStep(ClaimRbnPageEnum.CLAIM_RBN);
+    onHide();
+  }, [onHide, setRbnClaimStep]);
 
   useEffect(() => {
     // we check that the txhash and check if it had succeed
     // so we can move to successmodal
-    if (page === ClaimRbnPageEnum.TRANSACTION_STEP && txhash !== "") {
+    if (rbnClaimStep === ClaimRbnPageEnum.TRANSACTION_STEP && txhash !== "") {
       const pendingTx = pendingTransactions.find((tx) => tx.txhash === txhash);
 
       if (pendingTx && pendingTx.status) {
         setTimeout(() => {
           setTxhash("");
-          setPage(ClaimRbnPageEnum.SUCCESS_STEP);
           setRbnClaimStep(ClaimRbnPageEnum.SUCCESS_STEP);
         }, 300);
       }
     }
-  }, [pendingTransactions, txhash, page, setRbnClaimStep]);
+  }, [pendingTransactions, txhash, setRbnClaimStep, rbnClaimStep]);
 
   const handleClickClaimButton = useCallback(async () => {
     const pool = poolFactory as PoolFactory;
     if (pool !== null) {
-      setPage(ClaimRbnPageEnum.TRANSACTION_STEP);
       setRbnClaimStep(ClaimRbnPageEnum.TRANSACTION_STEP);
       let addresses: string[] = [];
       VaultList.forEach((pool) => {
@@ -736,22 +804,34 @@ export const ClaimRbn: React.FC<ClaimRbnProps> = ({
 
         setTxhash(res.hash);
       } catch (e) {
-        onHide();
+        cleanupEffects();
         console.error(e);
       }
     }
   }, [
     addPendingTransaction,
     claimableRbn,
-    onHide,
+    cleanupEffects,
     poolFactory,
     setRbnClaimStep,
   ]);
 
-  const content = useMemo(() => {
-    if (page === ClaimRbnPageEnum.CLAIM_RBN) {
+  const claimHeader = useMemo(() => {
+    return (
+      <Header>
+        <Title>{rbnClaimStep}</Title>
+        <CloseButton onClick={onHide}>
+          <CloseIcon />
+        </CloseButton>
+      </Header>
+    );
+  }, [onHide, rbnClaimStep]);
+
+  const claimContent = useMemo(() => {
+    if (rbnClaimStep === ClaimRbnPageEnum.CLAIM_RBN) {
       return (
         <>
+          <header />
           <LogoContent height={160}>
             <Logo width={80} height={80} />
           </LogoContent>
@@ -797,7 +877,7 @@ export const ClaimRbn: React.FC<ClaimRbnProps> = ({
         </>
       );
     }
-    if (page === ClaimRbnPageEnum.TRANSACTION_STEP) {
+    if (rbnClaimStep === ClaimRbnPageEnum.TRANSACTION_STEP) {
       return (
         <>
           <TransactionStep txhash={txhash} color={getAssetColor("RBN")} />
@@ -805,7 +885,7 @@ export const ClaimRbn: React.FC<ClaimRbnProps> = ({
       );
     }
 
-    if (page === ClaimRbnPageEnum.SUCCESS_STEP) {
+    if (rbnClaimStep === ClaimRbnPageEnum.SUCCESS_STEP) {
       return (
         <>
           <LogoContainer>
@@ -829,10 +909,19 @@ export const ClaimRbn: React.FC<ClaimRbnProps> = ({
     claimedRbn,
     handleClickClaimButton,
     loading,
-    page,
+    rbnClaimStep,
     rbnDecimals,
     txhash,
   ]);
 
-  return content;
+  const claimPage = useMemo(() => {
+    return (
+      <>
+        {claimHeader}
+        {claimContent}
+      </>
+    );
+  }, [claimHeader, claimContent]);
+
+  return claimPage;
 };

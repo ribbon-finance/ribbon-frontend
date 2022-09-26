@@ -95,7 +95,6 @@ export const Balance = () => {
   const Logo = getAssetLogo("USDC");
   const { loading, accountBalances } = useVaultAccountBalances();
   const yourBalance = accountBalances.totalBalance;
-  const rbnRewards = accountBalances.rbnEarned;
   const rbnClaimableRewards = accountBalances.rbnClaimable;
   const rbnDecimals = getAssetDecimals("RBN");
   const yourDeposits = useVaultTotalDeposits();
@@ -146,7 +145,7 @@ export const Balance = () => {
             <ClaimValue>
               {loading || !account
                 ? "---"
-                : formatBigNumber(rbnRewards, rbnDecimals, 2)}
+                : formatBigNumber(rbnClaimableRewards, rbnDecimals, 2)}
             </ClaimValue>
           </ClaimTextContainer>
           {!isPracticallyZero(rbnClaimableRewards, rbnDecimals) && (

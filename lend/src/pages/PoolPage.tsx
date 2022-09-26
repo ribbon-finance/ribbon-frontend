@@ -394,15 +394,21 @@ const PoolPage = () => {
                               }
                             >
                               <span>Total APR</span>
-                              <span>{apr}%</span>
+                              <span>
+                                {currency(apr, { symbol: "" }).format()}%
+                              </span>
                             </YieldExplainerTitle>
                             <YieldExplainerStat>
                               <span>Supply APR</span>
-                              <span>{supplyApr}%</span>
+                              <span>
+                                {currency(supplyApr, { symbol: "" }).format()}%
+                              </span>
                             </YieldExplainerStat>
                             <YieldExplainerStat>
                               <span>RBN Rewards APR</span>
-                              <span>{rbnApr}%</span>
+                              <span>
+                                {currency(rbnApr, { symbol: "" }).format()}%
+                              </span>
                             </YieldExplainerStat>
                           </>
                         }
@@ -416,7 +422,7 @@ const PoolPage = () => {
                     <Value
                       color={parseFloat(apr) >= 0 ? colors.green : colors.red}
                     >
-                      {apr}%
+                      {currency(apr, { symbol: "" }).format()}%
                     </Value>
                   </Stat>
                   {/* <Stat> */}
