@@ -122,6 +122,48 @@ const Value = styled.span<{ color?: string }>`
   }
 `;
 
+const PillButton = styled.a<{ delay: number }>`
+  padding: 16px;
+  border: 1px solid white;
+  background-color: transparent;
+  border-radius: 100px;
+  width: fit-content;
+  transition: 0.2s ease-in-out;
+  color: ${colors.primaryText} !important;
+
+  ${delayedUpwardFade}
+
+  &:hover {
+    cursor: pointer;
+    color: ${colors.primaryText} !important;
+    text-decoration: none !important;
+
+    svg {
+      transition: 0.2s ease-in-out;
+      transform: translate(4px, -4px);
+    }
+  }
+
+  > * {
+    margin: auto 0;
+
+    &:not(:last-child) {
+      margin-right: 8px;
+    }
+  }
+
+  @media (max-width: ${sizes.lg}px) {
+    display: flex;
+    border-radius: 60px;
+    padding: 8px 12px;
+
+    svg {
+      width: 10px;
+      height: 10px;
+    }
+  }
+`;
+
 const Details = styled.div<{ delay?: number }>`
   align-items: center;
   padding: 32px;
@@ -131,6 +173,22 @@ const Details = styled.div<{ delay?: number }>`
 
   @media (max-width: ${sizes.md}px) {
     padding: 16px;
+  }
+
+  a:not(${PillButton}) {
+    color: ${colors.text};
+    text-decoration: underline;
+
+    svg {
+      margin-left: 8px;
+    }
+
+    &:hover {
+      svg {
+        transition: 0.2s ease-in-out;
+        transform: translate(4px, -4px);
+      }
+    }
   }
 `;
 
@@ -193,48 +251,6 @@ const PoolDetailsWrapper = styled.div`
 
   @media (max-width: ${sizes.md}px) {
     padding-bottom: ${components.footer * 3}px;
-  }
-`;
-
-const PillButton = styled.a<{ delay: number }>`
-  padding: 16px;
-  border: 1px solid white;
-  background-color: transparent;
-  border-radius: 100px;
-  width: fit-content;
-  transition: 0.2s ease-in-out;
-  color: ${colors.primaryText};
-
-  ${delayedUpwardFade}
-
-  &:hover {
-    cursor: pointer;
-    color: ${colors.primaryText} !important;
-    text-decoration: none !important;
-
-    svg {
-      transition: 0.2s ease-in-out;
-      transform: translate(4px, -4px);
-    }
-  }
-
-  > * {
-    margin: auto 0;
-
-    &:not(:last-child) {
-      margin-right: 8px;
-    }
-  }
-
-  @media (max-width: ${sizes.lg}px) {
-    display: flex;
-    border-radius: 60px;
-    padding: 8px 12px;
-
-    svg {
-      width: 10px;
-      height: 10px;
-    }
   }
 `;
 
@@ -444,7 +460,7 @@ const PoolPage = () => {
               <Details delay={0.5}>
                 <DetailsIndex>02</DetailsIndex>
                 <StyledTitle>Credit Rating</StyledTitle>
-                <Paragraph>{poolDetails.bio}</Paragraph>
+                <Paragraph>{poolDetails.credit.content}</Paragraph>
 
                 <DetailsStatWrapper>
                   <Stat>
