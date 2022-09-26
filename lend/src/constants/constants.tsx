@@ -261,8 +261,7 @@ export const VaultDetailsMap: Record<VaultOptions, VaultDetails> = {
         </p>
       </>
     ),
-    contract:
-      "https://etherscan.io/address/0x0aea75705be8281f4c24c3e954d1f8b1d0f8044c",
+    contract: "https://etherscan.io/address/" + deployment.mainnet.wintermute,
     twitter: "https://twitter.com/wintermute_t",
     website: "https://www.wintermute.com",
     credit: {
@@ -328,8 +327,7 @@ export const VaultDetailsMap: Record<VaultOptions, VaultDetails> = {
         </p>
       </>
     ),
-    contract:
-      "https://etherscan.io/address/0x3cd0ecf1552d135b8da61c7f44cefe93485c616d",
+    contract: "https://etherscan.io/address/" + deployment.mainnet.wintermute,
     twitter: "https://twitter.com/folkvangtrading",
     website: "https://folkvang.io",
     credit: {
