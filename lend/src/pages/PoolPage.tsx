@@ -123,13 +123,15 @@ const Value = styled.span<{ color?: string }>`
 `;
 
 const PillButton = styled.a<{ delay: number }>`
-  padding: 16px;
+  padding-left: 16px;
+  padding-right: 16px;
   border: 1px solid white;
   background-color: transparent;
   border-radius: 100px;
-  height: 64px;
+  height: 48px;
   display: flex;
   justify-content: center;
+  align-items: center;
   width: fit-content;
   transition: 0.2s ease-in-out;
   color: ${colors.primaryText} !important;
@@ -186,7 +188,7 @@ const Details = styled.div<{ delay?: number }>`
 const DetailsStatWrapper = styled.div`
   display: flex;
   justify-content: space-between;
-  margin-top: 24px;
+  margin-top: 16px;
 
   > ${Stat} {
     display: inline-flex;
@@ -261,6 +263,10 @@ const StyledTitle = styled(Title)`
   font-size: 22px;
 `;
 
+const StyledBaseLink = styled(BaseLink)`
+  text-decoration: none !important;
+`;
+
 const DetailsIndex = styled.span`
   display: block;
   color: ${colors.quaternaryText};
@@ -318,10 +324,6 @@ const PoolPage = () => {
 
   const logo = getMakerLogo(poolId);
   const poolSize = formatBigNumber(vaultDatas[poolId].poolSize, usdcDecimals);
-  const borrowLimit = formatBigNumber(
-    vaultDatas[poolId].availableToBorrow,
-    usdcDecimals
-  );
   const apr = poolAPRs[poolId].toFixed(2);
   const supplyApr = supplyAprs[poolId].toFixed(2);
   const rbnApr = rbnAprs[poolId].toFixed(2);
@@ -440,11 +442,7 @@ const PoolPage = () => {
                   <Stat delay={0.7}>
                     <Label>Utilization rate:</Label>
                     <div className="d-flex">
-                      <UtilizationBar
-                        percent={parseFloat(utilizationRate)}
-                        color="white"
-                        width={64}
-                      />
+                      <UtilizationBar percent={80} color="white" width={64} />
                       <Value>{utilizationRate}%</Value>
                     </div>
                   </Stat>
@@ -464,17 +462,41 @@ const PoolPage = () => {
                 <DetailsIndex>02</DetailsIndex>
                 <StyledTitle>Credit Rating</StyledTitle>
                 <Paragraph>{poolDetails.credit.content}</Paragraph>
-
                 <DetailsStatWrapper>
                   <Stat>
                     <Label>Credit Rating:</Label>
-                    <Value>{poolDetails.credit.rating}</Value>
+                    <StyledBaseLink
+                      to={""}
+                      target="_blank"
+                      rel="noreferrer noopener"
+                    >
+                      <Value>{poolDetails.credit.rating}</Value>
+                    </StyledBaseLink>
                   </Stat>
                   <Stat>
-                    <Label>Borrow Limit:</Label>
+                    <div className="d-flex justify-content-center align-items-center">
+                      <Label>Borrow Limit: </Label>
+                      <TooltipExplanation
+                        explanation={
+                          <>
+                            Credora calculates a Borrow Capacity for each
+                            trading firm. The Borrow Capacity calculation uses
+                            the Credit Score to define a target Portfolio
+                            Leverage, and subsequently calculates a USD Borrow
+                            Capacity based on trading firm current Debt and
+                            Portfolio Equity.
+                          </>
+                        }
+                        renderContent={({ ref, ...triggerHandler }) => (
+                          <HelpInfo containerRef={ref} {...triggerHandler}>
+                            i
+                          </HelpInfo>
+                        )}
+                      />
+                    </div>
                     <Value>
                       <AssetLogo />{" "}
-                      {currency(borrowLimit).format({
+                      {currency(poolDetails.credit.borrowLimit).format({
                         symbol: "",
                       })}
                     </Value>

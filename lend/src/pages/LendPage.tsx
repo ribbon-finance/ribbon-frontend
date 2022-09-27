@@ -20,6 +20,7 @@ import { getAssetDecimals } from "../utils/asset";
 import useScreenSize from "shared/lib/hooks/useScreenSize";
 import { delayedFade } from "../components/animations";
 import StepsCarousel from "../components/StepsHeader/StepsCarousel";
+import MobileHeader from "../components/MobileHeader";
 
 const HeroContainer = styled.div`
   display: flex;
@@ -42,20 +43,24 @@ const HeroContainer = styled.div`
   }
 `;
 
-export const HeaderRow = styled(Row)`
+export const HeaderRow = styled(Row)<{ mobile?: boolean }>`
   height: ${components.header}px;
   border-bottom: 1px solid ${colors.border};
   box-sizing: border-box;
   z-index: 1;
   margin-left: 0px;
   background: black;
-
+  ${(props) => props.mobile === true && `display: none;`}
   > * {
     padding: 0;
 
     &:not(:last-child) {
       border-right: 1px solid ${colors.border};
     }
+  }
+
+  @media (max-width: ${sizes.lg}px) {
+    ${(props) => props.mobile === true && `display: flex;`}
   }
 `;
 
@@ -170,6 +175,11 @@ export const StickyCol = styled(Col)`
   }
 `;
 
+export const MobileHeaderCol = styled(Col)`
+  width: 100%;
+  height: ${components.header}px;
+`;
+
 export const MarqueeCol = styled(Col)`
   height: ${components.header}px;
 `;
@@ -185,6 +195,14 @@ export const WalletCol = styled(Col)`
 export const FooterWalletCol = styled(Col)`
   height: ${components.footer}px;
   border-top: 1px solid ${colors.border};
+`;
+
+export const MobileOnly = styled.div`
+  display: none;
+  @media (max-width: ${sizes.lg}px) {
+    display: flex;
+    width: 100%;
+  }
 `;
 
 const BalanceWrapper = styled.div`
@@ -256,21 +274,29 @@ const Header = ({ setWalletModal }: HeaderProps) => {
   const { account, active } = useWeb3Wallet();
 
   return (
-    <HeaderRow>
-      <MarqueeCol md={12} lg={6}>
-        {/* <StatsMarquee /> */}
-        <StepsCarousel />
-        <></>
-      </MarqueeCol>
-      <WalletCol md={0} lg={6}>
-        <WalletButton delay={0.2} onClick={() => setWalletModal(true)}>
-          {active && <Indicator connected={active} />}
-          <WalletButtonText connected={active}>
-            {account ? truncateAddress(account) : "Connect Wallet"}
-          </WalletButtonText>
-        </WalletButton>
-      </WalletCol>
-    </HeaderRow>
+    <>
+      <HeaderRow mobile={true}>
+        <MobileHeaderCol md={12} lg={12}>
+          <MobileHeader />
+        </MobileHeaderCol>
+      </HeaderRow>
+
+      <HeaderRow>
+        <MarqueeCol md={12} lg={6}>
+          {/* <StatsMarquee /> */}
+          <StepsCarousel />
+          <></>
+        </MarqueeCol>
+        <WalletCol md={0} lg={6}>
+          <WalletButton delay={0.2} onClick={() => setWalletModal(true)}>
+            {active && <Indicator connected={active} />}
+            <WalletButtonText connected={active}>
+              {account ? truncateAddress(account) : "Connect Wallet"}
+            </WalletButtonText>
+          </WalletButton>
+        </WalletCol>
+      </HeaderRow>
+    </>
   );
 };
 

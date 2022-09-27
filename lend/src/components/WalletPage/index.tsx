@@ -178,6 +178,7 @@ const AssetStat = styled.div`
   label {
     color: ${colors.tertiaryText};
     font-size: 10px;
+    letter-spacing: 1.5px;
   }
 
   span {

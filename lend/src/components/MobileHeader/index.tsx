@@ -16,7 +16,7 @@ const HeaderContainer = styled.div<MobileMenuOpenProps>`
   display: flex;
   align-items: center;
   justify-content: space-between;
-  display: none;
+  width: 100%;
   @media (max-width: ${sizes.lg}px) {
     height: 64px;
     border-bottom: 1px solid ${colors.border};
