@@ -1156,7 +1156,7 @@ export const URLS = {
   twitter: "https://twitter.com/ribbonfinance",
   github: "https://github.com/ribbon-finance",
   discord: "https://discord.com/invite/ribbon-finance",
-  medium: "https://medium.com/@ribbonfinance",
+  medium: "https://www.research.ribbon.finance",
 
   // docs
   docs: "https://docs.ribbon.finance",
