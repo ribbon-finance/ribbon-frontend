@@ -50,6 +50,7 @@ import PoolActivity from "../components/Pools/PoolActivity";
 import useScreenSize from "shared/lib/hooks/useScreenSize";
 import { delayedFade, delayedUpwardFade } from "../components/animations";
 import credora from "../assets/icons/credora.svg";
+import MobileHeader from "../components/MobileHeader";
 
 const PoolContainer = styled.div`
   width: calc(100% - ${components.sidebar}px);
@@ -311,6 +312,11 @@ const YieldExplainerStat = styled.div`
   }
 `;
 
+export const MobileHeaderCol = styled(Col)`
+  width: 100%;
+  height: ${components.header}px;
+`;
+
 const PoolPage = () => {
   const { poolId }: { poolId: VaultOptions } = useParams();
   const [activePage, setPage] = useState<PageEnum>();
@@ -442,7 +448,11 @@ const PoolPage = () => {
                   <Stat delay={0.7}>
                     <Label>Utilization rate:</Label>
                     <div className="d-flex">
-                      <UtilizationBar percent={80} color="white" width={64} />
+                      <UtilizationBar
+                        percent={parseFloat(utilizationRate)}
+                        color="white"
+                        width={64}
+                      />
                       <Value>{utilizationRate}%</Value>
                     </div>
                   </Stat>
@@ -546,19 +556,26 @@ const Header = ({ pool, setWalletModal }: HeaderProps) => {
   const { account, active } = useWeb3Wallet();
 
   return (
-    <HeaderRow>
-      <MarqueeCol md={12} lg={6}>
-        <PoolMarquee pool={pool} />
-      </MarqueeCol>
-      <WalletCol md={0} lg={6}>
-        <WalletButton delay={0.2} onClick={() => setWalletModal(true)}>
-          {active && <Indicator connected={active} />}
-          <WalletButtonText connected={active}>
-            {account ? truncateAddress(account) : "Connect Wallet"}
-          </WalletButtonText>
-        </WalletButton>
-      </WalletCol>
-    </HeaderRow>
+    <>
+      <HeaderRow mobile={true}>
+        <MobileHeaderCol md={0} lg={0}>
+          <MobileHeader />
+        </MobileHeaderCol>
+      </HeaderRow>
+      <HeaderRow>
+        <MarqueeCol md={12} lg={6}>
+          <PoolMarquee pool={pool} />
+        </MarqueeCol>
+        <WalletCol md={0} lg={6}>
+          <WalletButton delay={0.2} onClick={() => setWalletModal(true)}>
+            {active && <Indicator connected={active} />}
+            <WalletButtonText connected={active}>
+              {account ? truncateAddress(account) : "Connect Wallet"}
+            </WalletButtonText>
+          </WalletButton>
+        </WalletCol>
+      </HeaderRow>
+    </>
   );
 };
 

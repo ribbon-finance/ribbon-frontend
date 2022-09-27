@@ -329,7 +329,7 @@ export const VaultDetailsMap: Record<VaultOptions, VaultDetails> = {
         </p>
       </>
     ),
-    contract: "https://etherscan.io/address/" + deployment.mainnet.wintermute,
+    contract: "https://etherscan.io/address/" + deployment.mainnet.folkvang,
     twitter: "https://twitter.com/folkvangtrading",
     website: "https://folkvang.io",
     credit: {

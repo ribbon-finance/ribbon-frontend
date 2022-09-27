@@ -21,7 +21,7 @@ const HeaderContainer = styled.div<MobileMenuOpenProps>`
     height: 64px;
     border-bottom: 1px solid ${colors.border};
     // z-index: ${(props) => (props.isMenuOpen ? 50 : 10)};
-    z-index: 10000;
+    z-index: 100000;
     // The backdrop for the menu does not show up if we enable the backdrop-filter
     // for the header nav. To get around that, just set 'none'
     ${(props) => {
@@ -103,6 +103,7 @@ const MobileHeader: React.FC = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [modalContent, setModalContent] = useState<ModalContentEnum>();
 
+  console.log(modalContent);
   const onToggleMenu = () => {
     setIsMenuOpen(!isMenuOpen);
   };
@@ -115,7 +116,7 @@ const MobileHeader: React.FC = () => {
       <LendModal
         show={Boolean(modalContent)}
         onHide={() => setModalContent(undefined)}
-        content={ModalContentEnum.WALLET}
+        content={modalContent}
       />
 
       <MobileOnly>

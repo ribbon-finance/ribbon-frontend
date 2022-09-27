@@ -275,17 +275,11 @@ const Header = ({ setWalletModal }: HeaderProps) => {
 
   return (
     <>
-      <HeaderRow mobile={true}>
-        <MobileHeaderCol md={12} lg={12}>
-          <MobileHeader />
-        </MobileHeaderCol>
-      </HeaderRow>
-
+      <MobileHeader />
       <HeaderRow>
         <MarqueeCol md={12} lg={6}>
           {/* <StatsMarquee /> */}
           <StepsCarousel />
-          <></>
         </MarqueeCol>
         <WalletCol md={0} lg={6}>
           <WalletButton delay={0.2} onClick={() => setWalletModal(true)}>
