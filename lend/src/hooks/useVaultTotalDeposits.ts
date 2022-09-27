@@ -15,11 +15,14 @@ export const useVaultTotalDeposits = () => {
       try {
         let deposits = BigNumber.from(0.0);
         VaultList.forEach((pool) => {
-          deposits = deposits.add(vaultAccounts[pool]!.totalDeposits);
+          const poolAccount = vaultAccounts[pool];
+          if (poolAccount) {
+            deposits = deposits.add(poolAccount.totalDeposits);
+          }
         });
         setTotalDeposits(deposits);
       } catch (error) {
-        console.log("error");
+        console.log("error", error);
       }
     }
   }, [loading, vaultAccounts]);

@@ -115,6 +115,7 @@ export const Balance = () => {
       100
     );
   }, [yourDeposits, decimals, yourBalance]);
+
   const [triggerClaimModal, setClaimModal] = useState<boolean>(false);
 
   return (
