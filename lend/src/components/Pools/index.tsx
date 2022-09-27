@@ -214,7 +214,7 @@ export const Pools = () => {
                 </Stat>
                 <Stat>
                   <StyledTitle>
-                    <Logo height={24} />
+                    <Logo height={24} width={24} />
                     <span>{formatBigNumber(poolSize, decimals)}</span>
                   </StyledTitle>
                   <StyledSubtitle color={colors.green}>
