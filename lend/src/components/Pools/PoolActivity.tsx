@@ -16,12 +16,6 @@ import useLoadingText from "shared/lib/hooks/useLoadingText";
 
 const PaginationContainer = styled.div`
   display: flex;
-  justify-content: center;
-  align-items: center;
-`;
-
-const ActivityTitle = styled(Title)`
-  margin: auto;
 `;
 
 const perPage = 6;
@@ -135,9 +129,9 @@ const PoolActivity: React.FC<VaultActivityProps> = ({
 
     if (filteredActivities.length <= 0) {
       return (
-        <ActivityTitle fontSize={12} lineHeight={16}>
+        <Title fontSize={12} lineHeight={16}>
           There is currently no vault activity
-        </ActivityTitle>
+        </Title>
       );
     }
 

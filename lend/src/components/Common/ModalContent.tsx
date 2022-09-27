@@ -10,10 +10,12 @@ import discord from "../../assets/icons/socials/discord.svg";
 import github from "../../assets/icons/socials/github.svg";
 import { ProductDisclaimer } from "../ProductDisclaimer";
 import { ModalContentEnum } from "./LendModal";
+import { BaseLink } from "../../designSystem";
 
 const TextContent = styled.div`
   color: ${colors.primaryText}A3;
   padding: 16px 24px;
+  overflow: hidden;
 `;
 
 const hoveredContentRow = css`
@@ -88,6 +90,40 @@ const ContentFooter = styled.div`
   font-size: 14px;
 `;
 
+const StyledP = styled.p`
+  display: list-item;
+  list-style-type: disc;
+  list-style-position: inside;
+  padding-left: 5px;
+`;
+
+const AboutFooterText = styled.div`
+  font-size: 12px;
+
+  > * {
+    margin: auto 0;
+  }
+
+  svg {
+    transition: all 0.2s ease-in-out;
+    margin-left: 4px;
+  }
+
+  > a {
+    color: ${colors.primaryText};
+    text-decoration: underline;
+
+    &:hover {
+      svg {
+        transform: translate(2px, -2px);
+      }
+    }
+  }
+`;
+
+const Highlight = styled.text`
+  color: ${colors.primaryText};
+`;
 interface ModalContentProps {
   content?: ModalContentEnum;
   onHide: () => void;
@@ -132,13 +168,38 @@ export const ModalContent = ({ content, onHide }: ModalContentProps) => {
 const AboutPage = () => {
   return (
     <TextContent>
-      Lorem ipsum dolor sit amet, consectetur adipiscing elit ut aliquam, purus
-      sit amet luctus venenatis, lectus magna fringilla urna, porttitor rhoncus
-      dolor purus non enim praesent elementum facilisis leo, vel fringilla est
-      ullamcorper eget nulla facilisi etiam dignissim diam quis enim lobortis
-      scelerisque fermentum dui faucibus in ornare quam viverra orci sagittis eu
-      volutpat odio facilisis mauris sit amet massa vitae tortor condimentum
-      lacinia
+      <>
+        <p>
+          Ribbon Lend is Ribbon Finance’s second product line alongside Ribbon
+          vaults. Ribbon Lend allows depositors to lend unsecured to KYC/AML’d
+          institutional market makers of their choosing with high liquidity.
+          Ribbon Lend offers the best of both worlds between TradFi and DeFi:
+        </p>
+        <StyledP>
+          <Highlight>High yields</Highlight> from unsecured lending
+        </StyledP>
+        <StyledP>
+          <Highlight>No lockups</Highlight> from Aave’s money market
+        </StyledP>
+        <StyledP>
+          <Highlight>Off-chain enforcement</Highlight>/{" "}
+          <Highlight>credit underwriting</Highlight>
+        </StyledP>
+        <StyledP>
+          <Highlight>Built-in insurance</Highlight>
+        </StyledP>
+
+        <AboutFooterText>
+          <BaseLink
+            to="https://www.research.ribbon.finance/blog/introducing-ribbon-lend"
+            target="_blank"
+            rel="noreferrer noopener"
+          >
+            Learn more about Ribbon Lend
+            <ExternalLinkIcon />
+          </BaseLink>
+        </AboutFooterText>
+      </>
     </TextContent>
   );
 };

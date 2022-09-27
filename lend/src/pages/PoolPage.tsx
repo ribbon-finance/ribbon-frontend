@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { Col } from "react-bootstrap";
 import { useParams } from "react-router-dom";
 import {
