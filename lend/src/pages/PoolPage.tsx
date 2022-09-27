@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Col } from "react-bootstrap";
 import { useParams } from "react-router-dom";
 import {
@@ -31,7 +31,7 @@ import Indicator from "shared/lib/components/Indicator/Indicator";
 import { truncateAddress } from "shared/lib/utils/address";
 import useWeb3Wallet from "../hooks/useWeb3Wallet";
 import LendModal, { ModalContentEnum } from "../components/Common/LendModal";
-import DepositModal from "../components/ActionModal";
+import ActionModal from "../components/ActionModal";
 import { useVaultsData } from "../hooks/web3DataContext";
 import { usePoolsAPR } from "../hooks/usePoolsAPR";
 import {
@@ -127,10 +127,12 @@ const PillButton = styled.a<{ delay: number }>`
   border: 1px solid white;
   background-color: transparent;
   border-radius: 100px;
+  height: 64px;
+  display: flex;
+  justify-content: center;
   width: fit-content;
   transition: 0.2s ease-in-out;
   color: ${colors.primaryText} !important;
-
   ${delayedUpwardFade}
 
   &:hover {
@@ -149,17 +151,6 @@ const PillButton = styled.a<{ delay: number }>`
 
     &:not(:last-child) {
       margin-right: 8px;
-    }
-  }
-
-  @media (max-width: ${sizes.lg}px) {
-    display: flex;
-    border-radius: 60px;
-    padding: 8px 12px;
-
-    svg {
-      width: 10px;
-      height: 10px;
     }
   }
 `;
@@ -323,7 +314,6 @@ const PoolPage = () => {
   const utilizationDecimals = getUtilizationDecimals();
   const usdcDecimals = getAssetDecimals("USDC");
   const { width } = useScreenSize();
-
   if (!poolId) return <NotFound />;
 
   const logo = getMakerLogo(poolId);
@@ -349,7 +339,7 @@ const PoolPage = () => {
         onHide={() => setWalletModal(false)}
         content={ModalContentEnum.WALLET}
       />
-      <DepositModal
+      <ActionModal
         show={activePage !== undefined}
         actionType={activePage === PageEnum.DEPOSIT ? "deposit" : "withdraw"}
         onHide={() => setPage(undefined)}
@@ -569,7 +559,6 @@ const Footer = ({ activePage, setPage, setWalletModal }: FooterProps) => {
       <Col md={12} lg={6}>
         <FooterButton
           delay={0.2}
-          disabled={!account || !active}
           isActive={activePage === PageEnum.DEPOSIT}
           onClick={() => setPage(PageEnum.DEPOSIT)}
         >
@@ -577,7 +566,6 @@ const Footer = ({ activePage, setPage, setWalletModal }: FooterProps) => {
         </FooterButton>
         <FooterButton
           delay={0.3}
-          disabled={!account || !active}
           isActive={activePage === PageEnum.WITHDRAW}
           onClick={() => setPage(PageEnum.WITHDRAW)}
         >

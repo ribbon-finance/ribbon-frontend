@@ -29,7 +29,6 @@ const TableCol = styled.div<{
     props.contentWidth
       ? `calc(${props.contentWidth}px * ${props.weight})`
       : `${props.weight * 100}%`};
-
   text-align: ${(props) => {
     switch (props.orientation) {
       case "left":

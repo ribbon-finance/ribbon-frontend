@@ -45,6 +45,7 @@ import { PoolValidationErrors } from "./types";
 import UtilizationBar from "../Common/UtilizationBar";
 import currency from "currency.js";
 import { Button } from "../../designSystem";
+import LendModal, { ModalContentEnum } from "../Common/LendModal";
 
 const livelyAnimation = (position: "top" | "bottom") => keyframes`
   0% {
@@ -97,7 +98,7 @@ export const FixedContainer = styled.div`
   justify-content: center;
   align-items: center;
   background: black;
-  z-index: 10000;
+  z-index: 100;
   width: 100%;
   height: 100%;
 `;
@@ -250,7 +251,7 @@ export enum ActionModalEnum {
 }
 
 interface ActionModalProps {
-  show?: boolean;
+  show: boolean;
   actionType: ActionType;
   onHide: () => void;
   pool: VaultOptions;
@@ -263,6 +264,25 @@ const ActionModal: React.FC<ActionModalProps> = ({
   pool,
 }) => {
   const [page, setPage] = useState<ActionModalEnum>(ActionModalEnum.PREVIEW);
+  const [triggerAnimation, setTriggerAnimation] = useState<boolean>(true);
+
+  // stop trigger animation on rerenders
+  useEffect(() => {
+    let timeout: NodeJS.Timeout | null = null;
+    if (show) {
+      timeout = setTimeout(() => {
+        setTriggerAnimation(false);
+      }, 1800);
+    } else {
+      clearTimeout(timeout!);
+      setTriggerAnimation(true);
+    }
+
+    return () => {
+      clearTimeout(timeout!);
+    };
+  }, [show]);
+
   const [txhash, setTxhashMain] = useState<string>();
   return show ? (
     <FixedContainer>
@@ -281,6 +301,7 @@ const ActionModal: React.FC<ActionModalProps> = ({
             setTxhashMain={setTxhashMain}
             onHide={() => onHide()}
             show={show}
+            triggerAnimation={triggerAnimation}
           />
         </Content>
         <Footer pool={pool} page={page} txhash={txhash} show={show} />
@@ -583,21 +604,39 @@ const FormButton = styled(Button)`
   width: 240px;
   border-radius: 0;
   font-size: 14px;
+  border: none;
   &:disabled {
     pointer-events: none;
     opacity: 1;
-    background-color: ${colors.background.one};
-    color: ${colors.primaryText};
+    background-color: ${colors.primaryText}66;
+  }
+`;
+
+const ActionButton = styled(Button)`
+  background-color: ${colors.primaryText};
+  color: #000000;
+  height: 64px;
+  width: 240px;
+  border-radius: 0;
+  font-size: 14px;
+  border: none;
+  &:disabled {
+    color: ${colors.tertiaryText};
+    background: ${colors.background.one};
+    border: 2px solid ${colors.tertiaryText};
+    pointer-events: none;
   }
 `;
 
 const FormButtonFade = styled.div<{
   show?: boolean;
   delay?: number;
+  triggerAnimation: boolean;
 }>`
-  ${({ show, delay }) => {
+  ${({ show, delay, triggerAnimation }) => {
     return (
       show &&
+      triggerAnimation &&
       css`
         opacity: 0;
 
@@ -619,6 +658,21 @@ const ErrorText = styled(SecondaryText)`
   color: ${colors.red};
 `;
 
+const ConnectButton = styled(Button)`
+  background: ${colors.buttons.secondaryBackground};
+  color: ${colors.buttons.secondaryText};
+  border: none;
+  width: 240px;
+  padding: 12px 30px;
+  height: 64px;
+  border-radius: 0;
+
+  &:disabled {
+    opacity: 0.6 !important;
+    cursor: default !important;
+  }
+`;
+
 interface HeroProps {
   actionType: ActionType;
   pool: VaultOptions;
@@ -627,6 +681,7 @@ interface HeroProps {
   setTxhashMain: (txhash: string) => void;
   onHide: () => void;
   show: boolean;
+  triggerAnimation: boolean;
 }
 
 export const Hero: React.FC<HeroProps> = ({
@@ -637,6 +692,7 @@ export const Hero: React.FC<HeroProps> = ({
   setTxhashMain,
   onHide,
   show,
+  triggerAnimation,
 }) => {
   const [inputAmount, setInputAmount] = useState<string>("");
   const [waitingApproval, setWaitingApproval] = useState(false);
@@ -653,6 +709,7 @@ export const Hero: React.FC<HeroProps> = ({
   const lendPool = useLendContract(pool) as RibbonLendVault;
   const { pendingTransactions, addPendingTransaction } =
     usePendingTransactions();
+  const [triggerWalletModal, setWalletModal] = useState<boolean>(false);
 
   useEffect(() => {
     // we check that the txhash and check if it had succeed
@@ -663,7 +720,7 @@ export const Hero: React.FC<HeroProps> = ({
         setTimeout(() => {
           onHide();
           setPage(ActionModalEnum.PREVIEW);
-        }, 300);
+        }, 1500);
       }
     }
   }, [pendingTransactions, txhash, onHide, page, setPage]);
@@ -863,121 +920,161 @@ export const Hero: React.FC<HeroProps> = ({
     }
   };
   return (
-    <ModalContainer>
-      {page === ActionModalEnum.PREVIEW ? (
-        <>
-          <ProductAssetLogoContainer color={"white"} delay={0.1}>
-            <Logo height="100%" />
-          </ProductAssetLogoContainer>
-          <BalanceTitle delay={0.2}>Enter {actionType} Amount</BalanceTitle>
-          <InputContainer delay={0.4} className="mt-3 mb-2">
-            <StyledBaseInput
-              type="number"
-              className="form-control"
-              placeholder="0"
-              value={inputAmount}
-              onChange={handleInputChange}
-              inputWidth={"100%"}
-              step={"0.000001"}
-            />
-          </InputContainer>
-          {error && <ErrorText>{renderErrorText(error)}</ErrorText>}
-          <PercentagesContainer delay={0.6}>
-            <BaseInputButton onClick={() => handlePercentageClick(0.25)}>
-              25%
-            </BaseInputButton>
-            <BaseInputButton onClick={() => handlePercentageClick(0.5)}>
-              50%
-            </BaseInputButton>
-            <BaseInputButton onClick={() => handlePercentageClick(0.75)}>
-              75%
-            </BaseInputButton>
-            <BaseInputButton onClick={() => handlePercentageClick(1)}>
-              MAX
-            </BaseInputButton>
-          </PercentagesContainer>
-          {actionType === "deposit" ? (
-            <div className="justify-content-center">
-              {signature !== undefined ? (
-                <FormButtonFade show={show} delay={0.8} className="mt-4 mb-3">
-                  <ApprovedButton className="btn py-3">
-                    USDC READY TO DEPOSIT
-                  </ApprovedButton>
-                </FormButtonFade>
-              ) : (
-                <FormButtonFade show={show} delay={0.8} className="mt-4 mb-3">
-                  <FormButton
-                    onClick={handleApprove}
-                    disabled={Boolean(error) || !isInputNonZero}
-                    className="btn py-3"
+    <>
+      <LendModal
+        show={Boolean(triggerWalletModal)}
+        onHide={() => setWalletModal(false)}
+        content={ModalContentEnum.WALLET}
+      />
+      <ModalContainer>
+        {page === ActionModalEnum.PREVIEW ? (
+          <>
+            <ProductAssetLogoContainer color={"white"} delay={0.1}>
+              <Logo height="100%" />
+            </ProductAssetLogoContainer>
+            <BalanceTitle delay={0.1}>Enter {actionType} Amount</BalanceTitle>
+            <InputContainer delay={0.2} className="mt-3 mb-2">
+              <StyledBaseInput
+                type="number"
+                className="form-control"
+                placeholder="0"
+                value={inputAmount}
+                onChange={handleInputChange}
+                inputWidth={"100%"}
+                step={"0.000001"}
+              />
+            </InputContainer>
+            {error && <ErrorText>{renderErrorText(error)}</ErrorText>}
+            <PercentagesContainer delay={0.3}>
+              <BaseInputButton onClick={() => handlePercentageClick(0.25)}>
+                25%
+              </BaseInputButton>
+              <BaseInputButton onClick={() => handlePercentageClick(0.5)}>
+                50%
+              </BaseInputButton>
+              <BaseInputButton onClick={() => handlePercentageClick(0.75)}>
+                75%
+              </BaseInputButton>
+              <BaseInputButton onClick={() => handlePercentageClick(1)}>
+                MAX
+              </BaseInputButton>
+            </PercentagesContainer>
+            {account &&
+              (actionType === "deposit" ? (
+                <div className="justify-content-center">
+                  {signature !== undefined ? (
+                    <FormButtonFade
+                      show={show}
+                      triggerAnimation={triggerAnimation}
+                      delay={0.4}
+                      className="mt-4 mb-3"
+                    >
+                      <ApprovedButton className="btn py-3">
+                        USDC READY TO DEPOSIT
+                      </ApprovedButton>
+                    </FormButtonFade>
+                  ) : (
+                    <FormButtonFade
+                      show={show}
+                      triggerAnimation={triggerAnimation}
+                      delay={0.4}
+                      className="mt-4 mb-3"
+                    >
+                      <FormButton
+                        onClick={handleApprove}
+                        disabled={Boolean(error) || !isInputNonZero}
+                        className="btn py-3"
+                      >
+                        {waitingApproval ? loadingText : `PERMIT USDC`}
+                      </FormButton>
+                    </FormButtonFade>
+                  )}
+                  <FormButtonFade
+                    show={show}
+                    triggerAnimation={triggerAnimation}
+                    delay={0.5}
+                    className="mt-4 mb-3"
                   >
-                    {waitingApproval ? loadingText : `PERMIT USDC`}
-                  </FormButton>
-                </FormButtonFade>
-              )}
-              <FormButtonFade show={show} delay={1.0} className="mt-4 mb-3">
-                <FormButton
-                  onClick={handleConfirm}
-                  disabled={Boolean(error) || signature === undefined}
-                  className="btn py-3"
-                >
-                  {actionType}
-                </FormButton>
-              </FormButtonFade>
-            </div>
-          ) : (
-            <>
-              <FormButtonFade show={show} delay={0.8} className="mt-4 mb-3">
-                <FormButton
-                  onClick={handleConfirm}
-                  disabled={!isInputNonZero}
-                  className="btn py-3"
-                >
-                  {actionType}
-                </FormButton>
-              </FormButtonFade>
-            </>
-          )}
-          <BalanceContainer delay={actionType === "deposit" ? 1.2 : 1.0}>
-            <BalanceLabel>
-              {actionType === "deposit"
-                ? "USDC Wallet Balance:"
-                : "Your Pool Balance:"}{" "}
-            </BalanceLabel>
-            <BalanceValue
-              error={Boolean(
-                error === "insufficientBalance" ||
-                  error === "withdrawLimitExceeded"
-              )}
-            >
-              {!account
-                ? "---"
-                : actionType === "deposit"
-                ? formatBigNumber(userAssetBalance, decimals, 2)
-                : formatBigNumber(vaultBalanceInAsset, decimals, 2)}
-            </BalanceValue>
-          </BalanceContainer>
-          {actionType === "withdraw" && (
-            <BalanceContainer delay={1.2}>
-              <BalanceLabel>Pool Max Withdraw Amount</BalanceLabel>
-              <BalanceValue
-                error={Boolean(error === "insufficientPoolLiquidity")}
+                    <ActionButton
+                      onClick={handleConfirm}
+                      disabled={Boolean(error) || signature === undefined}
+                      className="btn py-3"
+                    >
+                      {actionType}
+                    </ActionButton>
+                  </FormButtonFade>
+                </div>
+              ) : (
+                <>
+                  <FormButtonFade
+                    show={show}
+                    triggerAnimation={triggerAnimation}
+                    delay={0.4}
+                    className="mt-4 mb-3"
+                  >
+                    <FormButton
+                      onClick={handleConfirm}
+                      disabled={!isInputNonZero}
+                      className="btn py-3"
+                    >
+                      {actionType}
+                    </FormButton>
+                  </FormButtonFade>
+                </>
+              ))}
+            {!account && (
+              <FormButtonFade
+                show={show}
+                triggerAnimation={triggerAnimation}
+                delay={0.4}
+                className="mt-4 mb-3"
               >
-                {formatBigNumber(availableToWithdraw, decimals, 2)}
+                <ConnectButton onClick={() => setWalletModal(true)}>
+                  CONNECT WALLET
+                </ConnectButton>
+              </FormButtonFade>
+            )}
+            <BalanceContainer delay={actionType === "deposit" ? 0.6 : 0.5}>
+              <BalanceLabel>
+                {actionType === "deposit"
+                  ? "USDC Wallet Balance:"
+                  : "Your Pool Balance:"}{" "}
+              </BalanceLabel>
+              <BalanceValue
+                error={Boolean(
+                  error === "insufficientBalance" ||
+                    error === "withdrawLimitExceeded"
+                )}
+              >
+                {!account
+                  ? "---"
+                  : actionType === "deposit"
+                  ? formatBigNumber(userAssetBalance, decimals, 2)
+                  : formatBigNumber(vaultBalanceInAsset, decimals, 2)}
               </BalanceValue>
             </BalanceContainer>
-          )}
-        </>
-      ) : (
-        <>
-          <FrameBar color={colors.asset.USDC} position="top" height={4} />
-          <HeroContent
-            word={actionType === "deposit" ? "depositing" : "withdrawing"}
-          ></HeroContent>
-          <FrameBar color={colors.asset.USDC} position="bottom" height={4} />
-        </>
-      )}
-    </ModalContainer>
+            {actionType === "withdraw" && (
+              <BalanceContainer delay={0.6}>
+                <BalanceLabel>Pool Max Withdraw Amount</BalanceLabel>
+                <BalanceValue
+                  error={Boolean(error === "insufficientPoolLiquidity")}
+                >
+                  {formatBigNumber(availableToWithdraw, decimals, 2)}
+                </BalanceValue>
+              </BalanceContainer>
+            )}
+          </>
+        ) : (
+          <>
+            <FrameBar color={colors.asset.USDC} position="top" height={4} />
+            <HeroContent
+              word={actionType === "deposit" ? "depositing" : "withdrawing"}
+            ></HeroContent>
+            <FrameBar color={colors.asset.USDC} position="bottom" height={4} />
+          </>
+        )}
+      </ModalContainer>
+    </>
   );
 };
 

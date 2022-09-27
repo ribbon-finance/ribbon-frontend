@@ -30,6 +30,7 @@ const StyledToast = styled(BootstrapToast)<StatusProps>`
   top: 70px;
   border: none;
   box-shadow: none;
+  height: 80px;
 
   @media (max-width: ${sizes.lg - 1}px) {
     width: 90%;
@@ -46,11 +47,10 @@ const StyledToast = styled(BootstrapToast)<StatusProps>`
 
 const Body = styled(BootstrapToast.Body)<{ clickable?: boolean }>`
   height: 100%;
+  padding: 0;
   background: ${colors.background.two};
-  border-radius: 8px;
   display: flex;
-  padding: 16px;
-
+  justify-content: center;
   ${({ clickable }) => {
     if (clickable) {
       return `
@@ -68,6 +68,14 @@ const Body = styled(BootstrapToast.Body)<{ clickable?: boolean }>`
     padding-left: 20px;
     padding-right: 25px;
   }
+`;
+
+const CloseIconBox = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 80px;
+  border-left: 1px solid ${colors.border};
 `;
 
 const IconCircle = styled.div<StatusProps & { color?: string }>`
@@ -158,32 +166,24 @@ const BaseToast: React.FC<ToastProps> = ({
       {...props}
     >
       <Body clickable={Boolean(onClick)} onClick={onClick}>
-        <IconCircle
-          type={type}
-          color={
-            type === "reminder"
-              ? getVaultColor(extra?.vaultOption || VaultList[0])
-              : undefined
-          }
+        <div
+          style={{ flex: 1, paddingLeft: 16 }}
+          className="d-flex flex-column justify-content-center"
         >
-          {icon}
-        </IconCircle>
-        <div style={{ flex: 1 }} className="d-flex flex-column h-100">
-          <Title fontSize={14} lineHeight={20}>
+          <Title
+            color={type === "error" ? colors.red : colors.green}
+            fontSize={14}
+            lineHeight={20}
+          >
             {title}
           </Title>
           <SecondaryText fontSize={12} lineHeight={16} className="mt-1">
             {subtitle}
           </SecondaryText>
         </div>
-        <div className="d-flex align-items-center ml-2">
-          <CloseIcon
-            containerStyle={{
-              cursor: "pointer",
-            }}
-            onClick={onClose}
-          />
-        </div>
+        <CloseIconBox style={{ cursor: "pointer" }} onClick={onClose}>
+          <CloseIcon />
+        </CloseIconBox>
       </Body>
     </StyledToast>
   );

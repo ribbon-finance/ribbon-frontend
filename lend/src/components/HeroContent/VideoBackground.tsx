@@ -59,7 +59,7 @@ const VideoBackground: React.FC = () => {
     return (
       <ReactPlayer
         key="video-player"
-        url="https://player.vimeo.com/video/750125689?h=cae093b12e&amp;badge=0&amp;autopause=0&amp;player_id=0&amp;app_id=58479"
+        url="https://player.vimeo.com/video/754051394?h=1b15f626da&amp;badge=0&amp;autopause=0&amp;player_id=0&amp;app_id=58479"
         playing={true}
         width={video.width}
         height={video.height}

@@ -12,7 +12,7 @@ const ButtonArrowI = styled.i<OpenStateProps>`
 type ButtonArrowProps = React.HTMLAttributes<HTMLImageElement> & OpenStateProps;
 
 const ButtonArrow: React.FC<ButtonArrowProps> = (props) => (
-  <ButtonArrowI className="fas fa-chevron-down" {...props} />
+  <ButtonArrowI className="fas fa-arrow-down" {...props} />
 );
 
 export default ButtonArrow;

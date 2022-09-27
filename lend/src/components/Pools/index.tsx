@@ -244,7 +244,7 @@ export const Pools = () => {
                 </Stat>
               </PoolStats>
               <PoolButton>
-                <i className="fas fa-chevron-right" />
+                <i className="fas fa-arrow-right" />
               </PoolButton>
             </PoolWrapper>
           </motion.div>

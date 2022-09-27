@@ -34,7 +34,7 @@ function App() {
   if (loading) {
     return (
       <TextPreview>
-        <LoadingText>Ribbon Finance</LoadingText>
+        <LoadingText>Ribbon Lend</LoadingText>
       </TextPreview>
     );
   } else if (!loading && rejected) {

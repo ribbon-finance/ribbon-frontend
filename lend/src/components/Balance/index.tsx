@@ -1,15 +1,16 @@
 import colors from "shared/lib/designSystem/colors";
 import useWeb3Wallet from "../../hooks/useWeb3Wallet";
-import styled from "styled-components";
+import styled, { css } from "styled-components";
 import { Title, Subtitle, Button } from "../../designSystem";
 import { useVaultAccountBalances } from "../../hooks/useVaultAccountBalances";
 import { getAssetDecimals, getAssetLogo } from "../../utils/asset";
 import { formatBigNumber, isPracticallyZero } from "../../utils/math";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useVaultTotalDeposits } from "../../hooks/useVaultTotalDeposits";
 import { formatUnits } from "ethers/lib/utils";
 import LendModal, { ModalContentEnum } from "../Common/LendModal";
 import { delayedFade } from "../animations";
+import { fadeIn } from "shared/lib/designSystem/keyframes";
 
 const BalanceWrapper = styled.div`
   height: 100%;
@@ -60,27 +61,69 @@ const HeroSubtitle = styled(Subtitle)<{ delay?: number; color: string }>`
   ${delayedFade}
 `;
 
-const ClaimButton = styled(Button)<{ delay?: number }>`
+const ClaimButton = styled(Button)<{
+  delay?: number;
+  show: boolean;
+  hidden: boolean;
+}>`
   border-radius: 64px;
   font-size: 14px;
-  border: 1px solid ${colors.primaryText};
   background: ${colors.primaryText};
   color: ${colors.background.one};
   &:disabled {
+    color: ${colors.tertiaryText};
     background: ${colors.background.one};
-    color: ${colors.primaryText};
+    border: 2px solid ${colors.tertiaryText};
     pointer-events: none;
   }
-  ${delayedFade}
+  &:hidden {
+    display: none;
+  }
+  ${({ show, delay }) => {
+    return (
+      show &&
+      css`
+        opacity: 0;
+
+        &:disabled {
+          opacity: 0;
+        }
+
+        animation: ${fadeIn} 1s ease-in-out forwards;
+        animation-delay: ${delay || 0}s;
+      `
+    );
+  }}
 `;
 
-const ConnectButton = styled(Button)<{ delay?: number }>`
+const ConnectButton = styled(Button)<{
+  delay?: number;
+  show: boolean;
+  hidden: boolean;
+}>`
   border-radius: 64px;
   font-size: 14px;
   border-style: none;
   background: ${colors.buttons.secondaryBackground};
   color: ${colors.buttons.secondaryText};
-  ${delayedFade}
+  &:hidden {
+    display: none;
+  }
+  ${({ show, delay }) => {
+    return (
+      show &&
+      css`
+        opacity: 0;
+
+        &:disabled {
+          opacity: 0;
+        }
+
+        animation: ${fadeIn} 1s ease-in-out forwards;
+        animation-delay: ${delay || 0}s;
+      `
+    );
+  }}
 `;
 
 const ClaimTextContainer = styled.div<{ delay?: number }>`
@@ -110,6 +153,13 @@ export const Balance = () => {
   const { totalDeposits: yourDeposits } = useVaultTotalDeposits();
   const decimals = getAssetDecimals("USDC");
   const [triggerWalletModal, setWalletModal] = useState<boolean>(false);
+  const [triggerAnimation, setTriggerAnimation] = useState<boolean>(true);
+
+  useEffect(() => {
+    setTimeout(() => {
+      setTriggerAnimation(false);
+    }, 1600);
+  }, []);
 
   const roi = useMemo(() => {
     if (
@@ -166,21 +216,24 @@ export const Balance = () => {
                 : formatBigNumber(rbnClaimableRewards, rbnDecimals, 2)}
             </ClaimValue>
           </ClaimTextContainer>
-          {account ? (
-            <ClaimButton
-              disabled={isPracticallyZero(rbnClaimableRewards, rbnDecimals)}
-              onClick={() => setClaimModal(true)}
-              delay={0.6}
-            >
-              Claim RBN
-            </ClaimButton>
-          ) : (
-            <>
-              <ConnectButton onClick={() => setWalletModal(true)}>
-                Connect Wallet
-              </ConnectButton>
-            </>
-          )}
+
+          <ClaimButton
+            disabled={isPracticallyZero(rbnClaimableRewards, rbnDecimals)}
+            hidden={account === undefined}
+            onClick={() => setClaimModal(true)}
+            show={triggerAnimation}
+            delay={0.6}
+          >
+            Claim RBN
+          </ClaimButton>
+          <ConnectButton
+            hidden={account !== undefined}
+            delay={0.6}
+            show={triggerAnimation}
+            onClick={() => setWalletModal(true)}
+          >
+            Connect Wallet
+          </ConnectButton>
         </VaultContainer>
       </BalanceWrapper>
     </>
