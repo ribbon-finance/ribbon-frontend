@@ -175,7 +175,7 @@ export const Balance = () => {
         parseFloat(formatUnits(yourDeposits, decimals))) *
       100
     );
-  }, [decimals, yourBalance, account]);
+  }, [yourDeposits, decimals, yourBalance, account]);
 
   const [triggerClaimModal, setClaimModal] = useState<boolean>(false);
 

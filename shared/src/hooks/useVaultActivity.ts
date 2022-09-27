@@ -63,7 +63,6 @@ export const vaultActivitiesGraphql = (version: VaultVersion, chain: Chains) =>
               paidAmount
               borrower
               _yield
-              loanAmount
               closedAt
               closeTxhash
             }
@@ -201,7 +200,6 @@ export const resolveVaultActivitiesSubgraphResponse = (responses: {
               })),
               ...closeLoansData.map((item: any) => ({
                 ...item,
-                loanAmount: BigNumber.from(item.loanAmount),
                 paidAmount: BigNumber.from(item.paidAmount),
                 date: new Date(item.closedAt * 1000),
                 type: "closeLoan",
