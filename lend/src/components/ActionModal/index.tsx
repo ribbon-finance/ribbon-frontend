@@ -520,11 +520,6 @@ const BalanceValue = styled.span<{ error: boolean }>`
   font-family: VCR;
 `;
 
-const StyledBaseInput = styled(BaseInput)`
-  text-align: center;
-  font-size: 72px;
-`;
-
 export const BaseInputButton = styled.div`
   display: flex;
   justify-content: center;
@@ -551,6 +546,10 @@ export const BaseInputButton = styled.div`
   tab-index: 1;
 `;
 
+const StyledBaseInput = styled(BaseInput)`
+  font-size: 72px;
+`;
+
 const InputContainer = styled(BaseInputContainer)<{
   delay?: number;
 }>`
@@ -566,11 +565,14 @@ const InputContainer = styled(BaseInputContainer)<{
   margin: 0;
   padding: 0;
   max-width: 700px;
+  align-items: center;
   /* Firefox */
+
   input[type="number"] {
-    background-color: black;
+    background: black;
     width: 100%;
     -moz-appearance: textfield;
+    text-align: center;
   }
   ${delayedFade}
 `;
@@ -940,7 +942,6 @@ export const Hero: React.FC<HeroProps> = ({
                 placeholder="0"
                 value={inputAmount}
                 onChange={handleInputChange}
-                inputWidth={"100%"}
                 step={"0.000001"}
               />
             </InputContainer>

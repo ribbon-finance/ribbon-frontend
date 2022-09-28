@@ -5,6 +5,7 @@ import colors from "shared/lib/designSystem/colors";
 import { getExplorerURI } from "shared/lib/constants/constants";
 import styled, { css } from "styled-components";
 import ExternalLinkIcon from "../Common/ExternalLinkIcon";
+import wallet from "../../assets/icons/socials/wallet.svg";
 import etherscan from "../../assets/icons/socials/etherscan.svg";
 import disconnect from "../../assets/icons/disconnect.svg";
 import WalletLogo from "shared/lib/components/Wallet/WalletLogo";
@@ -357,7 +358,7 @@ export const WalletPage = ({ onHide }: WalletPageProps) => {
     if (walletStep === WalletPageEnum.ACCOUNT) {
       const actions = [
         {
-          img: etherscan,
+          img: wallet,
           title: "Change wallet",
           showExternalIcon: false,
           onClick: async () => {

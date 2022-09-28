@@ -11,6 +11,7 @@ import MenuButton from "./MenuButton";
 import { MobileMenuOpenProps } from "./types";
 import theme from "../../designSystem/theme";
 import { ProductDisclaimer } from "../ProductDisclaimer";
+import Link from "../Common/Link";
 
 const HeaderContainer = styled.div<MobileMenuOpenProps>`
   display: flex;
@@ -103,7 +104,6 @@ const MobileHeader: React.FC = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [modalContent, setModalContent] = useState<ModalContentEnum>();
 
-  console.log(modalContent);
   const onToggleMenu = () => {
     setIsMenuOpen(!isMenuOpen);
   };
@@ -111,7 +111,9 @@ const MobileHeader: React.FC = () => {
   return (
     <HeaderContainer isMenuOpen={isMenuOpen} className="">
       <LogoContainer>
-        <AppLogo />
+        <Link to="/app">
+          <AppLogo />
+        </Link>
       </LogoContainer>
       <LendModal
         show={Boolean(modalContent)}

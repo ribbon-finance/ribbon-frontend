@@ -340,6 +340,7 @@ const PoolPage = () => {
   );
 
   const AssetLogo = getAssetLogo(getAssets(poolId));
+
   return (
     <>
       <LendModal

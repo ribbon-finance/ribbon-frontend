@@ -63,5 +63,4 @@ function App() {
     </ChainContextProvider>
   );
 }
-
 export default App;

@@ -147,10 +147,12 @@ export const Balance = () => {
   const { account } = useWeb3Wallet();
   const Logo = getAssetLogo("USDC");
   const { loading, accountBalances } = useVaultAccountBalances();
+
+  const { loading: depositLoading, totalDeposits } = useVaultTotalDeposits();
+
   const yourBalance = accountBalances.totalBalance;
   const rbnClaimableRewards = accountBalances.rbnClaimable;
   const rbnDecimals = getAssetDecimals("RBN");
-  const { totalDeposits: yourDeposits } = useVaultTotalDeposits();
   const decimals = getAssetDecimals("USDC");
   const [triggerWalletModal, setWalletModal] = useState<boolean>(false);
   const [triggerAnimation, setTriggerAnimation] = useState<boolean>(true);
@@ -163,19 +165,20 @@ export const Balance = () => {
 
   const roi = useMemo(() => {
     if (
-      isPracticallyZero(yourDeposits, decimals) ||
+      isPracticallyZero(totalDeposits, decimals) ||
       isPracticallyZero(yourBalance, decimals) ||
-      !account
+      !account ||
+      depositLoading
     ) {
       return 0;
     }
 
     return (
-      (parseFloat(formatUnits(yourBalance.sub(yourDeposits), decimals)) /
-        parseFloat(formatUnits(yourDeposits, decimals))) *
+      (parseFloat(formatUnits(yourBalance.sub(totalDeposits), decimals)) /
+        parseFloat(formatUnits(totalDeposits, decimals))) *
       100
     );
-  }, [yourDeposits, decimals, yourBalance, account]);
+  }, [totalDeposits, decimals, yourBalance, account, depositLoading]);
 
   const [triggerClaimModal, setClaimModal] = useState<boolean>(false);
 
