@@ -168,7 +168,11 @@ export const StickyCol = styled(Col)`
   position: sticky;
   height: calc(100vh - ${components.header + components.footer}px);
   top: 0;
-
+  overflow-y: scroll;
+  ::-webkit-scrollbar {
+    width: 0;
+    background: transparent;
+  }
   @media (max-width: ${sizes.md}px) {
     position: relative;
     height: fit-content;

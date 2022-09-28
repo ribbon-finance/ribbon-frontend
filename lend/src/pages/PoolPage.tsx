@@ -54,7 +54,6 @@ import MobileHeader from "../components/MobileHeader";
 
 const PoolContainer = styled.div`
   width: calc(100% - ${components.sidebar}px);
-
   @media (max-width: ${sizes.lg}px) {
     width: 100%;
   }
@@ -244,7 +243,7 @@ const PoolDetailsWrapper = styled.div`
   }
 
   @media (max-width: ${sizes.lg}px) {
-    padding-bottom: ${components.footer * 3}px;
+    padding-bottom: ${components.footer * 4}px;
   }
 `;
 
@@ -477,7 +476,7 @@ const PoolPage = () => {
                   <Stat>
                     <Label>Credit Rating:</Label>
                     <StyledBaseLink
-                      to={""}
+                      to="https://credora.gitbook.io/credit-methodology/SbLmTxogePkrzsF4z9IK/credit-evaluation/credit-score"
                       target="_blank"
                       rel="noreferrer noopener"
                     >
