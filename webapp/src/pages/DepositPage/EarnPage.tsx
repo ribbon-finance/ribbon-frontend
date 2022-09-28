@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { BigNumber, ethers } from "ethers";
 import { useWeb3Wallet } from "shared/lib/hooks/useWeb3Wallet";
-import styled, { css, keyframes } from "styled-components";
+import styled, { css } from "styled-components";
 import { Redirect } from "react-router-dom";
 import { SecondaryText, Title } from "shared/lib/designSystem";
 import colors from "shared/lib/designSystem/colors";

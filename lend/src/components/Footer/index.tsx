@@ -2,10 +2,11 @@ import React from "react";
 import styled from "styled-components";
 import colors from "shared/lib/designSystem/colors";
 import sizes from "../../designSystem/sizes";
-import theme from "../../designSystem/theme";
 import { components } from "../../designSystem/components";
 import { ProductDisclaimer } from "../ProductDisclaimer";
-// import { StatsMarquee } from "../StatsMarquee";
+import { Link } from "react-router-dom";
+import { StatsMarquee } from "../StatsMarquee";
+import theme from "../../designSystem/theme";
 
 const FooterContainer = styled.div`
   display: flex;
@@ -53,11 +54,10 @@ const OpenAppButton = styled.div`
   justify-content: center;
   align-items: center;
   text-align: center;
-  // uncomment on launch
-  // &:hover {
-  //   cursor: pointer;
-  //   opacity: ${theme.hover.opacity};
-  // }
+  &:hover {
+    cursor: pointer;
+    opacity: ${theme.hover.opacity};
+  }
 `;
 
 const Footer: React.FC = () => {
@@ -68,12 +68,11 @@ const Footer: React.FC = () => {
         <ProductDisclaimer />
       </FooterContainer>
       <ButtonContainer>
-        {/* uncomment on launch */}
-        {/* <a href={URLS.lendApp}> */}
-        <OpenAppButton>
-          <ButtonText>OPEN APP</ButtonText>
-        </OpenAppButton>
-        {/* </a> */}
+        <Link to={"/app"}>
+          <OpenAppButton>
+            <ButtonText>OPEN APP</ButtonText>
+          </OpenAppButton>
+        </Link>
       </ButtonContainer>
     </>
   );

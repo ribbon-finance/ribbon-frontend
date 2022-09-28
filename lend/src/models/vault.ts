@@ -31,7 +31,7 @@ export const defaultVaultsData: VaultsSubgraphData = Object.fromEntries(
 ) as VaultsSubgraphData;
 
 export interface VaultAccount {
-  id: string;
+  id: VaultVersion;
   vault: Vault;
   account: string;
   updateCounter: number;
@@ -131,8 +131,11 @@ export const defaultVaultActivitiesData: VaultActivitiesData =
 
 export interface UnconnectedVaultData {
   poolSize: BigNumber;
+  availableToWithdraw: BigNumber;
   utilizationRate: BigNumber;
   vaultLimit: BigNumber;
+  availableToBorrow: BigNumber;
+  currentExchangeRate: BigNumber;
   vaultMaxWithdrawAmount: BigNumber;
   supplyRate: BigNumber;
   rewardPerSecond: BigNumber;
@@ -162,8 +165,11 @@ export const defaultVaultData: VaultData = {
       vault,
       {
         poolSize: BigNumber.from("0"),
+        availableToWithdraw: BigNumber.from("0"),
         utilizationRate: BigNumber.from("0"),
         vaultLimit: BigNumber.from("0"),
+        availableToBorrow: BigNumber.from("0"),
+        currentExchangeRate: BigNumber.from("0"),
         vaultBalanceInAsset: BigNumber.from("0"),
         vaultMaxWithdrawAmount: BigNumber.from("0"),
         maxWithdrawAmount: BigNumber.from("0"),

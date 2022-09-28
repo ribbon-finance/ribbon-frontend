@@ -5,24 +5,24 @@ import colors from "shared/lib/designSystem/colors";
 import { Title } from "shared/lib/designSystem";
 import MobileOverlayMenu from "shared/lib/components/Common/MobileOverlayMenu";
 import LendModal, { ModalContentEnum } from "../Common/LendModal";
-import { URLS } from "shared/lib/constants/constants";
-import ExternalLinkIcon from "../Common/ExternalLinkIcon";
 import { AppLogo } from "../Common/Logos";
 import sizes from "../../designSystem/sizes";
 import MenuButton from "./MenuButton";
 import { MobileMenuOpenProps } from "./types";
 import theme from "../../designSystem/theme";
+import { ProductDisclaimer } from "../ProductDisclaimer";
+import Link from "../Common/Link";
 
 const HeaderContainer = styled.div<MobileMenuOpenProps>`
   display: flex;
   align-items: center;
   justify-content: space-between;
-  display: none;
+  width: 100%;
   @media (max-width: ${sizes.lg}px) {
     height: 64px;
     border-bottom: 1px solid ${colors.border};
     // z-index: ${(props) => (props.isMenuOpen ? 50 : 10)};
-    z-index: 10000;
+    z-index: 100000;
     // The backdrop for the menu does not show up if we enable the backdrop-filter
     // for the header nav. To get around that, just set 'none'
     ${(props) => {
@@ -92,25 +92,6 @@ const NavLinkText = styled(Title)`
   font-size: 16px;
 `;
 
-const Footer = styled.div`
-  font-size: 12px;
-  color: ${colors.primaryText}52;
-
-  svg {
-    transition: all 0.2s ease-in-out;
-  }
-
-  > a {
-    color: ${colors.primaryText}52;
-    text-decoration: underline;
-    &:hover {
-      svg {
-        transform: translate(2px, -2px);
-      }
-    }
-  }
-`;
-
 const MobileOnly = styled.div`
   display: none;
 
@@ -130,12 +111,14 @@ const MobileHeader: React.FC = () => {
   return (
     <HeaderContainer isMenuOpen={isMenuOpen} className="">
       <LogoContainer>
-        <AppLogo />
+        <Link to="/app">
+          <AppLogo />
+        </Link>
       </LogoContainer>
       <LendModal
         show={Boolean(modalContent)}
         onHide={() => setModalContent(undefined)}
-        content={ModalContentEnum.WALLET}
+        content={modalContent}
       />
 
       <MobileOnly>
@@ -172,22 +155,7 @@ const MobileHeader: React.FC = () => {
             >
               <NavLinkText>{ModalContentEnum.COMMUNITY}</NavLinkText>
             </NavItem>
-            <Footer>
-              Ribbon Lend is a product built by&nbsp;
-              <a
-                href={URLS.ribbonFinance}
-                target="_blank"
-                rel="noreferrer noopener"
-              >
-                Ribbon Finance
-                <ExternalLinkIcon
-                  style={{
-                    marginRight: "4px",
-                    opacity: 0.32,
-                  }}
-                />
-              </a>
-            </Footer>
+            <ProductDisclaimer />
           </NavItemsContainer>
         </MobileOverlayMenu>
       </MobileOnly>

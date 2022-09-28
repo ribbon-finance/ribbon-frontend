@@ -65,8 +65,10 @@ const useFetchVaultData = (): VaultData => {
          */
         const unconnectedPromises: Promise<BigNumber>[] = [
           contract.poolSize(),
+          contract.availableToWithdraw(),
           contract.getUtilizationRate(),
           contract.availableToWithdraw(),
+          contract.availableToBorrow(),
           contract.getCurrentExchangeRate(),
           contract.totalSupply(),
           contract.getSupplyRate(),
@@ -95,8 +97,10 @@ const useFetchVaultData = (): VaultData => {
 
         const [
           poolSize,
+          availableToWithdraw,
           utilizationRate,
           vaultMaxWithdrawableShares,
+          availableToBorrow,
           currentExchangeRate,
           totalSupply,
           supplyRate,
@@ -112,8 +116,10 @@ const useFetchVaultData = (): VaultData => {
         return {
           vault,
           poolSize,
+          availableToWithdraw,
           utilizationRate,
           vaultMaxWithdrawableShares,
+          availableToBorrow,
           currentExchangeRate,
           totalSupply,
           supplyRate,
@@ -133,8 +139,10 @@ const useFetchVaultData = (): VaultData => {
             responses.map(
               ({
                 vault,
+                availableToWithdraw,
                 utilizationRate,
                 vaultMaxWithdrawableShares,
+                availableToBorrow,
                 currentExchangeRate,
                 totalSupply,
                 supplyRate,
@@ -148,9 +156,12 @@ const useFetchVaultData = (): VaultData => {
                 {
                   ...prev.responses[vault],
                   ...response,
+                  availableToWithdraw: availableToWithdraw,
                   utilizationRate: utilizationRate,
                   supplyRate: supplyRate,
                   rewardPerSecond: rewardPerSecond,
+                  availableToBorrow: availableToBorrow,
+                  currentExchangeRate: currentExchangeRate,
                   accumulativeReward: accumulativeReward,
                   withdrawableReward: withdrawableReward,
                   withdrawnReward: withdrawnReward,

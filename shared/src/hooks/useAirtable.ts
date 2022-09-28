@@ -83,10 +83,11 @@ export const useAirtable = () => {
       const rawPerformance =
         (ETHPrice - values.strikePrice) / values.strikePrice;
 
-      //performance reduced to 2dps
-      const performance = Math.round(rawPerformance * 100) / 100;
+      //performance reduced to 4dps
+      const performance = Math.round(rawPerformance * 10000) / 10000;
 
-      const absolutePerformance = Math.abs(performance);
+      const absolutePerformance =
+        Math.round(Math.abs(rawPerformance) * 10000) / 10000;
 
       const calculateMaxYield =
         values.baseYield +
