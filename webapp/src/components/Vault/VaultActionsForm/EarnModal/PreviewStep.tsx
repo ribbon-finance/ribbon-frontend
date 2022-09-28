@@ -27,6 +27,9 @@ import useUSDC, { DepositSignature } from "../../../../hooks/useUSDC";
 import useEarnStrategyTime from "../../../../hooks/useEarnStrategyTime";
 import { fadeIn } from "shared/lib/designSystem/keyframes";
 import colors from "shared/lib/designSystem/colors";
+import { useV2VaultData } from "shared/lib/hooks/web3DataContext";
+import useVaultPriceHistory from "shared/lib/hooks/useVaultPerformanceUpdate";
+import { parseUnits } from "ethers/lib/utils";
 
 const Logo = styled.div<{ delay?: number; show?: boolean }>`
   margin-top: -40px;
@@ -191,6 +194,23 @@ const PreviewStep: React.FC<{
   const loadingText = useLoadingText("permitting");
   const [depositSignature, setDepositSignature] = useState<DepositSignature>();
 
+  const {
+    data: { decimals, withdrawals },
+  } = useV2VaultData(vaultOption);
+
+  const { priceHistory } = useVaultPriceHistory(vaultOption, "earn");
+
+  const withdrawalAmount = useMemo(
+    () =>
+      withdrawals.shares
+        .mul(
+          priceHistory.find((history) => history.round === withdrawals.round)
+            ?.pricePerShare || BigNumber.from(0)
+        )
+        .div(parseUnits("1", decimals)),
+    [decimals, priceHistory, withdrawals.round, withdrawals.shares]
+  );
+
   interface Tooltip {
     title: string;
     explanation: string;
@@ -229,32 +249,48 @@ const PreviewStep: React.FC<{
         });
         break;
       case "withdraw":
-        if (withdrawOption === "standard") {
-          actionDetails.push({
-            key: "Withdraw Time",
-            value: `${withdrawalDate}`,
-            tooltip: {
-              title: "Withdraw Time",
-              explanation:
-                "Time until the next epoch is started and funds are deployed.",
-            },
-          });
-        } else {
-          actionDetails.push({
-            key: "Withdraw Time",
-            value: "Immediate",
-            tooltip: {
-              title: "Withdraw Time",
-              explanation:
-                "Time until the next epoch is started and funds are deployed.",
-            },
-          });
+        switch (withdrawOption) {
+          case "standard":
+            actionDetails.push({
+              key: "Withdraw Time",
+              value: `${withdrawalDate}`,
+              tooltip: {
+                title: "Withdraw Time",
+                explanation:
+                  "Time until the next epoch is started and funds are deployed.",
+              },
+            });
+            break;
+          case "instant":
+            actionDetails.push({
+              key: "Withdraw Time",
+              value: "Immediate",
+              tooltip: {
+                title: "Withdraw Time",
+                explanation:
+                  "Time until the next epoch is started and funds are deployed.",
+              },
+            });
+            break;
         }
         break;
     }
 
     return actionDetails;
   }, [actionType, strategyStartTime, withdrawOption, withdrawalDate]);
+
+  const renderTitle = useCallback(() => {
+    switch (actionType) {
+      case "deposit":
+        return "DEPOSIT PREVIEW";
+      case "withdraw":
+        if (withdrawOption !== "complete") {
+          return actionType + " Preview";
+        } else {
+          return "COMPLETE WITHDRAWAL";
+        }
+    }
+  }, [actionType, withdrawOption]);
 
   const renderWithdrawalSteps = useCallback(() => {
     if (withdrawOption === "instant") {
@@ -413,10 +449,7 @@ const PreviewStep: React.FC<{
 
       {/* Title */}
       <FormTitle delay={0.2} show={show}>
-        {actionType === "withdraw" && withdrawOption === "standard"
-          ? "INITIATE"
-          : "INSTANT"}{" "}
-        {actionWord} PREVIEW
+        {renderTitle()}
       </FormTitle>
 
       {/* Info Preview */}
@@ -428,7 +461,9 @@ const PreviewStep: React.FC<{
       >
         <SecondaryText>{actionWord} Amount</SecondaryText>
         <Title className="text-right">
-          {formatBigNumber(amount, getAssetDecimals(asset))}{" "}
+          {withdrawOption === "complete"
+            ? formatBigNumber(withdrawalAmount, getAssetDecimals(asset))
+            : formatBigNumber(amount, getAssetDecimals(asset))}{" "}
           {getAssetDisplay(asset)}
         </Title>
       </InfoPreview>

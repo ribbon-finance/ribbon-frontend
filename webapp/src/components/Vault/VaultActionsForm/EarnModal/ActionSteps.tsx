@@ -11,7 +11,9 @@ import {
 import { usePendingTransactions } from "shared/lib/hooks/pendingTransactionsContext";
 import { parseUnits } from "@ethersproject/units";
 import { useV2VaultData } from "shared/lib/hooks/web3DataContext";
-import { useVaultsPriceHistory } from "shared/lib/hooks/useVaultPerformanceUpdate";
+import useVaultPriceHistory, {
+  useVaultsPriceHistory,
+} from "shared/lib/hooks/useVaultPerformanceUpdate";
 import { getAssetColor, getAssetDecimals } from "shared/lib/utils/asset";
 import { RibbonEarnVault } from "shared/lib/codegen";
 import DepositFormStep from "./FormStep";
@@ -26,6 +28,7 @@ export interface ActionStepsProps {
   onClose: () => void;
   step: Steps;
   onChangeStep: (stepData: Steps) => void;
+  v2WithdrawOption: V2WithdrawOption;
   skipToPreview?: boolean;
   actionType: ActionType;
 }
@@ -36,14 +39,15 @@ const ActionSteps: React.FC<ActionStepsProps> = ({
   onClose,
   step,
   onChangeStep,
+  v2WithdrawOption,
   skipToPreview = false,
   actionType,
 }) => {
   const { data: priceHistories } = useVaultsPriceHistory();
 
   const firstStep = useMemo(() => {
-    return STEPS.formStep;
-  }, []);
+    return v2WithdrawOption === "complete" ? STEPS.previewStep : STEPS.formStep;
+  }, [v2WithdrawOption]);
 
   const [txhash, setTxhash] = useState("");
 
@@ -61,6 +65,7 @@ const ActionSteps: React.FC<ActionStepsProps> = ({
       pricePerShare,
     },
   } = useV2VaultData(vaultOption);
+  const { priceHistory } = useVaultPriceHistory(vaultOption, "earn");
 
   const vaultBalanceInAsset = useMemo(() => {
     const priceHistory = priceHistories.v2[vaultOption as VaultOptions].find(
@@ -83,9 +88,8 @@ const ActionSteps: React.FC<ActionStepsProps> = ({
 
   const [inputAmount, setInputAmount] = useState<string>("");
   const [withdrawOption, setWithdrawOption] =
-    useState<V2WithdrawOption>("standard");
+    useState<V2WithdrawOption>(v2WithdrawOption);
   const [signature, setSignature] = useState<DepositSignature | undefined>();
-
   const amountStr = useMemo(() => {
     try {
       const amount = parseUnits(inputAmount, decimals);
@@ -94,6 +98,17 @@ const ActionSteps: React.FC<ActionStepsProps> = ({
       return "0";
     }
   }, [decimals, inputAmount]);
+
+  const withdrawalAmount = useMemo(
+    () =>
+      withdrawals.shares
+        .mul(
+          priceHistory.find((history) => history.round === withdrawals.round)
+            ?.pricePerShare || BigNumber.from(0)
+        )
+        .div(parseUnits("1", decimals)),
+    [decimals, priceHistory, withdrawals.round, withdrawals.shares]
+  );
 
   const cleanupEffects = useCallback(() => {
     setTxhash("");
@@ -171,31 +186,47 @@ const ActionSteps: React.FC<ActionStepsProps> = ({
             onChangeStep(STEPS.submittedStep);
             break;
           case "withdraw":
-            if (withdrawOption === "standard") {
-              const shares = BigNumber.from(amountStr)
-                .mul(BigNumber.from(10).pow(decimals))
-                .div(pricePerShare);
-              res = await vault.initiateWithdraw(shares);
-              addPendingTransaction({
-                txhash: res.hash,
-                type: "withdrawInitiation",
-                amount: amountStr,
-                vault: vaultOption,
-              });
+            switch (withdrawOption) {
+              case "standard":
+                const shares = BigNumber.from(amountStr)
+                  .mul(BigNumber.from(10).pow(decimals))
+                  .div(pricePerShare);
+                res = await vault.initiateWithdraw(shares);
+                addPendingTransaction({
+                  txhash: res.hash,
+                  type: "withdrawInitiation",
+                  amount: amountStr,
+                  vault: vaultOption,
+                });
 
-              setTxhash(res.hash);
-              onChangeStep(STEPS.submittedStep);
-            } else {
-              res = await vault.withdrawInstantly(amountStr);
-              addPendingTransaction({
-                txhash: res.hash,
-                type: "withdraw",
-                amount: amountStr,
-                vault: vaultOption,
-              });
+                setTxhash(res.hash);
+                onChangeStep(STEPS.submittedStep);
+                break;
+              case "instant":
+                res = await vault.withdrawInstantly(amountStr);
+                addPendingTransaction({
+                  txhash: res.hash,
+                  type: "withdraw",
+                  amount: amountStr,
+                  vault: vaultOption,
+                });
 
-              setTxhash(res.hash);
-              onChangeStep(STEPS.submittedStep);
+                setTxhash(res.hash);
+                onChangeStep(STEPS.submittedStep);
+                break;
+              case "complete":
+                const amountToStr = withdrawalAmount.toString();
+                res = await vault.completeWithdraw();
+                addPendingTransaction({
+                  txhash: res.hash,
+                  type: "withdraw",
+                  amount: amountToStr,
+                  vault: vaultOption,
+                });
+
+                setTxhash(res.hash);
+                onChangeStep(STEPS.submittedStep);
+                break;
             }
             break;
         }

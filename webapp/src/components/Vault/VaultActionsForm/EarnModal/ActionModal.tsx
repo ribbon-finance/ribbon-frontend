@@ -4,7 +4,7 @@ import MobileOverlayMenu from "shared/lib/components/Common/MobileOverlayMenu";
 import colors from "shared/lib/designSystem/colors";
 import { Title } from "shared/lib/designSystem";
 import ActionSteps from "./ActionSteps";
-import { ActionType, Steps, STEPS } from "./types";
+import { ActionType, Steps, STEPS, V2WithdrawOption } from "./types";
 import sizes from "shared/lib/designSystem/sizes";
 import { ThinBackIcon, CloseIcon } from "shared/lib/assets/icons/icons";
 import { VaultOptions, VaultVersion } from "shared/lib/constants/constants";
@@ -150,6 +150,7 @@ interface ActionModalProps extends ModalProps {
   };
   show: boolean;
   onClose: () => void;
+  withdrawOption: V2WithdrawOption;
   actionType: ActionType;
 }
 
@@ -158,6 +159,7 @@ const ActionModal: React.FC<ActionModalProps> = ({
   show,
   onClose,
   variant,
+  withdrawOption,
   actionType,
 }) => {
   const [step, setStep] = useState<Steps>(0);
@@ -274,6 +276,7 @@ const ActionModal: React.FC<ActionModalProps> = ({
                 actionType={actionType}
                 vault={vault}
                 skipToPreview={isDesktop}
+                v2WithdrawOption={withdrawOption}
                 show={show}
                 onClose={onClose}
                 step={step}
