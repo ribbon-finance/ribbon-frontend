@@ -51,6 +51,7 @@ import useScreenSize from "shared/lib/hooks/useScreenSize";
 import { delayedFade, delayedUpwardFade } from "../components/animations";
 import credora from "../assets/icons/credora.svg";
 import MobileHeader from "../components/MobileHeader";
+import PositionWidget from "../components/PositionWidget";
 
 const PoolContainer = styled.div`
   width: calc(100% - ${components.sidebar}px);
@@ -542,6 +543,13 @@ const PoolPage = () => {
           setPage={setPage}
           setWalletModal={setWalletModal}
         />
+
+        <PositionWidget
+          vault={{
+            vaultOption: poolId,
+            vaultVersion: "lend",
+          }}
+        />
       </PoolContainer>
     </>
   );
@@ -558,7 +566,7 @@ const Header = ({ pool, setWalletModal }: HeaderProps) => {
   return (
     <>
       <HeaderRow mobile={true}>
-        <MobileHeaderCol md={0} lg={0}>
+        <MobileHeaderCol md={12} lg={0}>
           <MobileHeader />
         </MobileHeaderCol>
       </HeaderRow>

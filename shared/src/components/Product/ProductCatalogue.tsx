@@ -121,7 +121,7 @@ const ProductCatalogue: React.FC<ProductCatalogueProps> = ({
           isPutVault(vault)
             ? "PUT-SELLING"
             : isEarnVault(vault)
-            ? "PRINCIPLE-PROTECTED"
+            ? "PRINCIPAL-PROTECTED"
             : "COVERED-CALL"
         )
       ) {

@@ -41,7 +41,7 @@ export type DesktopViewType = "grid" | "gallery";
 export const VaultStrategyList = [
   "COVERED-CALL",
   "PUT-SELLING",
-  "PRINCIPLE-PROTECTED",
+  "PRINCIPAL-PROTECTED",
 ] as const;
 export type VaultStrategy = typeof VaultStrategyList[number];
 
