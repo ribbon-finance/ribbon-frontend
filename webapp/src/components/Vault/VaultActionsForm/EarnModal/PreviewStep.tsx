@@ -539,7 +539,11 @@ const PreviewStep: React.FC<{
       ) : (
         <div style={{ width: "100%" }}>
           <FormButton
-            delay={0.5 + detailRows.length * 0.1}
+            delay={
+              withdrawOption === "complete"
+                ? 0.3 + detailRows.length * 0.1
+                : 0.5 + detailRows.length * 0.1
+            }
             show={show}
             onClick={onClickConfirmButton}
             className="btn py-3 mt-4 mb-3"

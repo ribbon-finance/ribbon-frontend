@@ -542,7 +542,7 @@ const EarnPage = () => {
                       >
                         Withdraw
                       </StyledActionButton>
-                      {showCompleteWithdraw && (
+                      {!showCompleteWithdraw && (
                         <CompleteWithdrawButton
                           className={`py-3 mb-1 w-100`}
                           color={color}

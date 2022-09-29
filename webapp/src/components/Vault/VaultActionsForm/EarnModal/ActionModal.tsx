@@ -206,11 +206,13 @@ const ActionModal: React.FC<ActionModalProps> = ({
     }
 
     return (
-      <ModalHeaderBackButton onClick={() => setStep(STEPS.formStep)}>
-        <ThinBackIcon />
-      </ModalHeaderBackButton>
+      withdrawOption !== "complete" && (
+        <ModalHeaderBackButton onClick={() => setStep(STEPS.formStep)}>
+          <ThinBackIcon />
+        </ModalHeaderBackButton>
+      )
     );
-  }, [isDesktop]);
+  }, [isDesktop, withdrawOption]);
 
   const renderModalHeader = useCallback(() => {
     if (step === STEPS.formStep) {
