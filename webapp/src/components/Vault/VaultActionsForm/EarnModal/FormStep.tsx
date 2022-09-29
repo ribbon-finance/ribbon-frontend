@@ -274,14 +274,14 @@ const DepositFormStep: React.FC<{
   const vaultMaxDepositAmount = VaultMaxDeposit[vaultOption];
   const { vaultAccounts } = useVaultAccounts(vaultVersion);
   const vaultAccount = vaultAccounts[vaultOption];
-  const { strategyStartTime, withdrawalDate } = useEarnStrategyTime();
+  const { strategyStartTime, withdrawalDate, depositWithdrawalDate } =
+    useEarnStrategyTime();
   const assetDisplay = getAssetDisplay(asset);
   const [withdrawOption, setWithdrawOption] =
     useState<V2WithdrawOption>("standard");
   const [activeBackgroundState, setActiveBackgroundState] =
     useState<TargetAndTransition>();
   const { priceHistory } = useVaultPriceHistory(vaultOption, "earn");
-
   const withdrawOptionRefs = useMemo(
     () =>
       V2WithdrawOptionList.reduce<any>((acc, curr) => {
@@ -554,7 +554,8 @@ const DepositFormStep: React.FC<{
               explanation: `This is the total amount of ${assetDisplay} you’ve requested to withdraw from the vault’s pool of investable capital. At 12pm UTC on ${withdrawalDate}, the vault will close it’s monthly position and remove the amount of ${assetDisplay} you requested from its pool of investable capital.`,
             },
           });
-        } else {
+        }
+        if (withdrawOption === "instant") {
           actionDetails.push({
             key: "Instant Withdraw Limit",
             value: `${formatBigNumber(
@@ -713,7 +714,7 @@ const DepositFormStep: React.FC<{
               color={color}
             >
               IMPORTANT: Your funds will be available for withdrawal at 12pm UTC
-              on {withdrawalDate}
+              on {depositWithdrawalDate}
             </PrimaryText>
           </WarningContainer>
         );
@@ -746,10 +747,10 @@ const DepositFormStep: React.FC<{
     color,
     decimals,
     depositBalanceInAsset,
+    depositWithdrawalDate,
     detailRows.length,
     show,
     withdrawOption,
-    withdrawalDate,
   ]);
 
   return (

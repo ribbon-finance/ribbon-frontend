@@ -246,6 +246,30 @@ const StyledActionButton = styled(ActionButton)`
   z-index: 1;
   letter-spacing: 1px;
 `;
+
+const CompleteWithdrawButton = styled(ActionButton)`
+  font-size: 14px;
+  max-height: 36px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 100px;
+  color: ${colors.primaryText};
+  z-index: 1;
+  text-transform: none;
+`;
+
+const Marker = styled.div<{
+  color: string;
+  marginLeft?: number;
+}>`
+  width: 8px;
+  height: 8px;
+  background: ${(props) => props.color};
+  border-radius: 1000px;
+  margin-right: 8px;
+`;
+
 const EarnPage = () => {
   const { vaultOption, vaultVersion } = useVaultOption();
   const { active, account, chainId } = useWeb3Wallet();
@@ -260,6 +284,7 @@ const EarnPage = () => {
   const [showDetailsModal, setShowDetailsModal] = useState(false);
   const [showDepositModal, setShowDepositModal] = useState(false);
   const [showWithdrawModal, setShowWithdrawModal] = useState(false);
+  const [showCompleteModal, setShowCompleteModal] = useState(false);
   const { pendingTransactions } = usePendingTransactions();
   const [isDepositSuccess, setDepositSuccess] = useState<boolean>();
 
@@ -284,7 +309,14 @@ const EarnPage = () => {
   const [componentRefs] = useGlobalState("componentRefs");
   const { status } = useVaultData(vaultOption || VaultList[0]);
   const {
-    data: { asset, decimals, totalBalance: v2Deposits, cap: v2VaultLimit },
+    data: {
+      asset,
+      decimals,
+      totalBalance: v2Deposits,
+      cap: v2VaultLimit,
+      withdrawals,
+      round,
+    },
     loading,
   } = useV2VaultData(vaultOption || VaultList[0]);
 
@@ -301,7 +333,7 @@ const EarnPage = () => {
     if (vaultOption) {
       return getVaultColor(vaultOption);
     }
-    return undefined;
+    return colors.primaryText;
   }, [vaultOption]);
 
   const [investedInStrategy] = useMemo(() => {
@@ -374,55 +406,16 @@ const EarnPage = () => {
     ];
   }, [vaultAccount, decimals]);
 
-  // WIP
-  // const [investedInStrategy] = useMemo(() => {
-  //   let totalBalance = BigNumber.from(0);
-  //   let totalPendingDeposit = BigNumber.from(0);
-  //   for (const earnVault of EarnVaultList) {
-  //     const vaultAccount = vaultAccounts[earnVault];
-  //     console.log(vaultAccount);
-  //     if (!vaultAccount) {
-  //     } else {
-  //       totalBalance = totalBalance.add(vaultAccount.totalBalance);
-  //       totalPendingDeposit = totalPendingDeposit.add(
-  //         vaultAccounts[earnVault]!.totalPendingDeposit
-  //       );
-  //     }
-  //   }
+  const showInitiateWithdraw = useMemo(() => {
+    return (
+      !withdrawals.shares.isZero() ||
+      (!hasLockedBalanceInAsset && !hasPendingDeposits)
+    );
+  }, [hasLockedBalanceInAsset, hasPendingDeposits, withdrawals.shares]);
 
-  //   return [totalBalance.sub(totalPendingDeposit)];
-  // }, [vaultAccounts]);
-
-  // const [roi, yieldColor] = useMemo(() => {
-  //   let totalBalance = BigNumber.from(0);
-  //   let totalDeposits = BigNumber.from(0);
-  //   if (isPracticallyZero(totalDeposits, decimals)) {
-  //     return [0, colors.green];
-  //   }
-  //   for (const earnVault of EarnVaultList) {
-  //     const vaultAccount = vaultAccounts[earnVault];
-  //     if (!vaultAccount) {
-  //     } else {
-  //       totalBalance = totalBalance.add(vaultAccount.totalBalance);
-  //       totalDeposits = totalDeposits.add(
-  //         vaultAccounts[earnVault]!.totalDeposits
-  //       );
-  //     }
-  //   }
-
-  //   const roiTemp =
-  //     (parseFloat(formatUnits(totalBalance.sub(totalDeposits), decimals)) /
-  //       parseFloat(formatUnits(totalDeposits, decimals))) *
-  //     100;
-
-  //   const roiColor = roiTemp >= 0 ? colors.green : colors.red;
-  //   return [
-  //     (parseFloat(formatUnits(totalBalance.sub(totalDeposits), decimals)) /
-  //       parseFloat(formatUnits(totalDeposits, decimals))) *
-  //       100,
-  //     roiColor,
-  //   ];
-  // }, [vaultAccounts, decimals]);
+  const showCompleteWithdraw = useMemo(() => {
+    return !withdrawals.shares.isZero() && withdrawals.round !== round;
+  }, [round, withdrawals]);
 
   const pageOffset = useMemo(() => {
     return (
@@ -515,7 +508,8 @@ const EarnPage = () => {
                       )}
                 </HeroText>
                 <HeroSubtitle color={yieldColor} delay={0.4}>
-                  +{isLoading || roi === 0 ? "0.00" : roi.toFixed(4)}%
+                  {roi > 0 && "+"}
+                  {isLoading || roi === 0 ? "0.00" : roi.toFixed(4)}%
                 </HeroSubtitle>
                 <ViewDetailsButton
                   role="button"
@@ -541,15 +535,29 @@ const EarnPage = () => {
                       <StyledActionButton
                         className={`py-3 mb-1 w-100`}
                         color={"white"}
-                        disabled={
-                          !hasLockedBalanceInAsset && !hasPendingDeposits
-                        }
+                        disabled={!showInitiateWithdraw}
                         onClick={() => {
                           setShowWithdrawModal(true);
                         }}
                       >
                         Withdraw
                       </StyledActionButton>
+                      {showCompleteWithdraw && (
+                        <CompleteWithdrawButton
+                          className={`py-3 mb-1 w-100`}
+                          color={color}
+                          onClick={() => {
+                            setShowCompleteModal(true);
+                          }}
+                        >
+                          <div className="d-flex flex-row justify-content-around align-items-center">
+                            <Marker color={color} />
+                            <SecondaryText>
+                              Complete your withdrawals
+                            </SecondaryText>
+                          </div>
+                        </CompleteWithdrawButton>
+                      )}
                     </>
                   ) : (
                     <StyledActionButton
@@ -611,6 +619,7 @@ const EarnPage = () => {
         variant={"desktop"}
         show={showDepositModal}
         actionType={ACTIONS.deposit}
+        withdrawOption={"standard"}
         onClose={() => setShowDepositModal(false)}
       />
       <ActionModal
@@ -621,7 +630,19 @@ const EarnPage = () => {
         variant={"desktop"}
         show={showWithdrawModal}
         actionType={ACTIONS.withdraw}
+        withdrawOption={"standard"}
         onClose={() => setShowWithdrawModal(false)}
+      />
+      <ActionModal
+        vault={{
+          vaultOption: vaultOption,
+          vaultVersion: vaultVersion,
+        }}
+        variant={"desktop"}
+        show={showCompleteModal}
+        actionType={ACTIONS.withdraw}
+        withdrawOption={"complete"}
+        onClose={() => setShowCompleteModal(false)}
       />
     </>
   );
