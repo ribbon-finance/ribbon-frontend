@@ -274,7 +274,8 @@ const DepositFormStep: React.FC<{
   const vaultMaxDepositAmount = VaultMaxDeposit[vaultOption];
   const { vaultAccounts } = useVaultAccounts(vaultVersion);
   const vaultAccount = vaultAccounts[vaultOption];
-  const { strategyStartTime, withdrawalDate } = useEarnStrategyTime();
+  const { strategyStartTime, withdrawalDate, depositWithdrawalDate } =
+    useEarnStrategyTime();
   const assetDisplay = getAssetDisplay(asset);
   const [withdrawOption, setWithdrawOption] =
     useState<V2WithdrawOption>("standard");
@@ -713,7 +714,7 @@ const DepositFormStep: React.FC<{
               color={color}
             >
               IMPORTANT: Your funds will be available for withdrawal at 12pm UTC
-              on {withdrawalDate}
+              on {depositWithdrawalDate}
             </PrimaryText>
           </WarningContainer>
         );
@@ -746,10 +747,10 @@ const DepositFormStep: React.FC<{
     color,
     decimals,
     depositBalanceInAsset,
+    depositWithdrawalDate,
     detailRows.length,
     show,
     withdrawOption,
-    withdrawalDate,
   ]);
 
   return (
