@@ -9,8 +9,8 @@ import colors from "shared/lib/designSystem/colors";
 import { formatBigNumber, isPracticallyZero } from "../../utils/math";
 import sizes from "../../designSystem/sizes";
 import { useVaultsData } from "../../hooks/web3DataContext";
-import { AnimatePresence, motion } from "framer-motion";
 import { components } from "../../designSystem/components";
+import { delayedUpwardFade } from "../animations";
 
 const DesktopContainer = styled.div<{ color: string }>`
   display: flex;
@@ -28,6 +28,7 @@ const DesktopContainer = styled.div<{ color: string }>`
   @media (max-width: ${sizes.lg}px) {
     bottom: calc(${components.footer * 2}px + 26px);
   }
+  ${delayedUpwardFade}
 `;
 
 const FloatingPositionCard = styled.div<{ color: string }>`
@@ -92,50 +93,30 @@ const PositionWidget: React.FC<YourPositionProps> = ({
       return (
         <DesktopContainer color={color}>
           <FloatingPositionCard color={color}>
-            <AnimatePresence exitBeforeEnter initial={false}>
-              <motion.div
-                key={"position"}
-                transition={{
-                  duration: 0.25,
-                  type: "keyframes",
-                  ease: "easeInOut",
-                }}
-                initial={{
-                  opacity: 0,
-                }}
-                animate={{
-                  opacity: 1,
-                }}
-                exit={{
-                  opacity: 0,
-                }}
-              >
-                <PositionBox>
-                  <div className="d-flex justify-content-center">
-                    <AssetCircleContainer color={color} size={48}>
-                      <Logo width={"100%"} height={"100%"} />
-                    </AssetCircleContainer>
+            <PositionBox>
+              <div className="d-flex justify-content-center">
+                <AssetCircleContainer color={color} size={48}>
+                  <Logo width={"100%"} height={"100%"} />
+                </AssetCircleContainer>
+              </div>
+              <PositionContainer color={color}>
+                <div className="d-flex flex-column justify-content-center p-2">
+                  <PositionInfoText size={10} color={colors.text}>
+                    Your Balance
+                  </PositionInfoText>
+                  <div className="d-flex">
+                    <PositionInfoText size={14}>
+                      {poolData
+                        ? formatBigNumber(
+                            poolData.vaultBalanceInAsset,
+                            decimals
+                          )
+                        : "0.00"}
+                    </PositionInfoText>
                   </div>
-                  <PositionContainer color={color}>
-                    <div className="d-flex flex-column justify-content-center p-2">
-                      <PositionInfoText size={10} color={colors.text}>
-                        Your Balance
-                      </PositionInfoText>
-                      <div className="d-flex">
-                        <PositionInfoText size={14}>
-                          {poolData
-                            ? formatBigNumber(
-                                poolData.vaultBalanceInAsset,
-                                decimals
-                              )
-                            : "0.00"}
-                        </PositionInfoText>
-                      </div>
-                    </div>
-                  </PositionContainer>
-                </PositionBox>
-              </motion.div>
-            </AnimatePresence>
+                </div>
+              </PositionContainer>
+            </PositionBox>
           </FloatingPositionCard>
         </DesktopContainer>
       );
