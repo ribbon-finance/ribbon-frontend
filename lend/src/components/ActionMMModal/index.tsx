@@ -46,7 +46,8 @@ import UtilizationBar from "../Common/UtilizationBar";
 import currency from "currency.js";
 import { Button } from "../../designSystem";
 import LendModal, { ModalContentEnum } from "../Common/LendModal";
-
+import Slider from "rc-slider";
+import "rc-slider/assets/index.css";
 const livelyAnimation = (position: "top" | "bottom") => keyframes`
   0% {
     background-position-x: ${position === "top" ? 0 : 100}%;
@@ -250,16 +251,14 @@ export enum ActionModalEnum {
   TRANSACTION_STEP,
 }
 
-interface ActionModalProps {
+interface ActionMMModalProps {
   show: boolean;
-  actionType: ActionType;
   onHide: () => void;
   pool: VaultOptions;
 }
 
-const ActionModal: React.FC<ActionModalProps> = ({
+const ActionMMModal: React.FC<ActionMMModalProps> = ({
   show,
-  actionType,
   onHide,
   pool,
 }) => {
@@ -287,14 +286,13 @@ const ActionModal: React.FC<ActionModalProps> = ({
   return show ? (
     <FixedContainer>
       <HeroContainer>
-        <Header page={page} actionType={actionType}>
+        <Header page={page}>
           <CloseButton onClick={() => onHide()}>
             <CloseIcon />
           </CloseButton>
         </Header>
         <Content>
           <Hero
-            actionType={actionType}
             pool={pool}
             page={page}
             setPage={setPage}
@@ -313,20 +311,13 @@ const ActionModal: React.FC<ActionModalProps> = ({
 };
 
 interface HeaderProps {
-  actionType: ActionType;
   page: ActionModalEnum;
 }
 
-const Header: React.FC<HeaderProps> = ({ page, actionType, children }) => {
+const Header: React.FC<HeaderProps> = ({ page, children }) => {
   return (
     <HeaderContainer>
-      <HeaderText>
-        {actionType === "deposit" &&
-          (page === ActionModalEnum.PREVIEW ? "Deposit" : "Depositing")}
-        {actionType === "withdraw" &&
-          (page === ActionModalEnum.PREVIEW ? "Withdraw" : "Withdrawing")}{" "}
-        USDC
-      </HeaderText>
+      <HeaderText>BORROW USDC</HeaderText>
       {children}
     </HeaderContainer>
   );
@@ -569,7 +560,7 @@ const InputContainer = styled(BaseInputContainer)<{
   align-items: center;
   /* Firefox */
 
-  input[type="number"] {
+  input[type="text"] {
     background: black;
     width: 100%;
     -moz-appearance: textfield;
@@ -677,7 +668,6 @@ const ConnectButton = styled(Button)`
 `;
 
 interface HeroProps {
-  actionType: ActionType;
   pool: VaultOptions;
   page: ActionModalEnum;
   setPage: (page: ActionModalEnum) => void;
@@ -688,7 +678,6 @@ interface HeroProps {
 }
 
 export const Hero: React.FC<HeroProps> = ({
-  actionType,
   pool,
   page,
   setPage,
@@ -701,7 +690,7 @@ export const Hero: React.FC<HeroProps> = ({
   const [waitingApproval, setWaitingApproval] = useState(false);
   const { active, account } = useWeb3Wallet();
   const Logo = getAssetLogo("USDC");
-  const { vaultBalanceInAsset, currentExchangeRate, availableToWithdraw } =
+  const { vaultBalanceInAsset, currentExchangeRate, utilizationRate } =
     useVaultData(pool);
   const decimals = getAssetDecimals("USDC");
   const { balance: userAssetBalance } = useAssetBalance("USDC");
@@ -710,10 +699,13 @@ export const Hero: React.FC<HeroProps> = ({
   const [signature, setSignature] = useState<DepositSignature>();
   const [txhash, setTxhash] = useState("");
   const lendPool = useLendContract(pool) as RibbonLendVault;
+  const utilizationPercentage = formatBigNumber(
+    utilizationRate,
+    getUtilizationDecimals()
+  );
   const { pendingTransactions, addPendingTransaction } =
     usePendingTransactions();
   const [triggerWalletModal, setWalletModal] = useState<boolean>(false);
-
   useEffect(() => {
     // we check that the txhash and check if it had succeed
     // so we can dismiss the modal
@@ -727,17 +719,24 @@ export const Hero: React.FC<HeroProps> = ({
       }
     }
   }, [pendingTransactions, txhash, onHide, page, setPage]);
+  console.log({ inputAmount });
+  console.log({ utilizationPercentage });
 
   const isInputNonZero = useMemo((): boolean => {
     return parseFloat(inputAmount) > 0;
   }, [inputAmount]);
 
+  const isButtonDisabled = useMemo((): boolean => {
+    return (
+      !isInputNonZero ||
+      parseFloat(inputAmount).toFixed(2) ===
+        formatBigNumber(utilizationRate, getUtilizationDecimals())
+    );
+  }, [inputAmount, isInputNonZero, utilizationRate]);
+
   const amountStr = useMemo(() => {
     try {
-      const amount = parseUnits(
-        parseFloat(inputAmount).toFixed(decimals),
-        decimals
-      );
+      const amount = parseUnits(parseFloat(inputAmount).toFixed(2), decimals);
       return amount.toString();
     } catch (err) {
       return "0";
@@ -752,36 +751,27 @@ export const Hero: React.FC<HeroProps> = ({
           parseFloat(inputAmount).toFixed(decimals),
           decimals
         );
-        switch (actionType) {
-          case "deposit":
-            if (amountBigNumber.gt(userAssetBalance)) {
-              return "insufficientBalance";
-            }
-            break;
-          case "withdraw":
-            if (amountBigNumber.gt(vaultBalanceInAsset)) {
-              return "withdrawLimitExceeded";
-            }
-            if (amountBigNumber.gt(availableToWithdraw)) {
-              return "insufficientPoolLiquidity";
-            }
-        }
+        // switch (actionType) {
+        //   case "deposit":
+        //     if (amountBigNumber.gt(userAssetBalance)) {
+        //       return "insufficientBalance";
+        //     }
+        //     break;
+        //   case "withdraw":
+        //     if (amountBigNumber.gt(vaultBalanceInAsset)) {
+        //       return "withdrawLimitExceeded";
+        //     }
+        //     if (amountBigNumber.gt(availableToWithdraw)) {
+        //       return "insufficientPoolLiquidity";
+        //     }
+        // }
       }
     } catch (err) {
       // Assume no error because empty input unable to parse
     }
 
     return undefined;
-  }, [
-    actionType,
-    active,
-    availableToWithdraw,
-    decimals,
-    inputAmount,
-    isInputNonZero,
-    userAssetBalance,
-    vaultBalanceInAsset,
-  ]);
+  }, [active, decimals, inputAmount, isInputNonZero]);
 
   const renderErrorText = useCallback((_error: PoolValidationErrors) => {
     switch (_error) {
@@ -798,7 +788,7 @@ export const Hero: React.FC<HeroProps> = ({
 
   const handleInputChange = useCallback(
     (e: React.ChangeEvent<HTMLInputElement>) => {
-      const rawInput = e.target.value;
+      const rawInput = e.target.value.split("%")[0];
       const previousInput = inputAmount;
       setInputAmount(rawInput);
       if (previousInput !== rawInput) {
@@ -806,36 +796,6 @@ export const Hero: React.FC<HeroProps> = ({
       }
     },
     [inputAmount]
-  );
-
-  const handlePercentageClick = useCallback(
-    (percentage: number) => {
-      let input: string = "";
-      const maxAmount =
-        actionType === "deposit" ? userAssetBalance : vaultBalanceInAsset;
-      switch (percentage) {
-        case 0.25:
-          input = formatUnits(maxAmount.div(BigNumber.from(4)), decimals);
-          break;
-        case 0.5:
-          input = formatUnits(maxAmount.div(BigNumber.from(2)), decimals);
-          break;
-        case 0.75:
-          input = formatUnits(
-            maxAmount.div(BigNumber.from(4)).mul(BigNumber.from(3)),
-            decimals
-          );
-          break;
-        case 1:
-          input = formatUnits(maxAmount, decimals);
-          break;
-        default:
-          return;
-      }
-      setInputAmount(input);
-      setSignature(undefined);
-    },
-    [actionType, decimals, userAssetBalance, vaultBalanceInAsset]
   );
 
   const handleApprove = useCallback(async () => {
@@ -871,51 +831,6 @@ export const Hero: React.FC<HeroProps> = ({
     if (lendPool !== null) {
       try {
         let res: any;
-        switch (actionType) {
-          case "deposit":
-            if (!signature || !account) {
-              return;
-            }
-
-            res = await lendPool.provideWithPermit(
-              amountStr,
-              account,
-              signature.deadline,
-              signature.v,
-              signature.r,
-              signature.s
-            );
-
-            addPendingTransaction({
-              txhash: res.hash,
-              type: "deposit",
-              amount: amountStr,
-              vault: pool,
-              asset: "USDC",
-            });
-
-            setTxhash(res.hash);
-            setTxhashMain(res.hash);
-            setPage(ActionModalEnum.TRANSACTION_STEP);
-            break;
-          case "withdraw":
-            const amountInShares = BigNumber.from(amountStr)
-              .mul(BigNumber.from(10).pow(18))
-              .div(currentExchangeRate)
-              .toString();
-            res = await lendPool.redeem(amountInShares);
-            addPendingTransaction({
-              txhash: res.hash,
-              type: "withdraw",
-              amount: amountInShares,
-              vault: pool,
-            });
-
-            setTxhash(res.hash);
-            setTxhashMain(res.hash);
-            setPage(ActionModalEnum.TRANSACTION_STEP);
-            break;
-        }
       } catch (e) {
         console.error(e);
         onHide();
@@ -935,113 +850,54 @@ export const Hero: React.FC<HeroProps> = ({
             <ProductAssetLogoContainer color={"white"} delay={0.1}>
               <Logo height="100%" />
             </ProductAssetLogoContainer>
-            <BalanceTitle delay={0.1}>Enter {actionType} Amount</BalanceTitle>
+            <BalanceTitle delay={0.1}>Utilization</BalanceTitle>
             <InputContainer delay={0.2} className="mt-3 mb-2">
               <StyledBaseInput
-                type="number"
+                type="text"
                 className="form-control"
-                placeholder="0"
-                value={inputAmount}
+                placeholder={utilizationPercentage + "%"}
+                value={inputAmount !== "" ? inputAmount + "%" : ""}
                 onChange={handleInputChange}
                 step={"0.000001"}
               />
             </InputContainer>
+            <div style={{ width: 280 }}>
+              <Slider
+                defaultValue={parseFloat(utilizationPercentage)}
+                handleStyle={{
+                  height: 16,
+                  width: 16,
+                  backgroundColor: "white",
+                  border: 0,
+                  boxShadow: "none",
+                }}
+                trackStyle={{
+                  height: 2,
+                  backgroundColor: colors.green,
+                }}
+                railStyle={{
+                  height: 2,
+                  backgroundColor: colors.buttons.secondaryBackground2,
+                }}
+              />
+            </div>
             {error && <ErrorText>{renderErrorText(error)}</ErrorText>}
-            <PercentagesContainer delay={0.3}>
-              <BaseInputButton onClick={() => handlePercentageClick(0.25)}>
-                25%
-              </BaseInputButton>
-              <BaseInputButton onClick={() => handlePercentageClick(0.5)}>
-                50%
-              </BaseInputButton>
-              <BaseInputButton onClick={() => handlePercentageClick(0.75)}>
-                75%
-              </BaseInputButton>
-              <BaseInputButton onClick={() => handlePercentageClick(1)}>
-                MAX
-              </BaseInputButton>
-            </PercentagesContainer>
-            {account &&
-              (actionType === "deposit" ? (
-                <div className="justify-content-center">
-                  {signature !== undefined ? (
-                    <FormButtonFade
-                      show={show}
-                      triggerAnimation={triggerAnimation}
-                      delay={0.4}
-                      className="mt-4 mb-3"
-                    >
-                      <ApprovedButton className="btn py-3">
-                        USDC READY TO DEPOSIT
-                      </ApprovedButton>
-                    </FormButtonFade>
-                  ) : (
-                    <FormButtonFade
-                      show={show}
-                      triggerAnimation={triggerAnimation}
-                      delay={0.4}
-                      className="mt-4 mb-3"
-                    >
-                      <FormButton
-                        onClick={handleApprove}
-                        disabled={Boolean(error) || !isInputNonZero}
-                        className="btn py-3"
-                      >
-                        {waitingApproval ? loadingText : `PERMIT USDC`}
-                      </FormButton>
-                    </FormButtonFade>
-                  )}
-                  <FormButtonFade
-                    show={show}
-                    triggerAnimation={triggerAnimation}
-                    delay={0.5}
-                    className="mt-4 mb-3"
-                  >
-                    <ActionButton
-                      onClick={handleConfirm}
-                      disabled={Boolean(error) || signature === undefined}
-                      className="btn py-3"
-                    >
-                      {actionType}
-                    </ActionButton>
-                  </FormButtonFade>
-                </div>
-              ) : (
-                <>
-                  <FormButtonFade
-                    show={show}
-                    triggerAnimation={triggerAnimation}
-                    delay={0.4}
-                    className="mt-4 mb-3"
-                  >
-                    <FormButton
-                      onClick={handleConfirm}
-                      disabled={!isInputNonZero}
-                      className="btn py-3"
-                    >
-                      {actionType}
-                    </FormButton>
-                  </FormButtonFade>
-                </>
-              ))}
-            {!account && (
-              <FormButtonFade
-                show={show}
-                triggerAnimation={triggerAnimation}
-                delay={0.4}
-                className="mt-4 mb-3"
+            <FormButtonFade
+              show={show}
+              triggerAnimation={triggerAnimation}
+              delay={0.4}
+              className="mt-4 mb-3"
+            >
+              <FormButton
+                onClick={handleConfirm}
+                disabled={isButtonDisabled}
+                className="btn py-3"
               >
-                <ConnectButton onClick={() => setWalletModal(true)}>
-                  CONNECT WALLET
-                </ConnectButton>
-              </FormButtonFade>
-            )}
-            <BalanceContainer delay={actionType === "deposit" ? 0.6 : 0.5}>
-              <BalanceLabel>
-                {actionType === "deposit"
-                  ? "USDC Wallet Balance:"
-                  : "Your Pool Balance:"}{" "}
-              </BalanceLabel>
+                Borrow
+              </FormButton>
+            </FormButtonFade>
+            <BalanceContainer delay={0.5}>
+              <BalanceLabel>USDC Wallet Balance: </BalanceLabel>
               <BalanceValue
                 error={Boolean(
                   error === "insufficientBalance" ||
@@ -1050,28 +906,14 @@ export const Hero: React.FC<HeroProps> = ({
               >
                 {!account
                   ? "---"
-                  : actionType === "deposit"
-                  ? formatBigNumber(userAssetBalance, decimals, 2)
-                  : formatBigNumber(vaultBalanceInAsset, decimals, 2)}
+                  : formatBigNumber(userAssetBalance, decimals, 2)}
               </BalanceValue>
             </BalanceContainer>
-            {actionType === "withdraw" && (
-              <BalanceContainer delay={0.6}>
-                <BalanceLabel>Pool Max Withdraw Amount</BalanceLabel>
-                <BalanceValue
-                  error={Boolean(error === "insufficientPoolLiquidity")}
-                >
-                  {formatBigNumber(availableToWithdraw, decimals, 2)}
-                </BalanceValue>
-              </BalanceContainer>
-            )}
           </>
         ) : (
           <>
             <FrameBar color={colors.asset.USDC} position="top" height={4} />
-            <HeroContent
-              word={actionType === "deposit" ? "depositing" : "withdrawing"}
-            ></HeroContent>
+            <HeroContent word={"borrowing"}></HeroContent>
             <FrameBar color={colors.asset.USDC} position="bottom" height={4} />
           </>
         )}
@@ -1080,4 +922,4 @@ export const Hero: React.FC<HeroProps> = ({
   );
 };
 
-export default ActionModal;
+export default ActionMMModal;

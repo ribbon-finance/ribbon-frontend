@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useMemo, useState } from "react";
 import { Col, Row } from "react-bootstrap";
 import colors from "shared/lib/designSystem/colors";
 import styled from "styled-components";
@@ -238,6 +238,20 @@ const LendPage: React.FC = () => {
   const [activePage, setPage] = useState<PageEnum>(PageEnum.POOLS);
   const [triggerWalletModal, setWalletModal] = useState<boolean>(false);
   const { width } = useScreenSize();
+  const { loading, data: vaultDatas } = useVaultsData();
+  const { account, active } = useWeb3Wallet();
+  const usdcDecimals = getAssetDecimals("USDC");
+
+  const isManager = useMemo(() => {
+    if (account && !loading) {
+      let managers: string[] = [];
+      VaultList.forEach((pool) => {
+        managers.push(vaultDatas[pool].manager);
+      });
+      return managers.includes(account);
+    }
+    return false;
+  }, [account, loading, vaultDatas]);
 
   return (
     <>
@@ -308,12 +322,13 @@ export const FooterButton = styled(Button)<{
   isActive?: boolean;
   delay: number;
   disabled?: boolean;
+  width?: string;
 }>`
   font-size: 14px;
   border: none;
   border-radius: 0;
   height: ${components.footer}px;
-  width: 50%;
+  width: ${({ width }) => (width ? width : "50%")};
   color: ${({ isActive }) =>
     isActive ? colors.primaryText : colors.tertiaryText};
 

@@ -52,6 +52,7 @@ import { delayedFade, delayedUpwardFade } from "../components/animations";
 import credora from "../assets/icons/credora.svg";
 import MobileHeader from "../components/MobileHeader";
 import PositionWidget from "../components/PositionWidget";
+import ActionMMModal from "../components/ActionMMModal";
 
 const PoolContainer = styled.div`
   width: calc(100% - ${components.sidebar}px);
@@ -69,6 +70,7 @@ const PoolContainer = styled.div`
 enum PageEnum {
   DEPOSIT,
   WITHDRAW,
+  REBALANCE,
 }
 
 const MakerLogo = styled.div<{ delay: number }>`
@@ -321,7 +323,8 @@ const PoolPage = () => {
   const { poolId }: { poolId: VaultOptions } = useParams();
   const [activePage, setPage] = useState<PageEnum>();
   const [triggerWalletModal, setWalletModal] = useState<boolean>(false);
-  const { data: vaultDatas } = useVaultsData();
+  const { loading, data: vaultDatas } = useVaultsData();
+  const { account, active } = useWeb3Wallet();
   const { aprs: poolAPRs, supplyAprs, rbnAprs } = usePoolsAPR();
   const utilizationDecimals = getUtilizationDecimals();
   const usdcDecimals = getAssetDecimals("USDC");
@@ -330,6 +333,7 @@ const PoolPage = () => {
 
   const logo = getMakerLogo(poolId);
   const poolSize = formatBigNumber(vaultDatas[poolId].poolSize, usdcDecimals);
+  const manager = vaultDatas[poolId].manager;
   const apr = poolAPRs[poolId].toFixed(2);
   const supplyApr = supplyAprs[poolId].toFixed(2);
   const rbnApr = rbnAprs[poolId].toFixed(2);
@@ -351,6 +355,11 @@ const PoolPage = () => {
       <ActionModal
         show={activePage !== undefined}
         actionType={activePage === PageEnum.DEPOSIT ? "deposit" : "withdraw"}
+        onHide={() => setPage(undefined)}
+        pool={poolId}
+      />
+      <ActionMMModal
+        show={activePage !== undefined}
         onHide={() => setPage(undefined)}
         pool={poolId}
       />
@@ -464,69 +473,73 @@ const PoolPage = () => {
           </StickyCol>
           <Col xs={12} md={6}>
             <PoolDetailsWrapper>
-              <Details delay={0.25}>
-                <DetailsIndex>01</DetailsIndex>
-                <StyledTitle>{poolDetails.name}</StyledTitle>
-                <Paragraph>{poolDetails.bio}</Paragraph>
-              </Details>
-              <Details delay={0.5}>
-                <DetailsIndex>02</DetailsIndex>
-                <StyledTitle>Credit Rating</StyledTitle>
-                <Paragraph>{poolDetails.credit.content}</Paragraph>
-                <DetailsStatWrapper>
-                  <Stat>
-                    <Label>Credit Rating:</Label>
-                    <StyledBaseLink
-                      to="https://credora.gitbook.io/credit-methodology/SbLmTxogePkrzsF4z9IK/credit-evaluation/credit-score"
-                      target="_blank"
-                      rel="noreferrer noopener"
-                    >
-                      <Value>{poolDetails.credit.rating}</Value>
-                    </StyledBaseLink>
-                  </Stat>
-                  <Stat>
-                    <div className="d-flex justify-content-center align-items-center">
-                      <Label>Borrow Limit: </Label>
-                      <TooltipExplanation
-                        explanation={
-                          <>
-                            Credora calculates a Borrow Capacity for each
-                            trading firm. The Borrow Capacity calculation uses
-                            the Credit Score to define a target Portfolio
-                            Leverage, and subsequently calculates a USD Borrow
-                            Capacity based on trading firm current Debt and
-                            Portfolio Equity.
-                          </>
-                        }
-                        renderContent={({ ref, ...triggerHandler }) => (
-                          <HelpInfo containerRef={ref} {...triggerHandler}>
-                            i
-                          </HelpInfo>
-                        )}
-                      />
-                    </div>
-                    <Value>
-                      <AssetLogo />{" "}
-                      {currency(poolDetails.credit.borrowLimit).format({
-                        symbol: "",
-                      })}
-                    </Value>
-                  </Stat>
-                </DetailsStatWrapper>
-                <CreditRating>
-                  Credit ratings provided by{" "}
-                  <BaseLink
-                    color="white"
-                    target="_blank"
-                    rel="noreferrer noopener"
-                    to="https://credora.io/"
-                  >
-                    <img src={credora} alt="credora" />
-                  </BaseLink>
-                </CreditRating>
-              </Details>
-              <Details delay={0.75}>
-                <DetailsIndex>03</DetailsIndex>
+              {account !== manager && !loading && (
+                <>
+                  <Details delay={0.25}>
+                    <DetailsIndex>01</DetailsIndex>
+                    <StyledTitle>{poolDetails.name}</StyledTitle>
+                    <Paragraph>{poolDetails.bio}</Paragraph>
+                  </Details>
+                  <Details delay={0.5}>
+                    <DetailsIndex>02</DetailsIndex>
+                    <StyledTitle>Credit Rating</StyledTitle>
+                    <Paragraph>{poolDetails.credit.content}</Paragraph>
+                    <DetailsStatWrapper>
+                      <Stat>
+                        <Label>Credit Rating:</Label>
+                        <StyledBaseLink
+                          to="https://credora.gitbook.io/credit-methodology/SbLmTxogePkrzsF4z9IK/credit-evaluation/credit-score"
+                          target="_blank"
+                          rel="noreferrer noopener"
+                        >
+                          <Value>{poolDetails.credit.rating}</Value>
+                        </StyledBaseLink>
+                      </Stat>
+                      <Stat>
+                        <div className="d-flex justify-content-center align-items-center">
+                          <Label>Borrow Limit: </Label>
+                          <TooltipExplanation
+                            explanation={
+                              <>
+                                Credora calculates a Borrow Capacity for each
+                                trading firm. The Borrow Capacity calculation
+                                uses the Credit Score to define a target
+                                Portfolio Leverage, and subsequently calculates
+                                a USD Borrow Capacity based on trading firm
+                                current Debt and Portfolio Equity.
+                              </>
+                            }
+                            renderContent={({ ref, ...triggerHandler }) => (
+                              <HelpInfo containerRef={ref} {...triggerHandler}>
+                                i
+                              </HelpInfo>
+                            )}
+                          />
+                        </div>
+                        <Value>
+                          <AssetLogo />{" "}
+                          {currency(poolDetails.credit.borrowLimit).format({
+                            symbol: "",
+                          })}
+                        </Value>
+                      </Stat>
+                    </DetailsStatWrapper>
+                    <CreditRating>
+                      Credit ratings provided by{" "}
+                      <BaseLink
+                        color="white"
+                        target="_blank"
+                        rel="noreferrer noopener"
+                        to="https://credora.io/"
+                      >
+                        <img src={credora} alt="credora" />
+                      </BaseLink>
+                    </CreditRating>
+                  </Details>
+                </>
+              )}
+              <Details delay={account !== manager ? 0.75 : 0.25}>
+                <DetailsIndex>{account !== manager ? "03" : "01"}</DetailsIndex>
                 <StyledTitle>Pool Activity</StyledTitle>
                 <PoolActivity
                   vault={{
@@ -542,8 +555,8 @@ const PoolPage = () => {
           activePage={activePage}
           setPage={setPage}
           setWalletModal={setWalletModal}
+          manager={manager}
         />
-
         <PositionWidget
           vault={{
             vaultOption: poolId,
@@ -591,9 +604,15 @@ interface FooterProps {
   activePage?: PageEnum;
   setPage: (page: PageEnum) => void;
   setWalletModal: (trigger: boolean) => void;
+  manager: string;
 }
 
-const Footer = ({ activePage, setPage, setWalletModal }: FooterProps) => {
+const Footer = ({
+  activePage,
+  setPage,
+  setWalletModal,
+  manager,
+}: FooterProps) => {
   const { account, active } = useWeb3Wallet();
 
   return (
@@ -604,20 +623,35 @@ const Footer = ({ activePage, setPage, setWalletModal }: FooterProps) => {
         </DisclaimerWrapper>
       </Col>
       <Col md={12} lg={6}>
-        <FooterButton
-          delay={0.2}
-          isActive={activePage === PageEnum.DEPOSIT}
-          onClick={() => setPage(PageEnum.DEPOSIT)}
-        >
-          Deposit
-        </FooterButton>
-        <FooterButton
-          delay={0.3}
-          isActive={activePage === PageEnum.WITHDRAW}
-          onClick={() => setPage(PageEnum.WITHDRAW)}
-        >
-          Withdraw
-        </FooterButton>
+        {account !== manager ? (
+          <>
+            <FooterButton
+              delay={0.2}
+              isActive={activePage === PageEnum.DEPOSIT}
+              onClick={() => setPage(PageEnum.DEPOSIT)}
+            >
+              Deposit
+            </FooterButton>
+            <FooterButton
+              delay={0.3}
+              isActive={activePage === PageEnum.WITHDRAW}
+              onClick={() => setPage(PageEnum.WITHDRAW)}
+            >
+              Withdraw
+            </FooterButton>
+          </>
+        ) : (
+          <>
+            <FooterButton
+              delay={0.3}
+              isActive={activePage === PageEnum.REBALANCE}
+              onClick={() => setPage(PageEnum.REBALANCE)}
+              width={"100%"}
+            >
+              Rebalance Utilization
+            </FooterButton>
+          </>
+        )}
       </Col>
       <FooterWalletCol md={0} lg={0}>
         <WalletButton delay={0.4} onClick={() => setWalletModal(true)}>

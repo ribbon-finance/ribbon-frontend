@@ -63,7 +63,7 @@ const useFetchVaultData = (): VaultData => {
          * 3. max Withdrawable Shares
          * 4. Total Supply
          */
-        const unconnectedPromises: Promise<BigNumber>[] = [
+        const unconnectedPromises: Promise<any>[] = [
           contract.poolSize(),
           contract.availableToWithdraw(),
           contract.getUtilizationRate(),
@@ -73,6 +73,8 @@ const useFetchVaultData = (): VaultData => {
           contract.totalSupply(),
           contract.getSupplyRate(),
           contract.rewardPerSecond(),
+          contract.manager(),
+          contract.borrows(),
         ];
 
         /**
@@ -105,6 +107,8 @@ const useFetchVaultData = (): VaultData => {
           totalSupply,
           supplyRate,
           rewardPerSecond,
+          manager,
+          borrows,
           vaultBalance,
           accumulativeReward,
           withdrawableReward,
@@ -124,6 +128,8 @@ const useFetchVaultData = (): VaultData => {
           totalSupply,
           supplyRate,
           rewardPerSecond,
+          manager,
+          borrows,
           vaultBalance,
           accumulativeReward,
           withdrawableReward,
@@ -147,6 +153,8 @@ const useFetchVaultData = (): VaultData => {
                 totalSupply,
                 supplyRate,
                 rewardPerSecond,
+                manager,
+                borrows,
                 accumulativeReward,
                 withdrawableReward,
                 withdrawnReward,
@@ -160,6 +168,8 @@ const useFetchVaultData = (): VaultData => {
                   utilizationRate: utilizationRate,
                   supplyRate: supplyRate,
                   rewardPerSecond: rewardPerSecond,
+                  manager: manager,
+                  borrows: borrows,
                   availableToBorrow: availableToBorrow,
                   currentExchangeRate: currentExchangeRate,
                   accumulativeReward: accumulativeReward,

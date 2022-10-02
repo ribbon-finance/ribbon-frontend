@@ -20,6 +20,7 @@
     "bootstrap": "^4.6.0",
     "ethers": "5.4.0",
     "framer": "^1.2.29",
+    "rc-slider": "^10.0.1",
     "react": "^17.0.1",
     "react-bootstrap": "^1.5.1",
     "react-circular-progressbar": "^2.0.4",
@@ -64,8 +65,8 @@
     "@typechain/ethers-v5": "^9.0.0",
     "@types/react-router-dom": "^5.1.7",
     "@types/styled-components": "^5.1.9",
-    "eslint-plugin-react-hooks": "^4.6.0",
     "copyfiles": "^2.4.1",
+    "eslint-plugin-react-hooks": "^4.6.0",
     "typechain": "^7.0.0"
   }
 }

@@ -137,7 +137,7 @@ const HeroHeaderMobile: React.FC = ({ children }) => {
 };
 
 interface HeroContentInterface {
-  word: "depositing" | "withdrawing" | "ribbon lend";
+  word: "depositing" | "withdrawing" | "ribbon lend" | "borrowing" | "repaying";
 }
 const HeroContent: React.FC<HeroContentInterface> = ({ word }) => {
   return (
