@@ -146,6 +146,7 @@ const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const product = useRouteMatch({ path: "/", exact: true });
   const portfolio = useRouteMatch({ path: "/portfolio", exact: true });
+  const staking = useRouteMatch({ path: "/staking", exact: true });
   const headerRef = useRef<HTMLDivElement>(null);
   const [, setComponentRefs] = useGlobalState("componentRefs");
 
@@ -257,6 +258,7 @@ const Header = () => {
                   activeBackground: `none`,
                   color: colors.primaryText,
                   header: true,
+                  onPage: Boolean(staking),
                 }}
                 menuItemTextConfig={{
                   fontSize: 12,

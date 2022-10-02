@@ -19,8 +19,9 @@ interface FilterDropdownButtonConfig {
   activeBackground?: string;
   paddingHorizontal?: number;
   paddingVertical?: number;
-  color?: string;
   header?: boolean;
+  onPage?: boolean;
+  color?: string;
 }
 
 interface FilterDropdownMenuConfig {
@@ -62,7 +63,11 @@ const FilterButton = styled(BaseButton)<{
       ? props.config.activeBackground || colors.background.two
       : props.config.background || colors.background.two};
   opacity: ${(props) =>
-    props.active ? "1" : props.config.header ? "0.48" : "1"};
+    props.active || props.config.onPage
+      ? "1"
+      : props.config.header
+      ? "0.48"
+      : "1"};
   &:hover {
     background-color: ${(props) =>
       props.config.activeBackground || colors.background.two};
@@ -243,7 +248,7 @@ const FilterDropdown: React.FC<FilterDropdownProps> = ({
     <Filter {...props} ref={ref}>
       <FilterButton
         role="button"
-        active={open || Boolean(staking)}
+        active={open}
         onClick={() => {
           setOpen((open) => !open);
         }}
