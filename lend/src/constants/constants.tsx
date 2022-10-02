@@ -320,12 +320,28 @@ export const VaultDetailsMap: Record<VaultOptions, VaultDetails> = {
     bio: (
       <>
         <p>
-          Folkvang is a quantitative trading firm and liquidity provider active
-          in all leading crypto markets.
+          Folkvang is a native crypto trading firm. With their proprietary
+          technology, they trade on all major crypto markets around the clock.
+          Since they began trading, they have grown the team from two people in
+          Asia in 2018 to a global team of nine core contributors.
         </p>
         <p>
-          Folkvang trades all major coins on all major exchanges with a constant
-          global presence.
+          In March 2020, Folkvang became more official and took on investment
+          from SBF to seriously scale up their capital base and trading
+          operations. They have been a part of global on-screen crypto flows
+          ever since, trading billions of dollars every day on all major coins
+          and exchanges.
+        </p>
+        <p>
+          As a quantitative trading firm, Folkvang employs a variety of trading
+          strategies, ranging from low latency HFT arbitrage on the biggest
+          markets to degen yield farming. They are best known for the former,
+          where their market-neutral HFT strategies make money from
+          market-making, arbitrage, funding, and basis.
+        </p>
+        <p>
+          On a weekly basis, Folkvang have had zero drawdowns since their start
+          in March 2019.
         </p>
       </>
     ),
