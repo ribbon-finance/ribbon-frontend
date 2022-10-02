@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import styled from "styled-components";
 import { useRouteMatch } from "react-router-dom";
 import { useWeb3Wallet } from "shared/lib/hooks/useWeb3Wallet";
@@ -18,6 +18,8 @@ import NotificationButton from "../Notification/NotificationButton";
 import { isEthNetwork } from "shared/lib/constants/constants";
 import ExternalLinkIcon from "shared/lib/assets/icons/externalLink";
 import { useGlobalState } from "shared/lib/store/store";
+import FilterDropdown from "shared/lib/components/Common/FilterDropdown";
+import { useHistory } from "react-router-dom";
 
 const HeaderContainer = styled.div<MobileMenuOpenProps>`
   height: ${theme.header.height}px;
@@ -102,7 +104,8 @@ const NavItem = styled.div.attrs({
   opacity: ${(props) => (props.isSelected ? "1" : "0.48")};
 
   &:hover {
-    opacity: ${(props) => (props.isSelected ? theme.hover.opacity : "1")};
+    opacity: ${(props) =>
+      props.isHighlighted ? "1" : props.isSelected ? theme.hover.opacity : "1"};
   }
 
   @media (max-width: ${sizes.xl}px) {
@@ -138,11 +141,11 @@ const MobileOnly = styled.div`
 `;
 
 const Header = () => {
+  const history = useHistory();
   const { active, chainId } = useWeb3Wallet();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const product = useRouteMatch({ path: "/", exact: true });
   const portfolio = useRouteMatch({ path: "/portfolio", exact: true });
-  const staking = useRouteMatch({ path: "/staking", exact: true });
   const headerRef = useRef<HTMLDivElement>(null);
   const [, setComponentRefs] = useGlobalState("componentRefs");
 
@@ -159,12 +162,18 @@ const Header = () => {
     }
   }, [headerRef, setComponentRefs]);
 
+  const openLink = useCallback((link) => {
+    setIsMenuOpen(false);
+    window.open(link);
+  }, []);
+
   const renderLinkItem = (
     title: string,
     to: string,
     isSelected: boolean,
     primary: boolean = true,
-    external: boolean = false
+    external: boolean = false,
+    isHighlighted: boolean = false
   ) => {
     return (
       <BaseLink
@@ -176,10 +185,13 @@ const Header = () => {
         }}
       >
         {primary ? (
-          <NavItem isSelected={isSelected}>
-            <NavLinkText>{title}</NavLinkText>
+          <NavItem isSelected={isSelected} isHighlighted={isHighlighted}>
+            <NavLinkText color={isHighlighted ? colors.green : undefined}>
+              {title}
+            </NavLinkText>
             {external && (
               <ExternalLinkIcon
+                color={isHighlighted ? colors.green : undefined}
                 style={{
                   marginLeft: 6,
                 }}
@@ -213,10 +225,44 @@ const Header = () => {
         <LinksContainer>
           {renderLinkItem("PRODUCTS", "/", Boolean(product))}
           {renderLinkItem("PORTFOLIO", "/portfolio", Boolean(portfolio))}
-          {chainId &&
-            isEthNetwork(chainId) &&
-            renderLinkItem("STAKING", "/staking", Boolean(staking))}
-          {renderLinkItem("GOVERNANCE", URLS.governance, false, true, true)}
+          {chainId && isEthNetwork(chainId) && (
+            // renderLinkItem("STAKING", "/staking", Boolean(staking))}
+            <div className="d-flex justify-content-center align-items-center">
+              <FilterDropdown
+                options={[
+                  {
+                    display: "VAULT TOKEN",
+                    value: "VAULT TOKEN",
+                    externalLink: false,
+                  },
+                  {
+                    display: "RBN",
+                    value: "RBN",
+                    externalLink: true,
+                  },
+                ]}
+                value={"STAKING"}
+                onSelect={(option: any) => {
+                  if (option === "VAULT TOKEN") {
+                    history.push("./staking");
+                  } else {
+                    openLink(URLS.governance);
+                  }
+                }}
+                buttonConfig={{
+                  background: "none",
+                  activeBackground: `none`,
+                  color: colors.primaryText,
+                  header: true,
+                }}
+                menuItemTextConfig={{
+                  fontSize: 12,
+                  letterSpacing: 1.5,
+                }}
+              />
+            </div>
+          )}
+          {renderLinkItem("LEND", URLS.lend, true, true, true, true)}
         </LinksContainer>
       </HeaderAbsoluteContainer>
 
@@ -258,11 +304,12 @@ const Header = () => {
             Boolean(useRouteMatch({ path: "/portfolio", exact: true }))
           )}
           {renderLinkItem(
-            "STAKING",
+            "VAULT TOKENS",
             "/staking",
             Boolean(useRouteMatch({ path: "/staking", exact: true }))
           )}
-          {renderLinkItem("GOVERNANCE", URLS.governance, false, true, true)}
+          {renderLinkItem("STAKE RBN", URLS.governance, false, true, true)}
+          {renderLinkItem("LEND", URLS.lend, true, true, true, true)}
           {renderLinkItem("DISCORD", URLS.discord, false, false, true)}
           {renderLinkItem("TWITTER", URLS.twitter, false, false, true)}
           {renderLinkItem("GITHUB", URLS.github, false, false, true)}

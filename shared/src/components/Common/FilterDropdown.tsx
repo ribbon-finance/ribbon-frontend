@@ -11,6 +11,8 @@ import useOutsideAlerter from "../../hooks/useOutsideAlerter";
 import useScreenSize from "../../hooks/useScreenSize";
 import { capitalize } from "../../utils/text";
 import ButtonArrow from "./ButtonArrow";
+import ExternalLinkIcon from "shared/lib/assets/icons/externalLink";
+import { useRouteMatch } from "react-router-dom";
 
 interface FilterDropdownButtonConfig {
   background?: string;
@@ -18,6 +20,7 @@ interface FilterDropdownButtonConfig {
   paddingHorizontal?: number;
   paddingVertical?: number;
   color?: string;
+  header?: boolean;
 }
 
 interface FilterDropdownMenuConfig {
@@ -34,6 +37,7 @@ interface MenuItemConfig {
 
 interface MenuItemTextConfig {
   fontSize?: number;
+  letterSpacing?: number;
   lineHeight?: number;
 }
 
@@ -57,15 +61,18 @@ const FilterButton = styled(BaseButton)<{
     props.active
       ? props.config.activeBackground || colors.background.two
       : props.config.background || colors.background.two};
-
+  opacity: ${(props) =>
+    props.active ? "1" : props.config.header ? "0.48" : "1"};
   &:hover {
     background-color: ${(props) =>
       props.config.activeBackground || colors.background.two};
+    opacity: 1;
   }
 `;
 
 const FilterButtonText = styled(Title)<{ config: FilterDropdownButtonConfig }>`
-  font-size: 14px;
+  font-size: ${(props) => (props.config.header ? `12px` : `14px`)};
+  letter-spacing: ${(props) => (props.config.header ? `1.5px` : ``)};
   color: ${(props) => props.config.color || colors.text};
   text-transform: uppercase;
 `;
@@ -128,9 +135,16 @@ const MenuItem = styled.div<MenuItemConfig>`
       props.lastItemPaddingBottom ? props.lastItemPaddingBottom : "16px"};
   }
 
+  svg {
+    opacity: 0.64;
+  }
+
   &:hover {
     span {
       color: ${colors.primaryText};
+    }
+    svg {
+      opacity: 1;
     }
   }
 `;
@@ -144,7 +158,9 @@ type FilterDropdownProps = Omit<
   React.HTMLAttributes<HTMLDivElement>,
   "onSelect"
 > & {
-  options: Array<string | { display: string; value: string }>;
+  options: Array<
+    string | { display: string; value: string; externalLink?: boolean }
+  >;
   value: string;
   onSelect: (option: string) => void;
   buttonConfig?: FilterDropdownButtonConfig;
@@ -169,23 +185,34 @@ const FilterDropdown: React.FC<FilterDropdownProps> = ({
   const [open, setOpen] = useState(false);
   const { height, width } = useScreenSize();
   const dropdownBoundingRect = useBoundingclientrect(ref);
+  const staking = useRouteMatch({ path: "/staking", exact: true });
 
   useOutsideAlerter(ref, () => {
     setOpen(false);
   });
 
   const renderMenuItem = useCallback(
-    (title: string, onClick: () => void) => (
+    (title: string, externalLink: boolean, onClick: () => void) => (
       <MenuItem onClick={onClick} role="button" key={title} {...menuItemConfig}>
         <MenuItemText
           fontSize={menuItemTextConfig?.fontSize || 14}
+          letterSpacing={menuItemTextConfig?.letterSpacing || undefined}
           lineHeight={menuItemTextConfig?.lineHeight || 20}
         >
           {title}
         </MenuItemText>
+        {externalLink && (
+          <div className="ml-2">
+            <ExternalLinkIcon />
+          </div>
+        )}
       </MenuItem>
     ),
-    [menuItemConfig, menuItemTextConfig]
+    [
+      menuItemConfig,
+      menuItemTextConfig?.fontSize,
+      menuItemTextConfig?.lineHeight,
+    ]
   );
 
   const getVerticalOrientation = useCallback(() => {
@@ -215,7 +242,7 @@ const FilterDropdown: React.FC<FilterDropdownProps> = ({
     <Filter {...props} ref={ref}>
       <FilterButton
         role="button"
-        active={open}
+        active={open || Boolean(staking)}
         onClick={() => {
           setOpen((open) => !open);
         }}
@@ -250,16 +277,26 @@ const FilterDropdown: React.FC<FilterDropdownProps> = ({
           }}
         >
           {options.map(
-            (filterOption: string | { display: string; value: string }) =>
+            (
+              filterOption:
+                | string
+                | { display: string; value: string; externalLink?: boolean }
+            ) =>
               typeof filterOption === "string"
-                ? renderMenuItem(capitalize(filterOption), () => {
+                ? renderMenuItem(capitalize(filterOption), false, () => {
                     onSelect(filterOption);
                     setOpen(false);
                   })
-                : renderMenuItem(capitalize(filterOption.display), () => {
-                    onSelect(filterOption.value);
-                    setOpen(false);
-                  })
+                : renderMenuItem(
+                    capitalize(filterOption.display),
+                    filterOption.externalLink
+                      ? filterOption.externalLink
+                      : false,
+                    () => {
+                      onSelect(filterOption.value);
+                      setOpen(false);
+                    }
+                  )
           )}
         </FilterDropdownMenu>
       </AnimatePresence>
