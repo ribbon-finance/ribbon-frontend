@@ -162,10 +162,17 @@ const Header = () => {
     }
   }, [headerRef, setComponentRefs]);
 
-  const openLink = useCallback((link) => {
-    setIsMenuOpen(false);
-    window.open(link);
-  }, []);
+  const openLink = useCallback(
+    (option) => {
+      if (option === "VAULTTOKEN") {
+        history.push("./staking");
+      } else {
+        window.open(URLS.governance);
+      }
+      setIsMenuOpen(false);
+    },
+    [history]
+  );
 
   const renderLinkItem = (
     title: string,
@@ -232,7 +239,7 @@ const Header = () => {
                 options={[
                   {
                     display: "VAULT TOKEN",
-                    value: "VAULT TOKEN",
+                    value: "VAULTTOKEN",
                     externalLink: false,
                   },
                   {
@@ -243,11 +250,7 @@ const Header = () => {
                 ]}
                 value={"STAKING"}
                 onSelect={(option: any) => {
-                  if (option === "VAULT TOKEN") {
-                    history.push("./staking");
-                  } else {
-                    openLink(URLS.governance);
-                  }
+                  openLink(option);
                 }}
                 buttonConfig={{
                   background: "none",

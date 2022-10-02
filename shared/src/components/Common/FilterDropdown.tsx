@@ -211,6 +211,7 @@ const FilterDropdown: React.FC<FilterDropdownProps> = ({
     [
       menuItemConfig,
       menuItemTextConfig?.fontSize,
+      menuItemTextConfig?.letterSpacing,
       menuItemTextConfig?.lineHeight,
     ]
   );
