@@ -16,7 +16,7 @@ import MobileOverlayMenu from "shared/lib/components/Common/MobileOverlayMenu";
 import NetworkSwitcherButton from "../NetworkSwitcher/NetworkSwitcherButton";
 import NotificationButton from "../Notification/NotificationButton";
 import { isEthNetwork } from "shared/lib/constants/constants";
-import ExternalLinkIcon from "shared/lib/assets/icons/externalLink";
+import ExternalLink from "shared/lib/assets/icons/externalLink";
 import { useGlobalState } from "shared/lib/store/store";
 import FilterDropdown from "shared/lib/components/Common/FilterDropdown";
 import { useHistory } from "react-router-dom";
@@ -197,7 +197,7 @@ const Header = () => {
               {title}
             </NavLinkText>
             {external && (
-              <ExternalLinkIcon
+              <ExternalLink
                 color={isHighlighted ? colors.green : undefined}
                 style={{
                   marginLeft: 6,

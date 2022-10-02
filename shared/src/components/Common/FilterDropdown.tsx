@@ -11,7 +11,7 @@ import useOutsideAlerter from "../../hooks/useOutsideAlerter";
 import useScreenSize from "../../hooks/useScreenSize";
 import { capitalize } from "../../utils/text";
 import ButtonArrow from "./ButtonArrow";
-import ExternalLinkIcon from "shared/lib/assets/icons/externalLink";
+import ExternalLink from "../../assets/icons/externalLink";
 import { useRouteMatch } from "react-router-dom";
 
 interface FilterDropdownButtonConfig {
@@ -203,7 +203,7 @@ const FilterDropdown: React.FC<FilterDropdownProps> = ({
         </MenuItemText>
         {externalLink && (
           <div className="ml-2">
-            <ExternalLinkIcon />
+            <ExternalLink />
           </div>
         )}
       </MenuItem>
