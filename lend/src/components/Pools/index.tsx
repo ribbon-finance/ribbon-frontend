@@ -160,6 +160,22 @@ const PoolStats = styled.div`
   }
 `;
 
+const Value = styled.span`
+  display: flex;
+  font-family: VCR;
+  color: ${colors.primaryText};
+
+  > * {
+    margin: auto 0;
+  }
+
+  svg {
+    width: 20px;
+    height: 20px;
+    margin-right: 8px;
+  }
+`;
+
 const StyledTitle = styled(Title)`
   font-size: 14px;
   line-height: 36px;
@@ -183,7 +199,7 @@ export const Pools = () => {
   const vaultDatas = useVaultsData();
   const utilizationDecimals = getUtilizationDecimals();
   const { loading, aprs } = usePoolsAPR();
-
+  const AssetLogo = getAssetLogo("USDC");
   return (
     <ListRow>
       {VaultList.map((pool, i) => {
@@ -193,7 +209,6 @@ export const Pools = () => {
         const poolLogo = getMakerLogo(pool);
         const asset = getAssets(pool);
         const decimals = getAssetDecimals(asset);
-        const Logo = getAssetLogo(asset);
         const apr = aprs[pool];
 
         return (
@@ -231,10 +246,12 @@ export const Pools = () => {
                   </StyledSubtitle>
                 </Stat>
                 <Stat>
-                  <StyledTitle>
-                    <Logo height={24} width={24} />
-                    <span>{formatBigNumber(poolSize, decimals)}</span>
-                  </StyledTitle>
+                  <Value>
+                    <AssetLogo />
+                    <StyledTitle>
+                      <span>{formatBigNumber(poolSize, decimals)}</span>
+                    </StyledTitle>
+                  </Value>
                   <StyledSubtitle color={colors.green}>
                     {loading
                       ? "0.00"
