@@ -198,7 +198,7 @@ const StyledSubtitle = styled(Subtitle)<{ color?: string }>`
 export const Pools = () => {
   const vaultDatas = useVaultsData();
   const utilizationDecimals = getUtilizationDecimals();
-  const { loading, aprs } = usePoolsAPR();
+  const { loading, rbnAprs, aprs } = usePoolsAPR();
   const AssetLogo = getAssetLogo("USDC");
   return (
     <ListRow>
@@ -210,7 +210,7 @@ export const Pools = () => {
         const asset = getAssets(pool);
         const decimals = getAssetDecimals(asset);
         // const apr = aprs[pool];
-        const apr = 9;
+        const apr = rbnAprs[pool] + 9;
         return (
           <motion.div
             key={i}
