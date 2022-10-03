@@ -39,11 +39,11 @@ const ProductAssetLogoContainer = styled.div<{ delay?: number }>`
 `;
 
 const BalanceTitle = styled.div<{ delay?: number }>`
-  font-size: 14px;
+  font-size: 12px;
   font-family: VCR;
   text-transform: uppercase;
   text-align: center;
-  letter-spacing: 1px;
+  letter-spacing: 1.5px;
   color: ${colors.primaryText}7A;
   margin-top: 24px;
   ${delayedFade}
