@@ -606,14 +606,14 @@ const Footer = ({ activePage, setPage, setWalletModal }: FooterProps) => {
       <Col md={12} lg={6}>
         <FooterButton
           delay={0.2}
-          isActive={activePage === PageEnum.DEPOSIT}
+          isActive={true}
           onClick={() => setPage(PageEnum.DEPOSIT)}
         >
           Deposit
         </FooterButton>
         <FooterButton
           delay={0.3}
-          isActive={activePage === PageEnum.WITHDRAW}
+          isActive={true}
           onClick={() => setPage(PageEnum.WITHDRAW)}
         >
           Withdraw
