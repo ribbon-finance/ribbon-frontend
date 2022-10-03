@@ -47,14 +47,15 @@ const PositionBox = styled.div`
   flex-direction: row;
 `;
 
-const PositionContainer = styled.div<{ color: string }>`
+const PositionContainer = styled.div`
   margin-right: 48px;
   width: 100%;
 `;
 
-const PositionInfoText = styled(Title)<{ size: number }>`
+const PositionInfoText = styled(Title)<{ size: number; color?: string }>`
   letter-spacing: 1px;
   font-size: ${(props) => props.size}px;
+  color: ${(props) => (props.color ? props.color : colors.primaryText)};
   line-height: 16px;
 `;
 
@@ -99,7 +100,7 @@ const PositionWidget: React.FC<YourPositionProps> = ({
                   <Logo width={"100%"} height={"100%"} />
                 </AssetCircleContainer>
               </div>
-              <PositionContainer color={color}>
+              <PositionContainer>
                 <div className="d-flex flex-column justify-content-center p-2">
                   <PositionInfoText size={10} color={colors.text}>
                     Your Balance

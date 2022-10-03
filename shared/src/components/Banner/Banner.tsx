@@ -52,7 +52,7 @@ const Banner: React.FC<BannerProps> = ({
   return (
     <BannerContainer color={color}>
       <>
-        <BaseIndicator size={8} color={color} className="mr-2" />
+        <BaseIndicator size={8} color={color} blink={true} className="mr-2" />
         <Message fontSize={14} lineHeight={20} color={color}>
           {message}
         </Message>

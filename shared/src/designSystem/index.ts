@@ -1,6 +1,6 @@
-import styled from "styled-components";
+import styled, { css } from "styled-components";
 import { Modal as BootstrapModal } from "react-bootstrap";
-
+import { blinkAnimation } from "./keyframes";
 import Link from "../components/Common/Link";
 import colors from "./colors";
 import theme from "./theme";
@@ -216,9 +216,20 @@ export const BaseInputButton = styled.div`
   font-family: VCR, sans-serif;
 `;
 
-export const BaseIndicator = styled.div<{ size: number; color: string }>`
+export const BaseIndicator = styled.div<{
+  size: number;
+  color: string;
+  blink?: boolean;
+}>`
   width: ${(props) => props.size}px;
   height: ${(props) => props.size}px;
   border-radius: ${(props) => props.size / 2}px;
   background: ${(props) => props.color};
+  ${(props) => {
+    if (props.blink) {
+      return css`
+        animation: ${blinkAnimation} 1.5s infinite;
+      `;
+    }
+  }}
 `;
