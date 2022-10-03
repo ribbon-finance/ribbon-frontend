@@ -52,6 +52,7 @@ const BalanceTitle = styled.div<{ delay?: number }>`
 const HeroText = styled(Title)<{ delay?: number }>`
   font-size: 56px;
   line-height: 64px;
+  margin-top: 16px;
   margin-bottom: 16px;
   ${delayedFade}
 `;
@@ -134,6 +135,7 @@ const ClaimTextContainer = styled.div<{ delay?: number }>`
 `;
 
 const ClaimLabel = styled.span`
+  font-size: 14px;
   color: ${colors.tertiaryText};
   margin-right: 8px;
 `;
