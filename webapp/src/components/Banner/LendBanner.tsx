@@ -14,6 +14,7 @@ const LendBanner: React.FC = () => {
       message="Ribbon Lend is now live"
       linkURI={URLS.lend}
       linkText="Start Lending"
+      blink={true}
       linkOpensNewTab={true}
     />
   ) : null;

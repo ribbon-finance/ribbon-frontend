@@ -37,6 +37,7 @@ interface BannerProps {
   message: string;
   linkURI?: string;
   linkText?: string;
+  blink?: boolean;
   onClick?: () => void;
   linkOpensNewTab?: Boolean;
 }
@@ -46,13 +47,14 @@ const Banner: React.FC<BannerProps> = ({
   message,
   linkURI,
   linkText,
+  blink,
   onClick = () => {},
   linkOpensNewTab = false,
 }) => {
   return (
     <BannerContainer color={color}>
       <>
-        <BaseIndicator size={8} color={color} blink={true} className="mr-2" />
+        <BaseIndicator size={8} color={color} blink={blink} className="mr-2" />
         <Message fontSize={14} lineHeight={20} color={color}>
           {message}
         </Message>
