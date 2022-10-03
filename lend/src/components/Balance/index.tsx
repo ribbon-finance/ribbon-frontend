@@ -39,11 +39,11 @@ const ProductAssetLogoContainer = styled.div<{ delay?: number }>`
 `;
 
 const BalanceTitle = styled.div<{ delay?: number }>`
-  font-size: 14px;
+  font-size: 12px;
   font-family: VCR;
   text-transform: uppercase;
   text-align: center;
-  letter-spacing: 1px;
+  letter-spacing: 1.5px;
   color: ${colors.primaryText}7A;
   margin-top: 24px;
   ${delayedFade}
@@ -52,6 +52,7 @@ const BalanceTitle = styled.div<{ delay?: number }>`
 const HeroText = styled(Title)<{ delay?: number }>`
   font-size: 56px;
   line-height: 64px;
+  margin-top: 16px;
   margin-bottom: 16px;
   ${delayedFade}
 `;
@@ -134,6 +135,7 @@ const ClaimTextContainer = styled.div<{ delay?: number }>`
 `;
 
 const ClaimLabel = styled.span`
+  font-size: 14px;
   color: ${colors.tertiaryText};
   margin-right: 8px;
 `;

@@ -330,8 +330,10 @@ const PoolPage = () => {
 
   const logo = getMakerLogo(poolId);
   const poolSize = formatBigNumber(vaultDatas[poolId].poolSize, usdcDecimals);
-  const apr = poolAPRs[poolId].toFixed(2);
-  const supplyApr = supplyAprs[poolId].toFixed(2);
+  // const apr = poolAPRs[poolId].toFixed(2);
+  // const supplyApr = supplyAprs[poolId].toFixed(2);
+  const apr = (poolAPRs[poolId] + 9).toFixed(2);
+  const supplyApr = "9.00";
   const rbnApr = rbnAprs[poolId].toFixed(2);
   const poolDetails = VaultDetailsMap[poolId];
   const utilizationRate = formatBigNumber(
