@@ -209,8 +209,8 @@ export const Pools = () => {
         const poolLogo = getMakerLogo(pool);
         const asset = getAssets(pool);
         const decimals = getAssetDecimals(asset);
-        const apr = aprs[pool];
-
+        // const apr = aprs[pool];
+        const apr = 9;
         return (
           <motion.div
             key={i}
@@ -336,7 +336,7 @@ export const Positions = () => {
         const poolLogo = getMakerLogo(pool);
         const asset = getAssets(pool);
         const decimals = getAssetDecimals(asset);
-        const Logo = getAssetLogo(asset);
+        const AssetLogo = getAssetLogo(asset);
 
         return (
           <motion.div
@@ -369,10 +369,12 @@ export const Positions = () => {
                   <StyledTitle>{pool}</StyledTitle>
                 </Stat>
                 <Stat>
-                  <StyledTitle>
-                    <Logo height={24} />
-                    <span>{formatBigNumber(balance, decimals)}</span>
-                  </StyledTitle>
+                  <Value>
+                    <AssetLogo />
+                    <StyledTitle>
+                      <span>{formatBigNumber(balance, decimals)}</span>
+                    </StyledTitle>
+                  </Value>
                   <StyledSubtitle color={colors.green}>
                     {loading ? "0.00" : roi().toFixed(2)}%
                   </StyledSubtitle>
