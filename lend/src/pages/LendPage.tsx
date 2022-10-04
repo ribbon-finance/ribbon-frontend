@@ -18,8 +18,8 @@ import { useVaultsData } from "../hooks/web3DataContext";
 import { getAssetDecimals } from "../utils/asset";
 import useScreenSize from "shared/lib/hooks/useScreenSize";
 import { delayedFade } from "../components/animations";
-import StepsCarousel from "../components/StepsHeader/StepsCarousel";
 import MobileHeader from "../components/MobileHeader";
+import StepsHeader from "../components/StepsHeader";
 
 const HeroContainer = styled.div`
   display: flex;
@@ -282,7 +282,7 @@ const Header = ({ setWalletModal }: HeaderProps) => {
       <HeaderRow>
         <MarqueeCol md={12} lg={6}>
           {/* <StatsMarquee /> */}
-          <StepsCarousel />
+          <StepsHeader button={false} />
         </MarqueeCol>
         <WalletCol md={0} lg={6}>
           <WalletButton delay={0.2} onClick={() => setWalletModal(true)}>

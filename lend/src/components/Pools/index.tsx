@@ -198,7 +198,7 @@ const StyledSubtitle = styled(Subtitle)<{ color?: string }>`
 export const Pools = () => {
   const vaultDatas = useVaultsData();
   const utilizationDecimals = getUtilizationDecimals();
-  const { loading, rbnAprs } = usePoolsAPR();
+  const { aprs } = usePoolsAPR();
   const AssetLogo = getAssetLogo("USDC");
   return (
     <ListRow>
@@ -209,8 +209,7 @@ export const Pools = () => {
         const poolLogo = getMakerLogo(pool);
         const asset = getAssets(pool);
         const decimals = getAssetDecimals(asset);
-        // const apr = aprs[pool];
-        const apr = rbnAprs[pool] + 9;
+        const apr = aprs[pool];
         return (
           <motion.div
             key={i}
@@ -253,10 +252,7 @@ export const Pools = () => {
                     </StyledTitle>
                   </Value>
                   <StyledSubtitle color={colors.green}>
-                    {loading
-                      ? "0.00"
-                      : currency(apr.toFixed(2), { symbol: "" }).format()}
-                    %
+                    {currency(apr.toFixed(2), { symbol: "" }).format()}%
                   </StyledSubtitle>
                 </Stat>
               </PoolStats>

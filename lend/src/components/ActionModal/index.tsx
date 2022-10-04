@@ -376,9 +376,9 @@ interface FooterProps {
 const Footer: React.FC<FooterProps> = ({ show, pool, page, txhash }) => {
   const vaultDatas = useVaultsData();
   const poolName = VaultDetailsMap[pool].name;
-  const { rbnAprs } = usePoolsAPR();
+  const { aprs } = usePoolsAPR();
   const { chainId } = useWeb3React();
-  const apr = rbnAprs[pool] + 9;
+  const apr = aprs[pool];
   const utilizationDecimals = getUtilizationDecimals();
   const utilizationRate = vaultDatas.data[pool].utilizationRate;
   return (

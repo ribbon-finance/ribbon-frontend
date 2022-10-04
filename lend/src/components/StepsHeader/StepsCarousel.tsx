@@ -35,7 +35,6 @@ const StepsHeaderTextContainer = styled.div`
   justify-content: center;
   text-align: center;
   height: 64px;
-  width: 100%;
   position: absolute;
   margin: auto;
 `;

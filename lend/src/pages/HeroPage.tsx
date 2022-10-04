@@ -21,7 +21,7 @@ const HeroPage: React.FC = () => {
   return (
     <HeroContainer>
       <MobileHeader />
-      <StepsHeader />
+      <StepsHeader button={true} />
       <HeroContent word="ribbon lend" />
       <Footer />
     </HeroContainer>
