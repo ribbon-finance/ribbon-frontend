@@ -13,6 +13,7 @@ const Body = styled.div`
   background-color: ${colors.background.one};
   display: flex;
   height: 100vh;
+  height: -webkit-fill-available;
   overflow: hidden;
 `;
 
