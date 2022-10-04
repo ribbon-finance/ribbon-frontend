@@ -296,9 +296,9 @@ export const VaultDetailsMap: Record<VaultOptions, VaultDetails> = {
             Credora relies on these underlying factors, as they have high
             correlation to a trading firm's creditworthiness. Through real-time
             credit evaluation, Credora infrastructure supports data-driven
-            lending for any pool of capital. Applications include streamlined
-            bilateral lending and the transparent operation of credit vehicles
-            in DeFi.
+            lending for any pool of capital. Credora infrastructure and credit
+            evaluations have successfully facilitated over $850M in credit and
+            currently monitors $3.85B in assets.
           </p>
           <p>
             Read more{" "}
@@ -379,9 +379,9 @@ export const VaultDetailsMap: Record<VaultOptions, VaultDetails> = {
             Credora relies on these underlying factors, as they have high
             correlation to a trading firm's creditworthiness. Through real-time
             credit evaluation, Credora infrastructure supports data-driven
-            lending for any pool of capital. Applications include streamlined
-            bilateral lending and the transparent operation of credit vehicles
-            in DeFi.
+            lending for any pool of capital. Credora infrastructure and credit
+            evaluations have successfully facilitated over $850M in credit and
+            currently monitors $3.85B in assets.
           </p>
           <p>
             Read more{" "}
