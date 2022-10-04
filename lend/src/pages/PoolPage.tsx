@@ -448,7 +448,6 @@ const PoolPage = () => {
                       {currency(apr, { symbol: "" }).format()}%
                     </Value>
                   </Stat>
-                  {/* <Stat> */}
                   <Stat delay={0.7}>
                     <Label>Utilization rate:</Label>
                     <div className="d-flex">
@@ -460,7 +459,6 @@ const PoolPage = () => {
                       <Value>{utilizationRate}%</Value>
                     </div>
                   </Stat>
-                  {/* </Stat> */}
                 </StatsWrapper>
               </Details>
             </UserDetailsWrapper>

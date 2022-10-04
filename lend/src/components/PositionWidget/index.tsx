@@ -11,6 +11,7 @@ import sizes from "../../designSystem/sizes";
 import { useVaultsData } from "../../hooks/web3DataContext";
 import { components } from "../../designSystem/components";
 import { delayedUpwardFade } from "../animations";
+import currency from "currency.js";
 
 const DesktopContainer = styled.div<{ color: string }>`
   display: flex;
@@ -108,10 +109,13 @@ const PositionWidget: React.FC<YourPositionProps> = ({
                   <div className="d-flex">
                     <PositionInfoText size={14}>
                       {poolData
-                        ? formatBigNumber(
-                            poolData.vaultBalanceInAsset,
-                            decimals
-                          )
+                        ? currency(
+                            formatBigNumber(
+                              poolData.vaultBalanceInAsset,
+                              decimals
+                            ),
+                            { symbol: "" }
+                          ).format()
                         : "0.00"}
                     </PositionInfoText>
                   </div>

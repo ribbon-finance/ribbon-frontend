@@ -11,7 +11,7 @@ import { formatUnits } from "ethers/lib/utils";
 import LendModal, { ModalContentEnum } from "../Common/LendModal";
 import { delayedFade } from "../animations";
 import { fadeIn } from "shared/lib/designSystem/keyframes";
-
+import currency from "currency.js";
 const BalanceWrapper = styled.div`
   height: 100%;
   display: flex;
@@ -165,22 +165,31 @@ export const Balance = () => {
     }, 1600);
   }, []);
 
-  const roi = useMemo(() => {
+  const [profit, roi] = useMemo(() => {
     if (
       isPracticallyZero(totalDeposits, decimals) ||
       isPracticallyZero(yourBalance, decimals) ||
       !account ||
       depositLoading
     ) {
-      return 0;
+      return [0, 0];
     }
 
-    return (
+    return [
+      parseFloat(formatUnits(yourBalance.sub(totalDeposits), decimals)),
       (parseFloat(formatUnits(yourBalance.sub(totalDeposits), decimals)) /
         parseFloat(formatUnits(totalDeposits, decimals))) *
-      100
-    );
+        100,
+    ];
   }, [totalDeposits, decimals, yourBalance, account, depositLoading]);
+
+  const roiColor = useMemo(() => {
+    return roi === 0 || loading
+      ? "white"
+      : roi >= 0
+      ? colors.green
+      : colors.red;
+  }, [roi, loading]);
 
   const [triggerClaimModal, setClaimModal] = useState<boolean>(false);
 
@@ -198,20 +207,19 @@ export const Balance = () => {
       />
       <BalanceWrapper>
         <VaultContainer>
-          <ProductAssetLogoContainer color={"white"} delay={0.1}>
+          <ProductAssetLogoContainer delay={0.1}>
             <Logo height="100%" />
           </ProductAssetLogoContainer>
           <BalanceTitle delay={0.2}>Your Balance</BalanceTitle>
           <HeroText delay={0.3}>
             {loading || !account
               ? "---"
-              : "$" + formatBigNumber(yourBalance, decimals, 2)}
+              : currency(formatBigNumber(yourBalance, decimals, 2)).format()}
           </HeroText>
-          <HeroSubtitle
-            color={roi === 0 ? "white" : roi > 0 ? colors.green : colors.red}
-            delay={0.4}
-          >
-            {loading ? "0.00" : roi.toFixed(2)}%
+          <HeroSubtitle color={roiColor} delay={0.4}>
+            {loading || !account
+              ? "---"
+              : `${currency(profit.toFixed(2)).format()} (${roi.toFixed(2)}%)`}
           </HeroSubtitle>
           <ClaimTextContainer delay={0.5}>
             <ClaimLabel>Unclaimed RBN Rewards:</ClaimLabel>

@@ -248,7 +248,11 @@ export const Pools = () => {
                   <Value>
                     <AssetLogo />
                     <StyledTitle>
-                      <span>{formatBigNumber(poolSize, decimals)}</span>
+                      <span>
+                        {currency(formatBigNumber(poolSize, decimals), {
+                          symbol: "",
+                        }).format()}
+                      </span>
                     </StyledTitle>
                   </Value>
                   <StyledSubtitle color={colors.green}>
@@ -303,11 +307,28 @@ export const Positions = () => {
   if (!vaultAccounts) {
     return <></>;
   }
+
   return filteredList.length > 0 ? (
     <ListRow>
       {filteredList.map((pool, i) => {
         const balance = vaultDatas.data[pool].vaultBalanceInAsset;
         const vaultAccount = vaultAccounts[pool];
+
+        const profit = () => {
+          if (
+            !vaultAccount ||
+            loading ||
+            vaultLoading ||
+            isPracticallyZero(vaultAccount.totalDeposits, usdcDecimals)
+          ) {
+            return 0;
+          }
+
+          return parseFloat(
+            formatUnits(balance.sub(vaultAccount.totalDeposits), usdcDecimals)
+          );
+        };
+
         const roi = () => {
           if (
             !vaultAccount ||
@@ -327,6 +348,14 @@ export const Positions = () => {
               )) *
             100
           );
+        };
+
+        const roiColor = () => {
+          return roi() === 0 || loading
+            ? "white"
+            : roi() >= 0
+            ? colors.green
+            : colors.red;
         };
 
         const poolLogo = getMakerLogo(pool);
@@ -368,11 +397,19 @@ export const Positions = () => {
                   <Value>
                     <AssetLogo />
                     <StyledTitle>
-                      <span>{formatBigNumber(balance, decimals)}</span>
+                      <span>
+                        {currency(formatBigNumber(balance, decimals), {
+                          symbol: "",
+                        }).format()}
+                      </span>
                     </StyledTitle>
                   </Value>
-                  <StyledSubtitle color={colors.green}>
-                    {loading ? "0.00" : roi().toFixed(2)}%
+                  <StyledSubtitle color={roiColor()}>
+                    {loading || !account
+                      ? "---"
+                      : `${currency(
+                          profit().toFixed(2)
+                        ).format()} (${roi().toFixed(2)}%)`}
                   </StyledSubtitle>
                 </Stat>
               </PoolStats>
