@@ -9,6 +9,10 @@ export type APRMap = {
   [vault in VaultOptions]: number;
 };
 
+export type useDefault = {
+  [vault in VaultOptions]: boolean;
+};
+
 export const usePoolsAPR = () => {
   const [aprs, setAprs] = useState<APRMap>();
   const [supplyAprs, setSupplyAprs] = useState<APRMap>();
@@ -19,6 +23,12 @@ export const usePoolsAPR = () => {
   });
 
   useEffect(() => {
+    //if set to true, use default apr instead of calculated apr
+    let isDefault: useDefault = {
+      wintermute: true,
+      folkvang: true,
+    };
+
     // 1. When init load schedules
     let aprsTemp: APRMap = {
       wintermute: 0,
@@ -43,10 +53,12 @@ export const usePoolsAPR = () => {
           formatUnits(poolData.rewardPerSecond, 18)
         );
         const poolSize = parseFloat(formatUnits(poolData.poolSize, 6));
-        aprsTemp[pool] =
-          (supplyRate + (rewardPerSecond * RBNPrice * 31536000) / poolSize) *
-          100;
-        supplyAprsTemp[pool] = supplyRate / 100;
+        aprsTemp[pool] = isDefault[pool]
+          ? 7 + ((rewardPerSecond * RBNPrice * 31536000) / poolSize) * 100
+          : (supplyRate * 31536000 +
+              (rewardPerSecond * RBNPrice * 31536000) / poolSize) *
+            100;
+        supplyAprsTemp[pool] = isDefault[pool] ? 7 : supplyRate / 100;
         rbnAprsTemp[pool] =
           ((rewardPerSecond * RBNPrice * 31536000) / poolSize) * 100;
         return;
@@ -66,12 +78,12 @@ export const usePoolsAPR = () => {
     return {
       loading: isLoading,
       aprs: {
-        wintermute: 0,
-        folkvang: 0,
+        wintermute: 7,
+        folkvang: 7,
       },
       supplyAprs: {
-        wintermute: 0,
-        folkvang: 0,
+        wintermute: 7,
+        folkvang: 7,
       },
       rbnAprs: {
         wintermute: 0,

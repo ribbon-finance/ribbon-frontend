@@ -322,7 +322,7 @@ const PoolPage = () => {
   const [activePage, setPage] = useState<PageEnum>();
   const [triggerWalletModal, setWalletModal] = useState<boolean>(false);
   const { data: vaultDatas } = useVaultsData();
-  const { aprs: poolAPRs, supplyAprs, rbnAprs } = usePoolsAPR();
+  const { loading, aprs: poolAPRs, supplyAprs, rbnAprs } = usePoolsAPR();
   const utilizationDecimals = getUtilizationDecimals();
   const usdcDecimals = getAssetDecimals("USDC");
   const { width } = useScreenSize();
@@ -330,10 +330,11 @@ const PoolPage = () => {
 
   const logo = getMakerLogo(poolId);
   const poolSize = formatBigNumber(vaultDatas[poolId].poolSize, usdcDecimals);
-  // const apr = poolAPRs[poolId].toFixed(2);
-  // const supplyApr = supplyAprs[poolId].toFixed(2);
-  const apr = (poolAPRs[poolId] + 9).toFixed(2);
-  const supplyApr = "9.00";
+  const apr = poolAPRs[poolId].toFixed(2);
+  console.log({ poolAPRs });
+  console.log({ supplyAprs });
+  const supplyApr = supplyAprs[poolId].toFixed(18);
+  console.log(supplyApr);
   const rbnApr = rbnAprs[poolId].toFixed(2);
   const poolDetails = VaultDetailsMap[poolId];
   const utilizationRate = formatBigNumber(
@@ -417,19 +418,29 @@ const PoolPage = () => {
                             >
                               <span>Total APR</span>
                               <span>
-                                {currency(apr, { symbol: "" }).format()}%
+                                {loading
+                                  ? "---"
+                                  : currency(apr, { symbol: "" }).format()}
+                                %
                               </span>
                             </YieldExplainerTitle>
                             <YieldExplainerStat>
                               <span>Supply APR</span>
                               <span>
-                                {currency(supplyApr, { symbol: "" }).format()}%
+                                {loading
+                                  ? "---"
+                                  : currency(supplyApr, {
+                                      symbol: "",
+                                    }).format()}
+                                %
                               </span>
                             </YieldExplainerStat>
                             <YieldExplainerStat>
                               <span>RBN Rewards APR</span>
                               <span>
-                                {currency(rbnApr, { symbol: "" }).format()}%
+                                {loading
+                                  ? "---"
+                                  : currency(rbnApr, { symbol: "" }).format()}
                               </span>
                             </YieldExplainerStat>
                           </>
@@ -444,7 +455,8 @@ const PoolPage = () => {
                     <Value
                       color={parseFloat(apr) >= 0 ? colors.green : colors.red}
                     >
-                      {currency(apr, { symbol: "" }).format()}%
+                      {loading ? "---" : currency(apr, { symbol: "" }).format()}
+                      %
                     </Value>
                   </Stat>
                   {/* <Stat> */}
