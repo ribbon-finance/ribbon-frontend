@@ -198,7 +198,7 @@ const StyledSubtitle = styled(Subtitle)<{ color?: string }>`
 export const Pools = () => {
   const vaultDatas = useVaultsData();
   const utilizationDecimals = getUtilizationDecimals();
-  const { loading, rbnAprs, aprs } = usePoolsAPR();
+  const { loading, rbnAprs } = usePoolsAPR();
   const AssetLogo = getAssetLogo("USDC");
   return (
     <ListRow>
