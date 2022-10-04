@@ -1,21 +1,16 @@
 import colors from "shared/lib/designSystem/colors";
-import { fadeIn } from "shared/lib/designSystem/keyframes";
 import useWeb3Wallet from "../../hooks/useWeb3Wallet";
 import styled, { css } from "styled-components";
 import { Title, Subtitle, Button } from "../../designSystem";
 import { useVaultAccountBalances } from "../../hooks/useVaultAccountBalances";
 import { getAssetDecimals, getAssetLogo } from "../../utils/asset";
 import { formatBigNumber, isPracticallyZero } from "../../utils/math";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useVaultTotalDeposits } from "../../hooks/useVaultTotalDeposits";
 import { formatUnits } from "ethers/lib/utils";
 import LendModal, { ModalContentEnum } from "../Common/LendModal";
-
-const delayedFade = css<{ delay?: number }>`
-  opacity: 0;
-  animation: ${fadeIn} 1s ease-in-out forwards;
-  animation-delay: ${({ delay }) => `${delay || 0}s`};
-`;
+import { delayedFade } from "../animations";
+import { fadeIn } from "shared/lib/designSystem/keyframes";
 
 const BalanceWrapper = styled.div`
   height: 100%;
@@ -44,11 +39,11 @@ const ProductAssetLogoContainer = styled.div<{ delay?: number }>`
 `;
 
 const BalanceTitle = styled.div<{ delay?: number }>`
-  font-size: 14px;
+  font-size: 12px;
   font-family: VCR;
   text-transform: uppercase;
   text-align: center;
-  letter-spacing: 1px;
+  letter-spacing: 1.5px;
   color: ${colors.primaryText}7A;
   margin-top: 24px;
   ${delayedFade}
@@ -57,6 +52,7 @@ const BalanceTitle = styled.div<{ delay?: number }>`
 const HeroText = styled(Title)<{ delay?: number }>`
   font-size: 56px;
   line-height: 64px;
+  margin-top: 16px;
   margin-bottom: 16px;
   ${delayedFade}
 `;
@@ -66,11 +62,69 @@ const HeroSubtitle = styled(Subtitle)<{ delay?: number; color: string }>`
   ${delayedFade}
 `;
 
-const ClaimButton = styled(Button)<{ delay?: number }>`
+const ClaimButton = styled(Button)<{
+  delay?: number;
+  show: boolean;
+  hidden: boolean;
+}>`
   border-radius: 64px;
-  background: white;
+  font-size: 14px;
+  background: ${colors.primaryText};
   color: ${colors.background.one};
-  ${delayedFade}
+  &:disabled {
+    color: ${colors.tertiaryText};
+    background: ${colors.background.one};
+    border: 2px solid ${colors.tertiaryText};
+    pointer-events: none;
+  }
+  &:hidden {
+    display: none;
+  }
+  ${({ show, delay }) => {
+    return (
+      show &&
+      css`
+        opacity: 0;
+
+        &:disabled {
+          opacity: 0;
+        }
+
+        animation: ${fadeIn} 1s ease-in-out forwards;
+        animation-delay: ${delay || 0}s;
+      `
+    );
+  }}
+`;
+
+const ConnectButton = styled(Button)<{
+  delay?: number;
+  show: boolean;
+  hidden: boolean;
+}>`
+  border-radius: 64px;
+  font-size: 14px;
+  border-style: none;
+  background: ${colors.buttons.secondaryBackground};
+  color: ${colors.buttons.secondaryText};
+  &:hidden {
+    display: none;
+  }
+  ${({ show, delay }) => {
+    return (
+      show &&
+      css`
+        opacity: 0;
+
+        &:disabled {
+          opacity: 0;
+        }
+
+        animation: ${fadeIn} 1s ease-in-out forwards;
+        animation-delay: ${delay || 0}s;
+      `
+    );
+  }}
 `;
 
 const ClaimTextContainer = styled.div<{ delay?: number }>`
@@ -81,6 +135,7 @@ const ClaimTextContainer = styled.div<{ delay?: number }>`
 `;
 
 const ClaimLabel = styled.span`
+  font-size: 14px;
   color: ${colors.tertiaryText};
   margin-right: 8px;
 `;
@@ -94,27 +149,39 @@ export const Balance = () => {
   const { account } = useWeb3Wallet();
   const Logo = getAssetLogo("USDC");
   const { loading, accountBalances } = useVaultAccountBalances();
+
+  const { loading: depositLoading, totalDeposits } = useVaultTotalDeposits();
+
   const yourBalance = accountBalances.totalBalance;
-  const rbnRewards = accountBalances.rbnEarned;
   const rbnClaimableRewards = accountBalances.rbnClaimable;
   const rbnDecimals = getAssetDecimals("RBN");
-  const yourDeposits = useVaultTotalDeposits();
   const decimals = getAssetDecimals("USDC");
+  const [triggerWalletModal, setWalletModal] = useState<boolean>(false);
+  const [triggerAnimation, setTriggerAnimation] = useState<boolean>(true);
+
+  useEffect(() => {
+    setTimeout(() => {
+      setTriggerAnimation(false);
+    }, 1600);
+  }, []);
 
   const roi = useMemo(() => {
     if (
-      isPracticallyZero(yourDeposits, decimals) ||
-      isPracticallyZero(yourBalance, decimals)
+      isPracticallyZero(totalDeposits, decimals) ||
+      isPracticallyZero(yourBalance, decimals) ||
+      !account ||
+      depositLoading
     ) {
       return 0;
     }
 
     return (
-      (parseFloat(formatUnits(yourBalance.sub(yourDeposits), decimals)) /
-        parseFloat(formatUnits(yourDeposits, decimals))) *
+      (parseFloat(formatUnits(yourBalance.sub(totalDeposits), decimals)) /
+        parseFloat(formatUnits(totalDeposits, decimals))) *
       100
     );
-  }, [yourDeposits, decimals, yourBalance]);
+  }, [totalDeposits, decimals, yourBalance, account, depositLoading]);
+
   const [triggerClaimModal, setClaimModal] = useState<boolean>(false);
 
   return (
@@ -123,6 +190,11 @@ export const Balance = () => {
         show={triggerClaimModal}
         onHide={() => setClaimModal(false)}
         content={ModalContentEnum.CLAIMRBN}
+      />
+      <LendModal
+        show={Boolean(triggerWalletModal)}
+        onHide={() => setWalletModal(false)}
+        content={ModalContentEnum.WALLET}
       />
       <BalanceWrapper>
         <VaultContainer>
@@ -139,21 +211,34 @@ export const Balance = () => {
             color={roi === 0 ? "white" : roi > 0 ? colors.green : colors.red}
             delay={0.4}
           >
-            +{loading ? "0.00" : roi.toFixed(2)}%
+            {loading ? "0.00" : roi.toFixed(2)}%
           </HeroSubtitle>
           <ClaimTextContainer delay={0.5}>
-            <ClaimLabel>RBN Rewards Earned:</ClaimLabel>
+            <ClaimLabel>Unclaimed RBN Rewards:</ClaimLabel>
             <ClaimValue>
               {loading || !account
                 ? "---"
-                : formatBigNumber(rbnRewards, rbnDecimals, 2)}
+                : formatBigNumber(rbnClaimableRewards, rbnDecimals, 2)}
             </ClaimValue>
           </ClaimTextContainer>
-          {!isPracticallyZero(rbnClaimableRewards, rbnDecimals) && (
-            <ClaimButton onClick={() => setClaimModal(true)} delay={0.6}>
-              Claim RBN
-            </ClaimButton>
-          )}
+
+          <ClaimButton
+            disabled={isPracticallyZero(rbnClaimableRewards, rbnDecimals)}
+            hidden={account === undefined}
+            onClick={() => setClaimModal(true)}
+            show={triggerAnimation}
+            delay={0.6}
+          >
+            Claim RBN
+          </ClaimButton>
+          <ConnectButton
+            hidden={account !== undefined}
+            delay={0.6}
+            show={triggerAnimation}
+            onClick={() => setWalletModal(true)}
+          >
+            Connect Wallet
+          </ConnectButton>
         </VaultContainer>
       </BalanceWrapper>
     </>

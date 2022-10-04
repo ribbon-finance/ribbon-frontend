@@ -3,8 +3,10 @@ import { Title } from "shared/lib/designSystem";
 import colors from "shared/lib/designSystem/colors";
 import { CloseIcon } from "shared/lib/assets/icons/icons";
 import styled from "styled-components";
-import { ClaimRbn, ClaimRbnPageEnum, ModalContent } from "./ModalContent";
-import { useCallback, useState } from "react";
+import { ModalContent } from "./ModalContent";
+import { ClaimRbnPage } from "../ClaimRbnPage";
+import { WalletPage } from "../WalletPage";
+import { useCallback } from "react";
 import { useMemo } from "react";
 import useWeb3Wallet from "../../hooks/useWeb3Wallet";
 import { truncateAddress } from "shared/lib/utils/address";
@@ -58,10 +60,6 @@ const WalletButton = styled.div`
 `;
 
 const LendModal: React.FC<InfoModalProps> = ({ show, onHide, content }) => {
-  const [rbnClaimStep, setRbnClaimStep] = useState<ClaimRbnPageEnum>(
-    ClaimRbnPageEnum.CLAIM_RBN
-  );
-
   const { active, account } = useWeb3Wallet();
 
   const modalTitle = useMemo(() => {
@@ -78,23 +76,11 @@ const LendModal: React.FC<InfoModalProps> = ({ show, onHide, content }) => {
     return content;
   }, [account, active, content]);
 
-  const renderRbnClaimTitle = useCallback((rbnClaimStep: ClaimRbnPageEnum) => {
-    switch (rbnClaimStep) {
-      case ClaimRbnPageEnum.CLAIM_RBN:
-        return "CLAIM RBN";
-      case ClaimRbnPageEnum.TRANSACTION_STEP:
-        return "CLAIMING RBN";
-      case ClaimRbnPageEnum.SUCCESS_STEP:
-        return "RBN CLAIMED";
-    }
-  }, []);
-
   const renderContent = useCallback(
     (content?: ModalContentEnum) => {
       switch (content) {
         case ModalContentEnum.ABOUT:
         case ModalContentEnum.COMMUNITY:
-        case ModalContentEnum.WALLET:
           return (
             <>
               <Header>
@@ -106,23 +92,23 @@ const LendModal: React.FC<InfoModalProps> = ({ show, onHide, content }) => {
               <ModalContent onHide={onHide} content={content} />
             </>
           );
+        case ModalContentEnum.WALLET:
+          return (
+            <>
+              <WalletPage onHide={onHide} />
+            </>
+          );
         case ModalContentEnum.CLAIMRBN:
           return (
             <>
-              <Header>
-                <Title>{renderRbnClaimTitle(rbnClaimStep)}</Title>
-                <CloseButton onClick={onHide}>
-                  <CloseIcon />
-                </CloseButton>
-              </Header>
-              <ClaimRbn onHide={onHide} setRbnClaimStep={setRbnClaimStep} />
+              <ClaimRbnPage onHide={onHide} />
             </>
           );
         default:
           return <></>;
       }
     },
-    [onHide, rbnClaimStep, renderRbnClaimTitle, modalTitle]
+    [modalTitle, onHide]
   );
 
   return (

@@ -17,15 +17,15 @@ const HeroContainer = styled.div`
   }
 `;
 
-const Hero: React.FC = () => {
+const HeroPage: React.FC = () => {
   return (
     <HeroContainer>
       <MobileHeader />
       <StepsHeader />
-      <HeroContent />
+      <HeroContent word="ribbon lend" />
       <Footer />
     </HeroContainer>
   );
 };
 
-export default Hero;
+export default HeroPage;

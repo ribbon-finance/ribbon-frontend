@@ -1,4 +1,4 @@
-import React, { useMemo, useState, useCallback, useEffect } from "react";
+import React, { useMemo, useState, useCallback } from "react";
 import styled from "styled-components";
 import { useTranslation } from "react-i18next";
 import {
@@ -7,7 +7,6 @@ import {
   getExplorerURI,
   getExplorerName,
   VaultAddressMap,
-  isSolanaVault,
 } from "shared/lib/constants/constants";
 import BasicModal from "shared/lib/components/Common/BasicModal";
 import { getVaultColor } from "shared/lib/utils/vault";
@@ -31,7 +30,6 @@ import { RibbonVaultPauser } from "shared/lib/codegen";
 import useVaultPauser from "shared/lib/hooks/useV2VaultPauserContract";
 import { useLatestOption } from "shared/lib/hooks/useLatestOption";
 import { formatBigNumber } from "shared/lib/utils/math";
-import { BigNumber } from "ethers";
 import { usePausedPosition } from "shared/lib/hooks/usePausedPosition";
 const FloatingContainer = styled.div`
   display: flex;
@@ -86,7 +84,6 @@ const ResumePositionModal: React.FC = () => {
   const [step, setStep] = useState<"preview" | "walletAction" | "processing">(
     "preview"
   );
-  const { account } = useWeb3Wallet();
   const { addPendingTransaction } = usePendingTransactions();
   const [txId, setTxId] = useState("");
   const contract = useVaultPauser(chainId || 1) as RibbonVaultPauser;

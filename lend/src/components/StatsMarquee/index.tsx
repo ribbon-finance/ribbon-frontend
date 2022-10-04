@@ -2,6 +2,7 @@ import Marquee from "react-fast-marquee/dist";
 import colors from "shared/lib/designSystem/colors";
 import styled from "styled-components";
 import { SecondaryText, Title } from "../../designSystem";
+import { delayedFade } from "../animations";
 
 const TextContainer = styled.div`
   display: flex;
@@ -41,8 +42,9 @@ const StyledTitle = styled(Title)<{
   line-height: 20px;
 `;
 
-const StyledMarquee = styled(Marquee)`
+const StyledMarquee = styled(Marquee)<{ delay: number }>`
   height: 100%;
+  ${delayedFade}
 `;
 
 interface Stat {
@@ -71,7 +73,7 @@ export const StatsMarquee = () => {
   ];
 
   return (
-    <StyledMarquee gradient={false} speed={100} delay={0} pauseOnHover>
+    <StyledMarquee gradient={false} speed={50} delay={0.1} pauseOnHover>
       {stats.map((stat, i) => (
         <TextContainer key={i}>
           <StyledSecondaryText color={colors.tertiaryText}>

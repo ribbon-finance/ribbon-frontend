@@ -11,7 +11,7 @@ export const getPoolFactoryContract = (
 ) => {
   const provider = useSigner ? library.getSigner() : library;
 
-  return PoolFactory__factory.connect(deployment.mainnet.PoolFactory, provider);
+  return PoolFactory__factory.connect(deployment.mainnet.poolfactory, provider);
 };
 
 const usePoolFactoryContract = () => {

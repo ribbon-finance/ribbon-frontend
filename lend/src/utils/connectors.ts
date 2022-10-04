@@ -26,6 +26,6 @@ export const getWalletConnectConnector = () =>
 
 export const walletlinkConnector = new WalletLinkConnector({
   url: process.env.REACT_APP_MAINNET_URI!,
-  appName: "Ribbon Finance",
+  appName: "Ribbon Lend",
   supportedChainIds,
 });

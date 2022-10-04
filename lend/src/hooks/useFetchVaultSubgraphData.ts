@@ -29,9 +29,9 @@ import {
   resolveVaultActivitiesSubgraphResponse,
   vaultActivitiesGraphql,
 } from "./useVaultActivity";
-import { usePendingTransactions } from "shared/lib/hooks/pendingTransactionsContext";
+import { usePendingTransactions } from "./pendingTransactionsContext";
 import { resolveVaultsSubgraphResponse, vaultGraphql } from "./useVaultData";
-import useWeb3Wallet from "shared/lib/hooks/useWeb3Wallet";
+import useWeb3Wallet from "./useWeb3Wallet";
 
 const useFetchVaultSubgraphData = () => {
   const { account: acc } = useWeb3Wallet();

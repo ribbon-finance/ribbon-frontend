@@ -10,9 +10,17 @@ import sizes from "../designSystem/sizes";
 import Indicator from "shared/lib/components/Indicator/Indicator";
 import { ProductDisclaimer } from "../components/ProductDisclaimer";
 import { Balance } from "../components/Balance";
-import { Pools } from "../components/Pools";
+import { Pools, Positions } from "../components/Pools";
 import useWeb3Wallet from "shared/lib/hooks/useWeb3Wallet";
 import LendModal, { ModalContentEnum } from "../components/Common/LendModal";
+import { VaultList } from "../constants/constants";
+import { isPracticallyZero } from "../utils/math";
+import { useVaultsData } from "../hooks/web3DataContext";
+import { getAssetDecimals } from "../utils/asset";
+import useScreenSize from "shared/lib/hooks/useScreenSize";
+import { delayedFade } from "../components/animations";
+import StepsCarousel from "../components/StepsHeader/StepsCarousel";
+import MobileHeader from "../components/MobileHeader";
 
 const HeroContainer = styled.div`
   display: flex;
@@ -29,14 +37,20 @@ const HeroContainer = styled.div`
     margin-left: 0 !important;
     width: 100%;
   }
+
+  @media (max-width: ${sizes.md}px) {
+    overflow-y: scroll;
+  }
 `;
 
-const HeaderRow = styled(Row)`
+export const HeaderRow = styled(Row)<{ mobile?: boolean }>`
   height: ${components.header}px;
   border-bottom: 1px solid ${colors.border};
+  box-sizing: border-box;
   z-index: 1;
   margin-left: 0px;
-
+  background: black;
+  ${(props) => props.mobile === true && `display: none;`}
   > * {
     padding: 0;
 
@@ -44,12 +58,17 @@ const HeaderRow = styled(Row)`
       border-right: 1px solid ${colors.border};
     }
   }
+
+  @media (max-width: ${sizes.lg}px) {
+    ${(props) => props.mobile === true && `display: flex;`}
+  }
 `;
 
-const FooterRow = styled(Row)`
+export const FooterRow = styled(Row)`
   height: ${components.footer}px;
   border-top: 1px solid ${colors.border};
-  box-sizing: content-box;
+  box-sizing: border-box;
+  background: black;
 
   > * {
     padding: 0;
@@ -58,15 +77,27 @@ const FooterRow = styled(Row)`
       border-right: 1px solid ${colors.border};
     }
   }
+
+  @media (max-width: ${sizes.lg}px) {
+    height: ${components.header + components.footer}px;
+    position: sticky;
+    bottom: 0;
+  }
 `;
 
-const WalletButton = styled.div`
+export const WalletButton = styled.div<{ delay: number }>`
   display: flex;
   margin: auto;
   height: 100%;
   justify-content: center;
   cursor: pointer;
   border-radius: 0;
+
+  ${delayedFade}
+
+  @media (max-width: ${sizes.md}px) {
+    background: black;
+  }
 
   > * {
     margin: auto 0;
@@ -77,7 +108,7 @@ const WalletButton = styled.div`
   }
 `;
 
-const WalletButtonText = styled(Title)<{ connected: boolean }>`
+export const WalletButtonText = styled(Title)<{ connected: boolean }>`
   font-size: 14px;
   line-height: 20px;
 
@@ -94,13 +125,19 @@ const WalletButtonText = styled(Title)<{ connected: boolean }>`
   }}
 `;
 
-const DisclaimerWrapper = styled.div`
+export const DisclaimerWrapper = styled.div<{ delay: number }>`
   display: flex;
   justify-content: center;
   height: 100%;
 
+  ${delayedFade}
+
   > * {
     margin: auto 0;
+  }
+
+  @media (max-width: ${sizes.lg}px) {
+    display: none;
   }
 `;
 
@@ -116,6 +153,82 @@ const Content = styled(Row)`
   }
 `;
 
+export const ScrollableContent = styled(Content)`
+  overflow-y: scroll;
+  overflow-x: hidden;
+
+  ::-webkit-scrollbar {
+    width: 0;
+    background: transparent;
+  }
+`;
+
+export const StickyCol = styled(Col)`
+  display: flex;
+  position: sticky;
+  height: calc(100vh - ${components.header + components.footer}px);
+  top: 0;
+  overflow-y: scroll;
+  ::-webkit-scrollbar {
+    width: 0;
+    background: transparent;
+  }
+  @media (max-width: ${sizes.md}px) {
+    position: relative;
+    height: fit-content;
+  }
+`;
+
+export const MobileHeaderCol = styled(Col)`
+  width: 100%;
+  height: ${components.header}px;
+`;
+
+export const MarqueeCol = styled(Col)`
+  height: ${components.header}px;
+`;
+
+export const WalletCol = styled(Col)`
+  height: ${components.header}px;
+
+  @media (max-width: ${sizes.lg}px) {
+    display: none;
+  }
+`;
+
+export const FooterWalletCol = styled(Col)`
+  height: ${components.footer}px;
+  border-top: 1px solid ${colors.border};
+`;
+
+export const MobileOnly = styled.div`
+  display: none;
+  @media (max-width: ${sizes.lg}px) {
+    display: flex;
+    width: 100%;
+  }
+`;
+
+const BalanceWrapper = styled.div`
+  display: flex;
+  margin: auto;
+  width: 100%;
+
+  > * {
+    margin: auto;
+  }
+
+  @media (max-width: ${sizes.md}px) {
+    margin: 32px auto;
+    height: fit-content;
+
+    > * {
+      height: fit-content;
+      margin: 0 auto;
+    }
+  }
+`;
+
 enum PageEnum {
   POOLS,
   POSITIONS,
@@ -124,6 +237,7 @@ enum PageEnum {
 const LendPage: React.FC = () => {
   const [activePage, setPage] = useState<PageEnum>(PageEnum.POOLS);
   const [triggerWalletModal, setWalletModal] = useState<boolean>(false);
+  const { width } = useScreenSize();
 
   return (
     <>
@@ -134,15 +248,23 @@ const LendPage: React.FC = () => {
       />
       <HeroContainer>
         <Header setWalletModal={setWalletModal} />
-        <Content>
-          <Col xs={6}>
-            <Balance />
+        <ScrollableContent>
+          {(width > sizes.md || activePage === PageEnum.POSITIONS) && (
+            <StickyCol xs={12} md={6}>
+              <BalanceWrapper>
+                <Balance />
+              </BalanceWrapper>
+            </StickyCol>
+          )}
+          <Col xs={12} md={6}>
+            {activePage === PageEnum.POOLS ? <Pools /> : <Positions />}
           </Col>
-          <Col xs={6}>
-            <Pools />
-          </Col>
-        </Content>
-        <Footer activePage={activePage} setPage={setPage} />
+        </ScrollableContent>
+        <Footer
+          activePage={activePage}
+          setPage={setPage}
+          setWalletModal={setWalletModal}
+        />
       </HeroContainer>
     </>
   );
@@ -156,28 +278,38 @@ const Header = ({ setWalletModal }: HeaderProps) => {
   const { account, active } = useWeb3Wallet();
 
   return (
-    <HeaderRow>
-      <Col xs={6}>
-        <StatsMarquee />
-      </Col>
-      <Col xs={6}>
-        <WalletButton onClick={() => setWalletModal(true)}>
-          {active && <Indicator connected={active} />}
-          <WalletButtonText connected={active}>
-            {account ? truncateAddress(account) : "Connect Wallet"}
-          </WalletButtonText>
-        </WalletButton>
-      </Col>
-    </HeaderRow>
+    <>
+      <MobileHeader />
+      <HeaderRow>
+        <MarqueeCol md={12} lg={6}>
+          {/* <StatsMarquee /> */}
+          <StepsCarousel />
+        </MarqueeCol>
+        <WalletCol md={0} lg={6}>
+          <WalletButton delay={0.2} onClick={() => setWalletModal(true)}>
+            {active && <Indicator connected={active} />}
+            <WalletButtonText connected={active}>
+              {account ? truncateAddress(account) : "Connect Wallet"}
+            </WalletButtonText>
+          </WalletButton>
+        </WalletCol>
+      </HeaderRow>
+    </>
   );
 };
 
 interface FooterProps {
   activePage: PageEnum;
   setPage: (page: PageEnum) => void;
+  setWalletModal: (trigger: boolean) => void;
 }
 
-const FooterButton = styled(Button)<{ isActive?: boolean }>`
+export const FooterButton = styled(Button)<{
+  isActive?: boolean;
+  delay: number;
+  disabled?: boolean;
+}>`
+  font-size: 14px;
   border: none;
   border-radius: 0;
   height: ${components.footer}px;
@@ -189,34 +321,61 @@ const FooterButton = styled(Button)<{ isActive?: boolean }>`
     transition: 0.2s;
     color: ${colors.primaryText};
   }
-
+  &:disabled {
+    color: ${colors.tertiaryText};
+    pointer-events: none;
+  }
   &:not(:last-of-type) {
     border-right: 1px solid ${colors.border};
   }
+
+  ${delayedFade}
 `;
 
-const Footer = ({ activePage, setPage }: FooterProps) => {
+const Footer = ({ activePage, setPage, setWalletModal }: FooterProps) => {
+  const { account, active } = useWeb3Wallet();
+  const vaultDatas = useVaultsData();
+  const usdcDecimals = getAssetDecimals("USDC");
+  const positionsCount = VaultList.filter(
+    (pool) =>
+      !isPracticallyZero(
+        vaultDatas.data[pool].vaultBalanceInAsset,
+        usdcDecimals
+      )
+  ).length;
   return (
     <FooterRow>
-      <Col xs={6}>
-        <DisclaimerWrapper>
+      <Col md={0} lg={6}>
+        <DisclaimerWrapper delay={0.1}>
           <ProductDisclaimer />
         </DisclaimerWrapper>
       </Col>
-      <Col xs={6}>
+      <Col md={12} lg={6}>
         <FooterButton
+          disabled={false}
           isActive={activePage === PageEnum.POOLS}
           onClick={() => setPage(PageEnum.POOLS)}
+          delay={0.2}
         >
           Pools
         </FooterButton>
         <FooterButton
+          disabled={false}
+          delay={0.3}
           isActive={activePage === PageEnum.POSITIONS}
           onClick={() => setPage(PageEnum.POSITIONS)}
         >
-          Positions
+          Positions({positionsCount})
         </FooterButton>
       </Col>
+      <FooterWalletCol md={0} lg={6}>
+        <WalletButton delay={0.4} onClick={() => setWalletModal(true)}>
+          {active && <Indicator connected={active} />}
+          <WalletButtonText connected={active}>
+            {account ? truncateAddress(account) : "Connect Wallet"}
+          </WalletButtonText>
+        </WalletButton>
+      </FooterWalletCol>
     </FooterRow>
   );
 };
