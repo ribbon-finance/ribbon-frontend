@@ -204,7 +204,7 @@ const Hero = () => {
             <SubTitle>
               Earn <span>Sustainable Yield</span> through
               <br />
-              Decentralized Options Vaults
+              Decentralized Options Vaults and Lending
             </SubTitle>
           </SubtitleContainer>
           <ButtonContainer>
