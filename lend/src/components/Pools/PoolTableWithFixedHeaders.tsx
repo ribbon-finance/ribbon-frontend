@@ -98,6 +98,7 @@ const PoolTableWithFixedHeader: React.FC<TableWithFixedHeaderProps> = ({
   perPage = 10,
   pageController,
 }) => {
+  console.log(data);
   const containerRef = useRef<HTMLDivElement>(null);
   const { width } = useElementSize(containerRef);
   const [page, _setPage] = useState<number>(1);

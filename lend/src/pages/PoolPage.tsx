@@ -198,7 +198,7 @@ const DetailsStatWrapper = styled.div`
     border-bottom: 1px solid ${colors.border};
   }
 
-  @media (max-width: ${sizes.lg + 400}px) {
+  @media (max-width: 1472px) {
     display: block;
 
     > ${Stat} {

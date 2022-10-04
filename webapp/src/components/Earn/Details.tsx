@@ -49,8 +49,15 @@ const StyledTitle = styled(Title)<{ marginTop: number }>`
 `;
 
 export const Strategy = () => {
-  const { strikePrice, barrierPercentage, baseYield, maxYield, loading } =
-    useAirtable();
+  const {
+    strikePrice,
+    baseYield,
+    maxYield,
+    ethLowerBarrier,
+    ethUpperBarrier,
+    loading,
+  } = useAirtable();
+
   const { vaultSubgraphData } = useContext(SubgraphDataContext);
   const loadingText = useLoadingText();
   const TVL = useMemo(() => {
@@ -115,19 +122,13 @@ export const Strategy = () => {
         <span>Upside Barrier</span>
       </ExplainerTitle>
       <StyledTitle marginTop={4}>
-        {loading
-          ? loadingText
-          : `108% (${currency(
-              strikePrice * (1 + barrierPercentage)
-            ).format()})`}
+        {loading ? loadingText : `108% (${currency(ethUpperBarrier).format()})`}
       </StyledTitle>
       <ExplainerTitle color={colors.tertiaryText}>
         <span>Downside Barrier</span>
       </ExplainerTitle>
       <StyledTitle marginTop={4}>
-        {loading
-          ? loadingText
-          : `92% (${currency(strikePrice * (1 - barrierPercentage)).format()})`}
+        {loading ? loadingText : `92% (${currency(ethLowerBarrier).format()})`}
       </StyledTitle>
       <ExplainerTitle color={colors.tertiaryText}>
         <span>Strike</span>
