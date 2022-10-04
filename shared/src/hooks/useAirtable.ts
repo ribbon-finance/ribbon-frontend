@@ -75,40 +75,51 @@ export const useAirtable = () => {
 
   //   Absolute perf = abs(spot - strike) / strike
   // (Absolute perf * participation rate * 4 + 1)^(365/28) -1
-  const [absolutePerformance, performance, expectedYield, maxYield] =
-    useMemo(() => {
-      if (!values) {
-        return [0, 0, 0, 0];
-      }
-      const rawPerformance =
-        (ETHPrice - values.strikePrice) / values.strikePrice;
+  const [
+    absolutePerformance,
+    performance,
+    expectedYield,
+    maxYield,
+    ethLowerBarrier,
+    ethUpperBarrier,
+  ] = useMemo(() => {
+    if (!values) {
+      return [0, 0, 0, 0, 0, 0];
+    }
+    const rawPerformance = (ETHPrice - values.strikePrice) / values.strikePrice;
 
-      //performance reduced to 4dps
-      const performance = Math.round(rawPerformance * 10000) / 10000;
+    //performance reduced to 4dps
+    const performance = Math.round(rawPerformance * 10000) / 10000;
 
-      const absolutePerformance =
-        Math.round(Math.abs(rawPerformance) * 10000) / 10000;
+    const absolutePerformance =
+      Math.round(Math.abs(rawPerformance) * 10000) / 10000;
 
-      const calculateMaxYield =
-        values.baseYield +
-        (values.barrierPercentage * values.participationRate * 4 + 1) **
-          (365 / 28) -
-        1;
+    const calculateMaxYield =
+      values.baseYield +
+      (values.barrierPercentage * values.participationRate * 4 + 1) **
+        (365 / 28) -
+      1;
 
-      const calculateExpectedYield =
-        absolutePerformance > values.barrierPercentage
-          ? values.baseYield
-          : values.baseYield +
-            (absolutePerformance * values.participationRate * 4 + 1) **
-              (365 / 28) -
-            1;
-      return [
-        absolutePerformance,
-        performance,
-        calculateExpectedYield,
-        calculateMaxYield,
-      ];
-    }, [values, ETHPrice]);
+    const calculateExpectedYield =
+      absolutePerformance > values.barrierPercentage
+        ? values.baseYield
+        : values.baseYield +
+          (absolutePerformance * values.participationRate * 4 + 1) **
+            (365 / 28) -
+          1;
+
+    const ethPriceLower = values.strikePrice * (1 - values.barrierPercentage);
+    const ethPriceUpper = values.strikePrice * (1 + values.barrierPercentage);
+
+    return [
+      absolutePerformance,
+      performance,
+      calculateExpectedYield,
+      calculateMaxYield,
+      ethPriceLower,
+      ethPriceUpper,
+    ];
+  }, [values, ETHPrice]);
 
   if (loading || !values) {
     //placeholder values while values are loading
@@ -123,6 +134,8 @@ export const useAirtable = () => {
       expectedYield: 0.0,
       maxYield: 0.1633,
       borrowRate: 0.1,
+      ethLowerBarrier: 0,
+      ethUpperBarrier: 0,
     };
   }
   return {
@@ -131,10 +144,12 @@ export const useAirtable = () => {
     baseYield: values.baseYield,
     participationRate: values.participationRate,
     barrierPercentage: values.barrierPercentage,
-    absolutePerformance: absolutePerformance,
-    performance: performance,
-    expectedYield: expectedYield,
-    maxYield: maxYield,
+    absolutePerformance,
+    performance,
+    expectedYield,
+    maxYield,
     borrowRate: values.borrowRate,
+    ethLowerBarrier,
+    ethUpperBarrier,
   };
 };

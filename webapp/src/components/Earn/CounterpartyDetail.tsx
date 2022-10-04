@@ -362,7 +362,7 @@ const CounterpartyDetail: React.FC<VaultStrategyExplainerProps> = ({
                 </div>
               </WalletContentText>
               {/* <Title>{renderCreditRating(counterparty)}</Title> */}
-              <Title>AA</Title>
+              <Title>A</Title>
               <Title>AA</Title>
             </Part>
           </Details>
