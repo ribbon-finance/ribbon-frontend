@@ -198,7 +198,7 @@ const StyledSubtitle = styled(Subtitle)<{ color?: string }>`
 export const Pools = () => {
   const vaultDatas = useVaultsData();
   const utilizationDecimals = getUtilizationDecimals();
-  const { loading, aprs } = usePoolsAPR();
+  const { aprs } = usePoolsAPR();
   const AssetLogo = getAssetLogo("USDC");
   return (
     <ListRow>
@@ -252,10 +252,7 @@ export const Pools = () => {
                     </StyledTitle>
                   </Value>
                   <StyledSubtitle color={colors.green}>
-                    {loading
-                      ? "0.00"
-                      : currency(apr.toFixed(2), { symbol: "" }).format()}
-                    %
+                    {currency(apr.toFixed(2), { symbol: "" }).format()}%
                   </StyledSubtitle>
                 </Stat>
               </PoolStats>

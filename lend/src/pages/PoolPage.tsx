@@ -331,10 +331,7 @@ const PoolPage = () => {
   const logo = getMakerLogo(poolId);
   const poolSize = formatBigNumber(vaultDatas[poolId].poolSize, usdcDecimals);
   const apr = poolAPRs[poolId].toFixed(2);
-  console.log({ poolAPRs });
-  console.log({ supplyAprs });
   const supplyApr = supplyAprs[poolId].toFixed(18);
-  console.log(supplyApr);
   const rbnApr = rbnAprs[poolId].toFixed(2);
   const poolDetails = VaultDetailsMap[poolId];
   const utilizationRate = formatBigNumber(
@@ -418,29 +415,22 @@ const PoolPage = () => {
                             >
                               <span>Total APR</span>
                               <span>
-                                {loading
-                                  ? "---"
-                                  : currency(apr, { symbol: "" }).format()}
-                                %
+                                {currency(apr, { symbol: "" }).format()}%
                               </span>
                             </YieldExplainerTitle>
                             <YieldExplainerStat>
                               <span>Supply APR</span>
                               <span>
-                                {loading
-                                  ? "---"
-                                  : currency(supplyApr, {
-                                      symbol: "",
-                                    }).format()}
+                                {currency(supplyApr, {
+                                  symbol: "",
+                                }).format()}
                                 %
                               </span>
                             </YieldExplainerStat>
                             <YieldExplainerStat>
                               <span>RBN Rewards APR</span>
                               <span>
-                                {loading
-                                  ? "---"
-                                  : currency(rbnApr, { symbol: "" }).format()}
+                                {currency(rbnApr, { symbol: "" }).format()}
                               </span>
                             </YieldExplainerStat>
                           </>

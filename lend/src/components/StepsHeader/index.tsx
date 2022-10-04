@@ -59,18 +59,24 @@ const OpenAppButton = styled.div`
   // }
 `;
 
-const StepsHeader: React.FC = () => {
+interface StepsHeaderProps {
+  button: boolean;
+}
+
+const StepsHeader = ({ button }: StepsHeaderProps) => {
   return (
     <HeaderContainer>
       <StepsCarousel />
-      <ButtonContainer>
-        {/* uncomment on launch */}
-        <a href={"/app"}>
-          <OpenAppButton>
-            <ButtonText>OPEN APP</ButtonText>
-          </OpenAppButton>
-        </a>
-      </ButtonContainer>
+      {button && (
+        <ButtonContainer>
+          {/* uncomment on launch */}
+          <a href={"/app"}>
+            <OpenAppButton>
+              <ButtonText>OPEN APP</ButtonText>
+            </OpenAppButton>
+          </a>
+        </ButtonContainer>
+      )}
     </HeaderContainer>
   );
 };
