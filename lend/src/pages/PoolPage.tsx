@@ -445,7 +445,7 @@ const PoolPage = () => {
                     <Value
                       color={parseFloat(apr) >= 0 ? colors.green : colors.red}
                     >
-                      {loading ? "---" : currency(apr, { symbol: "" }).format()}
+                      {currency(apr, { symbol: "" }).format()}
                       %
                     </Value>
                   </Stat>
