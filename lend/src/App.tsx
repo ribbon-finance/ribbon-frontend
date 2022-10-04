@@ -23,6 +23,7 @@ const Body = styled.div`
   display: flex;
   width: 100vw;
   height: 100vh;
+  height: -webkit-fill-available;
 `;
 
 function App() {
