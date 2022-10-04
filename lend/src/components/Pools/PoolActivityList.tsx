@@ -17,7 +17,7 @@ import { getAssetDecimals } from "shared/lib/utils/asset";
 import PoolTableWithFixedHeader from "./PoolTableWithFixedHeaders";
 import { PrimaryText } from "../../designSystem";
 import { getAssetLogo } from "../../utils/asset";
-
+import currency from "currency.js";
 const VaultPrimaryText = styled(PrimaryText)`
   font-size: 16px;
   color: ${colors.primaryText};
@@ -110,7 +110,9 @@ const PoolActivityList: React.FC<DesktopVaultActivityListProps> = ({
               </LogoContainer>
               <div className="ml-2">
                 <StyledTitle>
-                  {formatBigNumber(activity.borrowAmount, decimals)}
+                  {currency(formatBigNumber(activity.borrowAmount, decimals), {
+                    symbol: "",
+                  }).format()}
                 </StyledTitle>
               </div>
             </div>,
@@ -131,7 +133,9 @@ const PoolActivityList: React.FC<DesktopVaultActivityListProps> = ({
               </LogoContainer>
               <div className="ml-2">
                 <StyledTitle>
-                  {formatBigNumber(activity.repaidAmount, decimals)}
+                  {currency(formatBigNumber(activity.repaidAmount, decimals), {
+                    symbol: "",
+                  }).format()}
                 </StyledTitle>
               </div>
             </div>,

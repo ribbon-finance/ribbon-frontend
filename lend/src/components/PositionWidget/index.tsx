@@ -19,7 +19,8 @@ const DesktopContainer = styled.div<{ color: string }>`
   bottom: calc(${components.footer}px + 26px);
   right: 26px;
   width: max-content;
-  border-radius: 48px;
+  border-top-left-radius: 48px;
+  border-bottom-left-radius: 48px;
   background: linear-gradient(
     96.84deg,
     ${(props) => props.color}14 1.04%,
@@ -32,7 +33,8 @@ const DesktopContainer = styled.div<{ color: string }>`
 `;
 
 const FloatingPositionCard = styled.div<{ color: string }>`
-  border-radius: 48px;
+  border-top-left-radius: 48px;
+  border-bottom-left-radius: 48px;
   padding: 4px;
   backdrop-filter: blur(32px);
   background: linear-gradient(

@@ -364,7 +364,7 @@ const Footer = ({ activePage, setPage, setWalletModal }: FooterProps) => {
           isActive={activePage === PageEnum.POSITIONS}
           onClick={() => setPage(PageEnum.POSITIONS)}
         >
-          Positions({positionsCount})
+          Positions{account && `(${positionsCount})`}
         </FooterButton>
       </Col>
       <FooterWalletCol md={0} lg={6}>
