@@ -5,7 +5,6 @@ import sizes from "../../designSystem/sizes";
 import { components } from "../../designSystem/components";
 import { ProductDisclaimer } from "../ProductDisclaimer";
 import { Link } from "react-router-dom";
-import { StatsMarquee } from "../StatsMarquee";
 import theme from "../../designSystem/theme";
 
 const FooterContainer = styled.div`

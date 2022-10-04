@@ -322,7 +322,7 @@ const PoolPage = () => {
   const [activePage, setPage] = useState<PageEnum>();
   const [triggerWalletModal, setWalletModal] = useState<boolean>(false);
   const { data: vaultDatas } = useVaultsData();
-  const { aprs: poolAPRs, supplyAprs, rbnAprs } = usePoolsAPR();
+  const { aprs: poolAPRs, rbnAprs } = usePoolsAPR();
   const utilizationDecimals = getUtilizationDecimals();
   const usdcDecimals = getAssetDecimals("USDC");
   const { width } = useScreenSize();

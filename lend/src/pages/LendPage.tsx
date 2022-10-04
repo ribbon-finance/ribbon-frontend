@@ -3,7 +3,6 @@ import { Col, Row } from "react-bootstrap";
 import colors from "shared/lib/designSystem/colors";
 import styled from "styled-components";
 import { components } from "../designSystem/components";
-import { StatsMarquee } from "../components/StatsMarquee";
 import { truncateAddress } from "shared/lib/utils/address";
 import { Button, Title } from "../designSystem";
 import sizes from "../designSystem/sizes";
