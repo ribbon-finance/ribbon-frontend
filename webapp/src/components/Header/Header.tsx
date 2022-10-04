@@ -166,7 +166,7 @@ const Header = () => {
   const openLink = useCallback(
     (option) => {
       if (option === "VAULTTOKEN") {
-        history.push("./staking");
+        history.push("/staking");
       } else {
         window.open(URLS.governance);
       }
