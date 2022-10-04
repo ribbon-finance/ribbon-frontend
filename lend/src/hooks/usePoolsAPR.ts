@@ -13,6 +13,8 @@ export type useDefault = {
   [vault in VaultOptions]: boolean;
 };
 
+const defaultAPR = 7;
+const secondsInYear = 31536000;
 export const usePoolsAPR = () => {
   const [aprs, setAprs] = useState<APRMap>();
   const [supplyAprs, setSupplyAprs] = useState<APRMap>();
@@ -54,13 +56,14 @@ export const usePoolsAPR = () => {
         );
         const poolSize = parseFloat(formatUnits(poolData.poolSize, 6));
         aprsTemp[pool] = isDefault[pool]
-          ? 7 + ((rewardPerSecond * RBNPrice * 31536000) / poolSize) * 100
-          : (supplyRate * 31536000 +
-              (rewardPerSecond * RBNPrice * 31536000) / poolSize) *
+          ? defaultAPR +
+            ((rewardPerSecond * RBNPrice * secondsInYear) / poolSize) * 100
+          : (supplyRate * secondsInYear +
+              (rewardPerSecond * RBNPrice * secondsInYear) / poolSize) *
             100;
-        supplyAprsTemp[pool] = isDefault[pool] ? 7 : supplyRate / 100;
+        supplyAprsTemp[pool] = isDefault[pool] ? defaultAPR : supplyRate / 100;
         rbnAprsTemp[pool] =
-          ((rewardPerSecond * RBNPrice * 31536000) / poolSize) * 100;
+          ((rewardPerSecond * RBNPrice * secondsInYear) / poolSize) * 100;
         return;
       });
       setAprs(aprsTemp);
@@ -78,12 +81,12 @@ export const usePoolsAPR = () => {
     return {
       loading: isLoading,
       aprs: {
-        wintermute: 7,
-        folkvang: 7,
+        wintermute: defaultAPR,
+        folkvang: defaultAPR,
       },
       supplyAprs: {
-        wintermute: 7,
-        folkvang: 7,
+        wintermute: defaultAPR,
+        folkvang: defaultAPR,
       },
       rbnAprs: {
         wintermute: 0,

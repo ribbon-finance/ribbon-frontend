@@ -52,11 +52,10 @@ const OpenAppButton = styled.div`
   justify-content: center;
   align-items: center;
   text-align: center;
-  // uncomment on launch
-  // &:hover {
-  //   cursor: pointer;
-  //   opacity: ${theme.hover.opacity};
-  // }
+  &:hover {
+    cursor: pointer;
+    opacity: ${theme.hover.opacity};
+  }
 `;
 
 interface StepsHeaderProps {
@@ -69,7 +68,6 @@ const StepsHeader = ({ button }: StepsHeaderProps) => {
       <StepsCarousel />
       {button && (
         <ButtonContainer>
-          {/* uncomment on launch */}
           <a href={"/app"}>
             <OpenAppButton>
               <ButtonText>OPEN APP</ButtonText>
