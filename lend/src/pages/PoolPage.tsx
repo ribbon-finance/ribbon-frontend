@@ -322,7 +322,7 @@ const PoolPage = () => {
   const [activePage, setPage] = useState<PageEnum>();
   const [triggerWalletModal, setWalletModal] = useState<boolean>(false);
   const { data: vaultDatas } = useVaultsData();
-  const { loading, aprs: poolAPRs, supplyAprs, rbnAprs } = usePoolsAPR();
+  const { aprs: poolAPRs, supplyAprs, rbnAprs } = usePoolsAPR();
   const utilizationDecimals = getUtilizationDecimals();
   const usdcDecimals = getAssetDecimals("USDC");
   const { width } = useScreenSize();
@@ -445,8 +445,7 @@ const PoolPage = () => {
                     <Value
                       color={parseFloat(apr) >= 0 ? colors.green : colors.red}
                     >
-                      {currency(apr, { symbol: "" }).format()}
-                      %
+                      {currency(apr, { symbol: "" }).format()}%
                     </Value>
                   </Stat>
                   {/* <Stat> */}
