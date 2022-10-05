@@ -27,8 +27,8 @@ export const usePoolsAPR = () => {
   useEffect(() => {
     //if set to true, use default apr instead of calculated apr
     let isDefault: useDefault = {
-      wintermute: true,
-      folkvang: true,
+      wintermute: false,
+      folkvang: false,
     };
 
     // 1. When init load schedules
@@ -47,7 +47,7 @@ export const usePoolsAPR = () => {
       folkvang: 0,
     };
 
-    if (!loading && !assetPriceLoading) {
+    if (!loading) {
       VaultList.forEach((pool) => {
         const poolData = vaultDatas[pool];
         const supplyRate = parseFloat(formatUnits(poolData.supplyRate, 18));
@@ -61,7 +61,9 @@ export const usePoolsAPR = () => {
           : (supplyRate * secondsInYear +
               (rewardPerSecond * RBNPrice * secondsInYear) / poolSize) *
             100;
-        supplyAprsTemp[pool] = isDefault[pool] ? defaultAPR : supplyRate / 100;
+        supplyAprsTemp[pool] = isDefault[pool]
+          ? defaultAPR
+          : supplyRate * secondsInYear * 100;
         rbnAprsTemp[pool] =
           ((rewardPerSecond * RBNPrice * secondsInYear) / poolSize) * 100;
         return;
@@ -73,8 +75,8 @@ export const usePoolsAPR = () => {
   }, [loading, assetPriceLoading, RBNPrice, vaultDatas]);
 
   const isLoading = useMemo(() => {
-    return loading || assetPriceLoading || !aprs;
-  }, [loading, assetPriceLoading, aprs]);
+    return loading || !aprs;
+  }, [loading, aprs]);
 
   if (isLoading || !aprs || !supplyAprs || !rbnAprs) {
     //placeholder values while values are loading

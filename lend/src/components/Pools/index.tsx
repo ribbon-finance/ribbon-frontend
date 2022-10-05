@@ -24,6 +24,7 @@ import { delayedFade } from "../animations";
 import currency from "currency.js";
 import useWeb3Wallet from "../../hooks/useWeb3Wallet";
 import { useMemo } from "react";
+import { LoadingText } from "shared/lib/hooks/useLoadingText";
 const statSideContainer: number = 120;
 
 const ListRow = styled(Row)`
@@ -199,8 +200,9 @@ const StyledSubtitle = styled(Subtitle)<{ color?: string }>`
 export const Pools = () => {
   const vaultDatas = useVaultsData();
   const utilizationDecimals = getUtilizationDecimals();
-  const { aprs } = usePoolsAPR();
+  const { loading, aprs } = usePoolsAPR();
   const AssetLogo = getAssetLogo("USDC");
+
   return (
     <ListRow>
       {VaultList.map((pool, i) => {
@@ -256,8 +258,14 @@ export const Pools = () => {
                       </span>
                     </StyledTitle>
                   </Value>
-                  <StyledSubtitle color={colors.green}>
-                    {currency(apr.toFixed(2), { symbol: "" }).format()}%
+                  <StyledSubtitle
+                    color={loading ? colors.primaryText : colors.green}
+                  >
+                    {loading ? (
+                      <LoadingText>LOADING</LoadingText>
+                    ) : (
+                      `${currency(apr.toFixed(2), { symbol: "" }).format()}%`
+                    )}
                   </StyledSubtitle>
                 </Stat>
               </PoolStats>
