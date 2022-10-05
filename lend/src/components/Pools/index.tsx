@@ -23,6 +23,7 @@ import sizes from "../../designSystem/sizes";
 import { delayedFade } from "../animations";
 import currency from "currency.js";
 import useWeb3Wallet from "../../hooks/useWeb3Wallet";
+import { useMemo } from "react";
 const statSideContainer: number = 120;
 
 const ListRow = styled(Row)`
@@ -292,17 +293,21 @@ const NoPositionLabel = styled.span<{ delay: number; duration: number }>`
 
 export const Positions = () => {
   const vaultDatas = useVaultsData();
-  const { loading } = usePoolsAPR();
   const usdcDecimals = getAssetDecimals("USDC");
   const { account, active } = useWeb3Wallet();
   const { loading: vaultLoading, vaultAccounts } = useVaultAccounts("lend");
-  const filteredList = VaultList.filter(
-    (pool) =>
-      !isPracticallyZero(
-        vaultDatas.data[pool].vaultBalanceInAsset,
-        usdcDecimals
-      )
-  );
+  const filteredList = useMemo(() => {
+    if (!vaultAccounts || vaultLoading || !account) {
+      return [];
+    }
+    return VaultList.filter(
+      (pool) =>
+        !isPracticallyZero(
+          vaultDatas.data[pool].vaultBalanceInAsset,
+          usdcDecimals
+        )
+    );
+  }, [account, usdcDecimals, vaultAccounts, vaultDatas.data, vaultLoading]);
 
   if (!vaultAccounts) {
     return <></>;
@@ -317,7 +322,6 @@ export const Positions = () => {
         const profit = () => {
           if (
             !vaultAccount ||
-            loading ||
             vaultLoading ||
             isPracticallyZero(vaultAccount.totalDeposits, usdcDecimals)
           ) {
@@ -332,7 +336,6 @@ export const Positions = () => {
         const roi = () => {
           if (
             !vaultAccount ||
-            loading ||
             vaultLoading ||
             isPracticallyZero(vaultAccount.totalDeposits, usdcDecimals)
           ) {
@@ -351,11 +354,7 @@ export const Positions = () => {
         };
 
         const roiColor = () => {
-          return roi() === 0 || loading
-            ? "white"
-            : roi() >= 0
-            ? colors.green
-            : colors.red;
+          return roi() === 0 ? "white" : roi() >= 0 ? colors.green : colors.red;
         };
 
         const poolLogo = getMakerLogo(pool);
@@ -405,9 +404,9 @@ export const Positions = () => {
                     </StyledTitle>
                   </Value>
                   <StyledSubtitle color={roiColor()}>
-                    {loading || !account
+                    {vaultLoading || !account
                       ? "---"
-                      : `${currency(
+                      : `${roi() > 0 ? "+" : ""}${currency(
                           profit().toFixed(2)
                         ).format()} (${roi().toFixed(2)}%)`}
                   </StyledSubtitle>

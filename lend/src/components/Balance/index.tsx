@@ -170,6 +170,7 @@ export const Balance = () => {
       isPracticallyZero(totalDeposits, decimals) ||
       isPracticallyZero(yourBalance, decimals) ||
       !account ||
+      loading ||
       depositLoading
     ) {
       return [0, 0];
@@ -181,15 +182,11 @@ export const Balance = () => {
         parseFloat(formatUnits(totalDeposits, decimals))) *
         100,
     ];
-  }, [totalDeposits, decimals, yourBalance, account, depositLoading]);
+  }, [totalDeposits, decimals, yourBalance, account, loading, depositLoading]);
 
   const roiColor = useMemo(() => {
-    return roi === 0 || loading
-      ? "white"
-      : roi >= 0
-      ? colors.green
-      : colors.red;
-  }, [roi, loading]);
+    return roi === 0 ? "white" : roi >= 0 ? colors.green : colors.red;
+  }, [roi]);
 
   const [triggerClaimModal, setClaimModal] = useState<boolean>(false);
 
@@ -219,7 +216,9 @@ export const Balance = () => {
           <HeroSubtitle color={roiColor} delay={0.4}>
             {loading || !account
               ? "---"
-              : `${currency(profit.toFixed(2)).format()} (${roi.toFixed(2)}%)`}
+              : `${roi > 0 ? "+" : ""}${currency(
+                  profit.toFixed(2)
+                ).format()} (${roi.toFixed(2)}%)`}
           </HeroSubtitle>
           <ClaimTextContainer delay={0.5}>
             <ClaimLabel>Unclaimed RBN Rewards:</ClaimLabel>
