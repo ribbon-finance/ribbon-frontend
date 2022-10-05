@@ -45,8 +45,8 @@ const LogoContainer = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
-  height: 24px;
-  width: 24px;
+  height: 20px;
+  width: 20px;
 `;
 
 const StyledTitle = styled(Title)``;
@@ -104,7 +104,7 @@ const PoolActivityList: React.FC<DesktopVaultActivityListProps> = ({
                 </VaultSecondaryText>
               </VaultSecondaryTextContainer>
             </>,
-            <div className="d-flex justify-content-end mr-3">
+            <div className="d-flex justify-content-end align-items-center mr-3">
               <LogoContainer>
                 <AssetLogo />
               </LogoContainer>
@@ -129,7 +129,7 @@ const PoolActivityList: React.FC<DesktopVaultActivityListProps> = ({
             </>,
             <div className="d-flex justify-content-end mr-3">
               <LogoContainer>
-                <AssetLogo />
+                <AssetLogo height={"100"} />
               </LogoContainer>
               <div className="ml-2">
                 <StyledTitle>
@@ -147,7 +147,7 @@ const PoolActivityList: React.FC<DesktopVaultActivityListProps> = ({
 
   return (
     <PoolTableWithFixedHeader
-      weights={[0.75, 0.25]}
+      weights={[0.5, 0.5]}
       orientations={["left", "right"]}
       labels={["Action", "Yield"]}
       data={activities.map((activity) => getVaultActivityTableData(activity))}

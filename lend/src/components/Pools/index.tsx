@@ -23,6 +23,7 @@ import sizes from "../../designSystem/sizes";
 import { delayedFade } from "../animations";
 import currency from "currency.js";
 import useWeb3Wallet from "../../hooks/useWeb3Wallet";
+import { useMemo } from "react";
 const statSideContainer: number = 120;
 
 const ListRow = styled(Row)`
@@ -248,7 +249,11 @@ export const Pools = () => {
                   <Value>
                     <AssetLogo />
                     <StyledTitle>
-                      <span>{formatBigNumber(poolSize, decimals)}</span>
+                      <span>
+                        {currency(formatBigNumber(poolSize, decimals), {
+                          symbol: "",
+                        }).format()}
+                      </span>
                     </StyledTitle>
                   </Value>
                   <StyledSubtitle color={colors.green}>
@@ -288,30 +293,49 @@ const NoPositionLabel = styled.span<{ delay: number; duration: number }>`
 
 export const Positions = () => {
   const vaultDatas = useVaultsData();
-  const { loading } = usePoolsAPR();
   const usdcDecimals = getAssetDecimals("USDC");
   const { account, active } = useWeb3Wallet();
   const { loading: vaultLoading, vaultAccounts } = useVaultAccounts("lend");
-  const filteredList = VaultList.filter(
-    (pool) =>
-      !isPracticallyZero(
-        vaultDatas.data[pool].vaultBalanceInAsset,
-        usdcDecimals
-      )
-  );
+  const filteredList = useMemo(() => {
+    if (!vaultAccounts || vaultLoading || !account) {
+      return [];
+    }
+    return VaultList.filter(
+      (pool) =>
+        !isPracticallyZero(
+          vaultDatas.data[pool].vaultBalanceInAsset,
+          usdcDecimals
+        )
+    );
+  }, [account, usdcDecimals, vaultAccounts, vaultDatas.data, vaultLoading]);
 
   if (!vaultAccounts) {
     return <></>;
   }
+
   return filteredList.length > 0 ? (
     <ListRow>
       {filteredList.map((pool, i) => {
         const balance = vaultDatas.data[pool].vaultBalanceInAsset;
         const vaultAccount = vaultAccounts[pool];
+
+        const profit = () => {
+          if (
+            !vaultAccount ||
+            vaultLoading ||
+            isPracticallyZero(vaultAccount.totalDeposits, usdcDecimals)
+          ) {
+            return 0;
+          }
+
+          return parseFloat(
+            formatUnits(balance.sub(vaultAccount.totalDeposits), usdcDecimals)
+          );
+        };
+
         const roi = () => {
           if (
             !vaultAccount ||
-            loading ||
             vaultLoading ||
             isPracticallyZero(vaultAccount.totalDeposits, usdcDecimals)
           ) {
@@ -327,6 +351,10 @@ export const Positions = () => {
               )) *
             100
           );
+        };
+
+        const roiColor = () => {
+          return roi() === 0 ? "white" : roi() >= 0 ? colors.green : colors.red;
         };
 
         const poolLogo = getMakerLogo(pool);
@@ -368,11 +396,19 @@ export const Positions = () => {
                   <Value>
                     <AssetLogo />
                     <StyledTitle>
-                      <span>{formatBigNumber(balance, decimals)}</span>
+                      <span>
+                        {currency(formatBigNumber(balance, decimals), {
+                          symbol: "",
+                        }).format()}
+                      </span>
                     </StyledTitle>
                   </Value>
-                  <StyledSubtitle color={colors.green}>
-                    {loading ? "0.00" : roi().toFixed(2)}%
+                  <StyledSubtitle color={roiColor()}>
+                    {vaultLoading || !account
+                      ? "---"
+                      : `${roi() > 0 ? "+" : ""}${currency(
+                          profit().toFixed(2)
+                        ).format()} (${roi().toFixed(2)}%)`}
                   </StyledSubtitle>
                 </Stat>
               </PoolStats>
