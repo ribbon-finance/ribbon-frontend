@@ -91,20 +91,9 @@ const useFetchLiquidityGaugeV5Data = (): LiquidityGaugeV5PoolData => {
           active
         )!;
 
-        let vaultContract;
-        if (isEarnVault(vault)) {
-          vaultContract = getEarnVaultContract(
-            ethereumProvider || provider,
-            vault,
-            active
-          );
-        } else {
-          vaultContract = getV2VaultContract(
-            ethereumProvider || provider,
-            vault,
-            active
-          );
-        }
+        const vaultContract = isEarnVault(vault)
+          ? getEarnVaultContract(ethereumProvider || provider, vault, active)
+          : getV2VaultContract(ethereumProvider || provider, vault, active);
 
         /**
          * 1. Pool size
