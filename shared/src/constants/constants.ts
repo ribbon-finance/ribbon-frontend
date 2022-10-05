@@ -336,6 +336,7 @@ export const VaultLiquidityMiningMap: {
         "rETH-THETA": v1deployment.mainnet.RibbonETHCoveredCallStakingReward,
       },
       lg5: {
+        rEARN: v2deployment.mainnet.RibbonREarnLiquidityGauge,
         "ryvUSDC-ETH-P-THETA":
           v2deployment.mainnet.RibbonYearnETHPutLiquidityGauge,
         "rAAVE-THETA": v2deployment.mainnet.RibbonAAVECoveredCallLiquidityGauge,
@@ -343,7 +344,6 @@ export const VaultLiquidityMiningMap: {
         "rETH-THETA": v2deployment.mainnet.RibbonETHCoveredCallLiquidityGauge,
         "rBTC-THETA": v2deployment.mainnet.RibbonWBTCCoveredCallLiquidityGauge,
         "rrETH-THETA": v2deployment.mainnet.RibbonRETHCoveredCallLiquidityGauge,
-        rEARN: v2deployment.mainnet.RibbonREarnLiquidityGauge,
       },
     };
 
