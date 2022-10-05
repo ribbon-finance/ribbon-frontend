@@ -343,6 +343,7 @@ export const VaultLiquidityMiningMap: {
         "rETH-THETA": v2deployment.mainnet.RibbonETHCoveredCallLiquidityGauge,
         "rBTC-THETA": v2deployment.mainnet.RibbonWBTCCoveredCallLiquidityGauge,
         "rrETH-THETA": v2deployment.mainnet.RibbonRETHCoveredCallLiquidityGauge,
+        "rEARN": v2deployment.mainnet.RibbonREarnLiquidityGauge
       },
     };
 
