@@ -52,6 +52,7 @@ import { delayedFade, delayedUpwardFade } from "../components/animations";
 import credora from "../assets/icons/credora.svg";
 import MobileHeader from "../components/MobileHeader";
 import PositionWidget from "../components/PositionWidget";
+import { LoadingText } from "shared/lib/hooks/useLoadingText";
 
 const PoolContainer = styled.div`
   width: calc(100% - ${components.sidebar}px);
@@ -322,7 +323,7 @@ const PoolPage = () => {
   const [activePage, setPage] = useState<PageEnum>();
   const [triggerWalletModal, setWalletModal] = useState<boolean>(false);
   const { data: vaultDatas } = useVaultsData();
-  const { aprs: poolAPRs, supplyAprs, rbnAprs } = usePoolsAPR();
+  const { loading, aprs: poolAPRs, supplyAprs, rbnAprs } = usePoolsAPR();
   const utilizationDecimals = getUtilizationDecimals();
   const usdcDecimals = getAssetDecimals("USDC");
   const { width } = useScreenSize();
@@ -331,7 +332,7 @@ const PoolPage = () => {
   const logo = getMakerLogo(poolId);
   const poolSize = formatBigNumber(vaultDatas[poolId].poolSize, usdcDecimals);
   const apr = poolAPRs[poolId].toFixed(2);
-  const supplyApr = supplyAprs[poolId].toFixed(18);
+  const supplyApr = supplyAprs[poolId].toFixed(2);
   const rbnApr = rbnAprs[poolId].toFixed(2);
   const poolDetails = VaultDetailsMap[poolId];
   const utilizationRate = formatBigNumber(
@@ -410,27 +411,44 @@ const PoolPage = () => {
                           <>
                             <YieldExplainerTitle
                               color={
-                                parseFloat(apr) >= 0 ? colors.green : colors.red
+                                loading || parseFloat(apr) === 0
+                                  ? colors.primaryText
+                                  : parseFloat(apr) >= 0
+                                  ? colors.green
+                                  : colors.red
                               }
                             >
                               <span>Total APR</span>
                               <span>
-                                {currency(apr, { symbol: "" }).format()}%
+                                {loading ? (
+                                  <LoadingText>LOADING</LoadingText>
+                                ) : (
+                                  `${currency(apr, { symbol: "" }).format()}%`
+                                )}
                               </span>
                             </YieldExplainerTitle>
                             <YieldExplainerStat>
                               <span>Supply APR</span>
                               <span>
-                                {currency(supplyApr, {
-                                  symbol: "",
-                                }).format()}
-                                %
+                                {loading ? (
+                                  <LoadingText>LOADING</LoadingText>
+                                ) : (
+                                  `${currency(supplyApr, {
+                                    symbol: "",
+                                  }).format()}%`
+                                )}
                               </span>
                             </YieldExplainerStat>
                             <YieldExplainerStat>
                               <span>RBN Rewards APR</span>
                               <span>
-                                {currency(rbnApr, { symbol: "" }).format()}
+                                {loading ? (
+                                  <LoadingText>LOADING</LoadingText>
+                                ) : (
+                                  `${currency(rbnApr, {
+                                    symbol: "",
+                                  }).format()}%`
+                                )}
                               </span>
                             </YieldExplainerStat>
                           </>
@@ -443,9 +461,21 @@ const PoolPage = () => {
                       />
                     </div>
                     <Value
-                      color={parseFloat(apr) >= 0 ? colors.green : colors.red}
+                      color={
+                        loading || parseFloat(apr) === 0
+                          ? colors.primaryText
+                          : parseFloat(apr) >= 0
+                          ? colors.green
+                          : colors.red
+                      }
                     >
-                      {currency(apr, { symbol: "" }).format()}%
+                      {loading ? (
+                        <LoadingText>LOADING</LoadingText>
+                      ) : (
+                        `${currency(apr, {
+                          symbol: "",
+                        }).format()}%`
+                      )}
                     </Value>
                   </Stat>
                   <Stat delay={0.7}>
