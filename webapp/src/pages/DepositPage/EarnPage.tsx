@@ -413,8 +413,7 @@ const EarnPage = () => {
       hasPendingDeposits
     );
   }, [hasLockedBalanceInAsset, hasPendingDeposits, withdrawals.shares]);
-  console.log({ hasLockedBalanceInAsset });
-  console.log({ hasPendingDeposits });
+
   const showCompleteWithdraw = useMemo(() => {
     return !withdrawals.shares.isZero() && withdrawals.round !== round;
   }, [round, withdrawals]);
