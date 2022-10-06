@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useRef } from "react";
+import React, { useMemo, useRef } from "react";
 import styled from "styled-components";
 
 import colors from "shared/lib/designSystem/colors";
@@ -133,10 +133,6 @@ const Scroller: React.FC<ScrollerProps> = ({
     () => width > (scrollRef.current?.offsetWidth || 0),
     [width]
   );
-
-  useEffect(() => {
-    console.log(scrollRef);
-  }, [scrollRef]);
 
   const onScroll = (side: "left" | "right") => {
     scrollRef.current?.scrollBy({

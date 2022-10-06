@@ -9,6 +9,12 @@ export type APRMap = {
   [vault in VaultOptions]: number;
 };
 
+export type useDefault = {
+  [vault in VaultOptions]: boolean;
+};
+
+const defaultAPR = 7;
+const secondsInYear = 31536000;
 export const usePoolsAPR = () => {
   const [aprs, setAprs] = useState<APRMap>();
   const [supplyAprs, setSupplyAprs] = useState<APRMap>();
@@ -19,6 +25,12 @@ export const usePoolsAPR = () => {
   });
 
   useEffect(() => {
+    //if set to true, use default apr instead of calculated apr
+    let isDefault: useDefault = {
+      wintermute: false,
+      folkvang: false,
+    };
+
     // 1. When init load schedules
     let aprsTemp: APRMap = {
       wintermute: 0,
@@ -35,7 +47,7 @@ export const usePoolsAPR = () => {
       folkvang: 0,
     };
 
-    if (!loading && !assetPriceLoading) {
+    if (!loading) {
       VaultList.forEach((pool) => {
         const poolData = vaultDatas[pool];
         const supplyRate = parseFloat(formatUnits(poolData.supplyRate, 18));
@@ -43,12 +55,17 @@ export const usePoolsAPR = () => {
           formatUnits(poolData.rewardPerSecond, 18)
         );
         const poolSize = parseFloat(formatUnits(poolData.poolSize, 6));
-        aprsTemp[pool] =
-          (supplyRate + (rewardPerSecond * RBNPrice * 31536000) / poolSize) *
-          100;
-        supplyAprsTemp[pool] = supplyRate / 100;
+        aprsTemp[pool] = isDefault[pool]
+          ? defaultAPR +
+            ((rewardPerSecond * RBNPrice * secondsInYear) / poolSize) * 100
+          : (supplyRate * secondsInYear +
+              (rewardPerSecond * RBNPrice * secondsInYear) / poolSize) *
+            100;
+        supplyAprsTemp[pool] = isDefault[pool]
+          ? defaultAPR
+          : supplyRate * secondsInYear * 100;
         rbnAprsTemp[pool] =
-          ((rewardPerSecond * RBNPrice * 31536000) / poolSize) * 100;
+          ((rewardPerSecond * RBNPrice * secondsInYear) / poolSize) * 100;
         return;
       });
       setAprs(aprsTemp);
@@ -58,20 +75,20 @@ export const usePoolsAPR = () => {
   }, [loading, assetPriceLoading, RBNPrice, vaultDatas]);
 
   const isLoading = useMemo(() => {
-    return loading || assetPriceLoading || !aprs;
-  }, [loading, assetPriceLoading, aprs]);
+    return loading || !aprs;
+  }, [loading, aprs]);
 
   if (isLoading || !aprs || !supplyAprs || !rbnAprs) {
     //placeholder values while values are loading
     return {
       loading: isLoading,
       aprs: {
-        wintermute: 0,
-        folkvang: 0,
+        wintermute: defaultAPR,
+        folkvang: defaultAPR,
       },
       supplyAprs: {
-        wintermute: 0,
-        folkvang: 0,
+        wintermute: defaultAPR,
+        folkvang: defaultAPR,
       },
       rbnAprs: {
         wintermute: 0,

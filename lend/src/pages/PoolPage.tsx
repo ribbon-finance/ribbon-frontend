@@ -53,6 +53,7 @@ import credora from "../assets/icons/credora.svg";
 import MobileHeader from "../components/MobileHeader";
 import PositionWidget from "../components/PositionWidget";
 import ActionMMModal from "../components/ActionMMModal";
+import { LoadingText } from "shared/lib/hooks/useLoadingText";
 
 const PoolContainer = styled.div`
   width: calc(100% - ${components.sidebar}px);
@@ -200,7 +201,7 @@ const DetailsStatWrapper = styled.div`
     border-bottom: 1px solid ${colors.border};
   }
 
-  @media (max-width: ${sizes.lg + 400}px) {
+  @media (max-width: 1472px) {
     display: block;
 
     > ${Stat} {
@@ -323,9 +324,9 @@ const PoolPage = () => {
   const { poolId }: { poolId: VaultOptions } = useParams();
   const [activePage, setPage] = useState<PageEnum>();
   const [triggerWalletModal, setWalletModal] = useState<boolean>(false);
-  const { loading, data: vaultDatas } = useVaultsData();
+  const { loading: vaultLoading, data: vaultDatas } = useVaultsData();
   const { account, active } = useWeb3Wallet();
-  const { aprs: poolAPRs, supplyAprs, rbnAprs } = usePoolsAPR();
+  const { loading, aprs: poolAPRs, supplyAprs, rbnAprs } = usePoolsAPR();
   const utilizationDecimals = getUtilizationDecimals();
   const usdcDecimals = getAssetDecimals("USDC");
   const { width } = useScreenSize();
@@ -419,24 +420,44 @@ const PoolPage = () => {
                           <>
                             <YieldExplainerTitle
                               color={
-                                parseFloat(apr) >= 0 ? colors.green : colors.red
+                                loading || parseFloat(apr) === 0
+                                  ? colors.primaryText
+                                  : parseFloat(apr) >= 0
+                                  ? colors.green
+                                  : colors.red
                               }
                             >
                               <span>Total APR</span>
                               <span>
-                                {currency(apr, { symbol: "" }).format()}%
+                                {loading ? (
+                                  <LoadingText>LOADING</LoadingText>
+                                ) : (
+                                  `${currency(apr, { symbol: "" }).format()}%`
+                                )}
                               </span>
                             </YieldExplainerTitle>
                             <YieldExplainerStat>
                               <span>Supply APR</span>
                               <span>
-                                {currency(supplyApr, { symbol: "" }).format()}%
+                                {loading ? (
+                                  <LoadingText>LOADING</LoadingText>
+                                ) : (
+                                  `${currency(supplyApr, {
+                                    symbol: "",
+                                  }).format()}%`
+                                )}
                               </span>
                             </YieldExplainerStat>
                             <YieldExplainerStat>
                               <span>RBN Rewards APR</span>
                               <span>
-                                {currency(rbnApr, { symbol: "" }).format()}%
+                                {loading ? (
+                                  <LoadingText>LOADING</LoadingText>
+                                ) : (
+                                  `${currency(rbnApr, {
+                                    symbol: "",
+                                  }).format()}%`
+                                )}
                               </span>
                             </YieldExplainerStat>
                           </>
@@ -449,12 +470,23 @@ const PoolPage = () => {
                       />
                     </div>
                     <Value
-                      color={parseFloat(apr) >= 0 ? colors.green : colors.red}
+                      color={
+                        loading || parseFloat(apr) === 0
+                          ? colors.primaryText
+                          : parseFloat(apr) >= 0
+                          ? colors.green
+                          : colors.red
+                      }
                     >
-                      {currency(apr, { symbol: "" }).format()}%
+                      {loading ? (
+                        <LoadingText>LOADING</LoadingText>
+                      ) : (
+                        `${currency(apr, {
+                          symbol: "",
+                        }).format()}%`
+                      )}
                     </Value>
                   </Stat>
-                  {/* <Stat> */}
                   <Stat delay={0.7}>
                     <Label>Utilization rate:</Label>
                     <div className="d-flex">
@@ -466,7 +498,6 @@ const PoolPage = () => {
                       <Value>{utilizationRate}%</Value>
                     </div>
                   </Stat>
-                  {/* </Stat> */}
                 </StatsWrapper>
               </Details>
             </UserDetailsWrapper>

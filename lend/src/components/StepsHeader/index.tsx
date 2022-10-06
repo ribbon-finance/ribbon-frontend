@@ -52,25 +52,29 @@ const OpenAppButton = styled.div`
   justify-content: center;
   align-items: center;
   text-align: center;
-  // uncomment on launch
-  // &:hover {
-  //   cursor: pointer;
-  //   opacity: ${theme.hover.opacity};
-  // }
+  &:hover {
+    cursor: pointer;
+    opacity: ${theme.hover.opacity};
+  }
 `;
 
-const StepsHeader: React.FC = () => {
+interface StepsHeaderProps {
+  button: boolean;
+}
+
+const StepsHeader = ({ button }: StepsHeaderProps) => {
   return (
     <HeaderContainer>
       <StepsCarousel />
-      <ButtonContainer>
-        {/* uncomment on launch */}
-        <a href={"/app"}>
-          <OpenAppButton>
-            <ButtonText>OPEN APP</ButtonText>
-          </OpenAppButton>
-        </a>
-      </ButtonContainer>
+      {button && (
+        <ButtonContainer>
+          <a href={"/app"}>
+            <OpenAppButton>
+              <ButtonText>OPEN APP</ButtonText>
+            </OpenAppButton>
+          </a>
+        </ButtonContainer>
+      )}
     </HeaderContainer>
   );
 };

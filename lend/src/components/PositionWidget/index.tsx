@@ -11,6 +11,7 @@ import sizes from "../../designSystem/sizes";
 import { useVaultsData } from "../../hooks/web3DataContext";
 import { components } from "../../designSystem/components";
 import { delayedUpwardFade } from "../animations";
+import currency from "currency.js";
 
 const DesktopContainer = styled.div<{ color: string }>`
   display: flex;
@@ -19,7 +20,8 @@ const DesktopContainer = styled.div<{ color: string }>`
   bottom: calc(${components.footer}px + 26px);
   right: 26px;
   width: max-content;
-  border-radius: 48px;
+  border-top-left-radius: 48px;
+  border-bottom-left-radius: 48px;
   background: linear-gradient(
     96.84deg,
     ${(props) => props.color}14 1.04%,
@@ -32,7 +34,8 @@ const DesktopContainer = styled.div<{ color: string }>`
 `;
 
 const FloatingPositionCard = styled.div<{ color: string }>`
-  border-radius: 48px;
+  border-top-left-radius: 48px;
+  border-bottom-left-radius: 48px;
   padding: 4px;
   backdrop-filter: blur(32px);
   background: linear-gradient(
@@ -47,14 +50,15 @@ const PositionBox = styled.div`
   flex-direction: row;
 `;
 
-const PositionContainer = styled.div<{ color: string }>`
+const PositionContainer = styled.div`
   margin-right: 48px;
   width: 100%;
 `;
 
-const PositionInfoText = styled(Title)<{ size: number }>`
+const PositionInfoText = styled(Title)<{ size: number; color?: string }>`
   letter-spacing: 1px;
   font-size: ${(props) => props.size}px;
+  color: ${(props) => (props.color ? props.color : colors.primaryText)};
   line-height: 16px;
 `;
 
@@ -99,7 +103,7 @@ const PositionWidget: React.FC<YourPositionProps> = ({
                   <Logo width={"100%"} height={"100%"} />
                 </AssetCircleContainer>
               </div>
-              <PositionContainer color={color}>
+              <PositionContainer>
                 <div className="d-flex flex-column justify-content-center p-2">
                   <PositionInfoText size={10} color={colors.text}>
                     Your Balance
@@ -107,10 +111,13 @@ const PositionWidget: React.FC<YourPositionProps> = ({
                   <div className="d-flex">
                     <PositionInfoText size={14}>
                       {poolData
-                        ? formatBigNumber(
-                            poolData.vaultBalanceInAsset,
-                            decimals
-                          )
+                        ? currency(
+                            formatBigNumber(
+                              poolData.vaultBalanceInAsset,
+                              decimals
+                            ),
+                            { symbol: "" }
+                          ).format()
                         : "0.00"}
                     </PositionInfoText>
                   </div>

@@ -23,6 +23,8 @@ import sizes from "../../designSystem/sizes";
 import { delayedFade } from "../animations";
 import currency from "currency.js";
 import useWeb3Wallet from "../../hooks/useWeb3Wallet";
+import { useMemo } from "react";
+import { LoadingText } from "shared/lib/hooks/useLoadingText";
 const statSideContainer: number = 120;
 
 const ListRow = styled(Row)`
@@ -160,6 +162,22 @@ const PoolStats = styled.div`
   }
 `;
 
+const Value = styled.span`
+  display: flex;
+  font-family: VCR;
+  color: ${colors.primaryText};
+
+  > * {
+    margin: auto 0;
+  }
+
+  svg {
+    width: 20px;
+    height: 20px;
+    margin-right: 8px;
+  }
+`;
+
 const StyledTitle = styled(Title)`
   font-size: 14px;
   line-height: 36px;
@@ -183,6 +201,7 @@ export const Pools = () => {
   const vaultDatas = useVaultsData();
   const utilizationDecimals = getUtilizationDecimals();
   const { loading, aprs } = usePoolsAPR();
+  const AssetLogo = getAssetLogo("USDC");
 
   return (
     <ListRow>
@@ -193,9 +212,7 @@ export const Pools = () => {
         const poolLogo = getMakerLogo(pool);
         const asset = getAssets(pool);
         const decimals = getAssetDecimals(asset);
-        const Logo = getAssetLogo(asset);
         const apr = aprs[pool];
-
         return (
           <motion.div
             key={i}
@@ -231,15 +248,24 @@ export const Pools = () => {
                   </StyledSubtitle>
                 </Stat>
                 <Stat>
-                  <StyledTitle>
-                    <Logo height={24} width={24} />
-                    <span>{formatBigNumber(poolSize, decimals)}</span>
-                  </StyledTitle>
-                  <StyledSubtitle color={colors.green}>
-                    {loading
-                      ? "0.00"
-                      : currency(apr.toFixed(2), { symbol: "" }).format()}
-                    %
+                  <Value>
+                    <AssetLogo />
+                    <StyledTitle>
+                      <span>
+                        {currency(formatBigNumber(poolSize, decimals), {
+                          symbol: "",
+                        }).format()}
+                      </span>
+                    </StyledTitle>
+                  </Value>
+                  <StyledSubtitle
+                    color={loading ? colors.primaryText : colors.green}
+                  >
+                    {loading ? (
+                      <LoadingText>LOADING</LoadingText>
+                    ) : (
+                      `${currency(apr.toFixed(2), { symbol: "" }).format()}%`
+                    )}
                   </StyledSubtitle>
                 </Stat>
               </PoolStats>
@@ -275,30 +301,49 @@ const NoPositionLabel = styled.span<{ delay: number; duration: number }>`
 
 export const Positions = () => {
   const vaultDatas = useVaultsData();
-  const { loading } = usePoolsAPR();
   const usdcDecimals = getAssetDecimals("USDC");
   const { account, active } = useWeb3Wallet();
   const { loading: vaultLoading, vaultAccounts } = useVaultAccounts("lend");
-  const filteredList = VaultList.filter(
-    (pool) =>
-      !isPracticallyZero(
-        vaultDatas.data[pool].vaultBalanceInAsset,
-        usdcDecimals
-      )
-  );
+  const filteredList = useMemo(() => {
+    if (!vaultAccounts || vaultLoading || !account) {
+      return [];
+    }
+    return VaultList.filter(
+      (pool) =>
+        !isPracticallyZero(
+          vaultDatas.data[pool].vaultBalanceInAsset,
+          usdcDecimals
+        )
+    );
+  }, [account, usdcDecimals, vaultAccounts, vaultDatas.data, vaultLoading]);
 
   if (!vaultAccounts) {
     return <></>;
   }
+
   return filteredList.length > 0 ? (
     <ListRow>
       {filteredList.map((pool, i) => {
         const balance = vaultDatas.data[pool].vaultBalanceInAsset;
         const vaultAccount = vaultAccounts[pool];
+
+        const profit = () => {
+          if (
+            !vaultAccount ||
+            vaultLoading ||
+            isPracticallyZero(vaultAccount.totalDeposits, usdcDecimals)
+          ) {
+            return 0;
+          }
+
+          return parseFloat(
+            formatUnits(balance.sub(vaultAccount.totalDeposits), usdcDecimals)
+          );
+        };
+
         const roi = () => {
           if (
             !vaultAccount ||
-            loading ||
             vaultLoading ||
             isPracticallyZero(vaultAccount.totalDeposits, usdcDecimals)
           ) {
@@ -316,10 +361,14 @@ export const Positions = () => {
           );
         };
 
+        const roiColor = () => {
+          return roi() === 0 ? "white" : roi() >= 0 ? colors.green : colors.red;
+        };
+
         const poolLogo = getMakerLogo(pool);
         const asset = getAssets(pool);
         const decimals = getAssetDecimals(asset);
-        const Logo = getAssetLogo(asset);
+        const AssetLogo = getAssetLogo(asset);
 
         return (
           <motion.div
@@ -352,12 +401,22 @@ export const Positions = () => {
                   <StyledTitle>{pool}</StyledTitle>
                 </Stat>
                 <Stat>
-                  <StyledTitle>
-                    <Logo height={24} />
-                    <span>{formatBigNumber(balance, decimals)}</span>
-                  </StyledTitle>
-                  <StyledSubtitle color={colors.green}>
-                    {loading ? "0.00" : roi().toFixed(2)}%
+                  <Value>
+                    <AssetLogo />
+                    <StyledTitle>
+                      <span>
+                        {currency(formatBigNumber(balance, decimals), {
+                          symbol: "",
+                        }).format()}
+                      </span>
+                    </StyledTitle>
+                  </Value>
+                  <StyledSubtitle color={roiColor()}>
+                    {vaultLoading || !account
+                      ? "---"
+                      : `${roi() > 0 ? "+" : ""}${currency(
+                          profit().toFixed(2)
+                        ).format()} (${roi().toFixed(2)}%)`}
                   </StyledSubtitle>
                 </Stat>
               </PoolStats>

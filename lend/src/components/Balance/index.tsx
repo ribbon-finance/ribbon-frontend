@@ -15,6 +15,7 @@ import { VaultList } from "../../constants/constants";
 import { useVaultsData } from "../../hooks/web3DataContext";
 import { BigNumber } from "ethers";
 import { usePoolsAPR } from "../../hooks/usePoolsAPR";
+import currency from "currency.js";
 
 const BalanceWrapper = styled.div`
   height: 100%;
@@ -43,11 +44,11 @@ const ProductAssetLogoContainer = styled.div<{ delay?: number }>`
 `;
 
 const BalanceTitle = styled.div<{ delay?: number }>`
-  font-size: 14px;
+  font-size: 12px;
   font-family: VCR;
   text-transform: uppercase;
   text-align: center;
-  letter-spacing: 1px;
+  letter-spacing: 1.5px;
   color: ${colors.primaryText}7A;
   margin-top: 24px;
   ${delayedFade}
@@ -56,6 +57,7 @@ const BalanceTitle = styled.div<{ delay?: number }>`
 const HeroText = styled(Title)<{ delay?: number }>`
   font-size: 56px;
   line-height: 64px;
+  margin-top: 16px;
   margin-bottom: 16px;
   ${delayedFade}
 `;
@@ -138,6 +140,7 @@ const ClaimTextContainer = styled.div<{ delay?: number }>`
 `;
 
 const ClaimLabel = styled.span`
+  font-size: 14px;
   color: ${colors.tertiaryText};
   margin-right: 8px;
 `;
@@ -185,22 +188,28 @@ export const Balance = () => {
     }, 1600);
   }, []);
 
-  const roi = useMemo(() => {
+  const [profit, roi] = useMemo(() => {
     if (
       isPracticallyZero(totalDeposits, decimals) ||
       isPracticallyZero(yourBalance, decimals) ||
       !account ||
+      loading ||
       depositLoading
     ) {
-      return 0;
+      return [0, 0];
     }
 
-    return (
+    return [
+      parseFloat(formatUnits(yourBalance.sub(totalDeposits), decimals)),
       (parseFloat(formatUnits(yourBalance.sub(totalDeposits), decimals)) /
         parseFloat(formatUnits(totalDeposits, decimals))) *
-      100
-    );
-  }, [totalDeposits, decimals, yourBalance, account, depositLoading]);
+        100,
+    ];
+  }, [totalDeposits, decimals, yourBalance, account, loading, depositLoading]);
+
+  const roiColor = useMemo(() => {
+    return roi === 0 ? "white" : roi >= 0 ? colors.green : colors.red;
+  }, [roi]);
 
   const [triggerClaimModal, setClaimModal] = useState<boolean>(false);
 

@@ -130,7 +130,7 @@ const PoolActivity: React.FC<VaultActivityProps> = ({
     if (filteredActivities.length <= 0) {
       return (
         <Title fontSize={12} lineHeight={16}>
-          There is currently no vault activity
+          There is currently no pool activity
         </Title>
       );
     }

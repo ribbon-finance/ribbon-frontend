@@ -3,7 +3,6 @@ import { Col, Row } from "react-bootstrap";
 import colors from "shared/lib/designSystem/colors";
 import styled from "styled-components";
 import { components } from "../designSystem/components";
-import { StatsMarquee } from "../components/StatsMarquee";
 import { truncateAddress } from "shared/lib/utils/address";
 import { Button, Title } from "../designSystem";
 import sizes from "../designSystem/sizes";
@@ -19,8 +18,8 @@ import { useVaultsData } from "../hooks/web3DataContext";
 import { getAssetDecimals } from "../utils/asset";
 import useScreenSize from "shared/lib/hooks/useScreenSize";
 import { delayedFade } from "../components/animations";
-import StepsCarousel from "../components/StepsHeader/StepsCarousel";
 import MobileHeader from "../components/MobileHeader";
+import StepsHeader from "../components/StepsHeader";
 
 const HeroContainer = styled.div`
   display: flex;
@@ -297,7 +296,7 @@ const Header = ({ setWalletModal }: HeaderProps) => {
       <HeaderRow>
         <MarqueeCol md={12} lg={6}>
           {/* <StatsMarquee /> */}
-          <StepsCarousel />
+          <StepsHeader button={false} />
         </MarqueeCol>
         <WalletCol md={0} lg={6}>
           <WalletButton delay={0.2} onClick={() => setWalletModal(true)}>
@@ -380,7 +379,7 @@ const Footer = ({ activePage, setPage, setWalletModal }: FooterProps) => {
           isActive={activePage === PageEnum.POSITIONS}
           onClick={() => setPage(PageEnum.POSITIONS)}
         >
-          Positions({positionsCount})
+          Positions{account && `(${positionsCount})`}
         </FooterButton>
       </Col>
       <FooterWalletCol md={0} lg={6}>
