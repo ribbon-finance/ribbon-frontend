@@ -409,10 +409,12 @@ const EarnPage = () => {
   const showInitiateWithdraw = useMemo(() => {
     return (
       !withdrawals.shares.isZero() ||
-      (!hasLockedBalanceInAsset && !hasPendingDeposits)
+      hasLockedBalanceInAsset ||
+      hasPendingDeposits
     );
   }, [hasLockedBalanceInAsset, hasPendingDeposits, withdrawals.shares]);
-
+  console.log({ hasLockedBalanceInAsset });
+  console.log({ hasPendingDeposits });
   const showCompleteWithdraw = useMemo(() => {
     return !withdrawals.shares.isZero() && withdrawals.round !== round;
   }, [round, withdrawals]);
