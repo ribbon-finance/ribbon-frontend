@@ -15,12 +15,12 @@ import {
 } from "../constants/constants";
 import { BigNumber } from "@ethersproject/bignumber";
 import { getLiquidityGaugeV5 } from "./useLiquidityGaugeV5";
+import { getV2VaultContract } from "./useV2VaultContract";
 import useLiquidityTokenMinter from "./useLiquidityTokenMinter";
 import useLiquidityGaugeController from "./useLiquidityGaugeController";
 import { constants } from "ethers";
 import { calculateClaimableRbn } from "../utils/governanceMath";
 import useWeb3Wallet from "./useWeb3Wallet";
-import { getVaultContract } from "./useVaultContract";
 
 const useFetchLiquidityGaugeV5Data = (): LiquidityGaugeV5PoolData => {
   const {
@@ -88,8 +88,7 @@ const useFetchLiquidityGaugeV5Data = (): LiquidityGaugeV5PoolData => {
           vault,
           active
         )!;
-
-        const vaultContract = getVaultContract(
+        const vaultContract = getV2VaultContract(
           ethereumProvider || provider,
           vault,
           active

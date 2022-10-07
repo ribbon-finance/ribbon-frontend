@@ -7,7 +7,7 @@ import {
   TreasuryVaultList,
 } from "../constants/constants";
 import { isProduction, isTreasury } from "../utils/env";
-import { getVaultContract } from "./useVaultContract";
+import { getV2VaultContract } from "./useV2VaultContract";
 import { impersonateAddress } from "../utils/development";
 import {
   defaultV2VaultData,
@@ -61,7 +61,7 @@ const useFetchV2VaultData = (): V2VaultData => {
             )
         );
 
-        const contract = getVaultContract(
+        const contract = getV2VaultContract(
           library || inferredProviderFromVault,
           vault,
           active

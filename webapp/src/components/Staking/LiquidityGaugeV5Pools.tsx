@@ -16,7 +16,6 @@ import sizes from "shared/lib/designSystem/sizes";
 import {
   getDisplayAssets,
   getOptionAssets,
-  isEarnVault,
   isPutVault,
   VaultLiquidityMiningMap,
   VaultOptions,
@@ -539,13 +538,7 @@ const LiquidityGaugeV5Pool: React.FC<LiquidityGaugeV5PoolProps> = ({
                         depositAsset: getAssetDisplay(asset),
                         vaultType: `${getAssetDisplay(
                           getOptionAssets(vaultOption)
-                        )} ${
-                          isEarnVault(vaultOption)
-                            ? "Earn"
-                            : isPutVault(vaultOption)
-                            ? "Put Theta"
-                            : "Theta"
-                        } Vault`,
+                        )} ${isPutVault(vaultOption) ? "Put" : ""} Theta Vault`,
                         tokenTitle: t(
                           `shared:ProductCopies:${vaultOption}:title`
                         ),
