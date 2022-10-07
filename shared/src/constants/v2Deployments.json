@@ -61,7 +61,6 @@
     "RibbonETHCoveredCallLiquidityGauge": "0x9038403C3F7C6B5Ca361C82448DAa48780D7C8Bd",
     "RibbonWBTCCoveredCallLiquidityGauge": "0x8913EAb16a302dE3E498BbA39940e7A55c0B9325",
     "RibbonRETHCoveredCallLiquidityGauge": "0x4bA4Afa8071b0a9FE3097700cdadE02DD0e16fd0",
-    "RibbonREarnLiquidityGauge": "0x9674126Ff31e5EcE36De0CF03A49351a7C814587",
     "RibbonThetaVaultAPECall": "0xc0cF10Dd710aefb209D9dc67bc746510ffd98A53",
     "RibbonVaultPauser": "0xE04e8Ae290965AD4F7E40c68041c493d2e89cDC3",
     "RibbonEarnRibbonDiversifiedWeek1": "0x84c2b16fa6877a8ff4f3271db7ea837233dfd6f0",

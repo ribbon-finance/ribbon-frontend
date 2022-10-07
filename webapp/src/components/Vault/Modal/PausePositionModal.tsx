@@ -27,7 +27,7 @@ import PendingTransactionLoader from "shared/lib/components/Common/PendingTransa
 import { usePendingTransactions } from "shared/lib/hooks/pendingTransactionsContext";
 import { useChain } from "shared/lib/hooks/chainContext";
 import { RibbonV2ThetaVault } from "shared/lib/codegen";
-import useVaultContract from "shared/lib/hooks/useVaultContract";
+import useV2VaultContract from "shared/lib/hooks/useV2VaultContract";
 import useVaultAccounts from "shared/lib/hooks/useVaultAccounts";
 import { useLatestOption } from "shared/lib/hooks/useLatestOption";
 import { useV2VaultData } from "shared/lib/hooks/web3DataContext";
@@ -87,7 +87,7 @@ const PausePositionModal: React.FC = () => {
   const [chain] = useChain();
   const { addPendingTransaction } = usePendingTransactions();
   const [txId, setTxId] = useState("");
-  const contract = useVaultContract(vaultOption) as RibbonV2ThetaVault;
+  const contract = useV2VaultContract(vaultOption) as RibbonV2ThetaVault;
   const { vaultAccounts } = useVaultAccounts(vaultVersion);
   const vaultAccount = vaultAccounts[vaultOption];
   const {
