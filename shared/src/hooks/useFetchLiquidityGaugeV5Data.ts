@@ -9,20 +9,18 @@ import { usePendingTransactions } from "./pendingTransactionsContext";
 import { useWeb3Context } from "./web3Context";
 import { isProduction } from "../utils/env";
 import {
-  isEarnVault,
   isEthNetwork,
   VaultLiquidityMiningMap,
   VaultOptions,
 } from "../constants/constants";
 import { BigNumber } from "@ethersproject/bignumber";
 import { getLiquidityGaugeV5 } from "./useLiquidityGaugeV5";
-import { getV2VaultContract } from "./useV2VaultContract";
 import useLiquidityTokenMinter from "./useLiquidityTokenMinter";
 import useLiquidityGaugeController from "./useLiquidityGaugeController";
 import { constants } from "ethers";
 import { calculateClaimableRbn } from "../utils/governanceMath";
 import useWeb3Wallet from "./useWeb3Wallet";
-import { getEarnVaultContract } from "./useEarnVaultContract";
+import { getVaultContract } from "./useVaultContract";
 
 const useFetchLiquidityGaugeV5Data = (): LiquidityGaugeV5PoolData => {
   const {
@@ -91,9 +89,11 @@ const useFetchLiquidityGaugeV5Data = (): LiquidityGaugeV5PoolData => {
           active
         )!;
 
-        const vaultContract = isEarnVault(vault)
-          ? getEarnVaultContract(ethereumProvider || provider, vault, active)
-          : getV2VaultContract(ethereumProvider || provider, vault, active);
+        const vaultContract = getVaultContract(
+          ethereumProvider || provider,
+          vault,
+          active
+        );
 
         /**
          * 1. Pool size

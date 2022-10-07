@@ -16,11 +16,7 @@ import {
   getSolanaVaultInstance,
   isSolanaVault,
 } from "shared/lib/constants/constants";
-import {
-  getSOLPricePerShare,
-  getSOLAmountByShares,
-  isETHVault,
-} from "shared/lib/utils/vault";
+import { getSOLAmountByShares, isETHVault } from "shared/lib/utils/vault";
 import { usePendingTransactions } from "shared/lib/hooks/pendingTransactionsContext";
 import useVaultActionForm from "../../../../hooks/useVaultActionForm";
 import { parseUnits } from "@ethersproject/units";
