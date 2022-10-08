@@ -12,7 +12,7 @@ import {
   VaultDetailsMap,
   VaultOptions,
 } from "../../constants/constants";
-import { formatBigNumber } from "../../utils/math";
+import { formatBigNumber, isPracticallyZero } from "../../utils/math";
 import { getAssetDecimals, getUtilizationDecimals } from "../../utils/asset";
 import { CloseIcon } from "shared/lib/assets/icons/icons";
 import { usePoolsAPR } from "../../hooks/usePoolsAPR";
@@ -34,7 +34,7 @@ import {
   useVaultData,
 } from "../../hooks/web3DataContext";
 import useUSDC, { DepositSignature } from "../../hooks/useUSDC";
-import useLoadingText from "shared/lib/hooks/useLoadingText";
+import useLoadingText, { LoadingText } from "shared/lib/hooks/useLoadingText";
 import useLendContract from "../../hooks/useLendContract";
 import { RibbonLendVault } from "../../codegen";
 import { usePendingTransactions } from "../../hooks/pendingTransactionsContext";
@@ -49,6 +49,9 @@ import LendModal, { ModalContentEnum } from "../Common/LendModal";
 import Slider from "rc-slider";
 import "rc-slider/assets/index.css";
 import SegmentControl from "./SegmentControl";
+import useERC20Token, { getERC20Token } from "shared/lib/hooks/useERC20Token";
+import { getERC20TokenNameFromVault } from "shared/lib/models/eth";
+import useTokenAllowance from "shared/lib/hooks/useTokenAllowance";
 const livelyAnimation = (position: "top" | "bottom") => keyframes`
   0% {
     background-position-x: ${position === "top" ? 0 : 100}%;
@@ -266,6 +269,7 @@ const ActionMMModal: React.FC<ActionMMModalProps> = ({
   const [page, setPage] = useState<ActionModalEnum>(ActionModalEnum.PREVIEW);
   const [triggerAnimation, setTriggerAnimation] = useState<boolean>(true);
   const [borrowAmount, setBorrowAmount] = useState<string>("");
+  const [isBorrow, setIsBorrow] = useState<boolean>(true);
   // stop trigger animation on rerenders
   useEffect(() => {
     let timeout: NodeJS.Timeout | null = null;
@@ -287,7 +291,7 @@ const ActionMMModal: React.FC<ActionMMModalProps> = ({
   return show ? (
     <FixedContainer>
       <HeroContainer>
-        <Header page={page}>
+        <Header page={page} isBorrow={isBorrow}>
           <CloseButton onClick={() => onHide()}>
             <CloseIcon />
           </CloseButton>
@@ -298,6 +302,7 @@ const ActionMMModal: React.FC<ActionMMModalProps> = ({
             page={page}
             setPage={setPage}
             setTxhashMain={setTxhashMain}
+            setIsBorrow={setIsBorrow}
             onHide={() => onHide()}
             show={show}
             triggerAnimation={triggerAnimation}
@@ -310,6 +315,7 @@ const ActionMMModal: React.FC<ActionMMModalProps> = ({
           txhash={txhash}
           show={show}
           borrowAmount={borrowAmount}
+          isBorrow={isBorrow}
         />
       </HeroContainer>
     </FixedContainer>
@@ -320,12 +326,13 @@ const ActionMMModal: React.FC<ActionMMModalProps> = ({
 
 interface HeaderProps {
   page: ActionModalEnum;
+  isBorrow: boolean;
 }
 
-const Header: React.FC<HeaderProps> = ({ page, children }) => {
+const Header: React.FC<HeaderProps> = ({ page, isBorrow, children }) => {
   return (
     <HeaderContainer>
-      <HeaderText>BORROW USDC</HeaderText>
+      <HeaderText>{isBorrow ? "BORROW" : "REPAY"} USDC</HeaderText>
       {children}
     </HeaderContainer>
   );
@@ -372,6 +379,7 @@ interface FooterProps {
   show: boolean;
   txhash: string | undefined;
   borrowAmount: string;
+  isBorrow: boolean;
 }
 
 const Footer: React.FC<FooterProps> = ({
@@ -380,6 +388,7 @@ const Footer: React.FC<FooterProps> = ({
   page,
   txhash,
   borrowAmount,
+  isBorrow,
 }) => {
   const vaultDatas = useVaultsData();
   const poolName = VaultDetailsMap[pool].name;
@@ -391,7 +400,6 @@ const Footer: React.FC<FooterProps> = ({
   const poolSize = vaultDatas.data[pool].poolSize;
   const borrowAmountNum = parseInt(borrowAmount);
   const absoluteBorrowAmount = Math.abs(parseInt(borrowAmount));
-
   return (
     <>
       {page === ActionModalEnum.PREVIEW ? (
@@ -399,7 +407,7 @@ const Footer: React.FC<FooterProps> = ({
           <DesktopOnly>
             <Col xs={3}>
               <DetailContainer show={show} delay={0.1}>
-                <DetailTitle>Currnet Utilization</DetailTitle>
+                <DetailTitle>Current Utilization</DetailTitle>
                 <div className="d-flex">
                   <UtilizationBar
                     percent={parseFloat(
@@ -427,7 +435,7 @@ const Footer: React.FC<FooterProps> = ({
             <Col xs={3}>
               <DetailContainer show={show} delay={0.3}>
                 <DetailTitle>
-                  {borrowAmountNum >= 0 ? "Borrow" : "Repay"} Amount
+                  {isBorrow ? "Borrow" : "Repay"} Amount
                 </DetailTitle>
                 <DetailText
                   color={
@@ -596,7 +604,9 @@ const StyledBaseInput = styled(BaseInput)`
 `;
 
 const InputContainer = styled(BaseInputContainer)<{
+  show?: boolean;
   delay?: number;
+  triggerAnimation?: boolean;
 }>`
   display: inline-block;
   input::-webkit-outer-spin-button,
@@ -608,18 +618,34 @@ const InputContainer = styled(BaseInputContainer)<{
   border: none;
   box-shadow: none;
   margin: 0;
+  margin-top: 24px;
   padding: 0;
-  width: 100%;
+  width: fit-content !important;
   align-items: center;
   /* Firefox */
 
   input[type="number"] {
     background: black;
-    width: 100%;
+    width: fit-content !important;
     -moz-appearance: textfield;
     text-align: center;
   }
-  ${delayedFade}
+  ${({ show, delay, triggerAnimation }) => {
+    return (
+      show &&
+      triggerAnimation &&
+      css`
+        opacity: 0;
+
+        &:disabled {
+          opacity: 0;
+        }
+
+        animation: ${fadeIn} 1s ease-in-out forwards;
+        animation-delay: ${delay || 0}s;
+      `
+    );
+  }}
 `;
 
 const TitleContainer = styled.div`
@@ -704,16 +730,37 @@ const FormButtonFade = styled.div<{
 `;
 
 const ErrorText = styled(SecondaryText)`
+  margin-top: 16px;
   text-align: center;
   font-size: 12px;
   color: ${colors.red};
 `;
 
-const PercentageContainer = styled.div`
+const PercentageContainer = styled.div<{
+  show?: boolean;
+  delay?: number;
+  triggerAnimation: boolean;
+}>`
   text-align: center;
   font-size: 12px;
-  margin-top: 32px;
+  margin-top: 24px;
   color: ${colors.red};
+  ${({ show, delay, triggerAnimation }) => {
+    return (
+      show &&
+      triggerAnimation &&
+      css`
+        opacity: 0;
+
+        &:disabled {
+          opacity: 0;
+        }
+
+        animation: ${fadeIn} 1s ease-in-out forwards;
+        animation-delay: ${delay || 0}s;
+      `
+    );
+  }}
 `;
 
 const ConnectButton = styled(Button)`
@@ -731,6 +778,61 @@ const ConnectButton = styled(Button)`
   }
 `;
 
+const SegmentControlContainer = styled.div<{
+  show?: boolean;
+  delay?: number;
+  triggerAnimation: boolean;
+}>`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: 52px;
+  ${({ show, delay, triggerAnimation }) => {
+    return (
+      show &&
+      triggerAnimation &&
+      css`
+        opacity: 0;
+
+        &:disabled {
+          opacity: 0;
+        }
+
+        animation: ${fadeIn} 1s ease-in-out forwards;
+        animation-delay: ${delay || 0}s;
+      `
+    );
+  }}
+`;
+
+const SliderContainer = styled.div<{
+  show?: boolean;
+  delay?: number;
+  triggerAnimation: boolean;
+}>`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 280px;
+  margin-top: 32px;
+  ${({ show, delay, triggerAnimation }) => {
+    return (
+      show &&
+      triggerAnimation &&
+      css`
+        opacity: 0;
+
+        &:disabled {
+          opacity: 0;
+        }
+
+        animation: ${fadeIn} 1s ease-in-out forwards;
+        animation-delay: ${delay || 0}s;
+      `
+    );
+  }}
+`;
+
 type Step = "slider" | "typing";
 
 const StepList = ["slider", "typing"] as const;
@@ -741,6 +843,7 @@ interface HeroProps {
   setPage: (page: ActionModalEnum) => void;
   setTxhashMain: (txhash: string) => void;
   setBorrowAmount: (borrowAmount: string) => void;
+  setIsBorrow: (isBorrow: boolean) => void;
   onHide: () => void;
   show: boolean;
   triggerAnimation: boolean;
@@ -751,6 +854,7 @@ export const Hero: React.FC<HeroProps> = ({
   page,
   setPage,
   setTxhashMain,
+  setIsBorrow,
   setBorrowAmount,
   onHide,
   show,
@@ -763,8 +867,12 @@ export const Hero: React.FC<HeroProps> = ({
   const [waitingApproval, setWaitingApproval] = useState(false);
   const { active, account } = useWeb3Wallet();
   const Logo = getAssetLogo("USDC");
-  const { vaultBalanceInAsset, currentExchangeRate, utilizationRate } =
-    useVaultData(pool);
+  const {
+    vaultBalanceInAsset,
+    currentExchangeRate,
+    utilizationRate,
+    availableToBorrow,
+  } = useVaultData(pool);
   const decimals = getAssetDecimals("USDC");
   const { balance: userAssetBalance } = useAssetBalance("USDC");
   const usdc = useUSDC();
@@ -783,10 +891,23 @@ export const Hero: React.FC<HeroProps> = ({
   const borrows = vaultDatas.data[pool].borrows;
 
   const borrowAmount = useMemo(() => {
+    if (inputAmount === "0") {
+      return (-borrows).toString();
+    }
+    if (inputAmount === utilizationPercentage) {
+      return "0";
+    }
     const percentage = parseFloat(inputAmount) / 100;
     const finalBorrowAmount = parseFloat(poolSize.toString()) * percentage;
-    return (finalBorrowAmount - parseFloat(borrows.toString())).toFixed(2);
-  }, [borrows, inputAmount, poolSize]);
+    return (finalBorrowAmount - parseFloat(borrows.toString())).toString();
+  }, [borrows, inputAmount, poolSize, utilizationPercentage]);
+
+  const isBorrow = useMemo(() => {
+    if (inputAmount === "") {
+      return true;
+    }
+    return parseFloat(inputAmount) >= parseFloat(utilizationPercentage);
+  }, [inputAmount, utilizationPercentage]);
 
   const onSliderChange = useCallback(
     (value) => {
@@ -797,7 +918,6 @@ export const Hero: React.FC<HeroProps> = ({
   );
 
   useEffect(() => {
-    setBorrowAmount(borrowAmount);
     // we check that the txhash and check if it had succeed
     // so we can dismiss the modal
     if (page === ActionModalEnum.TRANSACTION_STEP && txhash !== "") {
@@ -809,30 +929,70 @@ export const Hero: React.FC<HeroProps> = ({
         }, 1500);
       }
     }
-  }, [
-    pendingTransactions,
-    txhash,
-    onHide,
-    page,
-    setPage,
-    setBorrowAmount,
-    borrowAmount,
-  ]);
+  }, [pendingTransactions, txhash, onHide, page, setPage]);
+
+  useEffect(() => {
+    // we check that the txhash and check if it had succeed
+    // so we can dismiss the modal
+    if (txhash !== "") {
+      const pendingTx = pendingTransactions.find((tx) => tx.txhash === txhash);
+      if (pendingTx && pendingTx.type === "approval" && pendingTx.status) {
+        setWaitingApproval(false);
+      }
+    }
+  }, [pendingTransactions, txhash]);
 
   useEffect(() => {
     setInputAmount(utilizationPercentage);
   }, [utilizationPercentage]);
+
+  useEffect(() => {
+    setIsBorrow(isBorrow);
+  }, [isBorrow, setIsBorrow, utilizationPercentage]);
+
+  useEffect(() => {
+    setBorrowAmount(borrowAmount);
+  }, [borrowAmount, setBorrowAmount]);
+
   const isInputNonZero = useMemo((): boolean => {
-    return parseFloat(inputAmount) > 0;
+    return parseFloat(inputAmount) >= 0;
   }, [inputAmount]);
+
+  const error = useMemo((): PoolValidationErrors | undefined => {
+    try {
+      /** Check block with input requirement */
+      if (isInputNonZero && active && borrowAmount) {
+        const amountBigNumber = parseUnits(
+          parseFloat(borrowAmount).toFixed(0),
+          0
+        );
+        if (amountBigNumber.gt(availableToBorrow)) {
+          return "maxUtilizationPercentage";
+        }
+        if (amountBigNumber.gt(userAssetBalance)) {
+          return "insufficientBalance";
+        }
+      }
+    } catch (err) {
+      // Assume no error because empty input unable to parse
+    }
+
+    return undefined;
+  }, [
+    active,
+    availableToBorrow,
+    borrowAmount,
+    isInputNonZero,
+    userAssetBalance,
+  ]);
 
   const isButtonDisabled = useMemo((): boolean => {
     return (
       !isInputNonZero ||
-      parseFloat(inputAmount).toFixed(2) ===
-        formatBigNumber(utilizationRate, getUtilizationDecimals())
+      Boolean(error) ||
+      parseFloat(inputAmount) === parseFloat(utilizationPercentage)
     );
-  }, [inputAmount, isInputNonZero, utilizationRate]);
+  }, [error, inputAmount, isInputNonZero, utilizationPercentage]);
 
   const amountStr = useMemo(() => {
     try {
@@ -843,36 +1003,6 @@ export const Hero: React.FC<HeroProps> = ({
     }
   }, [decimals, inputAmount]);
 
-  const error = useMemo((): PoolValidationErrors | undefined => {
-    try {
-      /** Check block with input requirement */
-      if (isInputNonZero && active) {
-        const amountBigNumber = parseUnits(
-          parseFloat(inputAmount).toFixed(decimals),
-          decimals
-        );
-        // switch (actionType) {
-        //   case "deposit":
-        //     if (amountBigNumber.gt(userAssetBalance)) {
-        //       return "insufficientBalance";
-        //     }
-        //     break;
-        //   case "withdraw":
-        //     if (amountBigNumber.gt(vaultBalanceInAsset)) {
-        //       return "withdrawLimitExceeded";
-        //     }
-        //     if (amountBigNumber.gt(availableToWithdraw)) {
-        //       return "insufficientPoolLiquidity";
-        //     }
-        // }
-      }
-    } catch (err) {
-      // Assume no error because empty input unable to parse
-    }
-
-    return undefined;
-  }, [active, decimals, inputAmount, isInputNonZero]);
-
   const renderErrorText = useCallback((_error: PoolValidationErrors) => {
     switch (_error) {
       case "insufficientBalance":
@@ -881,6 +1011,10 @@ export const Hero: React.FC<HeroProps> = ({
         return "Available limit exceeded";
       case "insufficientPoolLiquidity":
         return "Insufficient pool liquidity";
+      case "maxUtilizationPercentage":
+        return "Max utilization percentage";
+      case "maxAvailableBorrow":
+        return "Max available borrow";
       default:
         return "";
     }
@@ -888,49 +1022,102 @@ export const Hero: React.FC<HeroProps> = ({
 
   const handleInputChange = useCallback(
     (e: React.ChangeEvent<HTMLInputElement>) => {
-      const rawInput = e.target.value.split("%")[0];
-      const previousInput = inputAmount;
+      const rawInput = e.target.value;
       setInputAmount(rawInput);
-      if (previousInput !== rawInput) {
-        setSignature(undefined);
-      }
     },
-    [inputAmount]
+    []
   );
 
-  const handleApprove = useCallback(async () => {
-    setWaitingApproval(true);
-    try {
-      const approveToAddress = VaultAddressMap[pool]["lend"];
-      if (!approveToAddress) {
-        return;
+  const tokenAllowance = useTokenAllowance("usdc", VaultAddressMap[pool].lend);
+
+  /**
+   * Check if approval needed
+   */
+  const showTokenApproval = useMemo(() => {
+    return tokenAllowance && isPracticallyZero(tokenAllowance, decimals);
+  }, [decimals, tokenAllowance]);
+  const tokenContract = useERC20Token("usdc");
+
+  const renderButtonText = useCallback(() => {
+    if (isBorrow) {
+      return "Borrow";
+    } else {
+      if (showTokenApproval) {
+        if (waitingApproval) {
+          return <LoadingText>APPROVING</LoadingText>;
+        } else {
+          return "Approve";
+        }
+      } else {
+        return "Repay";
       }
-      const deadline = Math.round(Date.now() / 1000 + 60 * 60);
-      const signature = await usdc.showApproveAssetSignature(
-        approveToAddress,
-        amountStr,
-        deadline
-      );
-      if (signature) {
-        const depositSignature = {
-          deadline: deadline,
-          v: signature.v,
-          r: signature.r,
-          s: signature.s,
-        };
-        setWaitingApproval(false);
-        setSignature(depositSignature);
-      }
-    } catch (error) {
-      setWaitingApproval(false);
-      console.log(error);
     }
-  }, [amountStr, pool, usdc]);
+  }, [isBorrow, showTokenApproval, waitingApproval]);
 
   const handleConfirm = async () => {
-    if (lendPool !== null) {
+    if (lendPool !== null || !account) {
       try {
         let res: any;
+        if (!account) {
+          return;
+        }
+        if (isBorrow) {
+          res = await lendPool.borrow(
+            parseUnits(parseFloat(borrowAmount).toFixed(0), 0),
+            account
+          );
+
+          addPendingTransaction({
+            txhash: res.hash,
+            type: "borrow",
+            amount: amountStr,
+            vault: pool,
+            asset: "USDC",
+          });
+
+          setTxhash(res.hash);
+          setTxhashMain(res.hash);
+          setPage(ActionModalEnum.TRANSACTION_STEP);
+        } else {
+          if (showTokenApproval) {
+            const approveToAddress = VaultAddressMap[pool]["lend"];
+            if (tokenContract && approveToAddress) {
+              setWaitingApproval(true);
+              const amount =
+                "0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff";
+              const tx = await tokenContract.approve(approveToAddress, amount);
+
+              const txhash = tx.hash;
+
+              addPendingTransaction({
+                txhash,
+                type: "approval",
+                amount: amount,
+                vault: pool,
+                asset: "USDC",
+              });
+              setTxhash(txhash);
+              setWaitingApproval(true);
+            }
+          } else {
+            res = await lendPool.repay(
+              parseUnits(Math.abs(parseFloat(borrowAmount)).toFixed(0), 0),
+              false
+            );
+
+            addPendingTransaction({
+              txhash: res.hash,
+              type: "repay",
+              amount: amountStr,
+              vault: pool,
+              asset: "USDC",
+            });
+
+            setTxhash(res.hash);
+            setTxhashMain(res.hash);
+            setPage(ActionModalEnum.TRANSACTION_STEP);
+          }
+        }
       } catch (e) {
         console.error(e);
         onHide();
@@ -950,10 +1137,50 @@ export const Hero: React.FC<HeroProps> = ({
             <ProductAssetLogoContainer color={"white"} delay={0.1}>
               <Logo height="100%" />
             </ProductAssetLogoContainer>
-            <BalanceTitle delay={0.1}>Utilization</BalanceTitle>
-            {/* <div className="d-flex flex-row justify-content-center align-items-center">
-              <div>
-                <InputContainer delay={0.2} className="mt-3 mb-2">
+            <BalanceTitle delay={0.1}>Utilization (%)</BalanceTitle>
+            {step === "slider" ? (
+              <>
+                <PercentageContainer
+                  show={show}
+                  delay={0.2}
+                  triggerAnimation={triggerAnimation}
+                >
+                  <Title>{inputAmount}</Title>
+                </PercentageContainer>
+                <SliderContainer
+                  show={show}
+                  delay={0.3}
+                  triggerAnimation={triggerAnimation}
+                >
+                  <Slider
+                    defaultValue={parseFloat(utilizationPercentage)}
+                    handleStyle={{
+                      height: 16,
+                      width: 16,
+                      backgroundColor: "white",
+                      border: 0,
+                      boxShadow: "none",
+                      opacity: 1,
+                      top: 3,
+                    }}
+                    trackStyle={{
+                      height: 2,
+                      backgroundColor: colors.green,
+                    }}
+                    railStyle={{
+                      height: 2,
+                      backgroundColor: colors.buttons.secondaryBackground2,
+                    }}
+                    onChange={(value) => {
+                      onSliderChange(value);
+                    }}
+                    step={0.01}
+                  />
+                </SliderContainer>
+              </>
+            ) : (
+              <div className="d-flex flex-row justify-content-center align-items-center">
+                <InputContainer className="mb-2">
                   <StyledBaseInput
                     type="number"
                     className="form-control"
@@ -962,55 +1189,14 @@ export const Hero: React.FC<HeroProps> = ({
                     onChange={handleInputChange}
                     step={"0.000001"}
                   />
-                  <TitleContainer>
-                    <Title>%</Title>
-                  </TitleContainer>
                 </InputContainer>
               </div>
-            </div> */}
-            <PercentageContainer>
-              <Title>{inputAmount}%</Title>
-            </PercentageContainer>
-            <div
-              className="d-flex justify-content-center align-items-center"
-              style={{ width: 280, marginTop: 32 }}
-            >
-              <Slider
-                defaultValue={parseFloat(utilizationPercentage)}
-                handleStyle={{
-                  height: 16,
-                  width: 16,
-                  backgroundColor: "white",
-                  border: 0,
-                  boxShadow: "none",
-                  opacity: 1,
-                  top: 3,
-                }}
-                trackStyle={{
-                  height: 2,
-                  backgroundColor: colors.green,
-                }}
-                railStyle={{
-                  height: 2,
-                  backgroundColor: colors.buttons.secondaryBackground2,
-                }}
-                // onChange={(value) => {
-                //   setInputAmount(Number(value).toFixed(2));
-                // }}
-                onChange={(value) => {
-                  onSliderChange(value);
-                }}
-                step={0.01}
-              />
-            </div>
+            )}
             {error && <ErrorText>{renderErrorText(error)}</ErrorText>}
-            <div
-              style={{
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                marginTop: 48,
-              }}
+            <SegmentControlContainer
+              show={show}
+              delay={0.4}
+              triggerAnimation={triggerAnimation}
             >
               <SegmentControl
                 segments={StepList.map((item) => ({
@@ -1026,22 +1212,22 @@ export const Hero: React.FC<HeroProps> = ({
                   color: "#16CEB9",
                 }}
               />
-            </div>
+            </SegmentControlContainer>
             <FormButtonFade
               show={show}
               triggerAnimation={triggerAnimation}
-              delay={0.4}
+              delay={0.5}
               className="mt-4 mb-3"
             >
               <FormButton
                 onClick={handleConfirm}
-                disabled={isButtonDisabled}
+                disabled={isButtonDisabled || waitingApproval}
                 className="btn py-3"
               >
-                Borrow
+                {renderButtonText()}
               </FormButton>
             </FormButtonFade>
-            <BalanceContainer delay={0.5}>
+            <BalanceContainer delay={0.6}>
               <BalanceLabel>USDC Wallet Balance: </BalanceLabel>
               <BalanceValue
                 error={Boolean(
@@ -1058,7 +1244,9 @@ export const Hero: React.FC<HeroProps> = ({
         ) : (
           <>
             <FrameBar color={colors.asset.USDC} position="top" height={4} />
-            <HeroContent word={"borrowing"}></HeroContent>
+            <HeroContent
+              word={isBorrow ? "borrowing" : "repaying"}
+            ></HeroContent>
             <FrameBar color={colors.asset.USDC} position="bottom" height={4} />
           </>
         )}

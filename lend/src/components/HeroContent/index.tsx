@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useCallback } from "react";
 import styled from "styled-components";
 import colors from "shared/lib/designSystem/colors";
 import { Title } from "shared/lib/designSystem/index";
@@ -140,6 +140,18 @@ interface HeroContentInterface {
   word: "depositing" | "withdrawing" | "ribbon lend" | "borrowing" | "repaying";
 }
 const HeroContent: React.FC<HeroContentInterface> = ({ word }) => {
+  const marginLeft = useCallback((word) => {
+    switch (word) {
+      case "ribbon lend":
+        return 0;
+      case "repaying":
+        return -400;
+      case "borrowing":
+        return -500;
+      default:
+        return -600;
+    }
+  }, []);
   return (
     <>
       <ContentContainer>
@@ -155,20 +167,14 @@ const HeroContent: React.FC<HeroContentInterface> = ({ word }) => {
         <div className="d-flex align-items-center justify-content-between w-100 h-100">
           <Panel marginLeft={32} marginRight={0}>
             <HeroHeader clockwise={false}>
-              <SpecialText
-                size={256}
-                marginLeft={word === "ribbon lend" ? 0 : -600}
-              >
+              <SpecialText size={256} marginLeft={marginLeft(word)}>
                 {word}
               </SpecialText>
             </HeroHeader>
           </Panel>
           <Panel marginLeft={0} marginRight={32}>
             <HeroHeader clockwise={true}>
-              <SpecialText
-                size={256}
-                marginLeft={word === "ribbon lend" ? 0 : -600}
-              >
+              <SpecialText size={256} marginLeft={marginLeft(word)}>
                 {word}
               </SpecialText>
             </HeroHeader>

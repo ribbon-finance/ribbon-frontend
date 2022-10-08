@@ -360,7 +360,7 @@ const PoolPage = () => {
         pool={poolId}
       />
       <ActionMMModal
-        show={activePage !== undefined}
+        show={activePage !== undefined && activePage === PageEnum.REBALANCE}
         onHide={() => setPage(undefined)}
         pool={poolId}
       />

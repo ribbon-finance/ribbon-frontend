@@ -201,11 +201,28 @@ export const Pools = () => {
   const vaultDatas = useVaultsData();
   const utilizationDecimals = getUtilizationDecimals();
   const { loading, aprs } = usePoolsAPR();
+  const { account } = useWeb3Wallet();
   const AssetLogo = getAssetLogo("USDC");
+
+  const filteredList = useMemo(() => {
+    if (!account) {
+      return VaultList;
+    }
+    let managers: string[] = [];
+    VaultList.forEach((p) => {
+      managers.push(vaultDatas.data[p].manager);
+    });
+    if (!managers.includes(account)) {
+      return VaultList;
+    }
+    return VaultList.filter(
+      (pool) => vaultDatas.data[pool].manager === account
+    );
+  }, [account, vaultDatas.data]);
 
   return (
     <ListRow>
-      {VaultList.map((pool, i) => {
+      {filteredList.map((pool, i) => {
         const poolSize = vaultDatas.data[pool].poolSize;
         const utilizationRate = vaultDatas.data[pool].utilizationRate;
         const rating = VaultDetailsMap[pool].credit.rating;

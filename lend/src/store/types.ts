@@ -31,7 +31,7 @@ export type PendingTransaction = {
       vault: VaultOptions;
     }
   | {
-      type: "deposit" | "approval";
+      type: "deposit" | "approval" | "repay" | "borrow";
       amount: string;
       vault: VaultOptions;
       asset: Assets;
