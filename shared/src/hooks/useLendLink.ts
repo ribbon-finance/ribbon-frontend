@@ -19,11 +19,11 @@ export const useLendLink = () => {
   const { provider } = useWeb3Context();
 
   useEffect(() => {
+    if (!account) {
+      setHasLendPosition(false);
+    }
     poolAddresses.forEach((pool) => {
       const poolContract = getLendContract(library || provider, pool, active);
-      if (!account) {
-        setHasLendPosition(false);
-      }
       if (poolContract && account) {
         poolContract.balanceOf(account).then((balance: BigNumber) => {
           if (!isPracticallyZero(balance, 6)) {
