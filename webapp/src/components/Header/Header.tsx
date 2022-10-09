@@ -20,6 +20,7 @@ import ExternalLink from "shared/lib/assets/icons/externalLink";
 import { useGlobalState } from "shared/lib/store/store";
 import FilterDropdown from "shared/lib/components/Common/FilterDropdown";
 import { useHistory } from "react-router-dom";
+import { useHasLendPosition } from "./shared/lib/components/hooks/useHasLendPosition";
 
 const HeaderContainer = styled.div<MobileMenuOpenProps>`
   height: ${theme.header.height}px;
@@ -267,7 +268,14 @@ const Header = () => {
               />
             </div>
           )}
-          {renderLinkItem("LEND", URLS.lend, true, true, true, true)}
+          {renderLinkItem(
+            "LEND",
+            useHasLendPosition ? URLS.lendApp : URLS.lend,
+            true,
+            true,
+            true,
+            true
+          )}
         </LinksContainer>
       </HeaderAbsoluteContainer>
 
@@ -314,7 +322,14 @@ const Header = () => {
             Boolean(useRouteMatch({ path: "/staking", exact: true }))
           )}
           {renderLinkItem("STAKE RBN", URLS.governance, false, true, true)}
-          {renderLinkItem("LEND", URLS.lend, true, true, true, true)}
+          {renderLinkItem(
+            "LEND",
+            useHasLendPosition ? URLS.lendApp : URLS.lend,
+            true,
+            true,
+            true,
+            true
+          )}
           {renderLinkItem("DISCORD", URLS.discord, false, false, true)}
           {renderLinkItem("TWITTER", URLS.twitter, false, false, true)}
           {renderLinkItem("GITHUB", URLS.github, false, false, true)}
