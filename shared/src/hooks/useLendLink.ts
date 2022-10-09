@@ -1,6 +1,7 @@
 import { useWeb3React } from "@web3-react/core";
 import { BigNumber } from "ethers";
 import { useEffect, useState } from "react";
+import { URLS } from "../constants/constants";
 import { isPracticallyZero } from "../utils/math";
 import { getLendContract } from "./getLendContract";
 import useWeb3Wallet from "./useWeb3Wallet";
@@ -11,7 +12,7 @@ const poolAddresses = [
   "0x3cd0ecf1552d135b8da61c7f44cefe93485c616d",
 ];
 
-export const useHasLendPosition = () => {
+export const useLendLink = () => {
   const [hasLendPosition, setHasLendPosition] = useState(false);
   const { account } = useWeb3Wallet();
   const { active, library } = useWeb3React();
@@ -20,6 +21,9 @@ export const useHasLendPosition = () => {
   useEffect(() => {
     poolAddresses.forEach((pool) => {
       const poolContract = getLendContract(library || provider, pool, active);
+      if (!account) {
+        setHasLendPosition(false);
+      }
       if (poolContract && account) {
         poolContract.balanceOf(account).then((balance: BigNumber) => {
           if (!isPracticallyZero(balance, 6)) {
@@ -30,5 +34,5 @@ export const useHasLendPosition = () => {
     });
   }, [account, active, library, provider]);
 
-  return hasLendPosition;
+  return hasLendPosition ? URLS.lendApp : URLS.lend;
 };
