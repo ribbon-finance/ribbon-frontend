@@ -281,7 +281,9 @@ export const Pools = () => {
                     {loading ? (
                       <LoadingText>LOADING</LoadingText>
                     ) : (
-                      `${currency(apr.toFixed(2), { symbol: "" }).format()}%`
+                      `${currency(apr.toFixed(2), {
+                        symbol: "",
+                      }).format()}% APR`
                     )}
                   </StyledSubtitle>
                 </Stat>
