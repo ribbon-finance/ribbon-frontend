@@ -325,7 +325,7 @@ const PoolPage = () => {
   const [activePage, setPage] = useState<PageEnum>();
   const [triggerWalletModal, setWalletModal] = useState<boolean>(false);
   const { loading: vaultLoading, data: vaultDatas } = useVaultsData();
-  const { account, active } = useWeb3Wallet();
+  const { account } = useWeb3Wallet();
   const { loading, aprs: poolAPRs, supplyAprs, rbnAprs } = usePoolsAPR();
   const utilizationDecimals = getUtilizationDecimals();
   const usdcDecimals = getAssetDecimals("USDC");
@@ -409,7 +409,9 @@ const PoolPage = () => {
                     <Label>Pool size:</Label>
                     <Value>
                       <AssetLogo />{" "}
-                      {currency(poolSize, { symbol: "" }).format()}
+                      {currency(vaultLoading ? "0" : poolSize, {
+                        symbol: "",
+                      }).format()}
                     </Value>
                   </Stat>
                   <Stat delay={0.6}>
@@ -495,7 +497,7 @@ const PoolPage = () => {
                         color="white"
                         width={64}
                       />
-                      <Value>{utilizationRate}%</Value>
+                      <Value>{vaultLoading ? "0" : utilizationRate}%</Value>
                     </div>
                   </Stat>
                 </StatsWrapper>

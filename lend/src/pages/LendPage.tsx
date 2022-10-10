@@ -238,8 +238,7 @@ const LendPage: React.FC = () => {
   const [triggerWalletModal, setWalletModal] = useState<boolean>(false);
   const { width } = useScreenSize();
   const { loading, data: vaultDatas } = useVaultsData();
-  const { account, active } = useWeb3Wallet();
-  const usdcDecimals = getAssetDecimals("USDC");
+  const { account } = useWeb3Wallet();
 
   const isManager = useMemo(() => {
     if (account && !loading) {

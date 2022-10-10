@@ -204,20 +204,21 @@ export const Pools = () => {
   const { account } = useWeb3Wallet();
   const AssetLogo = getAssetLogo("USDC");
 
-  const filteredList = useMemo(() => {
+  const [filteredList, isManager] = useMemo(() => {
     if (!account) {
-      return VaultList;
+      return [VaultList, false];
     }
     let managers: string[] = [];
     VaultList.forEach((p) => {
       managers.push(vaultDatas.data[p].manager);
     });
     if (!managers.includes(account)) {
-      return VaultList;
+      return [VaultList, false];
     }
-    return VaultList.filter(
-      (pool) => vaultDatas.data[pool].manager === account
-    );
+    return [
+      VaultList.filter((pool) => vaultDatas.data[pool].manager === account),
+      true,
+    ];
   }, [account, vaultDatas.data]);
 
   return (
@@ -225,6 +226,7 @@ export const Pools = () => {
       {filteredList.map((pool, i) => {
         const poolSize = vaultDatas.data[pool].poolSize;
         const utilizationRate = vaultDatas.data[pool].utilizationRate;
+        const totalBorrowed = vaultDatas.data[pool].borrows;
         const rating = VaultDetailsMap[pool].credit.rating;
         const poolLogo = getMakerLogo(pool);
         const asset = getAssets(pool);
@@ -269,9 +271,15 @@ export const Pools = () => {
                     <AssetLogo />
                     <StyledTitle>
                       <span>
-                        {currency(formatBigNumber(poolSize, decimals), {
-                          symbol: "",
-                        }).format()}
+                        {currency(
+                          formatBigNumber(
+                            !isManager ? poolSize : totalBorrowed,
+                            decimals
+                          ),
+                          {
+                            symbol: "",
+                          }
+                        ).format()}
                       </span>
                     </StyledTitle>
                   </Value>
