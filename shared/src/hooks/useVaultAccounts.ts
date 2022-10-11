@@ -37,8 +37,8 @@ export const vaultAccountsGraphql = (_account: string, version: VaultVersion) =>
             totalDeposits
             totalYieldEarned
             totalBalance
-            ${version !== "earn" ? `totalStakedBalance` : ``}
-            ${version !== "earn" ? `totalStakedShares` : ``}
+            totalStakedBalance
+            totalStakedShares
             ${version !== "v1" ? `totalPendingDeposit` : ``}
             vault {
               symbol
