@@ -230,7 +230,10 @@ export const Balance = () => {
             <ClaimValue>
               {loading || !account
                 ? "---"
-                : formatBigNumber(rbnClaimableRewards, rbnDecimals, 2)}
+                : currency(
+                    formatBigNumber(rbnClaimableRewards, rbnDecimals, 2),
+                    { symbol: "" }
+                  ).format()}
             </ClaimValue>
           </ClaimTextContainer>
           {/* enabled when more than 0.01 RBN */}
