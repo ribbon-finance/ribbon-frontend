@@ -10,12 +10,14 @@ import { useContext, useMemo } from "react";
 import { formatUnits } from "ethers/lib/utils";
 import { BigNumber } from "ethers/lib/ethers";
 import useLoadingText from "shared/lib/hooks/useLoadingText";
-const ExplainerTitle = styled.div<{ color: string }>`
+import HelpInfo from "shared/lib/components/Common/HelpInfo";
+const ExplainerTitle = styled.div<{ color: string; marginTop?: number }>`
   display: flex;
   font-size: 12px;
   width: 100%;
   color: ${colors.tertiaryText};
-  margin-top: 16px;
+  margin-top: ${(props) =>
+    props.marginTop !== undefined ? `${props.marginTop}px` : `16px`};
 `;
 
 const HighlightedText = styled.span`
@@ -42,6 +44,11 @@ const ParagraphText = styled(SecondaryText)<{ marginTop?: number }>`
   font-size: 16px;
   line-height: 24px;
   margin-top: ${(props) => (props.marginTop ? `${props.marginTop}px` : `0px`)};
+`;
+
+const AnalysisContainer = styled.div`
+  display: flex;
+  flex-direction: column;
 `;
 
 const StyledTitle = styled(Title)<{ marginTop: number }>`
@@ -214,7 +221,7 @@ export const Risk = () => {
   );
 };
 
-export const HistoricalPerformance = () => {
+export const Backtest = () => {
   return (
     <>
       <ParagraphText>
@@ -248,5 +255,51 @@ export const HistoricalPerformance = () => {
         </Link>
       </PrimaryText>
     </>
+  );
+};
+
+export const Analysis = () => {
+  return (
+    <AnalysisContainer>
+      <ExplainerTitle marginTop={0} color={colors.tertiaryText}>
+        <span>Hit Ratio</span>
+        <TooltipExplanation
+          title="HIT RATIO"
+          explanation="The ratio of options trades expiring in-the-money over the total number of options traded."
+          renderContent={({ ref, ...triggerHandler }) => (
+            <HelpInfo containerRef={ref} {...triggerHandler}>
+              i
+            </HelpInfo>
+          )}
+        />
+      </ExplainerTitle>
+      <StyledTitle marginTop={4}> 28 DAYS</StyledTitle>
+      <ExplainerTitle color={colors.tertiaryText}>
+        <span>Options Traded</span>{" "}
+        <TooltipExplanation
+          title="OPTIONS TRADED"
+          explanation="The number of option trades executed by the vault since inception."
+          renderContent={({ ref, ...triggerHandler }) => (
+            <HelpInfo containerRef={ref} {...triggerHandler}>
+              i
+            </HelpInfo>
+          )}
+        />
+      </ExplainerTitle>
+      <StyledTitle marginTop={4}> 28 DAYS</StyledTitle>
+      <ExplainerTitle color={colors.tertiaryText}>
+        <span>Absolute Performance when ITM</span>
+        <TooltipExplanation
+          title="ABSOLUTE PERFORMANCE WHEN ITM"
+          explanation="The average absolute percentage underlying move when options expire in-the-money."
+          renderContent={({ ref, ...triggerHandler }) => (
+            <HelpInfo containerRef={ref} {...triggerHandler}>
+              i
+            </HelpInfo>
+          )}
+        />
+      </ExplainerTitle>
+      <StyledTitle marginTop={4}> 28 DAYS</StyledTitle>
+    </AnalysisContainer>
   );
 };
