@@ -139,6 +139,32 @@ const ClaimTextContainer = styled.div<{ delay?: number }>`
   ${delayedFade}
 `;
 
+const ClaimButtonContainer = styled.div<{
+  show: boolean;
+  delay?: number;
+  marginLeft: number;
+}>`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-left: ${(props) => props.marginLeft}px;
+  ${({ show, delay }) => {
+    return (
+      show &&
+      css`
+        opacity: 0;
+
+        &:disabled {
+          opacity: 0;
+        }
+
+        animation: ${fadeIn} 1s ease-in-out forwards;
+        animation-delay: ${delay || 0}s;
+      `
+    );
+  }}
+`;
+
 const ClaimLabel = styled.span`
   font-size: 14px;
   color: ${colors.tertiaryText};
@@ -193,6 +219,14 @@ export const Balance = () => {
     return roi === 0 ? "white" : roi >= 0 ? colors.green : colors.red;
   }, [roi]);
 
+  const hasRbnReward = useMemo(() => {
+    return !isPracticallyZero(
+      rbnClaimableRewards,
+      rbnDecimals,
+      (1 / 10 ** 2).toFixed(2)
+    );
+  }, [rbnClaimableRewards, rbnDecimals]);
+
   const [triggerClaimModal, setClaimModal] = useState<boolean>(false);
 
   return (
@@ -237,12 +271,12 @@ export const Balance = () => {
             </ClaimValue>
           </ClaimTextContainer>
           {/* enabled when more than 0.01 RBN */}
-          <div className="d-flex flex-row justify-content-center align-items-center">
-            {!isPracticallyZero(
-              rbnClaimableRewards,
-              rbnDecimals,
-              (1 / 10 ** 2).toFixed(2)
-            ) && (
+          <ClaimButtonContainer
+            show={triggerAnimation}
+            delay={0.6}
+            marginLeft={!hasRbnReward ? 0 : -16}
+          >
+            {hasRbnReward && (
               <BaseIndicator
                 size={8}
                 color={getAssetColor("RBN")}
@@ -251,11 +285,7 @@ export const Balance = () => {
               />
             )}
             <ClaimButton
-              disabled={isPracticallyZero(
-                rbnClaimableRewards,
-                rbnDecimals,
-                (1 / 10 ** 2).toFixed(2)
-              )}
+              disabled={!hasRbnReward}
               hidden={account === undefined}
               onClick={() => setClaimModal(true)}
               show={triggerAnimation}
@@ -263,7 +293,7 @@ export const Balance = () => {
             >
               Claim RBN
             </ClaimButton>
-          </div>
+          </ClaimButtonContainer>
           <ConnectButton
             hidden={account !== undefined}
             delay={0.6}
