@@ -3,7 +3,11 @@ import useWeb3Wallet from "../../hooks/useWeb3Wallet";
 import styled, { css } from "styled-components";
 import { Title, Subtitle, Button } from "../../designSystem";
 import { useVaultAccountBalances } from "../../hooks/useVaultAccountBalances";
-import { getAssetDecimals, getAssetLogo } from "../../utils/asset";
+import {
+  getAssetColor,
+  getAssetDecimals,
+  getAssetLogo,
+} from "../../utils/asset";
 import { formatBigNumber, isPracticallyZero } from "../../utils/math";
 import { useEffect, useMemo, useState } from "react";
 import { useVaultTotalDeposits } from "../../hooks/useVaultTotalDeposits";
@@ -12,6 +16,7 @@ import LendModal, { ModalContentEnum } from "../Common/LendModal";
 import { delayedFade } from "../animations";
 import { fadeIn } from "shared/lib/designSystem/keyframes";
 import currency from "currency.js";
+import { BaseIndicator } from "shared/lib/designSystem";
 const BalanceWrapper = styled.div`
   height: 100%;
   display: flex;
@@ -225,19 +230,40 @@ export const Balance = () => {
             <ClaimValue>
               {loading || !account
                 ? "---"
-                : formatBigNumber(rbnClaimableRewards, rbnDecimals, 2)}
+                : currency(
+                    formatBigNumber(rbnClaimableRewards, rbnDecimals, 2),
+                    { symbol: "" }
+                  ).format()}
             </ClaimValue>
           </ClaimTextContainer>
-
-          <ClaimButton
-            disabled={isPracticallyZero(rbnClaimableRewards, rbnDecimals)}
-            hidden={account === undefined}
-            onClick={() => setClaimModal(true)}
-            show={triggerAnimation}
-            delay={0.6}
-          >
-            Claim RBN
-          </ClaimButton>
+          {/* enabled when more than 0.01 RBN */}
+          <div className="d-flex flex-row justify-content-center align-items-center">
+            {!isPracticallyZero(
+              rbnClaimableRewards,
+              rbnDecimals,
+              (1 / 10 ** 2).toFixed(2)
+            ) && (
+              <BaseIndicator
+                size={8}
+                color={getAssetColor("RBN")}
+                blink={true}
+                className="mr-2"
+              />
+            )}
+            <ClaimButton
+              disabled={isPracticallyZero(
+                rbnClaimableRewards,
+                rbnDecimals,
+                (1 / 10 ** 2).toFixed(2)
+              )}
+              hidden={account === undefined}
+              onClick={() => setClaimModal(true)}
+              show={triggerAnimation}
+              delay={0.6}
+            >
+              Claim RBN
+            </ClaimButton>
+          </div>
           <ConnectButton
             hidden={account !== undefined}
             delay={0.6}
