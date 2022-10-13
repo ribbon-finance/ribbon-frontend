@@ -583,7 +583,7 @@ export const Hero: React.FC<HeroProps> = ({
       /** Check block with input requirement */
       if (isInputNonZero && active && borrowAmount) {
         const amountBigNumber = parseUnits(
-          parseFloat(borrowAmount).toFixed(0),
+          Math.abs(parseFloat(borrowAmount)).toFixed(0),
           0
         );
         if (amountBigNumber.gt(availableToBorrow)) {
