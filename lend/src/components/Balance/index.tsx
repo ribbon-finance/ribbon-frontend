@@ -132,22 +132,12 @@ const ConnectButton = styled(Button)<{
   }}
 `;
 
-const ClaimTextContainer = styled.div<{ delay?: number }>`
-  display: flex;
-  margin-top: 64px;
-  margin-bottom: 24px;
-  ${delayedFade}
-`;
-
-const ClaimButtonContainer = styled.div<{
-  show: boolean;
-  delay?: number;
-  marginLeft: number;
-}>`
+const ClaimTextContainer = styled.div<{ show: boolean; delay?: number }>`
   display: flex;
   justify-content: center;
   align-items: center;
-  margin-left: ${(props) => props.marginLeft}px;
+  margin-top: 64px;
+  margin-bottom: 24px;
   ${({ show, delay }) => {
     return (
       show &&
@@ -259,7 +249,15 @@ export const Balance = () => {
                   profit.toFixed(2)
                 ).format()} (${roi.toFixed(2)}%)`}
           </HeroSubtitle>
-          <ClaimTextContainer delay={0.5}>
+          <ClaimTextContainer show={triggerAnimation} delay={0.5}>
+            {hasRbnReward && (
+              <BaseIndicator
+                size={8}
+                color={getAssetColor("RBN")}
+                blink={true}
+                className="mr-2"
+              />
+            )}
             <ClaimLabel>Unclaimed RBN Rewards:</ClaimLabel>
             <ClaimValue>
               {loading || !account
@@ -270,30 +268,15 @@ export const Balance = () => {
                   ).format()}
             </ClaimValue>
           </ClaimTextContainer>
-          {/* enabled when more than 0.01 RBN */}
-          <ClaimButtonContainer
+          <ClaimButton
+            disabled={!hasRbnReward}
+            hidden={account === undefined}
+            onClick={() => setClaimModal(true)}
             show={triggerAnimation}
             delay={0.6}
-            marginLeft={!hasRbnReward ? 0 : -16}
           >
-            {hasRbnReward && (
-              <BaseIndicator
-                size={8}
-                color={getAssetColor("RBN")}
-                blink={true}
-                className="mr-2"
-              />
-            )}
-            <ClaimButton
-              disabled={!hasRbnReward}
-              hidden={account === undefined}
-              onClick={() => setClaimModal(true)}
-              show={triggerAnimation}
-              delay={0.6}
-            >
-              Claim RBN
-            </ClaimButton>
-          </ClaimButtonContainer>
+            Claim RBN
+          </ClaimButton>
           <ConnectButton
             hidden={account !== undefined}
             delay={0.6}
