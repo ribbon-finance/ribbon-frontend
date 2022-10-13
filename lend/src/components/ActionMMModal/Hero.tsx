@@ -589,7 +589,7 @@ export const Hero: React.FC<HeroProps> = ({
         if (amountBigNumber.gt(availableToBorrow)) {
           return "maxUtilizationPercentage";
         }
-        if (amountBigNumber.gt(userAssetBalance)) {
+        if (amountBigNumber.gt(userAssetBalance) && !isBorrow) {
           return "insufficientBalance";
         }
       }
@@ -602,6 +602,7 @@ export const Hero: React.FC<HeroProps> = ({
     active,
     availableToBorrow,
     borrowAmount,
+    isBorrow,
     isInputNonZero,
     userAssetBalance,
   ]);
