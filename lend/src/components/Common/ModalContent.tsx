@@ -16,6 +16,7 @@ const TextContent = styled.div`
   color: ${colors.primaryText}A3;
   padding: 16px 24px;
   overflow: hidden;
+  font-size: 16px;
 `;
 
 const hoveredContentRow = css`
@@ -90,16 +91,27 @@ const ContentFooter = styled.div`
   font-size: 14px;
 `;
 
-const StyledP = styled.p`
-  display: list-item;
-  list-style-type: disc;
-  list-style-position: inside;
-  padding-left: 5px;
+const Point = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+`;
+
+const BulletPoint = styled.div<{ hide?: boolean }>`
+  display: flex;
+  align-items: center;
+  border-radius: 100px;
+  width: 4px;
+  height: 4px;
+  background: ${(props) =>
+    props.hide ? "transparent" : `${colors.primaryText}A3`};
+  margin-left: 8px;
+  margin-right: 8px;
 `;
 
 const AboutFooterText = styled.div`
+  margin-top: 16px;
   font-size: 12px;
-
   > * {
     margin: auto 0;
   }
@@ -107,10 +119,11 @@ const AboutFooterText = styled.div`
   svg {
     transition: all 0.2s ease-in-out;
     margin-left: 4px;
+    opacity: 0.64;
   }
 
   > a {
-    color: ${colors.primaryText};
+    color: ${colors.primaryText}A3;
     text-decoration: underline;
 
     &:hover {
@@ -175,20 +188,32 @@ const AboutPage = () => {
           institutional market makers of their choosing with high liquidity.
           Ribbon Lend offers the best of both worlds between TradFi and DeFi:
         </p>
-        <StyledP>
-          <Highlight>High yields</Highlight> from unsecured lending
-        </StyledP>
-        <StyledP>
-          <Highlight>No lockups</Highlight> from Aave’s money market
-        </StyledP>
-        <StyledP>
-          <Highlight>Off-chain enforcement</Highlight>/{" "}
-          <Highlight>credit underwriting</Highlight>
-        </StyledP>
-        <StyledP>
+        <Point>
+          <BulletPoint />
+          <Highlight>High yields</Highlight>
+          &nbsp;from unsecured lending
+        </Point>
+        <Point>
+          <BulletPoint />
+          <Highlight>No lockups</Highlight>
+          &nbsp;from Aave’s money
+        </Point>
+        <Point>
+          <BulletPoint hide={true} />
+          market model
+        </Point>
+        <Point>
+          <BulletPoint />
+          <Highlight>Off-chain enforcement/credit</Highlight>
+        </Point>
+        <Point>
+          <BulletPoint hide={true} />
+          <Highlight>enforcement</Highlight>
+        </Point>
+        <Point>
+          <BulletPoint />
           <Highlight>Built-in insurance</Highlight>
-        </StyledP>
-
+        </Point>
         <AboutFooterText>
           <BaseLink
             to="https://www.research.ribbon.finance/blog/introducing-ribbon-lend"
