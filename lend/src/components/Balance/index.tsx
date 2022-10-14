@@ -270,7 +270,7 @@ export const Balance = () => {
           </ClaimTextContainer>
           <ClaimButton
             disabled={!hasRbnReward}
-            hidden={account === undefined}
+            hidden={!account}
             onClick={() => setClaimModal(true)}
             show={triggerAnimation}
             delay={0.6}
