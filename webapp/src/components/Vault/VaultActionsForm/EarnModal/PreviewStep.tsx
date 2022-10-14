@@ -190,7 +190,8 @@ const PreviewStep: React.FC<{
 }) => {
   const color = getVaultColor(vaultOption);
   const usdc = useUSDC();
-  const { strategyStartTime, withdrawalDate } = useEarnStrategyTime();
+  const { strategyStartTime, withdrawalDate, depositWithdrawalDate } =
+    useEarnStrategyTime();
   const loadingText = useLoadingText("permitting");
   const [depositSignature, setDepositSignature] = useState<DepositSignature>();
 
@@ -416,7 +417,7 @@ const PreviewStep: React.FC<{
         >
           <PrimaryText fontSize={14} lineHeight={20} color={color}>
             IMPORTANT: Your funds will be available for withdrawal at 12pm UTC
-            on {withdrawalDate}
+            on {depositWithdrawalDate}
           </PrimaryText>
         </WarningContainer>
       );
