@@ -303,16 +303,16 @@ export const DepositGlowIcon: React.FC<SVGPropsWithColor> = ({
       <path
         d="M86 62.6667V81.3334"
         stroke={color || "white"}
-        stroke-width="2"
-        stroke-linecap="round"
-        stroke-linejoin="round"
+        strokeWidth="2"
+        strokeLinecap="round"
+        strokeLinejoin="round"
       />
       <path
         d="M95.3337 72L86.0003 81.3333L76.667 72"
         stroke={color || "white"}
-        stroke-width="2"
-        stroke-linecap="round"
-        stroke-linejoin="round"
+        strokeWidth="2"
+        strokeLinecap="round"
+        strokeLinejoin="round"
       />
       <rect
         x="55"
@@ -321,7 +321,7 @@ export const DepositGlowIcon: React.FC<SVGPropsWithColor> = ({
         height="62"
         rx="31"
         stroke={color || "white"}
-        stroke-width="2"
+        strokeWidth="2"
         shapeRendering="crispEdges"
       />
     </g>
@@ -333,9 +333,9 @@ export const DepositGlowIcon: React.FC<SVGPropsWithColor> = ({
         width="176"
         height="176"
         filterUnits="userSpaceOnUse"
-        color-interpolation-filters="sRGB"
+        colorInterpolationFilters="sRGB"
       >
-        <feFlood flood-opacity="0" result="BackgroundImageFix" />
+        <feFlood floodOpacity="0" result="BackgroundImageFix" />
         <feColorMatrix
           in="SourceAlpha"
           type="matrix"
@@ -446,22 +446,22 @@ export const WithdrawGlowIcon: React.FC<SVGPropsWithColor> = ({
         height="64"
         rx="32"
         fill="#3E73C4"
-        fill-opacity="0.12"
-        shape-rendering="crispEdges"
+        fillOpacity="0.12"
+        shapeRendering="crispEdges"
       />
       <path
         d="M86 81.3333V62.6666"
         stroke="#3E73C4"
-        stroke-width="2"
-        stroke-linecap="round"
-        stroke-linejoin="round"
+        strokeWidth="2"
+        strokeLinecap="round"
+        strokeLinejoin="round"
       />
       <path
         d="M76.6663 72L85.9997 62.6667L95.333 72"
         stroke="#3E73C4"
-        stroke-width="2"
-        stroke-linecap="round"
-        stroke-linejoin="round"
+        strokeWidth="2"
+        strokeLinecap="round"
+        strokeLinejoin="round"
       />
       <rect
         x="55"
@@ -470,8 +470,8 @@ export const WithdrawGlowIcon: React.FC<SVGPropsWithColor> = ({
         height="62"
         rx="31"
         stroke="#3E73C4"
-        stroke-width="2"
-        shape-rendering="crispEdges"
+        strokeWidth="2"
+        shapeRendering="crispEdges"
       />
     </g>
     <defs>
@@ -482,9 +482,9 @@ export const WithdrawGlowIcon: React.FC<SVGPropsWithColor> = ({
         width="176"
         height="176"
         filterUnits="userSpaceOnUse"
-        color-interpolation-filters="sRGB"
+        colorInterpolationFilters="sRGB"
       >
-        <feFlood flood-opacity="0" result="BackgroundImageFix" />
+        <feFlood floodOpacity="0" result="BackgroundImageFix" />
         <feColorMatrix
           in="SourceAlpha"
           type="matrix"
@@ -1564,7 +1564,6 @@ export const BackIcon: React.FC<SVGPropsWithColor> = ({ color, ...props }) => (
       strokeWidth="2"
       strokeLinecap="round"
       strokeLinejoin="round"
-      stroke-linejoin="round"
     />
     <path
       d="M12 19L5 12L12 5"
@@ -1590,16 +1589,16 @@ export const ThinBackIcon: React.FC<SVGPropsWithColor> = ({
     <path
       d="M27 20H13"
       stroke={color || "white"}
-      stroke-width="1"
-      stroke-linecap="round"
-      stroke-linejoin="round"
+      strokeWidth="1"
+      strokeLinecap="round"
+      strokeLinejoin="round"
     />
     <path
       d="M20 27.0003L13 20.0003L20 13.0003"
       stroke={color || "white"}
-      stroke-width="1"
-      stroke-linecap="round"
-      stroke-linejoin="round"
+      strokeWidth="1"
+      strokeLinecap="round"
+      strokeLinejoin="round"
     />
   </svg>
 );

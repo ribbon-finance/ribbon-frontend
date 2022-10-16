@@ -3,7 +3,11 @@ import useWeb3Wallet from "../../hooks/useWeb3Wallet";
 import styled, { css } from "styled-components";
 import { Title, Subtitle, Button } from "../../designSystem";
 import { useVaultAccountBalances } from "../../hooks/useVaultAccountBalances";
-import { getAssetDecimals, getAssetLogo } from "../../utils/asset";
+import {
+  getAssetColor,
+  getAssetDecimals,
+  getAssetLogo,
+} from "../../utils/asset";
 import { formatBigNumber, isPracticallyZero } from "../../utils/math";
 import { useEffect, useMemo, useState } from "react";
 import { useVaultTotalDeposits } from "../../hooks/useVaultTotalDeposits";
@@ -12,6 +16,7 @@ import LendModal, { ModalContentEnum } from "../Common/LendModal";
 import { delayedFade } from "../animations";
 import { fadeIn } from "shared/lib/designSystem/keyframes";
 import currency from "currency.js";
+import { BaseIndicator } from "shared/lib/designSystem";
 const BalanceWrapper = styled.div`
   height: 100%;
   display: flex;
@@ -127,11 +132,27 @@ const ConnectButton = styled(Button)<{
   }}
 `;
 
-const ClaimTextContainer = styled.div<{ delay?: number }>`
+const ClaimTextContainer = styled.div<{ show: boolean; delay?: number }>`
   display: flex;
+  justify-content: center;
+  align-items: center;
   margin-top: 64px;
   margin-bottom: 24px;
-  ${delayedFade}
+  ${({ show, delay }) => {
+    return (
+      show &&
+      css`
+        opacity: 0;
+
+        &:disabled {
+          opacity: 0;
+        }
+
+        animation: ${fadeIn} 1s ease-in-out forwards;
+        animation-delay: ${delay || 0}s;
+      `
+    );
+  }}
 `;
 
 const ClaimLabel = styled.span`
@@ -188,6 +209,14 @@ export const Balance = () => {
     return roi === 0 ? "white" : roi >= 0 ? colors.green : colors.red;
   }, [roi]);
 
+  const hasRbnReward = useMemo(() => {
+    return !isPracticallyZero(
+      rbnClaimableRewards,
+      rbnDecimals,
+      (1 / 10 ** 2).toFixed(2)
+    );
+  }, [rbnClaimableRewards, rbnDecimals]);
+
   const [triggerClaimModal, setClaimModal] = useState<boolean>(false);
 
   return (
@@ -220,18 +249,28 @@ export const Balance = () => {
                   profit.toFixed(2)
                 ).format()} (${roi.toFixed(2)}%)`}
           </HeroSubtitle>
-          <ClaimTextContainer delay={0.5}>
+          <ClaimTextContainer show={triggerAnimation} delay={0.5}>
+            {hasRbnReward && (
+              <BaseIndicator
+                size={8}
+                color={getAssetColor("RBN")}
+                blink={true}
+                className="mr-2"
+              />
+            )}
             <ClaimLabel>Unclaimed RBN Rewards:</ClaimLabel>
             <ClaimValue>
               {loading || !account
                 ? "---"
-                : formatBigNumber(rbnClaimableRewards, rbnDecimals, 2)}
+                : currency(
+                    formatBigNumber(rbnClaimableRewards, rbnDecimals, 2),
+                    { symbol: "" }
+                  ).format()}
             </ClaimValue>
           </ClaimTextContainer>
-
           <ClaimButton
-            disabled={isPracticallyZero(rbnClaimableRewards, rbnDecimals)}
-            hidden={account === undefined}
+            disabled={!hasRbnReward}
+            hidden={!account}
             onClick={() => setClaimModal(true)}
             show={triggerAnimation}
             delay={0.6}

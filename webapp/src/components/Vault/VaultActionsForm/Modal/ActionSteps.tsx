@@ -16,16 +16,12 @@ import {
   getSolanaVaultInstance,
   isSolanaVault,
 } from "shared/lib/constants/constants";
-import {
-  getSOLPricePerShare,
-  getSOLAmountByShares,
-  isETHVault,
-} from "shared/lib/utils/vault";
+import { getSOLAmountByShares, isETHVault } from "shared/lib/utils/vault";
 import { usePendingTransactions } from "shared/lib/hooks/pendingTransactionsContext";
 import useVaultActionForm from "../../../../hooks/useVaultActionForm";
 import { parseUnits } from "@ethersproject/units";
 import { useVaultData, useV2VaultData } from "shared/lib/hooks/web3DataContext";
-import useV2VaultContract from "shared/lib/hooks/useV2VaultContract";
+import useVaultContract from "shared/lib/hooks/useVaultContract";
 import WarningStep from "./WarningStep";
 import { depositSAVAX } from "shared/lib/hooks/useSAVAXDeposit";
 import useVaultAccounts from "shared/lib/hooks/useVaultAccounts";
@@ -97,7 +93,7 @@ const ActionSteps: React.FC<ActionStepsProps> = ({
       ? vaultActionForm.migrateSourceVault || vaultOption
       : vaultOption
   );
-  const v2Vault = useV2VaultContract(vaultOption);
+  const v2Vault = useVaultContract(vaultOption);
   const { contract, getMinSTETHAmount } = useLidoCurvePool();
   const stETHDepositHelper = useSTETHDepositHelper();
 

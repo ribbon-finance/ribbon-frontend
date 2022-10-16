@@ -336,6 +336,7 @@ export const VaultLiquidityMiningMap: {
         "rETH-THETA": v1deployment.mainnet.RibbonETHCoveredCallStakingReward,
       },
       lg5: {
+        rEARN: v2deployment.mainnet.RibbonREarnLiquidityGauge,
         "ryvUSDC-ETH-P-THETA":
           v2deployment.mainnet.RibbonYearnETHPutLiquidityGauge,
         "rAAVE-THETA": v2deployment.mainnet.RibbonAAVECoveredCallLiquidityGauge,
@@ -801,7 +802,7 @@ export const VaultMaxDeposit: { [vault in VaultOptions]: BigNumber } = {
   "rrETH-THETA": BigNumber.from(50000).mul(
     BigNumber.from(10).pow(getAssetDecimals(getAssets("rrETH-THETA")))
   ),
-  "rAAVE-THETA": BigNumber.from(3100).mul(
+  "rAAVE-THETA": BigNumber.from(20000).mul(
     BigNumber.from(10).pow(getAssetDecimals(getAssets("rAAVE-THETA")))
   ),
   "rAVAX-THETA": BigNumber.from(100000000).mul(
