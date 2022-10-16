@@ -55,15 +55,16 @@ export const usePoolsAPR = () => {
           formatUnits(poolData.rewardPerSecond, 18)
         );
         const poolSize = parseFloat(formatUnits(poolData.poolSize, 6));
+        const supplyRatePercentage = Math.min(supplyRate * secondsInYear, 0.07);
         aprsTemp[pool] = isDefault[pool]
           ? defaultAPR +
             ((rewardPerSecond * RBNPrice * secondsInYear) / poolSize) * 100
-          : (supplyRate * secondsInYear +
+          : (supplyRatePercentage +
               (rewardPerSecond * RBNPrice * secondsInYear) / poolSize) *
             100;
         supplyAprsTemp[pool] = isDefault[pool]
           ? defaultAPR
-          : supplyRate * secondsInYear * 100;
+          : supplyRatePercentage * 100;
         rbnAprsTemp[pool] =
           ((rewardPerSecond * RBNPrice * secondsInYear) / poolSize) * 100;
         return;

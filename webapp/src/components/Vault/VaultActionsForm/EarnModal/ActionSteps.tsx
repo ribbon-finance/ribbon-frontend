@@ -17,7 +17,7 @@ import useVaultPriceHistory, {
 import { getAssetColor, getAssetDecimals } from "shared/lib/utils/asset";
 import { RibbonEarnVault } from "shared/lib/codegen";
 import DepositFormStep from "./FormStep";
-import useEarnVaultContract from "shared/lib/hooks/useEarnVaultContract";
+import useVaultContract from "shared/lib/hooks/useVaultContract";
 import { DepositSignature } from "../../../../hooks/useUSDC";
 export interface ActionStepsProps {
   vault: {
@@ -51,7 +51,7 @@ const ActionSteps: React.FC<ActionStepsProps> = ({
 
   const [txhash, setTxhash] = useState("");
 
-  const earnVault = useEarnVaultContract(vaultOption);
+  const earnVault = useVaultContract(vaultOption);
 
   const { pendingTransactions, addPendingTransaction } =
     usePendingTransactions();
