@@ -586,7 +586,7 @@ export const Hero: React.FC<HeroProps> = ({
           Math.abs(parseFloat(borrowAmount)).toFixed(0),
           0
         );
-        if (amountBigNumber.gt(availableToBorrow)) {
+        if (amountBigNumber.gt(availableToBorrow) && isBorrow) {
           return "maxUtilizationPercentage";
         }
         if (amountBigNumber.gt(userAssetBalance) && !isBorrow) {

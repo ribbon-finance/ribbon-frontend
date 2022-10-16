@@ -326,7 +326,7 @@ export const Balance = () => {
                 }
                 delay={0.4}
               >
-                {loading ? "0.00" : apr.toFixed(2)} APR
+                {loading ? "0.00" : apr.toFixed(2)}% APR
               </HeroSubtitle>
             </>
           )}
