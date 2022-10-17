@@ -20,7 +20,7 @@ import useVaultPriceHistory from "shared/lib/hooks/useVaultPerformanceUpdate";
 import TooltipExplanation from "shared/lib/components/Common/TooltipExplanation";
 import HelpInfo from "shared/lib/components/Common/HelpInfo";
 import useLoadingText from "shared/lib/hooks/useLoadingText";
-import { HistoricalPerformance } from "../../components/Earn/Details";
+import { Backtest, Analysis } from "../../components/Earn/Details";
 import SegmentControl from "shared/lib/components/Common/SegmentControl";
 
 const VaultPerformanceChartContainer = styled.div`
@@ -50,9 +50,9 @@ interface EarnPerformanceSectionProps {
   };
 }
 
-type Step = "current" | "historical";
+type Step = "current" | "analysis" | "backtest";
 
-const StepList = ["current", "historical"] as const;
+const StepList = ["current", "analysis", "backtest"] as const;
 
 const EarnPerformanceSection: React.FC<EarnPerformanceSectionProps> = ({
   vault: { vaultOption, vaultVersion },
@@ -262,8 +262,10 @@ const EarnPerformanceSection: React.FC<EarnPerformanceSectionProps> = ({
             }
             themeColor={termThemeColor[vaultPerformanceTerm]}
           />
+        ) : step === "analysis" ? (
+          <Analysis />
         ) : (
-          <HistoricalPerformance />
+          <Backtest />
         )}
       </VaultPerformanceChartContainer>
       <div
