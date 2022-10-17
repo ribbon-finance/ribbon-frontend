@@ -259,6 +259,25 @@ export const Backtest = () => {
 };
 
 export const Analysis = () => {
+  const { itmPerformance, loading } = useAirtable();
+  const loadingText = useLoadingText();
+  const { vaultSubgraphData } = useContext(SubgraphDataContext);
+  const [numberOfHits, optionsTraded] = useMemo(() => {
+    if (!vaultSubgraphData.vaults.earn.rEARN) {
+      return [0, 0];
+    }
+    if (
+      !vaultSubgraphData.vaults.earn.rEARN.numberOfHits ||
+      !vaultSubgraphData.vaults.earn.rEARN.optionsTraded
+    ) {
+      return [0, 0];
+    }
+    return [
+      vaultSubgraphData.vaults.earn.rEARN.numberOfHits,
+      vaultSubgraphData.vaults.earn.rEARN.optionsTraded,
+    ];
+  }, [vaultSubgraphData.vaults.earn.rEARN]);
+
   return (
     <AnalysisContainer>
       <ExplainerTitle marginTop={0} color={colors.tertiaryText}>
@@ -273,7 +292,10 @@ export const Analysis = () => {
           )}
         />
       </ExplainerTitle>
-      <StyledTitle marginTop={4}> 28 DAYS</StyledTitle>
+      <StyledTitle marginTop={4}>
+        {" "}
+        {numberOfHits} / {optionsTraded - 1}
+      </StyledTitle>
       <ExplainerTitle color={colors.tertiaryText}>
         <span>Options Traded</span>{" "}
         <TooltipExplanation
@@ -286,7 +308,7 @@ export const Analysis = () => {
           )}
         />
       </ExplainerTitle>
-      <StyledTitle marginTop={4}> 28 DAYS</StyledTitle>
+      <StyledTitle marginTop={4}> {optionsTraded}</StyledTitle>
       <ExplainerTitle color={colors.tertiaryText}>
         <span>Absolute Performance when ITM</span>
         <TooltipExplanation
@@ -299,7 +321,9 @@ export const Analysis = () => {
           )}
         />
       </ExplainerTitle>
-      <StyledTitle marginTop={4}> 28 DAYS</StyledTitle>
+      <StyledTitle marginTop={4}>
+        {loading ? loadingText : `${(itmPerformance * 100).toFixed(2)}%`}{" "}
+      </StyledTitle>
     </AnalysisContainer>
   );
 };

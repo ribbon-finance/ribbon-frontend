@@ -61,6 +61,8 @@ export const vaultGraphql = (version: VaultVersion, chain: Chains) =>
             ${version !== "earn" ? `underlyingAsset` : ``}
             ${version !== "earn" ? `underlyingSymbol` : ``}
             ${version === "earn" ? `principalOutstanding` : ``}
+            ${version === "earn" ? `numberOfHits` : ``}
+            ${version === "earn" ? `optionsTraded` : ``}
           }
         `)
     );
