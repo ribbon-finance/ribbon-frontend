@@ -2,7 +2,7 @@ import { InjectedConnector } from "@web3-react/injected-connector";
 import { WalletConnectConnector } from "@web3-react/walletconnect-connector";
 import { WalletLinkConnector } from "@web3-react/walletlink-connector";
 import LedgerHQFrameConnector from "web3-ledgerhq-frame-connector";
-import { supportedChainIds } from "./env";
+import { CHAINID, supportedChainIds } from "./env";
 
 export const injectedConnector = new InjectedConnector({
   supportedChainIds,
@@ -19,7 +19,9 @@ export const ledgerConnector = new LedgerHQFrameConnector();
 export const getWalletConnectConnector = () =>
   new WalletConnectConnector({
     supportedChainIds,
-    rpc: process.env.REACT_APP_MAINNET_URI || "",
+    rpc: {
+      [CHAINID.ETH_MAINNET]: process.env.REACT_APP_MAINNET_URI || "",
+    },
     qrcode: true,
     pollingInterval: 5000,
   });
