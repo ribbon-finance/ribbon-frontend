@@ -354,13 +354,15 @@ const PoolPage = () => {
         content={ModalContentEnum.WALLET}
       />
       <ActionModal
-        show={activePage !== undefined}
+        show={
+          activePage === PageEnum.DEPOSIT || activePage === PageEnum.WITHDRAW
+        }
         actionType={activePage === PageEnum.DEPOSIT ? "deposit" : "withdraw"}
         onHide={() => setPage(undefined)}
         pool={poolId}
       />
       <ActionMMModal
-        show={activePage !== undefined && activePage === PageEnum.REBALANCE}
+        show={activePage === PageEnum.REBALANCE}
         onHide={() => setPage(undefined)}
         pool={poolId}
       />
@@ -660,14 +662,14 @@ const Footer = ({
           <>
             <FooterButton
               delay={0.2}
-              isActive={activePage === PageEnum.DEPOSIT}
+              isActive={true}
               onClick={() => setPage(PageEnum.DEPOSIT)}
             >
               Deposit
             </FooterButton>
             <FooterButton
               delay={0.3}
-              isActive={activePage === PageEnum.WITHDRAW}
+              isActive={true}
               onClick={() => setPage(PageEnum.WITHDRAW)}
             >
               Withdraw
@@ -677,7 +679,7 @@ const Footer = ({
           <>
             <FooterButton
               delay={0.3}
-              isActive={activePage === PageEnum.REBALANCE}
+              isActive={true}
               onClick={() => setPage(PageEnum.REBALANCE)}
               width={"100%"}
             >

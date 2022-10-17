@@ -190,11 +190,11 @@ export const Balance = () => {
       let managers: string[] = [];
       let totalBorrowed: BigNumber = BigNumber.from(0);
       let apr: number = 0;
-      VaultList.forEach((p) => {
-        managers.push(vaultDatas[p].manager);
-        if (vaultDatas[p].manager === account) {
-          totalBorrowed = vaultDatas[p].borrows;
-          apr = aprs[p];
+      VaultList.forEach((pool) => {
+        managers.push(vaultDatas[pool].manager);
+        if (vaultDatas[pool].manager === account) {
+          totalBorrowed = vaultDatas[pool].borrows;
+          apr = aprs[pool];
         }
       });
       return [managers.includes(account), totalBorrowed, apr];
@@ -322,7 +322,11 @@ export const Balance = () => {
               </HeroText>
               <HeroSubtitle
                 color={
-                  apr === 0 ? "white" : apr > 0 ? colors.green : colors.red
+                  apr === 0
+                    ? colors.primaryText
+                    : apr > 0
+                    ? colors.green
+                    : colors.red
                 }
                 delay={0.4}
               >

@@ -5,17 +5,8 @@ import styled, { keyframes } from "styled-components";
 import { components } from "../../designSystem/components";
 import { Title } from "../../designSystem";
 import sizes from "../../designSystem/sizes";
-import { fadeIn } from "shared/lib/designSystem/keyframes";
+import { fadeIn, fadeInDisabled } from "shared/lib/designSystem/keyframes";
 import { css } from "styled-components";
-
-export const fadeInDisabled = keyframes`
-  from {
-    opacity: 0;
-  }
-  to {
-    opacity: 0.64;
-  }
-`;
 
 export const FixedContainer = styled.div`
   position: fixed;

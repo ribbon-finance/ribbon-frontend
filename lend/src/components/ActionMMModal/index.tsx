@@ -7,22 +7,13 @@ import { Title } from "../../designSystem";
 import sizes from "../../designSystem/sizes";
 import { VaultOptions } from "../../constants/constants";
 import { CloseIcon } from "shared/lib/assets/icons/icons";
-import { fadeIn } from "shared/lib/designSystem/keyframes";
+import { fadeIn, fadeInDisabled } from "shared/lib/designSystem/keyframes";
 import { css } from "styled-components";
 import Header from "./Header";
 import Footer from "./Footer";
 import Hero from "./Hero";
 
 const borderStyle = `1px solid ${colors.primaryText}1F`;
-
-export const fadeInDisabled = keyframes`
-  from {
-    opacity: 0;
-  }
-  to {
-    opacity: 0.64;
-  }
-`;
 
 export const FixedContainer = styled.div`
   position: fixed;

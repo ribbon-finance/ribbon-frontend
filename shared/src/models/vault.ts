@@ -19,6 +19,8 @@ export interface Vault {
   totalFeeCollected?: BigNumber; // v2
   totalBorrowed?: BigNumber;
   principalOutstanding?: BigNumber;
+  numberOfHits?: number;
+  optionsTraded?: number;
   underlyingAsset: string;
   underlyingSymbol: string;
   depositors: string[];

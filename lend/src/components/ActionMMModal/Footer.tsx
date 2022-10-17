@@ -9,7 +9,7 @@ import { getEtherscanURI, VaultOptions } from "../../constants/constants";
 import { formatBigNumber } from "../../utils/math";
 import { getUtilizationDecimals } from "../../utils/asset";
 import { usePoolsAPR } from "../../hooks/usePoolsAPR";
-import { fadeIn } from "shared/lib/designSystem/keyframes";
+import { fadeIn, fadeInDisabled } from "shared/lib/designSystem/keyframes";
 import { css } from "styled-components";
 import { BaseUnderlineLink } from "shared/lib/designSystem";
 import { useVaultsData } from "../../hooks/web3DataContext";
@@ -18,15 +18,6 @@ import ExternalLinkIcon from "../Common/ExternalLinkIcon";
 import UtilizationBar from "../Common/UtilizationBar";
 import currency from "currency.js";
 import { ActionModalEnum } from ".";
-
-export const fadeInDisabled = keyframes`
-  from {
-    opacity: 0;
-  }
-  to {
-    opacity: 0.64;
-  }
-`;
 
 export const FixedContainer = styled.div`
   position: fixed;
@@ -160,7 +151,7 @@ const DetailTitle = styled.div`
 export const DetailText = styled(Title)<{ color?: string }>`
   font-size: 14px;
   line-height: 20px;
-  color: ${(props) => (props.color ? props.color : ``)};
+  color: ${(props) => props.color ?? ""};
 `;
 
 export const StyledPrimaryText = styled(PrimaryText)`
@@ -190,7 +181,7 @@ interface FooterProps {
   pool: VaultOptions;
   page: ActionModalEnum;
   show: boolean;
-  txhash: string | undefined;
+  txhash?: string | undefined;
   borrowAmount: string;
   isBorrow: boolean;
 }
@@ -309,7 +300,7 @@ const Footer: React.FC<FooterProps> = ({
         </FooterRow>
       ) : (
         <FooterRow>
-          {chainId !== undefined && (
+          {chainId && txhash && (
             <UnderlineLink
               to={`${getEtherscanURI(chainId)}/tx/${txhash}`}
               target="_blank"

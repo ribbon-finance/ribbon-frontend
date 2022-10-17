@@ -41,6 +41,7 @@ const base = Airtable.base("appkUHzxJ1lehQTIt");
 
 export const useAirtable = () => {
   const [values, setValues] = useState<AirtableValues>();
+  const [itmRecords, setItmRecords] = useState<any>([]);
   const [, setError] = useState<string>();
 
   const { price: ETHPrice, loading: assetPriceLoading } = useAssetPrice({
@@ -63,12 +64,16 @@ export const useAirtable = () => {
         if (!assetPriceLoading) {
           setValues(item);
         }
+
+        const itmRecords = records.filter(
+          (record) => record.fields!.expiryPrice !== undefined
+        );
+        setItmRecords(itmRecords);
       })
       .catch((e) => {
         setError("ERROR FETCHING");
       });
   }, [assetPriceLoading]);
-
   const loading = useMemo(() => {
     return assetPriceLoading || !values;
   }, [assetPriceLoading, values]);
@@ -82,9 +87,10 @@ export const useAirtable = () => {
     maxYield,
     ethLowerBarrier,
     ethUpperBarrier,
+    itmPerformance,
   ] = useMemo(() => {
     if (!values) {
-      return [0, 0, 0, 0, 0, 0];
+      return [0, 0, 0, 0, 0, 0, 0];
     }
     const rawPerformance = (ETHPrice - values.strikePrice) / values.strikePrice;
 
@@ -111,6 +117,19 @@ export const useAirtable = () => {
     const ethPriceLower = values.strikePrice * (1 - values.barrierPercentage);
     const ethPriceUpper = values.strikePrice * (1 + values.barrierPercentage);
 
+    let itmPerformanceArray: number[] = [];
+    itmRecords.forEach((record: any) => {
+      itmPerformanceArray.push(
+        Math.abs(
+          (record.fields!.expiryPrice - record.fields!.strikePrice) /
+            record.fields!.strikePrice
+        )
+      );
+    });
+    const itmAvgPerformance =
+      itmPerformanceArray.reduce((partialSum, a) => partialSum + a, 0) /
+      itmPerformanceArray.length;
+
     return [
       absolutePerformance,
       performance,
@@ -118,8 +137,9 @@ export const useAirtable = () => {
       calculateMaxYield,
       ethPriceLower,
       ethPriceUpper,
+      itmAvgPerformance,
     ];
-  }, [values, ETHPrice]);
+  }, [values, ETHPrice, itmRecords]);
 
   if (loading || !values) {
     //placeholder values while values are loading
@@ -136,6 +156,7 @@ export const useAirtable = () => {
       borrowRate: 0.1,
       ethLowerBarrier: 0,
       ethUpperBarrier: 0,
+      itmPerformance: 0.0,
     };
   }
   return {
@@ -151,5 +172,6 @@ export const useAirtable = () => {
     borrowRate: values.borrowRate,
     ethLowerBarrier,
     ethUpperBarrier,
+    itmPerformance,
   };
 };
