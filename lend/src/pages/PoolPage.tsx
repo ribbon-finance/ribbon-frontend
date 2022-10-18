@@ -129,7 +129,7 @@ const Value = styled.span<{ color?: string }>`
 const PillButton = styled.a<{ delay: number }>`
   padding-left: 16px;
   padding-right: 16px;
-  border: 1px solid white;
+  border: 1px solid ${colors.primaryText};
   background-color: transparent;
   border-radius: 100px;
   height: 48px;
@@ -496,7 +496,7 @@ const PoolPage = () => {
                     <div className="d-flex">
                       <UtilizationBar
                         percent={parseFloat(utilizationRate)}
-                        color="white"
+                        color={colors.primaryText}
                         width={64}
                       />
                       <Value>{vaultLoading ? "0" : utilizationRate}%</Value>
@@ -562,7 +562,7 @@ const PoolPage = () => {
                     <CreditRating>
                       Credit ratings provided by{" "}
                       <BaseLink
-                        color="white"
+                        color={colors.primaryText}
                         target="_blank"
                         rel="noreferrer noopener"
                         to="https://credora.io/"
@@ -719,6 +719,7 @@ const MarqueeItem = styled.div`
 
 const StyledMarquee = styled(Marquee)<{ delay: number }>`
   height: 100%;
+  overflow: hidden;
   ${delayedFade}
 `;
 

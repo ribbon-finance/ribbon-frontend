@@ -1,11 +1,11 @@
 import React from "react";
 import { Row } from "react-bootstrap";
 import colors from "shared/lib/designSystem/colors";
-import styled, { keyframes } from "styled-components";
+import styled from "styled-components";
 import { components } from "../../designSystem/components";
 import { Title } from "../../designSystem";
 import sizes from "../../designSystem/sizes";
-import { fadeIn, fadeInDisabled } from "shared/lib/designSystem/keyframes";
+import { fadeIn } from "shared/lib/designSystem/keyframes";
 import { css } from "styled-components";
 
 export const FixedContainer = styled.div`

@@ -1,7 +1,7 @@
 import React from "react";
 import { Col, Row } from "react-bootstrap";
 import colors from "shared/lib/designSystem/colors";
-import styled, { keyframes } from "styled-components";
+import styled from "styled-components";
 import { components } from "../../designSystem/components";
 import { PrimaryText, Title } from "../../designSystem";
 import sizes from "../../designSystem/sizes";
@@ -9,7 +9,7 @@ import { getEtherscanURI, VaultOptions } from "../../constants/constants";
 import { formatBigNumber } from "../../utils/math";
 import { getUtilizationDecimals } from "../../utils/asset";
 import { usePoolsAPR } from "../../hooks/usePoolsAPR";
-import { fadeIn, fadeInDisabled } from "shared/lib/designSystem/keyframes";
+import { fadeIn } from "shared/lib/designSystem/keyframes";
 import { css } from "styled-components";
 import { BaseUnderlineLink } from "shared/lib/designSystem";
 import { useVaultsData } from "../../hooks/web3DataContext";
@@ -218,7 +218,7 @@ const Footer: React.FC<FooterProps> = ({
                       formatBigNumber(utilizationRate, utilizationDecimals)
                     )}
                     width={40}
-                    color="white"
+                    color={colors.primaryText}
                   />
                   <DetailText>
                     {formatBigNumber(utilizationRate, utilizationDecimals)}%
@@ -280,7 +280,7 @@ const Footer: React.FC<FooterProps> = ({
                       formatBigNumber(utilizationRate, utilizationDecimals)
                     )}
                     width={40}
-                    color="white"
+                    color={colors.primaryText}
                   />
                   <DetailText>
                     {formatBigNumber(utilizationRate, utilizationDecimals)}%
