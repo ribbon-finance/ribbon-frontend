@@ -5,7 +5,11 @@ import styled from "styled-components";
 import { components } from "../../designSystem/components";
 import { PrimaryText, Title } from "../../designSystem";
 import sizes from "../../designSystem/sizes";
-import { getEtherscanURI, VaultOptions } from "../../constants/constants";
+import {
+  getEtherscanURI,
+  VaultDetailsMap,
+  VaultOptions,
+} from "../../constants/constants";
 import { formatBigNumber } from "../../utils/math";
 import { getUtilizationDecimals } from "../../utils/asset";
 import { usePoolsAPR } from "../../hooks/usePoolsAPR";
@@ -17,7 +21,6 @@ import { useWeb3React } from "@web3-react/core";
 import ExternalLinkIcon from "../Common/ExternalLinkIcon";
 import UtilizationBar from "../Common/UtilizationBar";
 import currency from "currency.js";
-import { ActionModalEnum } from ".";
 
 const FooterRow = styled(Row)`
   min-height: ${components.footer}px;
@@ -85,10 +88,9 @@ const DetailTitle = styled.div`
   text-align: center;
 `;
 
-const DetailText = styled(Title)<{ color?: string }>`
+const DetailText = styled(Title)`
   font-size: 14px;
   line-height: 20px;
-  color: ${(props) => props.color ?? ""};
 `;
 
 const StyledPrimaryText = styled(PrimaryText)`
@@ -106,32 +108,26 @@ const UnderlineLink = styled(BaseUnderlineLink)`
   width: 100%;
 `;
 
+export enum ActionModalEnum {
+  PREVIEW,
+  TRANSACTION_STEP,
+}
+
 interface FooterProps {
   pool: VaultOptions;
   page: ActionModalEnum;
   show: boolean;
-  txhash?: string | undefined;
-  borrowAmount: string;
-  isBorrow: boolean;
+  txhash: string | undefined;
 }
 
-const Footer: React.FC<FooterProps> = ({
-  show,
-  pool,
-  page,
-  txhash,
-  borrowAmount,
-  isBorrow,
-}) => {
+const Footer: React.FC<FooterProps> = ({ show, pool, page, txhash }) => {
   const vaultDatas = useVaultsData();
+  const poolName = VaultDetailsMap[pool].name;
   const { aprs } = usePoolsAPR();
   const { chainId } = useWeb3React();
   const apr = aprs[pool];
   const utilizationDecimals = getUtilizationDecimals();
   const utilizationRate = vaultDatas.data[pool].utilizationRate;
-  const poolSize = vaultDatas.data[pool].poolSize;
-  const borrowAmountNum = parseInt(borrowAmount);
-  const absoluteBorrowAmount = Math.abs(parseInt(borrowAmount));
 
   return (
     <>
@@ -140,7 +136,27 @@ const Footer: React.FC<FooterProps> = ({
           <DesktopOnly>
             <Col xs={3}>
               <DetailContainer show={show} delay={0.1}>
-                <DetailTitle>Current Utilization</DetailTitle>
+                <DetailTitle>Pool</DetailTitle>
+                <DetailText>{poolName}</DetailText>
+              </DetailContainer>
+            </Col>
+            <Col xs={3}>
+              <DetailContainer show={show} delay={0.2}>
+                <DetailTitle>Deposit Asset</DetailTitle>
+                <DetailText>USDC</DetailText>
+              </DetailContainer>
+            </Col>
+            <Col xs={3}>
+              <DetailContainer show={show} delay={0.3}>
+                <DetailTitle>Lending APR</DetailTitle>
+                <DetailText>
+                  {currency(apr.toFixed(2), { symbol: "" }).format()}%
+                </DetailText>
+              </DetailContainer>
+            </Col>
+            <Col xs={3}>
+              <DetailContainer show={show} delay={0.4}>
+                <DetailTitle>Pool Utilization</DetailTitle>
                 <div className="d-flex">
                   <UtilizationBar
                     percent={parseFloat(
@@ -153,73 +169,19 @@ const Footer: React.FC<FooterProps> = ({
                     {formatBigNumber(utilizationRate, utilizationDecimals)}%
                   </DetailText>
                 </div>
-              </DetailContainer>
-            </Col>
-            <Col xs={3}>
-              <DetailContainer show={show} delay={0.2}>
-                <DetailTitle>Pool Size (USDC)</DetailTitle>
-                <DetailText>
-                  {currency(formatBigNumber(poolSize, 6), {
-                    symbol: "",
-                  }).format()}
-                </DetailText>
-              </DetailContainer>
-            </Col>
-            <Col xs={3}>
-              <DetailContainer show={show} delay={0.3}>
-                <DetailTitle>
-                  {isBorrow ? "Borrow" : "Repay"} Amount
-                </DetailTitle>
-                <DetailText
-                  color={
-                    borrowAmountNum === 0
-                      ? colors.primaryText
-                      : borrowAmountNum > 0
-                      ? colors.green
-                      : colors.red
-                  }
-                >
-                  {currency(
-                    absoluteBorrowAmount
-                      ? formatBigNumber(absoluteBorrowAmount, 6)
-                      : "0.00",
-                    {
-                      symbol: "",
-                    }
-                  ).format()}
-                </DetailText>
-              </DetailContainer>
-            </Col>
-            <Col xs={3}>
-              <DetailContainer show={show} delay={0.4}>
-                <DetailTitle>Borrow APR</DetailTitle>
-                <DetailText>
-                  {currency(apr.toFixed(2), { symbol: "" }).format()}%
-                </DetailText>
               </DetailContainer>
             </Col>
           </DesktopOnly>
           <MobileOnly>
             <Col xs={6}>
               <DetailContainer show={show} delay={0.1}>
-                <DetailTitle>Current Utilization</DetailTitle>
-                <div className="d-flex">
-                  <UtilizationBar
-                    percent={parseFloat(
-                      formatBigNumber(utilizationRate, utilizationDecimals)
-                    )}
-                    width={40}
-                    color={colors.primaryText}
-                  />
-                  <DetailText>
-                    {formatBigNumber(utilizationRate, utilizationDecimals)}%
-                  </DetailText>
-                </div>
+                <DetailTitle>Pool</DetailTitle>
+                <DetailText>{poolName}</DetailText>
               </DetailContainer>
             </Col>
             <Col xs={6}>
               <DetailContainer show={show} delay={0.2}>
-                <DetailTitle>Borrow APR</DetailTitle>
+                <DetailTitle>Lending APR</DetailTitle>
                 <DetailText>
                   {currency(apr.toFixed(2), { symbol: "" }).format()}%
                 </DetailText>
@@ -229,7 +191,7 @@ const Footer: React.FC<FooterProps> = ({
         </FooterRow>
       ) : (
         <FooterRow>
-          {chainId && txhash && (
+          {chainId !== undefined && (
             <UnderlineLink
               to={`${getEtherscanURI(chainId)}/tx/${txhash}`}
               target="_blank"

@@ -3,6 +3,7 @@ import colors from "shared/lib/designSystem/colors";
 import styled from "styled-components";
 import { components } from "../../designSystem/components";
 import { Title } from "../../designSystem";
+import { ActionType } from "./types";
 
 const HeaderContainer = styled.div`
   display: flex;
@@ -29,14 +30,26 @@ const HeaderText = styled(Title)`
   line-height: 20px;
 `;
 
-interface HeaderProps {
-  isBorrow: boolean;
+export enum ActionModalEnum {
+  PREVIEW,
+  TRANSACTION_STEP,
 }
 
-const Header: React.FC<HeaderProps> = ({ isBorrow, children }) => {
+interface HeaderProps {
+  actionType: ActionType;
+  page: ActionModalEnum;
+}
+
+const Header: React.FC<HeaderProps> = ({ page, actionType, children }) => {
   return (
     <HeaderContainer>
-      <HeaderText>{isBorrow ? "BORROW" : "REPAY"} USDC</HeaderText>
+      <HeaderText>
+        {actionType === "deposit" &&
+          (page === ActionModalEnum.PREVIEW ? "Deposit" : "Depositing")}
+        {actionType === "withdraw" &&
+          (page === ActionModalEnum.PREVIEW ? "Withdraw" : "Withdrawing")}{" "}
+        USDC
+      </HeaderText>
       {children}
     </HeaderContainer>
   );
