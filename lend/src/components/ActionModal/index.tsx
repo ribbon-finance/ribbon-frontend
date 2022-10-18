@@ -416,7 +416,7 @@ const Footer: React.FC<FooterProps> = ({ show, pool, page, txhash }) => {
                       formatBigNumber(utilizationRate, utilizationDecimals)
                     )}
                     width={40}
-                    color="white"
+                    color={colors.primaryText}
                   />
                   <DetailText>
                     {formatBigNumber(utilizationRate, utilizationDecimals)}%
@@ -538,11 +538,11 @@ export const BaseInputButton = styled.div`
   font-family: VCR, sans-serif;
   &:hover {
     color: black;
-    background: white;
+    background: ${colors.primaryText};
   }
   &:focus {
     color: black;
-    background: white;
+    background: ${colors.primaryText};
   }
   tab-index: 1;
 `;

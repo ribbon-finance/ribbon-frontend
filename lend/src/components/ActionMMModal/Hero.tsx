@@ -250,7 +250,7 @@ const BalanceLabel = styled.span`
 
 const BalanceValue = styled.span<{ error: boolean }>`
   font-size: 14px;
-  color: ${(props) => (props.error ? colors.red : "white")};
+  color: ${(props) => (props.error ? colors.red : colors.primaryText)};
   font-family: VCR;
 `;
 
@@ -271,11 +271,11 @@ export const BaseInputButton = styled.div`
   font-family: VCR, sans-serif;
   &:hover {
     color: black;
-    background: white;
+    background: ${colors.primaryText};
   }
   &:focus {
     color: black;
-    background: white;
+    background: ${colors.primaryText};
   }
   tab-index: 1;
 `;
@@ -752,7 +752,7 @@ export const Hero: React.FC<HeroProps> = ({
       <ModalContainer>
         {page === ActionModalEnum.PREVIEW ? (
           <>
-            <ProductAssetLogoContainer color={"white"} delay={0.1}>
+            <ProductAssetLogoContainer color={colors.primaryText} delay={0.1}>
               <Logo height="100%" />
             </ProductAssetLogoContainer>
             <BalanceTitle delay={0.1}>Utilization (%)</BalanceTitle>
@@ -777,7 +777,7 @@ export const Hero: React.FC<HeroProps> = ({
                     handleStyle={{
                       height: 16,
                       width: 16,
-                      backgroundColor: "white",
+                      backgroundColor: colors.primaryText,
                       border: 0,
                       boxShadow: "none",
                       opacity: 1,

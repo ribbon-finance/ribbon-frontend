@@ -183,7 +183,7 @@ const AssetStat = styled.div`
   }
 
   span {
-    color: white;
+    color: ${colors.primaryText};
   }
 `;
 

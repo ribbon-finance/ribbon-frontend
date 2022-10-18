@@ -166,7 +166,7 @@ const ClaimLabel = styled.span`
 `;
 
 const ClaimValue = styled.span`
-  color: white;
+  color: ${colors.primaryText};
   font-family: VCR;
 `;
 
@@ -228,7 +228,11 @@ export const Balance = () => {
   }, [totalDeposits, decimals, yourBalance, account, loading, depositLoading]);
 
   const roiColor = useMemo(() => {
-    return roi === 0 ? "white" : roi >= 0 ? colors.green : colors.red;
+    return roi === 0
+      ? colors.primaryText
+      : roi >= 0
+      ? colors.green
+      : colors.red;
   }, [roi]);
 
   const hasRbnReward = useMemo(() => {

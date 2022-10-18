@@ -389,7 +389,11 @@ export const Positions = () => {
         };
 
         const roiColor = () => {
-          return roi() === 0 ? "white" : roi() >= 0 ? colors.green : colors.red;
+          return roi() === 0
+            ? colors.primaryText
+            : roi() >= 0
+            ? colors.green
+            : colors.red;
         };
 
         const poolLogo = getMakerLogo(pool);

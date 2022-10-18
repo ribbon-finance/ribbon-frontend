@@ -62,7 +62,7 @@ const ArrowButton = styled.div<{ disabled?: boolean }>`
         `}
 
   i {
-    color: white;
+    color: ${colors.primaryText};
   }
 `;
 

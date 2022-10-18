@@ -1,13 +1,13 @@
 import React, { useEffect, useState } from "react";
 import { Row } from "react-bootstrap";
 import colors from "shared/lib/designSystem/colors";
-import styled, { keyframes } from "styled-components";
+import styled from "styled-components";
 import { components } from "../../designSystem/components";
 import { Title } from "../../designSystem";
 import sizes from "../../designSystem/sizes";
 import { VaultOptions } from "../../constants/constants";
 import { CloseIcon } from "shared/lib/assets/icons/icons";
-import { fadeIn, fadeInDisabled } from "shared/lib/designSystem/keyframes";
+import { fadeIn } from "shared/lib/designSystem/keyframes";
 import { css } from "styled-components";
 import Header from "./Header";
 import Footer from "./Footer";
