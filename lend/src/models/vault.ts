@@ -139,6 +139,8 @@ export interface UnconnectedVaultData {
   vaultMaxWithdrawAmount: BigNumber;
   supplyRate: BigNumber;
   rewardPerSecond: BigNumber;
+  manager: string;
+  borrows: BigNumber;
 }
 
 export interface UserSpecificData {
@@ -170,6 +172,8 @@ export const defaultVaultData: VaultData = {
         vaultLimit: BigNumber.from("0"),
         availableToBorrow: BigNumber.from("0"),
         currentExchangeRate: BigNumber.from("0"),
+        manager: "0x0",
+        borrows: BigNumber.from("0"),
         vaultBalanceInAsset: BigNumber.from("0"),
         vaultMaxWithdrawAmount: BigNumber.from("0"),
         maxWithdrawAmount: BigNumber.from("0"),

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useMemo, useState } from "react";
 import { Col, Row } from "react-bootstrap";
 import colors from "shared/lib/designSystem/colors";
 import styled from "styled-components";
@@ -237,6 +237,19 @@ const LendPage: React.FC = () => {
   const [activePage, setPage] = useState<PageEnum>(PageEnum.POOLS);
   const [triggerWalletModal, setWalletModal] = useState<boolean>(false);
   const { width } = useScreenSize();
+  const { loading, data: vaultDatas } = useVaultsData();
+  const { account } = useWeb3Wallet();
+
+  const isManager = useMemo(() => {
+    if (account && !loading) {
+      let managers: string[] = [];
+      VaultList.forEach((pool) => {
+        managers.push(vaultDatas[pool].manager);
+      });
+      return managers.includes(account);
+    }
+    return false;
+  }, [account, loading, vaultDatas]);
 
   return (
     <>
@@ -263,6 +276,7 @@ const LendPage: React.FC = () => {
           activePage={activePage}
           setPage={setPage}
           setWalletModal={setWalletModal}
+          isManager={isManager}
         />
       </HeroContainer>
     </>
@@ -301,18 +315,20 @@ interface FooterProps {
   activePage: PageEnum;
   setPage: (page: PageEnum) => void;
   setWalletModal: (trigger: boolean) => void;
+  isManager: boolean;
 }
 
 export const FooterButton = styled(Button)<{
   isActive?: boolean;
   delay: number;
   disabled?: boolean;
+  width?: string;
 }>`
   font-size: 14px;
   border: none;
   border-radius: 0;
   height: ${components.footer}px;
-  width: 50%;
+  width: ${({ width }) => (width ? width : "50%")};
   color: ${({ isActive }) =>
     isActive ? colors.primaryText : colors.tertiaryText};
 
@@ -331,7 +347,12 @@ export const FooterButton = styled(Button)<{
   ${delayedFade}
 `;
 
-const Footer = ({ activePage, setPage, setWalletModal }: FooterProps) => {
+const Footer = ({
+  activePage,
+  setPage,
+  setWalletModal,
+  isManager,
+}: FooterProps) => {
   const { account, active } = useWeb3Wallet();
   const vaultDatas = useVaultsData();
   const usdcDecimals = getAssetDecimals("USDC");
@@ -349,24 +370,38 @@ const Footer = ({ activePage, setPage, setWalletModal }: FooterProps) => {
           <ProductDisclaimer />
         </DisclaimerWrapper>
       </Col>
-      <Col md={12} lg={6}>
-        <FooterButton
-          disabled={false}
-          isActive={activePage === PageEnum.POOLS}
-          onClick={() => setPage(PageEnum.POOLS)}
-          delay={0.2}
-        >
-          Pools
-        </FooterButton>
-        <FooterButton
-          disabled={false}
-          delay={0.3}
-          isActive={activePage === PageEnum.POSITIONS}
-          onClick={() => setPage(PageEnum.POSITIONS)}
-        >
-          Positions{account && `(${positionsCount})`}
-        </FooterButton>
-      </Col>
+      {!isManager ? (
+        <Col md={12} lg={6}>
+          <FooterButton
+            disabled={false}
+            isActive={activePage === PageEnum.POOLS}
+            onClick={() => setPage(PageEnum.POOLS)}
+            delay={0.2}
+          >
+            Pools
+          </FooterButton>
+          <FooterButton
+            disabled={false}
+            delay={0.3}
+            isActive={activePage === PageEnum.POSITIONS}
+            onClick={() => setPage(PageEnum.POSITIONS)}
+          >
+            Positions{account && `(${positionsCount})`}
+          </FooterButton>
+        </Col>
+      ) : (
+        <Col md={12} lg={6}>
+          <FooterButton
+            disabled={false}
+            isActive={activePage === PageEnum.POOLS}
+            onClick={() => setPage(PageEnum.POOLS)}
+            delay={0.2}
+            width={"100%"}
+          >
+            Pools
+          </FooterButton>
+        </Col>
+      )}
       <FooterWalletCol md={0} lg={6}>
         <WalletButton delay={0.4} onClick={() => setWalletModal(true)}>
           {active && <Indicator connected={active} />}

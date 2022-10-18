@@ -381,6 +381,7 @@ const Footer: React.FC<FooterProps> = ({ show, pool, page, txhash }) => {
   const apr = aprs[pool];
   const utilizationDecimals = getUtilizationDecimals();
   const utilizationRate = vaultDatas.data[pool].utilizationRate;
+
   return (
     <>
       {page === ActionModalEnum.PREVIEW ? (

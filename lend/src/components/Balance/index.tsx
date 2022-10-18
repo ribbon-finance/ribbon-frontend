@@ -15,6 +15,10 @@ import { formatUnits } from "ethers/lib/utils";
 import LendModal, { ModalContentEnum } from "../Common/LendModal";
 import { delayedFade } from "../animations";
 import { fadeIn } from "shared/lib/designSystem/keyframes";
+import { VaultList } from "../../constants/constants";
+import { useVaultsData } from "../../hooks/web3DataContext";
+import { BigNumber } from "ethers";
+import { usePoolsAPR } from "../../hooks/usePoolsAPR";
 import currency from "currency.js";
 import { BaseIndicator } from "shared/lib/designSystem";
 const BalanceWrapper = styled.div`
@@ -172,13 +176,31 @@ export const Balance = () => {
   const { loading, accountBalances } = useVaultAccountBalances();
 
   const { loading: depositLoading, totalDeposits } = useVaultTotalDeposits();
-
+  const { loading: vaultDataLoading, data: vaultDatas } = useVaultsData();
+  const { aprs } = usePoolsAPR();
   const yourBalance = accountBalances.totalBalance;
   const rbnClaimableRewards = accountBalances.rbnClaimable;
   const rbnDecimals = getAssetDecimals("RBN");
   const decimals = getAssetDecimals("USDC");
   const [triggerWalletModal, setWalletModal] = useState<boolean>(false);
   const [triggerAnimation, setTriggerAnimation] = useState<boolean>(true);
+
+  const [isManager, totalBorrowed, apr] = useMemo(() => {
+    if (account && !vaultDataLoading) {
+      let managers: string[] = [];
+      let totalBorrowed: BigNumber = BigNumber.from(0);
+      let apr: number = 0;
+      VaultList.forEach((pool) => {
+        managers.push(vaultDatas[pool].manager);
+        if (vaultDatas[pool].manager === account) {
+          totalBorrowed = vaultDatas[pool].borrows;
+          apr = aprs[pool];
+        }
+      });
+      return [managers.includes(account), totalBorrowed, apr];
+    }
+    return [false, BigNumber.from(0), 0];
+  }, [account, aprs, vaultDataLoading, vaultDatas]);
 
   useEffect(() => {
     setTimeout(() => {
@@ -233,58 +255,85 @@ export const Balance = () => {
       />
       <BalanceWrapper>
         <VaultContainer>
-          <ProductAssetLogoContainer delay={0.1}>
-            <Logo height="100%" />
-          </ProductAssetLogoContainer>
-          <BalanceTitle delay={0.2}>Your Balance</BalanceTitle>
-          <HeroText delay={0.3}>
-            {loading || !account
-              ? "---"
-              : currency(formatBigNumber(yourBalance, decimals, 2)).format()}
-          </HeroText>
-          <HeroSubtitle color={roiColor} delay={0.4}>
-            {loading || !account
-              ? "---"
-              : `${roi > 0 ? "+" : ""}${currency(
-                  profit.toFixed(2)
-                ).format()} (${roi.toFixed(2)}%)`}
-          </HeroSubtitle>
-          <ClaimTextContainer show={triggerAnimation} delay={0.5}>
-            {hasRbnReward && (
-              <BaseIndicator
-                size={8}
-                color={getAssetColor("RBN")}
-                blink={true}
-                className="mr-2"
-              />
-            )}
-            <ClaimLabel>Unclaimed RBN Rewards:</ClaimLabel>
-            <ClaimValue>
-              {loading || !account
-                ? "---"
-                : currency(
-                    formatBigNumber(rbnClaimableRewards, rbnDecimals, 2),
-                    { symbol: "" }
-                  ).format()}
-            </ClaimValue>
-          </ClaimTextContainer>
-          <ClaimButton
-            disabled={!hasRbnReward}
-            hidden={!account}
-            onClick={() => setClaimModal(true)}
-            show={triggerAnimation}
-            delay={0.6}
-          >
-            Claim RBN
-          </ClaimButton>
-          <ConnectButton
-            hidden={account !== undefined}
-            delay={0.6}
-            show={triggerAnimation}
-            onClick={() => setWalletModal(true)}
-          >
-            Connect Wallet
-          </ConnectButton>
+          {!isManager ? (
+            <>
+              <ProductAssetLogoContainer delay={0.1}>
+                <Logo height="100%" />
+              </ProductAssetLogoContainer>
+              <BalanceTitle delay={0.2}>Your Balance</BalanceTitle>
+              <HeroText delay={0.3}>
+                {loading || !account
+                  ? "---"
+                  : currency(
+                      formatBigNumber(yourBalance, decimals, 2)
+                    ).format()}
+              </HeroText>
+              <HeroSubtitle color={roiColor} delay={0.4}>
+                {loading || !account
+                  ? "---"
+                  : `${roi > 0 ? "+" : ""}${currency(
+                      profit.toFixed(2)
+                    ).format()} (${roi.toFixed(2)}%)`}
+              </HeroSubtitle>
+              <ClaimTextContainer show={triggerAnimation} delay={0.5}>
+                {hasRbnReward && (
+                  <BaseIndicator
+                    size={8}
+                    color={getAssetColor("RBN")}
+                    blink={true}
+                    className="mr-2"
+                  />
+                )}
+                <ClaimLabel>Unclaimed RBN Rewards:</ClaimLabel>
+                <ClaimValue>
+                  {loading || !account
+                    ? "---"
+                    : currency(
+                        formatBigNumber(rbnClaimableRewards, rbnDecimals, 2),
+                        { symbol: "" }
+                      ).format()}
+                </ClaimValue>
+              </ClaimTextContainer>
+              <ClaimButton
+                disabled={!hasRbnReward}
+                hidden={!account}
+                onClick={() => setClaimModal(true)}
+                show={triggerAnimation}
+                delay={0.6}
+              >
+                Claim RBN
+              </ClaimButton>
+              <ConnectButton
+                hidden={account !== undefined}
+                delay={0.6}
+                show={triggerAnimation}
+                onClick={() => setWalletModal(true)}
+              >
+                Connect Wallet
+              </ConnectButton>
+            </>
+          ) : (
+            <>
+              <BalanceTitle delay={0.1}>Total Borrowed</BalanceTitle>
+              <HeroText delay={0.2}>
+                {vaultDataLoading
+                  ? "---"
+                  : "$" + formatBigNumber(totalBorrowed, decimals, 2)}
+              </HeroText>
+              <HeroSubtitle
+                color={
+                  apr === 0
+                    ? colors.primaryText
+                    : apr > 0
+                    ? colors.green
+                    : colors.red
+                }
+                delay={0.4}
+              >
+                {loading ? "0.00" : apr.toFixed(2)}% APR
+              </HeroSubtitle>
+            </>
+          )}
         </VaultContainer>
       </BalanceWrapper>
     </>

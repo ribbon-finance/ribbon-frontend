@@ -51,6 +51,15 @@ export const fadeOut = keyframes`
   }
 `;
 
+export const fadeInDisabled = keyframes`
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 0.64;
+  }
+`;
+
 export const blinkAnimation = keyframes`
   0% {
     opacity: 1;
