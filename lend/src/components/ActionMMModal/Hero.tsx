@@ -1,10 +1,7 @@
 import React, { useCallback, useEffect, useState } from "react";
-import { Row } from "react-bootstrap";
 import colors from "shared/lib/designSystem/colors";
 import styled, { keyframes } from "styled-components";
-import { components } from "../../designSystem/components";
-import { PrimaryText, SecondaryText, Title } from "../../designSystem";
-import sizes from "../../designSystem/sizes";
+import { SecondaryText, Title } from "../../designSystem";
 import useWeb3Wallet from "shared/lib/hooks/useWeb3Wallet";
 import { VaultAddressMap, VaultOptions } from "../../constants/constants";
 import { formatBigNumber, isPracticallyZero } from "../../utils/math";
@@ -69,130 +66,6 @@ const FrameBar = styled.div<{
   animation: 10s ${(props) => livelyAnimation(props.position)} linear infinite;
 `;
 
-export const fadeInDisabled = keyframes`
-  from {
-    opacity: 0;
-  }
-  to {
-    opacity: 0.64;
-  }
-`;
-
-export const FixedContainer = styled.div`
-  position: fixed;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  background: black;
-  z-index: 100;
-  width: 100%;
-  height: 100%;
-`;
-
-export const HeaderRow = styled(Row)`
-  height: ${components.header}px;
-  border-bottom: 1px solid ${colors.border};
-  z-index: 1;
-  margin-left: 0px;
-
-  > * {
-    padding: 0;
-
-    &:not(:last-child) {
-      border-right: 1px solid ${colors.border};
-    }
-  }
-`;
-
-export const FooterRow = styled(Row)`
-  min-height: ${components.footer}px;
-  border-top: 1px solid ${colors.border};
-  box-sizing: content-box;
-`;
-
-export const HeaderContainer = styled.div`
-  display: flex;
-  margin: auto;
-  width: 100%;
-  justify-content: center;
-  border-radius: 0;
-  min-height: ${components.header}px;
-  border-bottom: 1px solid ${colors.border};
-  z-index: 1;
-  color: ${colors.primaryText};
-
-  > * {
-    margin: auto 0;
-
-    &:not(:last-child) {
-      margin-right: 8px;
-    }
-  }
-`;
-
-export const HeaderText = styled(Title)`
-  font-size: 16px;
-  line-height: 20px;
-`;
-
-export const DetailContainer = styled.div<{ show?: boolean; delay?: number }>`
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  text-align: center;
-  height: 100%;
-  ${({ show, delay }) => {
-    return (
-      show &&
-      css`
-        opacity: 0;
-
-        &:disabled {
-          opacity: 0;
-        }
-
-        animation: ${fadeIn} 1s ease-in-out forwards;
-        animation-delay: ${delay || 0}s;
-      `
-    );
-  }}
-`;
-
-export const Content = styled(Row)`
-  height: calc(100% - ${components.header}px - ${components.footer}px);
-
-  @media (max-width: ${sizes.lg}px) {
-    height: 100%;
-  }
-
-  > *:not(:last-child) {
-    border-right: 1px solid ${colors.border};
-  }
-`;
-
-export const DetailText = styled(Title)<{ color?: string }>`
-  font-size: 14px;
-  line-height: 20px;
-  color: ${(props) => (props.color ? props.color : ``)};
-`;
-
-export const StyledPrimaryText = styled(PrimaryText)`
-  font-size: 14px;
-  line-height: 20px;
-  text-decoration: underline;
-  margin-right: 4px;
-`;
-
-export const TransactionContainer = styled.div`
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  text-align: center;
-  height: 100%;
-  width: 100%;
-`;
-
 const delayedFade = css<{ delay?: number }>`
   opacity: 0;
   animation: ${fadeIn} 1s ease-in-out forwards;
@@ -252,32 +125,6 @@ const BalanceValue = styled.span<{ error: boolean }>`
   font-size: 14px;
   color: ${(props) => (props.error ? colors.red : colors.primaryText)};
   font-family: VCR;
-`;
-
-export const BaseInputButton = styled.div`
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  color: ${colors.primaryText};
-  border-radius: 4px;
-  border: 1px solid ${colors.primaryText};
-  width: 54px;
-  height: 40px;
-  font-size: 12px;
-  line-height: 16px;
-  text-align: center;
-  letter-spacing: 1px;
-  cursor: pointer;
-  font-family: VCR, sans-serif;
-  &:hover {
-    color: black;
-    background: ${colors.primaryText};
-  }
-  &:focus {
-    color: black;
-    background: ${colors.primaryText};
-  }
-  tab-index: 1;
 `;
 
 const StyledBaseInput = styled(BaseInput)`
@@ -473,7 +320,7 @@ interface HeroProps {
   triggerAnimation: boolean;
 }
 
-export const Hero: React.FC<HeroProps> = ({
+const Hero: React.FC<HeroProps> = ({
   pool,
   page,
   setPage,

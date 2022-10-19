@@ -54,10 +54,13 @@ export const useWeb3Wallet = (): Web3WalletData => {
   useEffect(() => {
     if (isActiveEth && chainIdEth) {
       setChain(ID_TO_CHAINS[chainIdEth as number]);
+      if (connectorEth instanceof WalletConnectConnector) {
+        setConnectedWallet(EthereumWallet.WalletConnect);
+      }
     } else if (!chainIdEth) {
       setChain(Chains.NotSelected);
     }
-  }, [chainIdEth, isActiveEth, setChain]);
+  }, [chainIdEth, connectorEth, isActiveEth, setChain]);
 
   // This hook checks if there is an EVM chainId to switch to
   // If so, it will prompt switchChains only when a provider is available
