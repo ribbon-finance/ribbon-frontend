@@ -4,7 +4,7 @@ import styled, { keyframes } from "styled-components";
 import { SecondaryText } from "../../designSystem";
 import useWeb3Wallet from "../../hooks/useWeb3Wallet";
 import { VaultAddressMap, VaultOptions } from "../../constants/constants";
-import { formatBigNumber } from "../../utils/math";
+import { formatBigNumber, isPracticallyZero } from "../../utils/math";
 import { getAssetDecimals } from "../../utils/asset";
 import { ActionType } from "./types";
 import { fadeIn } from "shared/lib/designSystem/keyframes";
@@ -24,6 +24,9 @@ import HeroContent from "../HeroContent";
 import { PoolValidationErrors } from "./types";
 import { Button } from "../../designSystem";
 import LendModal, { ModalContentEnum } from "../Common/LendModal";
+import useTokenAllowance from "shared/lib/hooks/useTokenAllowance";
+import useERC20Token from "shared/lib/hooks/useERC20Token";
+import { EthereumWallet } from "shared/lib/models/wallets";
 
 const livelyAnimation = (position: "top" | "bottom") => keyframes`
   0% {
@@ -302,6 +305,7 @@ const Hero: React.FC<HeroProps> = ({
   triggerAnimation,
 }) => {
   const [inputAmount, setInputAmount] = useState<string>("");
+  const [waitingPermit, setWaitingPermit] = useState(false);
   const [waitingApproval, setWaitingApproval] = useState(false);
   const { active, account, connectedWallet } = useWeb3Wallet();
   const Logo = getAssetLogo("USDC");
@@ -310,13 +314,21 @@ const Hero: React.FC<HeroProps> = ({
   const decimals = getAssetDecimals("USDC");
   const { balance: userAssetBalance } = useAssetBalance("USDC");
   const usdc = useUSDC();
-  const loadingText = useLoadingText("permitting");
+  const loadingTextPermit = useLoadingText("permitting");
+  const loadingTextApprove = useLoadingText("approving");
   const [signature, setSignature] = useState<DepositSignature>();
   const [txhash, setTxhash] = useState("");
   const lendPool = useLendContract(pool) as RibbonLendVault;
   const { pendingTransactions, addPendingTransaction } =
     usePendingTransactions();
   const [triggerWalletModal, setWalletModal] = useState<boolean>(false);
+  const tokenAllowance = useTokenAllowance("usdc", VaultAddressMap[pool].lend);
+
+  // Check if approval needed
+  const showTokenApproval = useMemo(() => {
+    return tokenAllowance && isPracticallyZero(tokenAllowance, decimals);
+  }, [decimals, tokenAllowance]);
+  const tokenContract = useERC20Token("usdc");
 
   useEffect(() => {
     // we check that the txhash and check if it had succeed
@@ -331,6 +343,16 @@ const Hero: React.FC<HeroProps> = ({
       }
     }
   }, [pendingTransactions, txhash, onHide, page, setPage]);
+
+  useEffect(() => {
+    // check for approve transaction to finish
+    if (txhash !== "") {
+      const pendingTx = pendingTransactions.find((tx) => tx.txhash === txhash);
+      if (pendingTx && pendingTx.type === "approval" && pendingTx.status) {
+        setWaitingApproval(false);
+      }
+    }
+  }, [pendingTransactions, txhash]);
 
   const isInputNonZero = useMemo((): boolean => {
     return parseFloat(inputAmount) > 0;
@@ -441,10 +463,39 @@ const Hero: React.FC<HeroProps> = ({
     },
     [actionType, decimals, userAssetBalance, vaultBalanceInAsset]
   );
-  console.log(connectedWallet);
 
   const handleApprove = useCallback(async () => {
     setWaitingApproval(true);
+    try {
+      if (showTokenApproval) {
+        const approveToAddress = VaultAddressMap[pool]["lend"];
+        if (tokenContract && approveToAddress) {
+          setWaitingApproval(true);
+          const amount =
+            "0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff";
+          const tx = await tokenContract.approve(approveToAddress, amount);
+
+          const txhash = tx.hash;
+
+          addPendingTransaction({
+            txhash,
+            type: "approval",
+            amount: amount,
+            vault: pool,
+            asset: "USDC",
+          });
+          setTxhash(txhash);
+          setWaitingApproval(true);
+        }
+      }
+    } catch (error) {
+      setWaitingApproval(false);
+      console.log(error);
+    }
+  }, [addPendingTransaction, pool, showTokenApproval, tokenContract]);
+
+  const handlePermit = useCallback(async () => {
+    setWaitingPermit(true);
     try {
       const approveToAddress = VaultAddressMap[pool]["lend"];
       if (!approveToAddress) {
@@ -463,11 +514,11 @@ const Hero: React.FC<HeroProps> = ({
           r: signature.r,
           s: signature.s,
         };
-        setWaitingApproval(false);
+        setWaitingPermit(false);
         setSignature(depositSignature);
       }
     } catch (error) {
-      setWaitingApproval(false);
+      setWaitingPermit(false);
       console.log(error);
     }
   }, [amountStr, pool, usdc]);
@@ -478,18 +529,24 @@ const Hero: React.FC<HeroProps> = ({
         let res: any;
         switch (actionType) {
           case "deposit":
-            if (!signature || !account) {
+            if (!account) {
               return;
             }
-
-            res = await lendPool.provideWithPermit(
-              amountStr,
-              account,
-              signature.deadline,
-              signature.v,
-              signature.r,
-              signature.s
-            );
+            if (connectedWallet !== EthereumWallet.WalletConnect) {
+              if (!signature) {
+                return;
+              }
+              res = await lendPool.provideWithPermit(
+                amountStr,
+                account,
+                signature.deadline,
+                signature.v,
+                signature.r,
+                signature.s
+              );
+            } else {
+              res = await lendPool.provide(amountStr, account);
+            }
 
             addPendingTransaction({
               txhash: res.hash,
@@ -527,6 +584,77 @@ const Hero: React.FC<HeroProps> = ({
       }
     }
   };
+
+  const renderApproveButton = useCallback(() => {
+    return connectedWallet !== EthereumWallet.WalletConnect ? (
+      signature !== undefined ? (
+        <FormButtonFade
+          show={show}
+          triggerAnimation={triggerAnimation}
+          delay={0.4}
+          className="mt-4 mb-3"
+        >
+          <ApprovedButton className="btn py-3">
+            USDC READY TO DEPOSIT
+          </ApprovedButton>
+        </FormButtonFade>
+      ) : (
+        <FormButtonFade
+          show={show}
+          triggerAnimation={triggerAnimation}
+          delay={0.4}
+          className="mt-4 mb-3"
+        >
+          <FormButton
+            onClick={handlePermit}
+            disabled={Boolean(error) || !isInputNonZero}
+            className="btn py-3"
+          >
+            {waitingPermit ? loadingTextPermit : `PERMIT USDC`}
+          </FormButton>
+        </FormButtonFade>
+      )
+    ) : !waitingApproval && !showTokenApproval ? (
+      <FormButtonFade
+        show={show}
+        triggerAnimation={triggerAnimation}
+        delay={0.4}
+        className="mt-4 mb-3"
+      >
+        <ApprovedButton className="btn py-3">USDC APPROVED</ApprovedButton>
+      </FormButtonFade>
+    ) : (
+      <FormButtonFade
+        show={show}
+        triggerAnimation={triggerAnimation}
+        delay={0.4}
+        className="mt-4 mb-3"
+      >
+        <FormButton
+          onClick={handleApprove}
+          disabled={Boolean(error)}
+          className="btn py-3"
+        >
+          {waitingApproval ? loadingTextApprove : `APPROVE USDC`}
+        </FormButton>
+      </FormButtonFade>
+    );
+  }, [
+    connectedWallet,
+    error,
+    handleApprove,
+    handlePermit,
+    isInputNonZero,
+    loadingTextApprove,
+    loadingTextPermit,
+    show,
+    showTokenApproval,
+    signature,
+    triggerAnimation,
+    waitingApproval,
+    waitingPermit,
+  ]);
+
   return (
     <>
       <LendModal
@@ -569,37 +697,7 @@ const Hero: React.FC<HeroProps> = ({
             {account &&
               (actionType === "deposit" ? (
                 <div className="justify-content-center">
-                  {connectedWallet !== 2 ? (
-                    signature !== undefined ? (
-                      <FormButtonFade
-                        show={show}
-                        triggerAnimation={triggerAnimation}
-                        delay={0.4}
-                        className="mt-4 mb-3"
-                      >
-                        <ApprovedButton className="btn py-3">
-                          USDC READY TO DEPOSIT
-                        </ApprovedButton>
-                      </FormButtonFade>
-                    ) : (
-                      <FormButtonFade
-                        show={show}
-                        triggerAnimation={triggerAnimation}
-                        delay={0.4}
-                        className="mt-4 mb-3"
-                      >
-                        <FormButton
-                          onClick={handleApprove}
-                          disabled={Boolean(error) || !isInputNonZero}
-                          className="btn py-3"
-                        >
-                          {waitingApproval ? loadingText : `PERMIT USDC`}
-                        </FormButton>
-                      </FormButtonFade>
-                    )
-                  ) : (
-                    <></>
-                  )}
+                  {renderApproveButton()}
                   <FormButtonFade
                     show={show}
                     triggerAnimation={triggerAnimation}
@@ -608,7 +706,13 @@ const Hero: React.FC<HeroProps> = ({
                   >
                     <ActionButton
                       onClick={handleConfirm}
-                      disabled={Boolean(error) || signature === undefined}
+                      disabled={
+                        Boolean(error) ||
+                        !isInputNonZero ||
+                        (connectedWallet !== EthereumWallet.WalletConnect
+                          ? signature === undefined
+                          : showTokenApproval || waitingApproval)
+                      }
                       className="btn py-3"
                     >
                       {actionType}
