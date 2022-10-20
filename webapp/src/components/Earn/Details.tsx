@@ -11,6 +11,7 @@ import { formatUnits } from "ethers/lib/utils";
 import { BigNumber } from "ethers/lib/ethers";
 import useLoadingText from "shared/lib/hooks/useLoadingText";
 import HelpInfo from "shared/lib/components/Common/HelpInfo";
+import { useV2VaultData } from "shared/lib/hooks/web3DataContext";
 const ExplainerTitle = styled.div<{ color: string; marginTop?: number }>`
   display: flex;
   font-size: 12px;
@@ -66,6 +67,11 @@ export const Strategy = () => {
   } = useAirtable();
 
   const { vaultSubgraphData } = useContext(SubgraphDataContext);
+  const {
+    data: { allocationState },
+    loading: v2DataLoading,
+  } = useV2VaultData("rEARN");
+
   const loadingText = useLoadingText();
   const TVL = useMemo(() => {
     if (!vaultSubgraphData.vaults.earn.rEARN) {
@@ -162,7 +168,21 @@ export const Strategy = () => {
       <ExplainerTitle color={colors.tertiaryText}>
         <span>Barrier Type</span>
       </ExplainerTitle>
-      <StyledTitle marginTop={4}>European (Observed at Maturity)</StyledTitle>{" "}
+      <StyledTitle marginTop={4}>European (Observed at Maturity)</StyledTitle>
+      <ExplainerTitle color={colors.tertiaryText}>
+        <span>Loan Allocation</span>
+      </ExplainerTitle>
+      {/* querying loanAllocationPCT seems to give the wrong value so we use constant here*/}
+      <StyledTitle marginTop={4}>99.56%</StyledTitle>
+      <ExplainerTitle color={colors.tertiaryText}>
+        <span>Options Allocation</span>
+      </ExplainerTitle>
+      <StyledTitle marginTop={4}>
+        0.44%
+        {/* {v2DataLoading
+          ? loadingText
+          : `${(allocationState.optionAllocationPCT / 10000).toFixed(2)}%`} */}
+      </StyledTitle>
       <ExplainerTitle color={colors.tertiaryText}>
         <span>TVL</span>
       </ExplainerTitle>
@@ -216,6 +236,31 @@ export const Risk = () => {
         />
         . Despite that, users are advised to exercise caution and only risk
         funds they can afford to lose.
+      </ParagraphText>
+      <StyledTitle marginTop={24}>Network Risk</StyledTitle>
+      <ParagraphText marginTop={8}>
+        You are aware of and accept the network risks. We are not responsible
+        for any losses due to any technical issue arising from the Ethereum
+        blockchain, ancillary features, plugins or wallets, including but not
+        limited to late reports by developers or representatives (or no report
+        at all) of any issues with the Ethereum blockchain, including forks,
+        technical node issues, or any other issues resulting on a loss of funds.
+      </ParagraphText>
+      <StyledTitle marginTop={24}>Deposit Risk</StyledTitle>
+      <ParagraphText marginTop={8}>
+        You are aware of and accept that the USDC held in your the Vault on your
+        behalf is not subject to deposit insurance protection, investor
+        insurance protection, or any other relevant protection in any
+        jurisdiction.
+      </ParagraphText>
+      <StyledTitle marginTop={24}>USDC Risk</StyledTitle>
+      <ParagraphText marginTop={8}>
+        You are aware of and accept the risk of using USDC in ribbon.finance. We
+        are not responsible for any losses due to any actions performed by the
+        USDC Issuer (Circle Internet Financial, LLC.) At any point in time, the
+        Issuer may, with or without notice, at its sole discretion, "block" this
+        Vault Smart Contract address, associated addresses or your address. USDC
+        may be permanently frozen, resulting in a loss of funds.
       </ParagraphText>
     </>
   );

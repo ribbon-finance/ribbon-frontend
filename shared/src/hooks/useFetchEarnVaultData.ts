@@ -17,6 +17,7 @@ import {
 import { usePendingTransactions } from "./pendingTransactionsContext";
 import { useEVMWeb3Context } from "./useEVMWeb3Context";
 import { isVaultSupportedOnChain } from "../utils/vault";
+import { RibbonEarnVault } from "../codegen";
 
 const useFetchEarnVaultData = (): V2VaultData => {
   const {
@@ -67,7 +68,7 @@ const useFetchEarnVaultData = (): V2VaultData => {
           library || inferredProviderFromVault,
           vault,
           active
-        );
+        ) as RibbonEarnVault;
 
         if (!contract) {
           return { vault };
@@ -82,11 +83,13 @@ const useFetchEarnVaultData = (): V2VaultData => {
           | { amount: BigNumber; round: number }
           | { round: number }
           | { share: BigNumber; round: number }
+          | { loanAllocationPCT: number; optionAllocationPCT: number }
         >[] = [
           contract.totalBalance(),
           contract.cap(),
           contract.pricePerShare(),
           contract.vaultState(),
+          contract.allocationState(),
         ];
         /**
          * 1. Deposit receipts
@@ -113,6 +116,7 @@ const useFetchEarnVaultData = (): V2VaultData => {
           cap,
           pricePerShare,
           _vaultState,
+          _allocationState,
           _depositReceipts,
           accountVaultBalance,
           _withdrawals,
@@ -128,6 +132,18 @@ const useFetchEarnVaultData = (): V2VaultData => {
         const vaultState = (
           (_vaultState as { round?: number }).round ? _vaultState : { round: 1 }
         ) as { round: number };
+
+        const allocationState = (
+          (
+            _allocationState as {
+              loanAllocationPCT: number;
+              optionAllocationPCT: number;
+            }
+          ).optionAllocationPCT
+            ? _allocationState
+            : { loanAllocationPCT: 0, optionAllocation: 0 }
+        ) as { loanAllocationPCT: number; optionAllocationPCT: number };
+
         const depositReceipts = (
           (
             _depositReceipts as {
@@ -159,6 +175,7 @@ const useFetchEarnVaultData = (): V2VaultData => {
               ? depositReceipts.amount
               : BigNumber.from(0),
           withdrawals,
+          allocationState,
         };
       })
     );

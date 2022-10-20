@@ -295,8 +295,9 @@ const DepositFormStep: React.FC<{
     () =>
       withdrawals.shares
         .mul(
-          priceHistory.find((history) => history.round === withdrawals.round)
-            ?.pricePerShare || BigNumber.from(0)
+          priceHistory.find(
+            (history) => history.round === withdrawals.round - 1
+          )?.pricePerShare || BigNumber.from(0)
         )
         .div(parseUnits("1", decimals)),
     [decimals, priceHistory, withdrawals.round, withdrawals.shares]
