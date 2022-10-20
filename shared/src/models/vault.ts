@@ -241,6 +241,10 @@ export interface UnconnectedV2VaultData {
   cap: BigNumber;
   pricePerShare: BigNumber;
   round: number;
+  allocationState: {
+    loanAllocationPCT: number;
+    optionAllocationPCT: number;
+  };
 }
 
 /**
@@ -289,6 +293,10 @@ export const defaultV2VaultData: V2VaultData = {
         withdrawals: {
           shares: BigNumber.from(0),
           round: 1,
+        },
+        allocationState: {
+          loanAllocationPCT: 0,
+          optionAllocationPCT: 0,
         },
       },
     ])
