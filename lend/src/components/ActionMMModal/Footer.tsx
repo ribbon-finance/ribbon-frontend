@@ -18,6 +18,7 @@ import ExternalLinkIcon from "../Common/ExternalLinkIcon";
 import UtilizationBar from "../Common/UtilizationBar";
 import currency from "currency.js";
 import { ActionModalEnum } from ".";
+import { formatUnits } from "ethers/lib/utils";
 
 const FooterRow = styled(Row)`
   min-height: ${components.footer}px;
@@ -159,7 +160,7 @@ const Footer: React.FC<FooterProps> = ({
               <DetailContainer show={show} delay={0.2}>
                 <DetailTitle>Pool Size (USDC)</DetailTitle>
                 <DetailText>
-                  {currency(formatBigNumber(poolSize, 6), {
+                  {currency(formatUnits(poolSize, 6), {
                     symbol: "",
                   }).format()}
                 </DetailText>

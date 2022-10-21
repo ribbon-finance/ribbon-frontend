@@ -12,12 +12,12 @@ import {
 import { SecondaryText, Title } from "shared/lib/designSystem";
 import colors from "shared/lib/designSystem/colors";
 import { VaultActivity } from "../../models/vault";
-import { formatBigNumber } from "shared/lib/utils/math";
 import { getAssetDecimals } from "shared/lib/utils/asset";
 import PoolTableWithFixedHeader from "./PoolTableWithFixedHeaders";
 import { PrimaryText } from "../../designSystem";
 import { getAssetLogo } from "../../utils/asset";
 import currency from "currency.js";
+import { formatUnits } from "ethers/lib/utils";
 const VaultPrimaryText = styled(PrimaryText)`
   font-size: 16px;
   color: ${colors.primaryText};
@@ -106,11 +106,11 @@ const PoolActivityList: React.FC<DesktopVaultActivityListProps> = ({
             </>,
             <div className="d-flex justify-content-end align-items-center mr-3">
               <LogoContainer>
-                <AssetLogo />
+                <AssetLogo height={"100"} />
               </LogoContainer>
               <div className="ml-2">
                 <StyledTitle>
-                  {currency(formatBigNumber(activity.borrowAmount, decimals), {
+                  {currency(formatUnits(activity.borrowAmount, decimals), {
                     symbol: "",
                   }).format()}
                 </StyledTitle>
@@ -127,13 +127,13 @@ const PoolActivityList: React.FC<DesktopVaultActivityListProps> = ({
                 </VaultSecondaryText>
               </VaultSecondaryTextContainer>
             </>,
-            <div className="d-flex justify-content-end mr-3">
+            <div className="d-flex justify-content-end lign-items-center mr-3">
               <LogoContainer>
                 <AssetLogo height={"100"} />
               </LogoContainer>
               <div className="ml-2">
                 <StyledTitle>
-                  {currency(formatBigNumber(activity.repaidAmount, decimals), {
+                  {currency(formatUnits(activity.repaidAmount, decimals), {
                     symbol: "",
                   }).format()}
                 </StyledTitle>

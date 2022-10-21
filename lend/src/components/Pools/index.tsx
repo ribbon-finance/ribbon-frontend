@@ -436,7 +436,7 @@ export const Positions = () => {
                     <AssetLogo />
                     <StyledTitle>
                       <span>
-                        {currency(formatBigNumber(balance, decimals), {
+                        {currency(formatUnits(balance, decimals), {
                           symbol: "",
                         }).format()}
                       </span>
@@ -446,7 +446,10 @@ export const Positions = () => {
                     {vaultLoading || !account
                       ? "---"
                       : `${roi() > 0 ? "+" : ""}${currency(
-                          profit().toFixed(2)
+                          profit().toFixed(2),
+                          {
+                            symbol: "",
+                          }
                         ).format()} (${roi().toFixed(2)}%)`}
                   </StyledSubtitle>
                 </Stat>
