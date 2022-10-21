@@ -182,7 +182,7 @@ const Footer: React.FC<FooterProps> = ({
                 >
                   {currency(
                     absoluteBorrowAmount
-                      ? formatBigNumber(absoluteBorrowAmount, 6)
+                      ? formatUnits(absoluteBorrowAmount, 6)
                       : "0.00",
                     {
                       symbol: "",

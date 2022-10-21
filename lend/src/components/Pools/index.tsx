@@ -272,7 +272,7 @@ export const Pools = () => {
                     <StyledTitle>
                       <span>
                         {currency(
-                          formatBigNumber(
+                          formatUnits(
                             !isManager ? poolSize : totalBorrowed,
                             decimals
                           ),

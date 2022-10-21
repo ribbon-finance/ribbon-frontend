@@ -54,6 +54,7 @@ import MobileHeader from "../components/MobileHeader";
 import PositionWidget from "../components/PositionWidget";
 import ActionMMModal from "../components/ActionMMModal";
 import { LoadingText } from "shared/lib/hooks/useLoadingText";
+import { formatUnits } from "ethers/lib/utils";
 
 const PoolContainer = styled.div`
   width: calc(100% - ${components.sidebar}px);
@@ -333,7 +334,7 @@ const PoolPage = () => {
   if (!poolId) return <NotFound />;
 
   const logo = getMakerLogo(poolId);
-  const poolSize = formatBigNumber(vaultDatas[poolId].poolSize, usdcDecimals);
+  const poolSize = formatUnits(vaultDatas[poolId].poolSize, usdcDecimals);
   const manager = vaultDatas[poolId].manager;
   const apr = poolAPRs[poolId].toFixed(2);
   const supplyApr = supplyAprs[poolId].toFixed(2);
