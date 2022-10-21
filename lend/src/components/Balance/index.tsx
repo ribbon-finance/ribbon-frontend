@@ -268,16 +268,16 @@ export const Balance = () => {
               <HeroText delay={0.3}>
                 {loading || !account
                   ? "---"
-                  : currency(
-                      formatBigNumber(yourBalance, decimals, 2)
-                    ).format()}
+                  : currency(formatUnits(yourBalance, decimals), {
+                      symbol: "",
+                    }).format()}
               </HeroText>
               <HeroSubtitle color={roiColor} delay={0.4}>
                 {loading || !account
                   ? "---"
-                  : `${roi > 0 ? "+" : ""}${currency(
-                      profit.toFixed(2)
-                    ).format()} (${roi.toFixed(2)}%)`}
+                  : `${roi > 0 ? "+" : ""}${currency(profit.toFixed(2), {
+                      symbol: "",
+                    }).format()} (${roi.toFixed(2)}%)`}
               </HeroSubtitle>
               <ClaimTextContainer show={triggerAnimation} delay={0.5}>
                 {hasRbnReward && (
@@ -292,10 +292,9 @@ export const Balance = () => {
                 <ClaimValue>
                   {loading || !account
                     ? "---"
-                    : currency(
-                        formatBigNumber(rbnClaimableRewards, rbnDecimals, 2),
-                        { symbol: "" }
-                      ).format()}
+                    : currency(formatUnits(rbnClaimableRewards, rbnDecimals), {
+                        symbol: "",
+                      }).format()}
                 </ClaimValue>
               </ClaimTextContainer>
               <ClaimButton

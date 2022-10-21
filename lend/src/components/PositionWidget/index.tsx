@@ -6,12 +6,13 @@ import AssetCircleContainer from "shared/lib/components/Common/AssetCircleContai
 import { getAssetDecimals, getAssetLogo } from "../../utils/asset";
 import { Title } from "../../designSystem";
 import colors from "shared/lib/designSystem/colors";
-import { formatBigNumber, isPracticallyZero } from "../../utils/math";
+import { isPracticallyZero } from "../../utils/math";
 import sizes from "../../designSystem/sizes";
 import { useVaultsData } from "../../hooks/web3DataContext";
 import { components } from "../../designSystem/components";
 import { delayedUpwardFade } from "../animations";
 import currency from "currency.js";
+import { formatUnits } from "ethers/lib/utils";
 
 const DesktopContainer = styled.div<{ color: string }>`
   display: flex;
@@ -112,10 +113,7 @@ const PositionWidget: React.FC<YourPositionProps> = ({
                     <PositionInfoText size={14}>
                       {poolData
                         ? currency(
-                            formatBigNumber(
-                              poolData.vaultBalanceInAsset,
-                              decimals
-                            ),
+                            formatUnits(poolData.vaultBalanceInAsset, decimals),
                             { symbol: "" }
                           ).format()
                         : "0.00"}
