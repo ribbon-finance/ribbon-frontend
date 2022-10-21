@@ -21,6 +21,7 @@ import StakingModalIncreaseDurationForm from "./StakingModalIncreaseDurationForm
 import { usePendingTransactions } from "shared/lib/hooks/pendingTransactionsContext";
 import { formatBigNumber } from "shared/lib/utils/math";
 import { useRBNTokenAccount } from "shared/lib/hooks/useRBNTokenSubgraph";
+import useTokenAllowance from "shared/lib/hooks/useTokenAllowance";
 
 const stakingModalModes = [
   "approve",
@@ -52,6 +53,9 @@ const StakingModal = () => {
   const { provider } = useWeb3Context();
   const [stakingModalState, setStakingModalState] =
     useGovernanceGlobalState("stakingModal");
+  const rbnAllowance =
+    useTokenAllowance("rbn", VotingEscrowAddress) || BigNumber.from(0);
+
   const [stepNum, setStepNum] = useState<number>(0);
   const [stakingData, setStakingData] = useState<{
     amount: BigNumber;
@@ -296,6 +300,16 @@ const StakingModal = () => {
                   <StakingModalncreaseAmountForm
                     initialStakingData={stakingData}
                     proceedToPreview={(amount, duration) => {
+                      if (rbnAllowance.isZero() || rbnAllowance.lt(amount)) {
+                        setStakingModalState((prev) => ({
+                          ...prev,
+                          show: true,
+                          mode: "approve",
+                        }));
+                        setStepNum(0);
+                        return;
+                      }
+
                       setStakingData({ amount, duration });
                       setStepNum(
                         stakingModesMap[stakingModalState.mode].indexOf(
@@ -379,6 +393,8 @@ const StakingModal = () => {
     stakingData,
     stakingUpdateMode,
     stakingModalState,
+    rbnAllowance,
+    setStakingModalState,
   ]);
 
   return (
