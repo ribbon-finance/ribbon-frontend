@@ -127,7 +127,7 @@ const PoolActivityList: React.FC<DesktopVaultActivityListProps> = ({
                 </VaultSecondaryText>
               </VaultSecondaryTextContainer>
             </>,
-            <div className="d-flex justify-content-end lign-items-center mr-3">
+            <div className="d-flex justify-content-end align-items-center mr-3">
               <LogoContainer>
                 <AssetLogo height={"100"} />
               </LogoContainer>
