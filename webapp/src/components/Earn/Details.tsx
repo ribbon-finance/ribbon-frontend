@@ -6,12 +6,13 @@ import { ExternalIcon } from "shared/lib/assets/icons/icons";
 import { useAirtable } from "shared/lib/hooks/useAirtable";
 import { SubgraphDataContext } from "shared/lib/hooks/subgraphDataContext";
 import currency from "currency.js";
-import { useContext, useMemo } from "react";
+import { useCallback, useContext, useMemo } from "react";
 import { formatUnits } from "ethers/lib/utils";
 import { BigNumber } from "ethers/lib/ethers";
 import useLoadingText from "shared/lib/hooks/useLoadingText";
 import HelpInfo from "shared/lib/components/Common/HelpInfo";
-import { useV2VaultData } from "shared/lib/hooks/web3DataContext";
+import { Step } from "./Modal/EarnDetailsModal";
+
 const ExplainerTitle = styled.div<{ color: string; marginTop?: number }>`
   display: flex;
   font-size: 12px;
@@ -28,6 +29,10 @@ const HighlightedText = styled.span`
   poin &:hover {
     color: ${colors.primaryText}CC;
   }
+`;
+
+const LinkText = styled.span`
+  color: ${colors.primaryText};
 `;
 
 const Link = styled.a`
@@ -56,7 +61,11 @@ const StyledTitle = styled(Title)<{ marginTop: number }>`
   margin-top: ${(props) => props.marginTop}px;
 `;
 
-export const Strategy = () => {
+interface StrategyProps {
+  setStep: (step: Step) => void;
+}
+
+export const Strategy: React.FC<StrategyProps> = ({ setStep }) => {
   const {
     strikePrice,
     baseYield,
@@ -67,11 +76,6 @@ export const Strategy = () => {
   } = useAirtable();
 
   const { vaultSubgraphData } = useContext(SubgraphDataContext);
-  const {
-    data: { allocationState },
-    loading: v2DataLoading,
-  } = useV2VaultData("rEARN");
-
   const loadingText = useLoadingText();
   const TVL = useMemo(() => {
     if (!vaultSubgraphData.vaults.earn.rEARN) {
@@ -82,6 +86,7 @@ export const Strategy = () => {
     }
     return vaultSubgraphData.vaults.earn.rEARN.totalNominalVolume;
   }, [vaultSubgraphData.vaults.earn.rEARN]);
+
   return (
     <>
       <ParagraphText>
@@ -97,8 +102,15 @@ export const Strategy = () => {
           )}
         />{" "}
         strategy through which depositors can capitalise on the intra-week ETH
-        movements in either direction while also ensuring their capital is
-        protected. The vault earns a base APY and uses the remaining funding to
+        movements in either direction while also ensuring their capital is{" "}
+        <LinkText role={"button"} onClick={() => setStep("risk")}>
+          protected
+        </LinkText>
+        . The vault earns interest by lending capital to our{" "}
+        <LinkText role={"button"} onClick={() => setStep("counterparties")}>
+          counterparties
+        </LinkText>{" "}
+        and uses part of it to generate a base APY and the remaining funding to
         purchase{" "}
         <TooltipExplanation
           title="weekly at-the-money knock-out barrier options"
