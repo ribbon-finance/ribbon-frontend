@@ -1,4 +1,4 @@
-import React, { useCallback, useContext, useMemo, useState } from "react";
+import React, { useCallback, useState } from "react";
 import styled from "styled-components";
 import {
   BaseButton,
@@ -18,9 +18,10 @@ import {
 } from "shared/lib/assets/icons/logo";
 import { BoostIcon, ExternalIcon } from "shared/lib/assets/icons/icons";
 import { Counterparty } from "./Counterparties";
-import { SubgraphDataContext } from "shared/lib/hooks/subgraphDataContext";
 import { formatUnits } from "ethers/lib/utils";
 import { useAirtable } from "shared/lib/hooks/useAirtable";
+import { useV2VaultData } from "shared/lib/hooks/web3DataContext";
+
 const BoostLogoContainer = styled.div`
   display: flex;
   align-items: center;
@@ -113,22 +114,18 @@ const CounterpartyDetail: React.FC<VaultStrategyExplainerProps> = ({
 }) => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const { borrowRate, loading } = useAirtable();
-  const { vaultSubgraphData } = useContext(SubgraphDataContext);
   const onToggleMenu = useCallback(() => {
     setIsMenuOpen((open) => !open);
   }, []);
-
-  const principalOutstanding = useMemo(() => {
-    if (!vaultSubgraphData.vaults.earn.rEARN) {
-      return 0;
-    }
-    return vaultSubgraphData.vaults.earn.rEARN.principalOutstanding;
-  }, [vaultSubgraphData.vaults.earn.rEARN]);
 
   const handleButtonClick = useCallback(async () => {
     onToggleMenu();
   }, [onToggleMenu]);
 
+  const {
+    loading: vaultLoading,
+    data: { totalBalance },
+  } = useV2VaultData("rEARN");
   const renderLogo = useCallback((s: Counterparty) => {
     switch (s) {
       case "R-EARN DIVERSIFIED":
@@ -251,12 +248,14 @@ const CounterpartyDetail: React.FC<VaultStrategyExplainerProps> = ({
     (s: Counterparty) => {
       switch (s) {
         case "R-EARN DIVERSIFIED":
-          return principalOutstanding ? (
+          return (
             <>
-              ${parseFloat(formatUnits(principalOutstanding, "6")).toFixed(2)}
+              {vaultLoading
+                ? "---"
+                : (parseFloat(formatUnits(totalBalance, "6")) * 0.9956).toFixed(
+                    2
+                  )}
             </>
-          ) : (
-            <>---</>
           );
         case "ORTHOGONAL":
           return <>$15.00M</>;
@@ -266,7 +265,7 @@ const CounterpartyDetail: React.FC<VaultStrategyExplainerProps> = ({
           return <>$15.00M</>;
       }
     },
-    [principalOutstanding]
+    [totalBalance, vaultLoading]
   );
 
   const renderBorrowRate = useCallback(

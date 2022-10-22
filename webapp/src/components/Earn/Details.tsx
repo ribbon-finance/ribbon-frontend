@@ -6,12 +6,12 @@ import { ExternalIcon } from "shared/lib/assets/icons/icons";
 import { useAirtable } from "shared/lib/hooks/useAirtable";
 import { SubgraphDataContext } from "shared/lib/hooks/subgraphDataContext";
 import currency from "currency.js";
-import { useCallback, useContext, useMemo } from "react";
+import { useContext, useMemo } from "react";
 import { formatUnits } from "ethers/lib/utils";
-import { BigNumber } from "ethers/lib/ethers";
 import useLoadingText from "shared/lib/hooks/useLoadingText";
 import HelpInfo from "shared/lib/components/Common/HelpInfo";
 import { Step } from "./Modal/EarnDetailsModal";
+import { useV2VaultData } from "shared/lib/hooks/web3DataContext";
 
 const ExplainerTitle = styled.div<{ color: string; marginTop?: number }>`
   display: flex;
@@ -75,18 +75,12 @@ export const Strategy: React.FC<StrategyProps> = ({ setStep }) => {
     loading,
   } = useAirtable();
 
-  const { vaultSubgraphData } = useContext(SubgraphDataContext);
-  const loadingText = useLoadingText();
-  const TVL = useMemo(() => {
-    if (!vaultSubgraphData.vaults.earn.rEARN) {
-      return BigNumber.from(0.0);
-    }
-    if (!vaultSubgraphData.vaults.earn.rEARN.totalNominalVolume) {
-      return BigNumber.from(0.0);
-    }
-    return vaultSubgraphData.vaults.earn.rEARN.totalNominalVolume;
-  }, [vaultSubgraphData.vaults.earn.rEARN]);
+  const {
+    loading: vaultLoading,
+    data: { totalBalance },
+  } = useV2VaultData("rEARN");
 
+  const loadingText = useLoadingText();
   return (
     <>
       <ParagraphText>
@@ -199,7 +193,9 @@ export const Strategy: React.FC<StrategyProps> = ({ setStep }) => {
         <span>TVL</span>
       </ExplainerTitle>
       <StyledTitle marginTop={4}>
-        {<>${parseFloat(formatUnits(TVL, "6")).toFixed(2)}</>}
+        {vaultLoading
+          ? loadingText
+          : parseFloat(formatUnits(totalBalance, "6")).toFixed(2)}
       </StyledTitle>
     </>
   );

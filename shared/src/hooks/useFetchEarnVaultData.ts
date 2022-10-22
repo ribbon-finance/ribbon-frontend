@@ -1,12 +1,8 @@
 import { useCallback, useEffect, useState } from "react";
 import { useWeb3React } from "@web3-react/core";
 import { BigNumber } from "ethers";
-import {
-  EVMVaultList,
-  getVaultNetwork,
-  TreasuryVaultList,
-} from "../constants/constants";
-import { isProduction, isTreasury } from "../utils/env";
+import { EVMVaultList, getVaultNetwork } from "../constants/constants";
+import { isProduction } from "../utils/env";
 import { getVaultContract } from "./useVaultContract";
 import { impersonateAddress } from "../utils/development";
 import {
