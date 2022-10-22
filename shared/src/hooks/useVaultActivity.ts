@@ -50,19 +50,14 @@ export const vaultActivitiesGraphql = (version: VaultVersion, chain: Chains) =>
             {
               id
               loanAmount
-              borrower
-              loanTermLength
               openedAt
               openTxhash
-              expiry
             }
             ${getVaultActivityKey(vault, "vaultCloseLoans")}:
             vaultCloseLoans
             {
               id
               paidAmount
-              borrower
-              _yield
               closedAt
               closeTxhash
             }
