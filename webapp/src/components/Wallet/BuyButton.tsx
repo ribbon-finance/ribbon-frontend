@@ -67,7 +67,7 @@ export const BuyButton: React.FC<BuyButtonProps> = (props) => {
       } else if (ID_TO_CHAINS[chainId] === Chains.Avalanche) {
         destinationWallets.push({
           address: account,
-          blockchains: ["avalanche"],
+          blockchains: ["avalanche-c-chain"],
         });
       }
     }
