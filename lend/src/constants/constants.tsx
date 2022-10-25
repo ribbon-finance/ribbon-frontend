@@ -213,6 +213,7 @@ interface VaultDetails {
   contract: string;
   twitter: string;
   website: string;
+  borrowCap?: BigNumber;
 
   credit: {
     rating: string;
@@ -348,6 +349,7 @@ export const VaultDetailsMap: Record<VaultOptions, VaultDetails> = {
     contract: "https://etherscan.io/address/" + deployment.mainnet.folkvang,
     twitter: "https://twitter.com/folkvangtrading",
     website: "https://folkvang.io",
+    borrowCap: BigNumber.from("30000000000000"),
     credit: {
       rating: "AA",
       borrowLimit: 105000000,

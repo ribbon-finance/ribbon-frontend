@@ -11,6 +11,7 @@ import { useMemo } from "react";
 import useWeb3Wallet from "../../hooks/useWeb3Wallet";
 import { truncateAddress } from "shared/lib/utils/address";
 import Indicator from "shared/lib/components/Indicator/Indicator";
+import { VaultOptions } from "../../constants/constants";
 
 const borderStyle = `1px solid ${colors.primaryText}1F`;
 
@@ -37,6 +38,7 @@ export enum ModalContentEnum {
   ABOUT = "ABOUT",
   COMMUNITY = "COMMUNITY",
   WALLET = "CONNECT WALLET",
+  POOLFULL = "POOL IS FULL",
   CLAIMRBN = "CLAIM RBN",
 }
 
@@ -44,6 +46,7 @@ interface InfoModalProps {
   content?: ModalContentEnum;
   show?: boolean;
   onHide: () => void;
+  pool?: VaultOptions;
 }
 
 const WalletButton = styled.div`
@@ -59,7 +62,12 @@ const WalletButton = styled.div`
   }
 `;
 
-const LendModal: React.FC<InfoModalProps> = ({ show, onHide, content }) => {
+const LendModal: React.FC<InfoModalProps> = ({
+  show,
+  onHide,
+  content,
+  pool,
+}) => {
   const { active, account } = useWeb3Wallet();
 
   const modalTitle = useMemo(() => {
@@ -81,6 +89,7 @@ const LendModal: React.FC<InfoModalProps> = ({ show, onHide, content }) => {
       switch (content) {
         case ModalContentEnum.ABOUT:
         case ModalContentEnum.COMMUNITY:
+        case ModalContentEnum.POOLFULL:
           return (
             <>
               <Header>
@@ -89,7 +98,7 @@ const LendModal: React.FC<InfoModalProps> = ({ show, onHide, content }) => {
                   <CloseIcon />
                 </CloseButton>
               </Header>
-              <ModalContent onHide={onHide} content={content} />
+              <ModalContent onHide={onHide} content={content} pool={pool} />
             </>
           );
         case ModalContentEnum.WALLET:
@@ -108,7 +117,7 @@ const LendModal: React.FC<InfoModalProps> = ({ show, onHide, content }) => {
           return <></>;
       }
     },
-    [modalTitle, onHide]
+    [modalTitle, onHide, pool]
   );
 
   return (

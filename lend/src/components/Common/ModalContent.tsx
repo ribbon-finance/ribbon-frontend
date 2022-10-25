@@ -11,12 +11,15 @@ import github from "../../assets/icons/socials/github.svg";
 import { ProductDisclaimer } from "../ProductDisclaimer";
 import { ModalContentEnum } from "./LendModal";
 import { BaseLink } from "../../designSystem";
+import { VaultDetailsMap, VaultOptions } from "../../constants/constants";
+import { formatBigNumber } from "../../utils/math";
 
-const TextContent = styled.div`
+const TextContent = styled.div<{ marginBottom?: number }>`
   color: ${colors.primaryText}A3;
-  padding: 16px 24px;
+  padding: 16px;
   overflow: hidden;
   font-size: 16px;
+  margin-bottom: ${(props) => props.marginBottom ?? `0`}px;
 `;
 
 const hoveredContentRow = css`
@@ -138,21 +141,24 @@ const Highlight = styled.text`
   color: ${colors.primaryText};
 `;
 interface ModalContentProps {
+  pool?: VaultOptions;
   content?: ModalContentEnum;
   onHide: () => void;
 }
 
-export const ModalContent = ({ content, onHide }: ModalContentProps) => {
+export const ModalContent = ({ pool, content, onHide }: ModalContentProps) => {
   const modalContent = useMemo(() => {
     switch (content) {
       case ModalContentEnum.ABOUT:
         return <AboutPage />;
       case ModalContentEnum.COMMUNITY:
         return <CommunityPage />;
+      case ModalContentEnum.POOLFULL:
+        return <PoolFullPage pool={pool} />;
       default:
         return null;
     }
-  }, [content]);
+  }, [content, pool]);
 
   return (
     <motion.div
@@ -267,5 +273,29 @@ const CommunityPage = () => {
         <ProductDisclaimer />
       </ContentFooter>
     </ContentWrapper>
+  );
+};
+
+interface PoolFullProps {
+  pool?: VaultOptions;
+}
+
+const PoolFullPage = ({ pool }: PoolFullProps) => {
+  if (!pool) {
+    return <></>;
+  }
+  const borrowLimit = VaultDetailsMap[pool].borrowCap;
+  return borrowLimit ? (
+    <TextContent marginBottom={-16}>
+      <>
+        <p>
+          Unfortunately the pool has reached it's maximum capacity of{" "}
+          {formatBigNumber(borrowLimit, 6, 2)} USDC and can no longer take
+          additional deposits.
+        </p>
+      </>
+    </TextContent>
+  ) : (
+    <></>
   );
 };

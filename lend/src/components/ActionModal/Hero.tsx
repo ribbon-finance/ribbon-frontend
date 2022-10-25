@@ -3,7 +3,11 @@ import colors from "shared/lib/designSystem/colors";
 import styled, { keyframes } from "styled-components";
 import { SecondaryText } from "../../designSystem";
 import useWeb3Wallet from "../../hooks/useWeb3Wallet";
-import { VaultAddressMap, VaultOptions } from "../../constants/constants";
+import {
+  VaultAddressMap,
+  VaultDetailsMap,
+  VaultOptions,
+} from "../../constants/constants";
 import { formatBigNumber, isPracticallyZero } from "../../utils/math";
 import { getAssetDecimals } from "../../utils/asset";
 import { ActionType } from "./types";
@@ -27,6 +31,7 @@ import LendModal, { ModalContentEnum } from "../Common/LendModal";
 import useTokenAllowance from "shared/lib/hooks/useTokenAllowance";
 import useERC20Token from "shared/lib/hooks/useERC20Token";
 import { EthereumWallet } from "shared/lib/models/wallets";
+import { isVaultFull } from "../../utils/vault";
 
 const livelyAnimation = (position: "top" | "bottom") => keyframes`
   0% {
@@ -309,8 +314,12 @@ const Hero: React.FC<HeroProps> = ({
   const [waitingApproval, setWaitingApproval] = useState(false);
   const { active, account, connectedWallet } = useWeb3Wallet();
   const Logo = getAssetLogo("USDC");
-  const { vaultBalanceInAsset, currentExchangeRate, availableToWithdraw } =
-    useVaultData(pool);
+  const {
+    vaultBalanceInAsset,
+    currentExchangeRate,
+    availableToWithdraw,
+    poolSize,
+  } = useVaultData(pool);
   const decimals = getAssetDecimals("USDC");
   const { balance: userAssetBalance } = useAssetBalance("USDC");
   const usdc = useUSDC();
@@ -323,6 +332,18 @@ const Hero: React.FC<HeroProps> = ({
     usePendingTransactions();
   const [triggerWalletModal, setWalletModal] = useState<boolean>(false);
   const tokenAllowance = useTokenAllowance("usdc", VaultAddressMap[pool].lend);
+
+  const cap = VaultDetailsMap[pool].borrowCap;
+
+  const depositLimit = useMemo(() => {
+    if (!cap) {
+      return undefined;
+    }
+    const currentCapacity = cap.sub(poolSize);
+    return currentCapacity.gt(BigNumber.from("0"))
+      ? currentCapacity
+      : BigNumber.from("0");
+  }, [cap, poolSize]);
 
   // Check if approval needed
   const showTokenApproval = useMemo(() => {
@@ -383,6 +404,11 @@ const Hero: React.FC<HeroProps> = ({
             if (amountBigNumber.gt(userAssetBalance)) {
               return "insufficientBalance";
             }
+            if (cap) {
+              if (isVaultFull(poolSize.add(amountBigNumber), cap, 8)) {
+                return "poolMaxCapacity";
+              }
+            }
             break;
           case "withdraw":
             if (amountBigNumber.gt(vaultBalanceInAsset)) {
@@ -402,9 +428,11 @@ const Hero: React.FC<HeroProps> = ({
     actionType,
     active,
     availableToWithdraw,
+    cap,
     decimals,
     inputAmount,
     isInputNonZero,
+    poolSize,
     userAssetBalance,
     vaultBalanceInAsset,
   ]);
@@ -417,6 +445,8 @@ const Hero: React.FC<HeroProps> = ({
         return "Available limit exceeded";
       case "insufficientPoolLiquidity":
         return "Insufficient pool liquidity";
+      case "poolMaxCapacity":
+        return "Pool has reached max capacity";
       default:
         return "";
     }
@@ -768,6 +798,14 @@ const Hero: React.FC<HeroProps> = ({
                   : formatBigNumber(vaultBalanceInAsset, decimals, 2)}
               </BalanceValue>
             </BalanceContainer>
+            {actionType === "deposit" && depositLimit && (
+              <BalanceContainer delay={0.6}>
+                <BalanceLabel>Pool Available Capacity</BalanceLabel>
+                <BalanceValue error={Boolean(error === "poolMaxCapacity")}>
+                  300
+                </BalanceValue>
+              </BalanceContainer>
+            )}
             {actionType === "withdraw" && (
               <BalanceContainer delay={0.6}>
                 <BalanceLabel>Pool Max Withdraw Amount</BalanceLabel>

@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useCallback, useState } from "react";
 import { Col } from "react-bootstrap";
 import { useParams } from "react-router-dom";
 import {
@@ -55,6 +55,7 @@ import PositionWidget from "../components/PositionWidget";
 import ActionMMModal from "../components/ActionMMModal";
 import { LoadingText } from "shared/lib/hooks/useLoadingText";
 import { formatUnits } from "ethers/lib/utils";
+import { isVaultFull } from "../utils/vault";
 
 const PoolContainer = styled.div`
   width: calc(100% - ${components.sidebar}px);
@@ -325,6 +326,7 @@ const PoolPage = () => {
   const { poolId }: { poolId: VaultOptions } = useParams();
   const [activePage, setPage] = useState<PageEnum>();
   const [triggerWalletModal, setWalletModal] = useState<boolean>(false);
+  const [triggerPoolFullModal, setPoolFullModal] = useState<boolean>(false);
   const { loading: vaultLoading, data: vaultDatas } = useVaultsData();
   const { account } = useWeb3Wallet();
   const { loading, aprs: poolAPRs, supplyAprs, rbnAprs } = usePoolsAPR();
@@ -353,6 +355,12 @@ const PoolPage = () => {
         show={triggerWalletModal}
         onHide={() => setWalletModal(false)}
         content={ModalContentEnum.WALLET}
+      />
+      <LendModal
+        show={triggerPoolFullModal}
+        onHide={() => setPoolFullModal(false)}
+        content={ModalContentEnum.POOLFULL}
+        pool={poolId}
       />
       <ActionModal
         show={
@@ -591,7 +599,9 @@ const PoolPage = () => {
           activePage={activePage}
           setPage={setPage}
           setWalletModal={setWalletModal}
+          setPoolFullModal={setPoolFullModal}
           manager={manager}
+          pool={poolId}
         />
         <PositionWidget
           vault={{
@@ -640,17 +650,31 @@ interface FooterProps {
   activePage?: PageEnum;
   setPage: (page: PageEnum) => void;
   setWalletModal: (trigger: boolean) => void;
+  setPoolFullModal: (trigger: boolean) => void;
   manager: string;
+  pool: VaultOptions;
 }
 
 const Footer = ({
   activePage,
   setPage,
   setWalletModal,
+  setPoolFullModal,
   manager,
+  pool,
 }: FooterProps) => {
   const { account, active } = useWeb3Wallet();
-
+  const vaultDatas = useVaultsData();
+  const poolSize = vaultDatas.data[pool].poolSize;
+  const borrowCap = VaultDetailsMap[pool].borrowCap ?? undefined;
+  const poolFull = borrowCap ? isVaultFull(poolSize, borrowCap, 8) : false;
+  const handleDepositClicked = useCallback(() => {
+    if (poolFull) {
+      setPoolFullModal(true);
+    } else {
+      setPage(PageEnum.DEPOSIT);
+    }
+  }, [poolFull, setPage, setPoolFullModal]);
   return (
     <FooterRow>
       <Col md={0} lg={6}>
@@ -664,7 +688,7 @@ const Footer = ({
             <FooterButton
               delay={0.2}
               isActive={true}
-              onClick={() => setPage(PageEnum.DEPOSIT)}
+              onClick={() => handleDepositClicked()}
             >
               Deposit
             </FooterButton>

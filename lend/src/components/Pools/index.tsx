@@ -25,6 +25,8 @@ import currency from "currency.js";
 import useWeb3Wallet from "../../hooks/useWeb3Wallet";
 import { useMemo } from "react";
 import { LoadingText } from "shared/lib/hooks/useLoadingText";
+import { isVaultFull } from "../../utils/vault";
+
 const statSideContainer: number = 120;
 
 const ListRow = styled(Row)`
@@ -178,10 +180,10 @@ const Value = styled.span`
   }
 `;
 
-const StyledTitle = styled(Title)`
+const StyledTitle = styled(Title)<{ full?: boolean }>`
   font-size: 14px;
   line-height: 36px;
-
+  color: ${(props) => (props.full === true ? colors.red : colors.primaryText)};
   svg {
     width: fit-content;
     height: fit-content;
@@ -231,6 +233,11 @@ export const Pools = () => {
         const poolLogo = getMakerLogo(pool);
         const asset = getAssets(pool);
         const decimals = getAssetDecimals(asset);
+        const borrowCap = VaultDetailsMap[pool].borrowCap ?? undefined;
+        const poolFull = borrowCap
+          ? isVaultFull(poolSize, borrowCap, 8)
+          : false;
+
         const apr = aprs[pool];
         return (
           <motion.div
@@ -260,7 +267,10 @@ export const Pools = () => {
               </PoolLogo>
               <PoolStats>
                 <Stat>
-                  <StyledTitle>{VaultDetailsMap[pool].name}</StyledTitle>
+                  <StyledTitle full={poolFull}>
+                    {VaultDetailsMap[pool].name}
+                    {poolFull && " (FULL)"}
+                  </StyledTitle>
                   <StyledSubtitle>
                     Rating {rating} - Utilization{" "}
                     {formatBigNumber(utilizationRate, utilizationDecimals)}%
@@ -351,8 +361,13 @@ export const Positions = () => {
   return filteredList.length > 0 ? (
     <ListRow>
       {filteredList.map((pool, i) => {
+        const poolSize = vaultDatas.data[pool].poolSize;
         const balance = vaultDatas.data[pool].vaultBalanceInAsset;
         const vaultAccount = vaultAccounts[pool];
+        const borrowCap = VaultDetailsMap[pool].borrowCap ?? undefined;
+        const poolFull = borrowCap
+          ? isVaultFull(poolSize, borrowCap, 8)
+          : false;
 
         const profit = () => {
           if (
@@ -429,7 +444,10 @@ export const Positions = () => {
               </PoolLogo>
               <PoolStats>
                 <Stat>
-                  <StyledTitle>{pool}</StyledTitle>
+                  <StyledTitle full={poolFull}>
+                    {VaultDetailsMap[pool].name}
+                    {poolFull && " (FULL)"}
+                  </StyledTitle>
                 </Stat>
                 <Stat>
                   <Value>
