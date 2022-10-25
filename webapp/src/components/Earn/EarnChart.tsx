@@ -262,7 +262,11 @@ const EarnChart: React.FC<ProfitChartProps> = ({
       green.addColorStop(1, `transparent`);
       green.addColorStop(0.9, `${colors.green}01`);
       green.addColorStop(0, `${colors.green}20`);
-      const performanceRounded = Math.round(performance * 100 * 1e2) / 1e2;
+      const performanceRounded =
+        performance > 0.08 || performance < -0.08
+          ? Math.round(performance * 100)
+          : Math.round(performance * 100 * 1e2) / 1e2;
+
       return {
         labels: moneynessRange,
         datasets: [
