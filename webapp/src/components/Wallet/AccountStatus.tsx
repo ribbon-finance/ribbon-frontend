@@ -20,6 +20,7 @@ import {
   WalletButtonProps,
   WalletCopyIconProps,
 } from "shared/lib/components/Wallet/types";
+import { BuyButton } from "./BuyButton";
 import theme from "shared/lib/designSystem/theme";
 import MobileOverlayMenu from "shared/lib/components/Common/MobileOverlayMenu";
 import MenuButton from "shared/lib/components/Common/MenuButton";
@@ -454,6 +455,7 @@ const AccountStatus: React.FC<AccountStatusProps> = ({
       )}
       {/* Main Button and Desktop Menu */}
       <WalletContainer variant={variant} ref={desktopMenuRef}>
+        <BuyButton />
         <WalletButton
           variant={variant}
           showInvestButton={
