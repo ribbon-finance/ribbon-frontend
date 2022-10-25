@@ -45,7 +45,10 @@ export const BuyButton: React.FC<BuyButtonProps> = (props) => {
   const { account, chainId } = useWeb3Wallet();
 
   useEffect(() => {
-    console.log("checking onramp", account, chainId, Chains.Avalanche);
+    //console.log("checking onramp", account, chainId);
+
+    const appId = process.env.REACT_APP_COINBASE_APPID;
+    if (!appId) return;
 
     const destinationWallets = [];
     if (account && account.length > 0) {
@@ -78,7 +81,7 @@ export const BuyButton: React.FC<BuyButtonProps> = (props) => {
       return;
     }
     const initParams: InitOnRampParams = {
-      appId: "wallet",
+      appId,
       experienceLoggedIn: "embedded",
       experienceLoggedOut: "embedded",
       widgetParameters: {
