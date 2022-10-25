@@ -82,8 +82,8 @@ export const BuyButton: React.FC<BuyButtonProps> = (props) => {
     }
     const initParams: InitOnRampParams = {
       appId,
-      experienceLoggedIn: "embedded",
-      experienceLoggedOut: "embedded",
+      experienceLoggedIn: "new_tab",
+      experienceLoggedOut: "new_tab",
       widgetParameters: {
         destinationWallets,
       },
