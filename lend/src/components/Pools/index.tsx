@@ -138,7 +138,6 @@ const PoolWrapper = styled(Link)`
 const Stat = styled.div`
   margin: auto 0;
   height: fit-content;
-
   > * {
     display: flex;
   }
@@ -182,7 +181,7 @@ const Value = styled.span`
 
 const StyledTitle = styled(Title)<{ full?: boolean }>`
   font-size: 14px;
-  line-height: 36px;
+  line-height: 20px;
   color: ${(props) => (props.full === true ? colors.red : colors.primaryText)};
   svg {
     width: fit-content;
@@ -196,6 +195,7 @@ const StyledSubtitle = styled(Subtitle)<{ color?: string }>`
   font-size: 12px;
   line-height: 16px;
   text-transform: uppercase;
+  margin-top: 8px;
   color: ${({ color }) => color ?? colors.tertiaryText};
 `;
 
@@ -267,14 +267,14 @@ export const Pools = () => {
               </PoolLogo>
               <PoolStats>
                 <Stat>
-                  <StyledTitle full={poolFull}>
-                    {VaultDetailsMap[pool].name}
-                    {poolFull && " (FULL)"}
-                  </StyledTitle>
+                  <StyledTitle>{VaultDetailsMap[pool].name}</StyledTitle>
                   <StyledSubtitle>
                     Rating {rating} - Utilization{" "}
                     {formatBigNumber(utilizationRate, utilizationDecimals)}%
                   </StyledSubtitle>
+                  {poolFull && (
+                    <StyledSubtitle color={colors.red}>FULL</StyledSubtitle>
+                  )}
                 </Stat>
                 <Stat>
                   <Value>
@@ -444,10 +444,10 @@ export const Positions = () => {
               </PoolLogo>
               <PoolStats>
                 <Stat>
-                  <StyledTitle full={poolFull}>
-                    {VaultDetailsMap[pool].name}
-                    {poolFull && " (FULL)"}
-                  </StyledTitle>
+                  <StyledTitle>{VaultDetailsMap[pool].name}</StyledTitle>
+                  {poolFull && (
+                    <StyledSubtitle color={colors.red}>FULL</StyledSubtitle>
+                  )}
                 </Stat>
                 <Stat>
                   <Value>
