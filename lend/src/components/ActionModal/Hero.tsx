@@ -802,7 +802,7 @@ const Hero: React.FC<HeroProps> = ({
               <BalanceContainer delay={0.6}>
                 <BalanceLabel>Pool Available Capacity</BalanceLabel>
                 <BalanceValue error={Boolean(error === "poolMaxCapacity")}>
-                  300
+                  {formatBigNumber(depositLimit, decimals, 2)}
                 </BalanceValue>
               </BalanceContainer>
             )}
