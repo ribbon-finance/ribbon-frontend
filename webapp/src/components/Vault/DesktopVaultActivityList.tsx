@@ -138,89 +138,10 @@ const DesktopVaultActivityList: React.FC<DesktopVaultActivityListProps> = ({
 
       switch (activity.type) {
         case "openLoan":
-          return [
-            <>
-              <VaultPrimaryText>LOAN OPENED</VaultPrimaryText>
-              <VaultSecondaryText>
-                {moment(activity.openedAt * 1000).fromNow()}
-              </VaultSecondaryText>
-            </>,
-            <>
-              <VaultPrimaryText>R-EARN</VaultPrimaryText>
-            </>,
-            <VaultPrimaryText>
-              {formatBigNumber(activity.loanAmount, decimals)}
-            </VaultPrimaryText>,
-            <>
-              <VaultPrimaryText>-</VaultPrimaryText>
-              <VaultSecondaryText>-</VaultSecondaryText>
-            </>,
-          ];
         case "closeLoan":
-          return [
-            <>
-              <VaultPrimaryText>LOAN CLOSED</VaultPrimaryText>
-              <VaultSecondaryText>
-                {moment(activity.closedAt * 1000).fromNow()}
-              </VaultSecondaryText>
-            </>,
-            <>
-              <VaultPrimaryText>R-EARN</VaultPrimaryText>
-            </>,
-            <VaultPrimaryText>
-              {formatBigNumber(activity.paidAmount, decimals)}
-            </VaultPrimaryText>,
-            <>
-              <VaultPrimaryText>
-                {formatBigNumber(activity._yield, decimals)}
-              </VaultPrimaryText>
-              <VaultSecondaryText>
-                {formatBigNumber(activity._yield, decimals)}
-              </VaultSecondaryText>
-            </>,
-          ];
         case "optionSold":
-          return [
-            <>
-              <VaultPrimaryText>OPTION SOLD</VaultPrimaryText>
-              <VaultSecondaryText>
-                {moment(activity.soldAt * 1000).fromNow()}
-              </VaultSecondaryText>
-            </>,
-            <>
-              <VaultPrimaryText>R-EARN</VaultPrimaryText>
-            </>,
-            <VaultPrimaryText>
-              {formatBigNumber(activity.premium, decimals)}
-            </VaultPrimaryText>,
-            <>
-              <VaultPrimaryText>-</VaultPrimaryText>
-              <VaultSecondaryText>-</VaultSecondaryText>
-            </>,
-          ];
         case "optionYield":
-          return [
-            <>
-              <VaultPrimaryText>OPTION PAID</VaultPrimaryText>
-              <VaultSecondaryText>
-                {moment(activity.paidAt * 1000).fromNow()}
-              </VaultSecondaryText>
-            </>,
-            <>
-              <VaultPrimaryText>R-EARN</VaultPrimaryText>
-            </>,
-            <VaultPrimaryText>
-              {formatBigNumber(activity._yield, decimals)}
-            </VaultPrimaryText>,
-            <>
-              <VaultPrimaryText>
-                {formatBigNumber(activity._yield, decimals)}
-              </VaultPrimaryText>
-              <VaultSecondaryText>
-                {formatBigNumber(activity._yield, decimals)}
-              </VaultSecondaryText>
-            </>,
-          ];
+          return [<></>];
         case "minting":
           return [
             <>

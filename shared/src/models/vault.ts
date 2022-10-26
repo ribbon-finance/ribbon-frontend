@@ -93,7 +93,6 @@ export interface VaultOptionTrade {
 export interface VaultOpenLoan {
   id: string;
   loanAmount: BigNumber;
-  borrower: string;
   timestamp: number;
   openedAt: number;
   openTxhash: string;
@@ -102,7 +101,6 @@ export interface VaultOpenLoan {
 export interface VaultCloseLoan {
   id: string;
   paidAmount: BigNumber;
-  _yield: BigNumber;
   timestamp: number;
   closedAt: number;
   closeTxhash: string;

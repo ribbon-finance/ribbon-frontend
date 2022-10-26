@@ -14,7 +14,7 @@ const useEarnStrategyTime = () => {
           "milliseconds"
         );
         if (strategyStartTimeTemp.asMilliseconds() <= 0) {
-          firstOpenLoanTime.add(28, "days");
+          firstOpenLoanTime.add(7, "days");
         } else {
           strategyStartTime = strategyStartTimeTemp;
         }
@@ -23,7 +23,7 @@ const useEarnStrategyTime = () => {
       return [
         `${strategyStartTime.days()}D ${strategyStartTime.hours()}H ${strategyStartTime.minutes()}M`,
         firstOpenLoanTime.format("Do MMM, YYYY"),
-        firstOpenLoanTime.add(28, "days").format("Do MMM, YYYY"),
+        firstOpenLoanTime.add(7, "days").format("Do MMM, YYYY"),
       ];
     }, []);
 

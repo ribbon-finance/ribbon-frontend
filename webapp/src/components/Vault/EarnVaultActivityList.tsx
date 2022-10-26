@@ -170,19 +170,13 @@ const EarnVaultActivityList: React.FC<DesktopVaultActivityListProps> = ({
             </>,
           ];
         case "closeLoan":
-          const interest = (
-            (parseFloat(activity._yield.toString()) /
-              parseFloat(activity.paidAmount.sub(activity._yield).toString())) *
-            100
-          ).toFixed(2);
           return [
             <>
               <VaultPrimaryText>USDC LOAN REPAID</VaultPrimaryText>
               <VaultSecondaryTextContainer>
                 {" "}
                 <VaultSecondaryText>
-                  ${formatBigNumber(activity.paidAmount, decimals, 0)} at{" "}
-                  {interest}%
+                  ${formatBigNumber(activity.paidAmount, decimals, 0)}
                 </VaultSecondaryText>
                 <Separator />
                 <VaultSecondaryText>
