@@ -297,6 +297,7 @@ interface HeroProps {
   onHide: () => void;
   show: boolean;
   triggerAnimation: boolean;
+  setFooterError: (error: boolean) => void;
 }
 
 const Hero: React.FC<HeroProps> = ({
@@ -308,6 +309,7 @@ const Hero: React.FC<HeroProps> = ({
   onHide,
   show,
   triggerAnimation,
+  setFooterError,
 }) => {
   const [inputAmount, setInputAmount] = useState<string>("");
   const [waitingPermit, setWaitingPermit] = useState(false);
@@ -332,18 +334,7 @@ const Hero: React.FC<HeroProps> = ({
     usePendingTransactions();
   const [triggerWalletModal, setWalletModal] = useState<boolean>(false);
   const tokenAllowance = useTokenAllowance("usdc", VaultAddressMap[pool].lend);
-
   const cap = VaultDetailsMap[pool].borrowCap;
-
-  const depositLimit = useMemo(() => {
-    if (!cap) {
-      return undefined;
-    }
-    const currentCapacity = cap.sub(poolSize);
-    return currentCapacity.gt(BigNumber.from("0"))
-      ? currentCapacity
-      : BigNumber.from("0");
-  }, [cap, poolSize]);
 
   // Check if approval needed
   const showTokenApproval = useMemo(() => {
@@ -436,6 +427,12 @@ const Hero: React.FC<HeroProps> = ({
     userAssetBalance,
     vaultBalanceInAsset,
   ]);
+
+  useEffect(() => {
+    if (error === "poolMaxCapacity") {
+      setFooterError(true);
+    }
+  }, [error, pendingTransactions, setFooterError, txhash]);
 
   const renderErrorText = useCallback((_error: PoolValidationErrors) => {
     switch (_error) {
@@ -798,14 +795,6 @@ const Hero: React.FC<HeroProps> = ({
                   : formatBigNumber(vaultBalanceInAsset, decimals, 2)}
               </BalanceValue>
             </BalanceContainer>
-            {actionType === "deposit" && depositLimit && (
-              <BalanceContainer delay={0.6}>
-                <BalanceLabel>Pool Available Capacity</BalanceLabel>
-                <BalanceValue error={Boolean(error === "poolMaxCapacity")}>
-                  {formatBigNumber(depositLimit, decimals, 2)}
-                </BalanceValue>
-              </BalanceContainer>
-            )}
             {actionType === "withdraw" && (
               <BalanceContainer delay={0.6}>
                 <BalanceLabel>Pool Max Withdraw Amount</BalanceLabel>

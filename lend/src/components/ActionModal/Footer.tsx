@@ -21,6 +21,7 @@ import { useWeb3React } from "@web3-react/core";
 import ExternalLinkIcon from "../Common/ExternalLinkIcon";
 import UtilizationBar from "../Common/UtilizationBar";
 import currency from "currency.js";
+import { formatUnits } from "ethers/lib/utils";
 
 const FooterRow = styled(Row)`
   min-height: ${components.footer}px;
@@ -88,9 +89,10 @@ const DetailTitle = styled.div`
   text-align: center;
 `;
 
-const DetailText = styled(Title)`
+const DetailText = styled(Title)<{ error?: boolean }>`
   font-size: 14px;
   line-height: 20px;
+  color: ${(props) => (props.error === true ? colors.red : colors.primaryText)};
 `;
 
 const StyledPrimaryText = styled(PrimaryText)`
@@ -118,9 +120,16 @@ interface FooterProps {
   page: ActionModalEnum;
   show: boolean;
   txhash: string | undefined;
+  footerError: boolean;
 }
 
-const Footer: React.FC<FooterProps> = ({ show, pool, page, txhash }) => {
+const Footer: React.FC<FooterProps> = ({
+  show,
+  pool,
+  page,
+  txhash,
+  footerError,
+}) => {
   const vaultDatas = useVaultsData();
   const poolName = VaultDetailsMap[pool].name;
   const { aprs } = usePoolsAPR();
@@ -128,6 +137,7 @@ const Footer: React.FC<FooterProps> = ({ show, pool, page, txhash }) => {
   const apr = aprs[pool];
   const utilizationDecimals = getUtilizationDecimals();
   const utilizationRate = vaultDatas.data[pool].utilizationRate;
+  const cap = VaultDetailsMap[pool].borrowCap;
 
   return (
     <>
@@ -142,8 +152,14 @@ const Footer: React.FC<FooterProps> = ({ show, pool, page, txhash }) => {
             </Col>
             <Col xs={3}>
               <DetailContainer show={show} delay={0.2}>
-                <DetailTitle>Deposit Asset</DetailTitle>
-                <DetailText>USDC</DetailText>
+                <DetailTitle>Pool Capacity</DetailTitle>
+                <DetailText error={footerError}>
+                  {cap
+                    ? currency(formatUnits(cap, 6), {
+                        symbol: "",
+                      }).format()
+                    : "---"}
+                </DetailText>
               </DetailContainer>
             </Col>
             <Col xs={3}>

@@ -86,6 +86,8 @@ const ActionModal: React.FC<ActionModalProps> = ({
 }) => {
   const [page, setPage] = useState<ActionModalEnum>(ActionModalEnum.PREVIEW);
   const [triggerAnimation, setTriggerAnimation] = useState<boolean>(true);
+  const [footerError, setFooterError] = useState<boolean>(false);
+  const [txhash, setTxhashMain] = useState<string>();
 
   // stop trigger animation on rerenders
   useEffect(() => {
@@ -104,7 +106,6 @@ const ActionModal: React.FC<ActionModalProps> = ({
     };
   }, [show]);
 
-  const [txhash, setTxhashMain] = useState<string>();
   return show ? (
     <FixedContainer>
       <HeroContainer>
@@ -123,9 +124,16 @@ const ActionModal: React.FC<ActionModalProps> = ({
             onHide={() => onHide()}
             show={show}
             triggerAnimation={triggerAnimation}
+            setFooterError={setFooterError}
           />
         </Content>
-        <Footer pool={pool} page={page} txhash={txhash} show={show} />
+        <Footer
+          pool={pool}
+          page={page}
+          txhash={txhash}
+          show={show}
+          footerError={footerError}
+        />
       </HeroContainer>
     </FixedContainer>
   ) : (
