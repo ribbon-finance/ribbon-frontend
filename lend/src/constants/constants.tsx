@@ -207,6 +207,8 @@ export const COINGECKO_CURRENCIES: { [key in Assets]: string | undefined } = {
   RBN: "ribbon-finance",
 };
 
+export const REFERRALS_API_BASE_URL = "https://ribbon-referral.vercel.app/api";
+
 interface VaultDetails {
   name: string;
   bio: string | JSX.Element;

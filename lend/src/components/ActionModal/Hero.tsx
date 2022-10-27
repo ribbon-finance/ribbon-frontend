@@ -13,7 +13,7 @@ import { getAssetLogo } from "../../utils/asset";
 import { useMemo } from "react";
 import { formatUnits, parseUnits } from "ethers/lib/utils";
 import { BaseInput, BaseInputContainer } from "shared/lib/designSystem";
-import { BigNumber } from "ethers";
+import { BigNumber, constants } from "ethers";
 import { useAssetBalance, useVaultData } from "../../hooks/web3DataContext";
 import useUSDC, { DepositSignature } from "../../hooks/useUSDC";
 import useLoadingText from "shared/lib/hooks/useLoadingText";
@@ -27,6 +27,7 @@ import LendModal, { ModalContentEnum } from "../Common/LendModal";
 import useTokenAllowance from "shared/lib/hooks/useTokenAllowance";
 import useERC20Token from "shared/lib/hooks/useERC20Token";
 import { EthereumWallet } from "shared/lib/models/wallets";
+import { getAddressFromCode } from "../../utils/referrals";
 
 const livelyAnimation = (position: "top" | "bottom") => keyframes`
   0% {
@@ -523,6 +524,20 @@ const Hero: React.FC<HeroProps> = ({
     }
   }, [amountStr, pool, usdc]);
 
+  const getReferrerAddressToUse = async () => {
+    let referrerAddressToUse = constants.AddressZero;
+    const referrerCode = sessionStorage.getItem("code");
+    if (referrerCode) {
+      try {
+        referrerAddressToUse = await getAddressFromCode(referrerCode);
+      } catch (err) {
+        // In case of error, we let the deposit go through and use zero address as referrer.
+        return constants.AddressZero;
+      }
+    }
+    return referrerAddressToUse;
+  };
+
   const handleConfirm = async () => {
     if (lendPool !== null) {
       try {
@@ -538,7 +553,7 @@ const Hero: React.FC<HeroProps> = ({
               }
               res = await lendPool.provideWithPermit(
                 amountStr,
-                account,
+                await getReferrerAddressToUse(),
                 signature.deadline,
                 signature.v,
                 signature.r,
