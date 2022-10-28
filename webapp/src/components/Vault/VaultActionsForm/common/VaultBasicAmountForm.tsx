@@ -45,8 +45,6 @@ import useLoadingText from "shared/lib/hooks/useLoadingText";
 import { useFlexVault } from "shared/lib/hooks/useFlexVault";
 import { MigrateIcon } from "shared/lib/assets/icons/icons";
 import moment from "moment";
-import TooltipExplanation from "shared/lib/components/Common/TooltipExplanation";
-import { useTranslation } from "react-i18next";
 
 const DepositAssetButton = styled.div`
   position: absolute;
@@ -78,11 +76,6 @@ const DepositAssetButtonLogo = styled.div<{ color: string }>`
     background: ${(props) => `${props.color}14`};
     border-radius: 100px;
   }
-`;
-
-const HighlightedText = styled.span`
-  color: ${colors.primaryText};
-  cursor: help;
 `;
 
 const DepositAssetsDropdown = styled(motion.div)<{
@@ -196,7 +189,6 @@ const VaultBasicAmountForm: React.FC<VaultBasicAmountFormProps> = ({
   } = useVaultActionForm(vaultOption);
   const { active } = useWeb3Wallet();
   const [chain] = useChain();
-  const { t } = useTranslation();
   const [, setShowConnectModal] = useConnectWalletModal();
   const [showDepositAssetMenu, setShowDepositAssetMenu] = useState(false);
 
@@ -499,35 +491,6 @@ const VaultBasicAmountForm: React.FC<VaultBasicAmountFormProps> = ({
       )}
       {formExtraInfo}
       {renderButton()}
-      {isRETHVaultAndDepositingETH && (
-        <SecondaryText
-          style={{ paddingTop: 16 }}
-          color={disableETHDepositRETHVault ? colors.red : undefined}
-        >
-          Due to how
-          <TooltipExplanation
-            title={t("webapp:TooltipExplanations:rocketPool:title")}
-            explanation={t("webapp:TooltipExplanations:rocketPool:description")}
-            learnMoreURL={t(
-              "webapp:TooltipExplanations:rocketPool:learnMoreURL"
-            )}
-            renderContent={({ ref, ...triggerHandler }) => (
-              <HighlightedText
-                ref={ref}
-                {...triggerHandler}
-                style={{
-                  paddingLeft: 6,
-                  paddingRight: 6,
-                }}
-              >
-                {t("webapp:TooltipExplanations:rocketPool:title")}
-              </HighlightedText>
-            )}
-          />
-          works, users must deposit ETH at least 24 hours before the weekly
-          auction.
-        </SecondaryText>
-      )}
     </>
   );
 };
