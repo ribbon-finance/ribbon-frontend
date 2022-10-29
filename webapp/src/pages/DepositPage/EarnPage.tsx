@@ -374,6 +374,9 @@ const EarnPage = () => {
     ];
   }, [vaultAccount, decimals]);
 
+  if (vaultAccount) {
+    console.log(vaultAccount.totalPendingDeposit.toString());
+  }
   const [roi, yieldColor] = useMemo(() => {
     if (
       !vaultAccount ||
@@ -384,9 +387,10 @@ const EarnPage = () => {
 
     const roiTemp =
       (parseFloat(
-        formatUnits(
+        formatBigNumber(
           vaultAccount.totalBalance.sub(vaultAccount.totalDeposits),
-          decimals
+          decimals,
+          2
         )
       ) /
         parseFloat(formatUnits(vaultAccount.totalDeposits, decimals))) *
@@ -395,9 +399,10 @@ const EarnPage = () => {
     const roiColor = roiTemp >= 0 ? colors.green : colors.red;
     return [
       (parseFloat(
-        formatUnits(
+        formatBigNumber(
           vaultAccount.totalBalance.sub(vaultAccount.totalDeposits),
-          decimals
+          decimals,
+          2
         )
       ) /
         parseFloat(formatUnits(vaultAccount.totalDeposits, decimals))) *
