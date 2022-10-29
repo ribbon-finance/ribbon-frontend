@@ -374,9 +374,6 @@ const EarnPage = () => {
     ];
   }, [vaultAccount, decimals]);
 
-  if (vaultAccount) {
-    console.log(vaultAccount.totalPendingDeposit.toString());
-  }
   const [roi, yieldColor] = useMemo(() => {
     if (
       !vaultAccount ||
