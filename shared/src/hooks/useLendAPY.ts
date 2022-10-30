@@ -1,34 +1,40 @@
-import { useWeb3React } from "@web3-react/core";
-import { BigNumber } from "ethers";
-import { useEffect, useState } from "react";
-import { URLS } from "../constants/constants";
-import { isPracticallyZero } from "../utils/math";
-import { getLendContract } from "./getLendContract";
-import useWeb3Wallet from "./useWeb3Wallet";
-import { useWeb3Context } from "./web3Context";
+import { useMemo } from "react";
+import { PoolList } from "../constants/constants";
+import useAssetPrice from "./useAssetPrice";
+import { formatUnits } from "ethers/lib/utils";
+import { useFetchPoolData } from "./useFetchPoolData";
 
-const poolAddresses = [
-  "0x0Aea75705Be8281f4c24c3E954D1F8b1D0f8044C",
-  "0x3cd0ecf1552d135b8da61c7f44cefe93485c616d",
-];
+const secondsInYear = 31536000;
 
 export const useLendAPY = () => {
-  // const [lendAPY, setLendAPY] = useState(false);
-  // const { library } = useWeb3React();
-  // const { provider } = useWeb3Context();
+  const { loading, data } = useFetchPoolData();
 
-  // useEffect(() => {
-  //   poolAddresses.forEach((pool) => {
-  //     const poolContract = getLendContract(library || provider, pool, false);
-  //     if (poolContract && account) {
-  //       poolContract.balanceOf(account).then((balance: BigNumber) => {
-  //         if (!isPracticallyZero(balance, 6)) {
-  //           setHasLendPosition(true);
-  //         }
-  //       });
-  //     }
-  //   });
-  // }, [account, active, library, provider]);
+  const { price: RBNPrice, loading: assetPriceLoading } = useAssetPrice({
+    asset: "RBN",
+  });
 
-  // return hasLendPosition ? URLS.lendApp : URLS.lend;
+  const poolsAvgAPY = useMemo(() => {
+    let cumulativeAPY = 0;
+    if (!loading) {
+      PoolList.forEach((pool) => {
+        const poolData = data[pool];
+        const poolSize = parseFloat(formatUnits(poolData.poolSize, 6));
+        const rewardPerSecond = parseFloat(
+          formatUnits(poolData.rewardPerSecond, 18)
+        );
+        cumulativeAPY +=
+          ((rewardPerSecond * RBNPrice * secondsInYear) / poolSize) * 100;
+      });
+    }
+    return cumulativeAPY / PoolList.length;
+  }, [loading, data, RBNPrice]);
+
+  const isLoading = useMemo(() => {
+    return loading || assetPriceLoading;
+  }, [loading, assetPriceLoading]);
+
+  return {
+    loading: isLoading,
+    poolsAvgAPY,
+  };
 };
