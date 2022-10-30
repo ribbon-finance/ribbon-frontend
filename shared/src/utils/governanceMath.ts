@@ -81,10 +81,9 @@ export const calculateBaseRewards = ({
   if (poolSizeInUSD <= 0) {
     return 0;
   }
-  if (lendAPY) {
-    return (poolRewardInUSD / poolSizeInUSD) * 52 * 100 + lendAPY;
-  }
-  return (poolRewardInUSD / poolSizeInUSD) * 52 * 100;
+  const baseReward = (poolRewardInUSD / poolSizeInUSD) * 52 * 100;
+
+  return lendAPY ? baseReward + lendAPY : baseReward;
 };
 
 interface BoostMultiplierCalculationProps {
