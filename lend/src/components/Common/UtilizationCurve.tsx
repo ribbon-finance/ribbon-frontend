@@ -9,7 +9,7 @@ import { VaultOptions } from "../../constants/constants";
 import { borrowRate, formatBigNumber, lendingRate } from "../../utils/math";
 
 const ChartContainer = styled.div`
-  height: 400px;
+  height: 350px;
   margin: 0;
   width: 100%;
 `;
@@ -170,7 +170,7 @@ const UtilizationCurve: React.FC<UtilizationCurveProps> = ({
     return {
       maintainAspectRatio: false,
       legend: { display: false },
-      layout: { padding: { top: 50, bottom: 100 } },
+      layout: { padding: { top: 50 } },
       scales: {
         yAxes: [
           {
