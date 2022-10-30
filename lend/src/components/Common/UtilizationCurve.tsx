@@ -36,7 +36,7 @@ const UtilizationCurve: React.FC<UtilizationCurveProps> = ({
 
   const utilRate = parseFloat(formatBigNumber(utilizationRate, 18, 2)) * 100;
   const utilRateRaw = parseFloat(formatBigNumber(utilizationRate, 18, 4)) * 100;
-  // array from 0, 0.0001 ... 1
+  // array from 0, 1, 2 ... 100
   const utilArray = useMemo(() => {
     const utilArray: number[] = [];
     for (let i = 0; i <= 100; i += 1) {

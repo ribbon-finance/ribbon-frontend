@@ -634,8 +634,8 @@ const PoolPage = () => {
                   </CreditRating>
                 </Details>
               )}
-              <Details delay={account !== manager ? 0.75 : 0.25}>
-                <DetailsIndex>{account !== manager ? "03" : "02"}</DetailsIndex>
+              <Details delay={account !== manager ? 1 : 0.5}>
+                <DetailsIndex>{account !== manager ? "04" : "02"}</DetailsIndex>
                 <StyledTitle>Pool Activity</StyledTitle>
                 <PoolActivity
                   vault={{
