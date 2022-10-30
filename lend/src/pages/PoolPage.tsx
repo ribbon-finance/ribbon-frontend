@@ -55,6 +55,7 @@ import PositionWidget from "../components/PositionWidget";
 import ActionMMModal from "../components/ActionMMModal";
 import { LoadingText } from "shared/lib/hooks/useLoadingText";
 import { formatUnits } from "ethers/lib/utils";
+import UtilizationCurve from "../components/Common/UtilizationCurve";
 
 const PoolContainer = styled.div`
   width: calc(100% - ${components.sidebar}px);
@@ -325,6 +326,9 @@ const PoolPage = () => {
   const { poolId }: { poolId: VaultOptions } = useParams();
   const [activePage, setPage] = useState<PageEnum>();
   const [triggerWalletModal, setWalletModal] = useState<boolean>(false);
+  const [hoverUtilizationRate, setUtilizationRate] = useState<number>();
+  const [hoverLendingRate, setLendingRate] = useState<number>();
+  const [hoverBorrowRate, setBorrowRate] = useState<number>();
   const { loading: vaultLoading, data: vaultDatas } = useVaultsData();
   const { account } = useWeb3Wallet();
   const { loading, aprs: poolAPRs, supplyAprs, rbnAprs } = usePoolsAPR();
@@ -518,6 +522,62 @@ const PoolPage = () => {
                   </Details>
                   <Details delay={0.5}>
                     <DetailsIndex>02</DetailsIndex>
+                    <StyledTitle>Utilization Curve</StyledTitle>
+                    <Paragraph>
+                      The relationship between interest rates and pool
+                      utilization rates follow curves based on prevailing CeFi
+                      lending rates to market makers.
+                    </Paragraph>
+                    <Paragraph>
+                      <a
+                        href="https://docs.ribbon.finance/ribbon-lend/introduction-to-ribbon-lend/no-lockups/pool-status#utilization-curve"
+                        target="_blank"
+                        rel="noreferrer noopener"
+                      >
+                        Learn more about the Utilization Curve
+                        <ExternalLinkIcon />
+                      </a>
+                    </Paragraph>
+                    <UtilizationCurve
+                      pool={poolId}
+                      setUtilizationRate={setUtilizationRate}
+                      setBorrowRate={setBorrowRate}
+                      setLendingRate={setLendingRate}
+                    />
+                    <DetailsStatWrapper>
+                      <Stat>
+                        <Label>Utilization</Label>
+                        <Value>
+                          {hoverUtilizationRate
+                            ? hoverUtilizationRate.toFixed(2)
+                            : utilizationRate}
+                          %
+                        </Value>
+                      </Stat>
+                      <Stat>
+                        <Label>Borrow APR</Label>
+                        <Value color={colors.green}>
+                          {hoverBorrowRate ? (
+                            `${hoverBorrowRate.toFixed(2)}%`
+                          ) : (
+                            <LoadingText>loading</LoadingText>
+                          )}
+                        </Value>
+                      </Stat>
+                      <Stat>
+                        <Label>Lending APR</Label>
+                        <Value color={"#3E73C4"}>
+                          {hoverLendingRate ? (
+                            `${hoverLendingRate.toFixed(2)}%`
+                          ) : (
+                            <LoadingText>loading</LoadingText>
+                          )}
+                        </Value>
+                      </Stat>
+                    </DetailsStatWrapper>
+                  </Details>
+                  <Details delay={0.75}>
+                    <DetailsIndex>03</DetailsIndex>
                     <StyledTitle>Credit Rating</StyledTitle>
                     <Paragraph>{poolDetails.credit.content}</Paragraph>
                     <DetailsStatWrapper>

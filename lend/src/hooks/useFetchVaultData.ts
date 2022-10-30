@@ -75,6 +75,7 @@ const useFetchVaultData = (): VaultData => {
           contract.rewardPerSecond(),
           contract.manager(),
           contract.borrows(),
+          contract.reserveFactor(),
         ];
 
         /**
@@ -109,6 +110,7 @@ const useFetchVaultData = (): VaultData => {
           rewardPerSecond,
           manager,
           borrows,
+          reserveFactor,
           vaultBalance,
           accumulativeReward,
           withdrawableReward,
@@ -130,6 +132,7 @@ const useFetchVaultData = (): VaultData => {
           rewardPerSecond,
           manager,
           borrows,
+          reserveFactor,
           vaultBalance,
           accumulativeReward,
           withdrawableReward,
@@ -155,6 +158,7 @@ const useFetchVaultData = (): VaultData => {
                 rewardPerSecond,
                 manager,
                 borrows,
+                reserveFactor,
                 accumulativeReward,
                 withdrawableReward,
                 withdrawnReward,
@@ -170,6 +174,7 @@ const useFetchVaultData = (): VaultData => {
                   rewardPerSecond: rewardPerSecond,
                   manager: manager,
                   borrows: borrows,
+                  reserveFactor: reserveFactor,
                   availableToBorrow: availableToBorrow,
                   currentExchangeRate: currentExchangeRate,
                   accumulativeReward: accumulativeReward,
