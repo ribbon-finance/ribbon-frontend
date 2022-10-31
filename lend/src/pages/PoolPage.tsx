@@ -522,63 +522,65 @@ const PoolPage = () => {
                   </Details>
                 </>
               )}
-              <Details delay={account !== manager ? 0.5 : 0.25}>
-                <DetailsIndex>{account !== manager ? "02" : "01"}</DetailsIndex>
-                <StyledTitle>Utilization Curve</StyledTitle>
-                <Paragraph>
-                  The relationship between interest rates and pool utilization
-                  rates follow curves based on prevailing CeFi lending rates to
-                  market makers.
-                </Paragraph>
-                <Paragraph>
-                  <a
-                    href="https://docs.ribbon.finance/ribbon-lend/introduction-to-ribbon-lend/no-lockups/pool-status#utilization-curve"
-                    target="_blank"
-                    rel="noreferrer noopener"
-                  >
-                    Learn more about the Utilization Curve
-                    <ExternalLinkIcon />
-                  </a>
-                </Paragraph>
-                <UtilizationCurve
-                  pool={poolId}
-                  setUtilizationRate={setUtilizationRate}
-                  setBorrowRate={setBorrowRate}
-                  setLendingRate={setLendingRate}
-                />
-                <Stat>
-                  <Label>Utilization</Label>
-                  <Value>
-                    {hoverUtilizationRate
-                      ? hoverUtilizationRate.toFixed(2)
-                      : utilizationRate}
-                    %
-                  </Value>
-                </Stat>
-                <Stat>
-                  <Label>Borrow APR</Label>
-                  <Value color={colors.green}>
-                    {hoverBorrowRate ? (
-                      `${hoverBorrowRate.toFixed(2)}%`
-                    ) : (
-                      <LoadingText>loading</LoadingText>
-                    )}
-                  </Value>
-                </Stat>
-                <Stat>
-                  <Label>Lending APR</Label>
-                  <Value color={"#3E73C4"}>
-                    {hoverLendingRate ? (
-                      `${hoverLendingRate.toFixed(2)}%`
-                    ) : (
-                      <LoadingText>loading</LoadingText>
-                    )}
-                  </Value>
-                </Stat>
-              </Details>
+              {account === manager && (
+                <Details delay={0.25}>
+                  <DetailsIndex>01</DetailsIndex>
+                  <StyledTitle>Utilization Curve</StyledTitle>
+                  <Paragraph>
+                    The relationship between interest rates and pool utilization
+                    rates follow curves based on prevailing CeFi lending rates
+                    to market makers.
+                  </Paragraph>
+                  <Paragraph>
+                    <a
+                      href="https://docs.ribbon.finance/ribbon-lend/introduction-to-ribbon-lend/no-lockups/pool-status#utilization-curve"
+                      target="_blank"
+                      rel="noreferrer noopener"
+                    >
+                      Learn more about the Utilization Curve
+                      <ExternalLinkIcon />
+                    </a>
+                  </Paragraph>
+                  <UtilizationCurve
+                    pool={poolId}
+                    setUtilizationRate={setUtilizationRate}
+                    setBorrowRate={setBorrowRate}
+                    setLendingRate={setLendingRate}
+                  />
+                  <Stat>
+                    <Label>Utilization</Label>
+                    <Value>
+                      {hoverUtilizationRate
+                        ? hoverUtilizationRate.toFixed(2)
+                        : utilizationRate}
+                      %
+                    </Value>
+                  </Stat>
+                  <Stat>
+                    <Label>Borrow APR</Label>
+                    <Value color={colors.green}>
+                      {hoverBorrowRate ? (
+                        `${hoverBorrowRate.toFixed(2)}%`
+                      ) : (
+                        <LoadingText>loading</LoadingText>
+                      )}
+                    </Value>
+                  </Stat>
+                  <Stat>
+                    <Label>Lending APR</Label>
+                    <Value color={"#3E73C4"}>
+                      {hoverLendingRate ? (
+                        `${hoverLendingRate.toFixed(2)}%`
+                      ) : (
+                        <LoadingText>loading</LoadingText>
+                      )}
+                    </Value>
+                  </Stat>
+                </Details>
+              )}
               {account !== manager && (
                 <Details delay={0.75}>
-                  <DetailsIndex>03</DetailsIndex>
+                  <DetailsIndex>02</DetailsIndex>
                   <StyledTitle>Credit Rating</StyledTitle>
                   <Paragraph>{poolDetails.credit.content}</Paragraph>
                   <DetailsStatWrapper>
@@ -635,7 +637,7 @@ const PoolPage = () => {
                 </Details>
               )}
               <Details delay={account !== manager ? 1 : 0.5}>
-                <DetailsIndex>{account !== manager ? "04" : "02"}</DetailsIndex>
+                <DetailsIndex>{account !== manager ? "03" : "02"}</DetailsIndex>
                 <StyledTitle>Pool Activity</StyledTitle>
                 <PoolActivity
                   vault={{
