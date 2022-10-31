@@ -49,6 +49,7 @@ import { BigNumber } from "ethers";
 import useVotingEscrow from "shared/lib/hooks/useVotingEscrow";
 import ApplyBoostModal from "./LiquidityGaugeModal/ApplyBoostModal";
 import APYTable from "./APYTable";
+import { useLendAPY } from "shared/lib/hooks/useLendAPY";
 
 const StakingPoolsContainer = styled.div`
   margin-top: 48px;
@@ -180,7 +181,7 @@ const LiquidityGaugeV5Pool: React.FC<LiquidityGaugeV5PoolProps> = ({
   const { pendingTransactions } = usePendingTransactions();
   const { data: lg5Data, loading: lg5DataLoading } =
     useLiquidityGaugeV5PoolData(vaultOption);
-
+  const { loading, poolsAvgAPY } = useLendAPY();
   const { prices } = useAssetsPrice();
   const {
     data: { asset, decimals, pricePerShare },
@@ -282,7 +283,7 @@ const LiquidityGaugeV5Pool: React.FC<LiquidityGaugeV5PoolProps> = ({
   }, [lg5Data, latestRBNLockedBlockNumber]);
 
   const baseAPY = useMemo(() => {
-    if (!lg5Data) {
+    if (!lg5Data || loading) {
       return 0;
     }
     const rewards = calculateBaseRewards({
@@ -292,10 +293,11 @@ const LiquidityGaugeV5Pool: React.FC<LiquidityGaugeV5PoolProps> = ({
       decimals,
       assetPrice: prices[asset].price,
       rbnPrice: prices["RBN"].price,
+      lendAPY: poolsAvgAPY,
     });
 
     return rewards;
-  }, [asset, decimals, lg5Data, pricePerShare, prices]);
+  }, [asset, decimals, lg5Data, loading, poolsAvgAPY, pricePerShare, prices]);
 
   // Calculated boosted multiplier
   const calculateBoostedMultipler = useCallback(

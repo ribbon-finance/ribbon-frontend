@@ -1,16 +1,11 @@
 import { useWeb3React } from "@web3-react/core";
 import { BigNumber } from "ethers";
 import { useEffect, useState } from "react";
-import { URLS } from "../constants/constants";
+import { PoolList, URLS } from "../constants/constants";
 import { isPracticallyZero } from "../utils/math";
 import { getLendContract } from "./getLendContract";
 import useWeb3Wallet from "./useWeb3Wallet";
 import { useWeb3Context } from "./web3Context";
-
-const poolAddresses = [
-  "0x0Aea75705Be8281f4c24c3E954D1F8b1D0f8044C",
-  "0x3cd0ecf1552d135b8da61c7f44cefe93485c616d",
-];
 
 export const useLendLink = () => {
   const [hasLendPosition, setHasLendPosition] = useState(false);
@@ -22,7 +17,7 @@ export const useLendLink = () => {
     if (!account) {
       setHasLendPosition(false);
     }
-    poolAddresses.forEach((pool) => {
+    PoolList.forEach((pool) => {
       const poolContract = getLendContract(library || provider, pool, active);
       if (poolContract && account) {
         poolContract.balanceOf(account).then((balance: BigNumber) => {
