@@ -8,6 +8,7 @@ import ExternalLinkIcon from "../Common/ExternalLinkIcon";
 import wallet from "../../assets/icons/socials/wallet.svg";
 import etherscan from "../../assets/icons/socials/etherscan.svg";
 import disconnect from "../../assets/icons/disconnect.svg";
+import Logo from "shared/lib/assets/icons/logo";
 import WalletLogo from "shared/lib/components/Wallet/WalletLogo";
 import LearnMoreWallet from "shared/lib/components/Wallet/LearnMoreWallet";
 import { Button } from "../../designSystem";
@@ -32,6 +33,13 @@ const borderStyle = `1px solid ${colors.primaryText}1F`;
 const TextContent = styled.div`
   color: ${colors.primaryText}A3;
   padding: 16px 24px;
+`;
+
+const ReferralTextContent = styled.div`
+  color: ${colors.primaryText}A3;
+  padding: 16px 24px;
+  overflow: hidden;
+  font-size: 16px;
 `;
 
 const hoveredContentRow = css`
@@ -235,7 +243,85 @@ const CloseButton = styled.button`
   border-left: ${borderStyle};
 `;
 
+const ProductAssetLogoContainer = styled.div<{ size: number; delay?: number }>`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: ${(props) => props.size}px;
+  width: ${(props) => props.size}px;
+  border-radius: 50%;
+  position: relative;
+`;
+
+const AssetContainer = styled.div<{ size: number }>`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: ${(props) => props.size}px;
+  width: 100%;
+  background: linear-gradient(
+    102.28deg,
+    rgba(252, 10, 84, 0.04) 0%,
+    rgba(252, 10, 84, 0) 100%
+  );
+  border-bottom: 1px solid ${colors.primaryText}1F;
+`;
+
+const RbnButtonWrapper = styled.div`
+  display: block;
+  width: 100%;
+  padding-left: 16px;
+  padding-right: 16px;
+  > * {
+    width: 100%;
+  }
+`;
+
+const ReferralConnectWalletButton = styled(Button)`
+  background: #fc0a541f;
+  color: #fc0a54;
+  border: none;
+  border-radius: 0;
+  padding: 20px;
+`;
+
+const LearnMoreContainer = styled.div`
+  display: flex;
+  width: 100%;
+  text-align: center;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 16px;
+`;
+
+const Footer = styled.div`
+  display: flex;
+  margin-top: 20px;
+  font-size: 14px;
+
+  color: ${colors.primaryText};
+
+  svg {
+    transition: all 0.2s ease-in-out;
+  }
+
+  > a {
+    color: ${colors.primaryText};
+    text-decoration: underline;
+    &:hover {
+      svg {
+        transform: translate(2px, -2px);
+      }
+    }
+  }
+`;
+
+const StyledExternalLinkIcon = styled(ExternalLinkIcon)`
+  margin-left: 4px;
+`;
+
 export enum WalletPageEnum {
+  REFEREE = "CLAIM YOUR REWARD",
   DISCLAIMER = "IMPORTANT",
   CONNECT_WALLET = "SELECT YOUR WALLET",
   ACCOUNT = "ACCOUNT",
@@ -247,8 +333,16 @@ interface WalletPageProps {
 
 export const WalletPage = ({ onHide }: WalletPageProps) => {
   const { active, account, activate, deactivate } = useWeb3Wallet();
+  let initialWalletPageStep = undefined;
+  if (active) {
+    initialWalletPageStep = WalletPageEnum.ACCOUNT;
+  } else if (Boolean(sessionStorage.getItem("code"))) {
+    initialWalletPageStep = WalletPageEnum.REFEREE;
+  } else {
+    initialWalletPageStep = WalletPageEnum.DISCLAIMER;
+  }
   const [walletStep, setWalletStep] = useState<WalletPageEnum>(
-    active ? WalletPageEnum.ACCOUNT : WalletPageEnum.DISCLAIMER
+    initialWalletPageStep
   );
   const [selectedWallet, setWallet] = useState<EthereumWallet>();
   const balances = useAssetsBalance();
@@ -296,6 +390,46 @@ export const WalletPage = ({ onHide }: WalletPageProps) => {
   }, [modalTitle, onHide]);
 
   const walletContent = useMemo(() => {
+    if (walletStep === WalletPageEnum.REFEREE) {
+      return (
+        <>
+          <AssetContainer size={160}>
+            <ProductAssetLogoContainer size={80}>
+              <Logo width={80} height={80} />
+            </ProductAssetLogoContainer>
+          </AssetContainer>
+          <ReferralTextContent>
+            <p>
+              Looks like someone invited you to use Ribbon Lend. To claim your
+              RBN referral reward, deposit USDC 100 or more in any pool for 7
+              days or more.
+            </p>
+          </ReferralTextContent>
+          <RbnButtonWrapper>
+            <ReferralConnectWalletButton
+              onClick={() => {
+                setWalletStep !== undefined &&
+                  setWalletStep(WalletPageEnum.DISCLAIMER);
+              }}
+            >
+              Connect Wallet
+            </ReferralConnectWalletButton>
+            <LearnMoreContainer>
+              <Footer>
+                <a
+                  href="https://ribbonfinance.medium.com/decentralizing-ribbon-governance-395950da7a6"
+                  target="_blank"
+                  rel="noreferrer noopener"
+                >
+                  Learn more about the referral program
+                  <StyledExternalLinkIcon />
+                </a>
+              </Footer>
+            </LearnMoreContainer>
+          </RbnButtonWrapper>
+        </>
+      );
+    }
     if (walletStep === WalletPageEnum.DISCLAIMER) {
       return (
         <ContentWrapper>
