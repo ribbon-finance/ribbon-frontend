@@ -116,8 +116,7 @@ export const Strategy: React.FC<StrategyProps> = ({ setStep }) => {
             </HighlightedText>
           )}
         />
-        . As the epoch of the vault is one month but the options purchased are
-        weekly options, 4 options are purchased within one epoch.
+        .
       </ParagraphText>
       <StyledTitle marginTop={24}>Key Conditions</StyledTitle>
       <ParagraphText marginTop={8}>
@@ -132,7 +131,7 @@ export const Strategy: React.FC<StrategyProps> = ({ setStep }) => {
       <ExplainerTitle color={colors.tertiaryText}>
         <span>Loan Tenor</span>
       </ExplainerTitle>
-      <StyledTitle marginTop={4}> 28 DAYS</StyledTitle>
+      <StyledTitle marginTop={4}> 7 DAYS</StyledTitle>
       <ExplainerTitle color={colors.tertiaryText}>
         <span>Option Tenor</span>
       </ExplainerTitle>
