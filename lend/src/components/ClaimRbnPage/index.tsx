@@ -301,7 +301,7 @@ export const ClaimRbnPage: React.FC<ClaimRbnPageProps> = ({ onHide }) => {
           <ClaimTextContent>
             <div className="d-flex w-100 flex-row align-items-center justify-content-between">
               <StyledSecondaryText color={colors.tertiaryText}>
-                Unclaimed RBN
+                Unclaimed Pool Rewards
               </StyledSecondaryText>
               <StyledTitle>
                 {loading || !account
@@ -311,7 +311,7 @@ export const ClaimRbnPage: React.FC<ClaimRbnPageProps> = ({ onHide }) => {
             </div>
             <div className="d-flex w-100 flex-row align-items-center justify-content-between mt-4">
               <StyledSecondaryText color={colors.tertiaryText}>
-                Claimed RBN
+                Claimed Pool Rewards
               </StyledSecondaryText>
               <StyledTitle>
                 {loading || !account
