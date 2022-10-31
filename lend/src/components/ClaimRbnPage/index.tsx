@@ -67,12 +67,29 @@ const RbnButtonWrapper = styled.div`
   }
 `;
 
-const ClaimRbnButton = styled(Button)`
+const ClaimPoolRewardsButton = styled(Button)`
   background: #fc0a541f;
   color: #fc0a54;
   border: none;
   border-radius: 0;
   padding: 20px;
+`;
+
+const ClaimReferralRewardsButton = styled(Button)`
+  background: ${colors.buttons.secondaryBackground};
+  color: ${colors.buttons.secondaryText};
+  border: none;
+  border-radius: 0;
+  padding: 20px;
+  margin-top: 16px;
+  &:hover {
+    svg {
+      transform: translate(2px, -2px);
+    }
+  }
+  svg {
+    transition: all 0.2s ease-in-out;
+  }
 `;
 
 const LearnMoreContainer = styled.div`
@@ -82,28 +99,15 @@ const LearnMoreContainer = styled.div`
   justify-content: center;
   align-items: center;
   margin-bottom: 16px;
+  padding-left: 18px;
+  padding-right: 18px;
 `;
 
 const Footer = styled.div`
   display: flex;
-  margin-top: 20px;
+  margin-top: 16px;
   font-size: 14px;
-
-  color: ${colors.primaryText};
-
-  svg {
-    transition: all 0.2s ease-in-out;
-  }
-
-  > a {
-    color: ${colors.primaryText};
-    text-decoration: underline;
-    &:hover {
-      svg {
-        transform: translate(2px, -2px);
-      }
-    }
-  }
+  color: ${colors.tertiaryText};
 `;
 
 const BottomTextContainer = styled.div`
@@ -166,6 +170,15 @@ const FrameBar = styled.div<{
 
 const StyledExternalLinkIcon = styled(ExternalLinkIcon)`
   margin-left: 4px;
+`;
+
+const ReferralRewardExternalLinkIcon = styled(ExternalLinkIcon).attrs(() => ({
+  width: 24,
+  height: 24,
+}))`
+  margin-left: 4px;
+  margin-bottom: 4px;
+  stroke: ${colors.buttons.secondaryText};
 `;
 
 const Header = styled.div`
@@ -308,22 +321,23 @@ export const ClaimRbnPage: React.FC<ClaimRbnPageProps> = ({ onHide }) => {
             </div>
           </ClaimTextContent>
           <RbnButtonWrapper>
-            <ClaimRbnButton onClick={() => handleClickClaimButton()}>
-              Claim RBN
-            </ClaimRbnButton>
-            <LearnMoreContainer>
-              <Footer>
-                <a
-                  href="https://ribbonfinance.medium.com/decentralizing-ribbon-governance-395950da7a6"
-                  target="_blank"
-                  rel="noreferrer noopener"
-                >
-                  Learn more about RBN
-                  <StyledExternalLinkIcon />
-                </a>
-              </Footer>
-            </LearnMoreContainer>
+            <ClaimPoolRewardsButton onClick={() => handleClickClaimButton()}>
+              Claim Pool Rewards
+            </ClaimPoolRewardsButton>
           </RbnButtonWrapper>
+          <RbnButtonWrapper>
+            <ClaimReferralRewardsButton
+              onClick={() => window.open(`https://app.rhino.fi/`)}
+            >
+              Claim Referral Rewards
+              <ReferralRewardExternalLinkIcon />
+            </ClaimReferralRewardsButton>
+          </RbnButtonWrapper>
+          <LearnMoreContainer>
+            <Footer>
+              IMPORTANT: Referral rewards can only be claimed using Rhino.fi
+            </Footer>
+          </LearnMoreContainer>
         </>
       );
     }
