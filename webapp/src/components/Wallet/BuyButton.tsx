@@ -2,7 +2,6 @@ import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 import { initOnRamp } from "@coinbase/cbpay-js";
 import type { CBPayInstanceType, InitOnRampParams } from "@coinbase/cbpay-js";
-
 import theme from "shared/lib/designSystem/theme";
 import colors from "shared/lib/designSystem/colors";
 import { useWeb3Wallet } from "shared/lib/hooks/useWeb3Wallet";
@@ -44,6 +43,7 @@ type DestinationWallet = {
 
 export const BuyButton: React.FC<BuyButtonProps> = (props) => {
   const [active, setActive] = useState(false);
+  const [walletAccount, setWalletAccount] = useState<string>();
   const [onrampInstance, setOnrampInstance] = useState<
     CBPayInstanceType | undefined
   >();
@@ -104,6 +104,10 @@ export const BuyButton: React.FC<BuyButtonProps> = (props) => {
 
     initOnRamp(initParams, (_, instance) => {
       if (instance) {
+        //check that account connected is same as destination wallet account
+        if (account) {
+          setWalletAccount(account);
+        }
         setActive(true);
         setOnrampInstance(instance);
       }
@@ -117,7 +121,7 @@ export const BuyButton: React.FC<BuyButtonProps> = (props) => {
     onrampInstance?.open();
   };
 
-  if (!active) return <></>;
+  if (!active || !account || account !== walletAccount) return <></>;
   return (
     <ButtonContainer role="button" onClick={handleClick}>
       <IconContainer>
