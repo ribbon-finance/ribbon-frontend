@@ -9,6 +9,8 @@ import wintermute from "../assets/icons/makers/wintermute.svg";
 import folkvang from "../assets/icons/makers/folkvang.svg";
 import ExternalLinkIcon from "../components/Common/ExternalLinkIcon";
 
+export const secondsPerYear = 31536000;
+
 export type NETWORK_NAMES = "mainnet";
 export type TESTNET_NAMES = "kovan";
 export type MAINNET_NAMES = Exclude<NETWORK_NAMES, TESTNET_NAMES>;
