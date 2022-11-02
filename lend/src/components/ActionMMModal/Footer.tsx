@@ -8,7 +8,7 @@ import sizes from "../../designSystem/sizes";
 import { getEtherscanURI, PoolOptions } from "../../constants/constants";
 import { formatBigNumber } from "../../utils/math";
 import { getUtilizationDecimals } from "../../utils/asset";
-import { usePoolsAPR } from "../../hooks/usePoolsAPR";
+import { usePoolsApr } from "../../hooks/usePoolsApr";
 import { fadeIn } from "shared/lib/designSystem/keyframes";
 import { css } from "styled-components";
 import { BaseUnderlineLink } from "shared/lib/designSystem";
@@ -125,7 +125,7 @@ const Footer: React.FC<FooterProps> = ({
   isBorrow,
 }) => {
   const poolDatas = usePoolsData();
-  const { aprs } = usePoolsAPR();
+  const { aprs } = usePoolsApr();
   const { chainId } = useWeb3React();
   const apr = aprs[pool];
   const utilizationDecimals = getUtilizationDecimals();

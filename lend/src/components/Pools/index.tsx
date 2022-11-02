@@ -14,7 +14,7 @@ import { fadeIn } from "shared/lib/designSystem/keyframes";
 import { motion } from "framer-motion";
 import { Row } from "react-bootstrap";
 import colors from "shared/lib/designSystem/colors";
-import { usePoolsAPR } from "../../hooks/usePoolsAPR";
+import { usePoolsApr } from "../../hooks/usePoolsApr";
 import { Link } from "react-router-dom";
 import { isPracticallyZero } from "../../utils/math";
 import usePoolAccounts from "../../hooks/usePoolAccounts";
@@ -200,7 +200,7 @@ const StyledSubtitle = styled(Subtitle)<{ color?: string }>`
 export const Pools = () => {
   const poolDatas = usePoolsData();
   const utilizationDecimals = getUtilizationDecimals();
-  const { loading, aprs } = usePoolsAPR();
+  const { loading, aprs } = usePoolsApr();
   const { account } = useWeb3Wallet();
   const AssetLogo = getAssetLogo("USDC");
 

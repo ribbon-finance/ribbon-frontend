@@ -33,7 +33,7 @@ import useWeb3Wallet from "../hooks/useWeb3Wallet";
 import LendModal, { ModalContentEnum } from "../components/Common/LendModal";
 import ActionModal from "../components/ActionModal";
 import { usePoolsData } from "../hooks/web3DataContext";
-import { usePoolsAPR } from "../hooks/usePoolsAPR";
+import { usePoolsApr } from "../hooks/usePoolsApr";
 import {
   getAssetDecimals,
   getAssetLogo,
@@ -290,7 +290,7 @@ const YieldExplainerTitle = styled.div<{ color: string }>`
   display: flex;
   justify-content: space-between;
   margin-bottom: 8px;
-  min-width: 224px;
+  min-width: 240px;
 
   > span {
     &:last-child {
@@ -331,7 +331,13 @@ const PoolPage = () => {
   const [hoverBorrowRate, setBorrowRate] = useState<number>();
   const { loading: poolLoading, data: poolDatas } = usePoolsData();
   const { account } = useWeb3Wallet();
-  const { loading, aprs: poolAPRs, supplyAprs, rbnAprs } = usePoolsAPR();
+  const {
+    loading,
+    rbnAprLoading,
+    aprs: poolAPRs,
+    supplyAprs,
+    rbnAprs,
+  } = usePoolsApr();
   const utilizationDecimals = getUtilizationDecimals();
   const usdcDecimals = getAssetDecimals("USDC");
   const { width } = useScreenSize();
@@ -425,6 +431,7 @@ const PoolPage = () => {
                     <div className="d-flex justify-content-center align-items-center">
                       <Label>APR:</Label>
                       <TooltipExplanation
+                        maxWidth={280}
                         explanation={
                           <>
                             <YieldExplainerTitle
@@ -460,7 +467,7 @@ const PoolPage = () => {
                             <YieldExplainerStat>
                               <span>RBN Rewards APR</span>
                               <span>
-                                {loading ? (
+                                {rbnAprLoading ? (
                                   <LoadingText>LOADING</LoadingText>
                                 ) : (
                                   `${currency(rbnApr, {

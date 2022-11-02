@@ -18,7 +18,7 @@ import { fadeIn } from "shared/lib/designSystem/keyframes";
 import { PoolList } from "../../constants/constants";
 import { usePoolsData } from "../../hooks/web3DataContext";
 import { BigNumber } from "ethers";
-import { usePoolsAPR } from "../../hooks/usePoolsAPR";
+import { usePoolsApr } from "../../hooks/usePoolsApr";
 import currency from "currency.js";
 import { BaseIndicator } from "shared/lib/designSystem";
 const BalanceWrapper = styled.div`
@@ -177,7 +177,7 @@ export const Balance = () => {
 
   const { loading: depositLoading, totalDeposits } = usePoolTotalDeposits();
   const { loading: poolDataLoading, data: poolDatas } = usePoolsData();
-  const { aprs } = usePoolsAPR();
+  const { aprs } = usePoolsApr();
   const yourBalance = accountBalances.totalBalance;
   const rbnClaimableRewards = accountBalances.rbnClaimable;
   const rbnDecimals = getAssetDecimals("RBN");
