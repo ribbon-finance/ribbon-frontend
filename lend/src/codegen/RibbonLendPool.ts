@@ -17,8 +17,8 @@ import { FunctionFragment, Result, EventFragment } from "@ethersproject/abi";
 import { Listener, Provider } from "@ethersproject/providers";
 import { TypedEventFilter, TypedEvent, TypedListener, OnEvent } from "./common";
 
-export interface RibbonLendVaultInterface extends utils.Interface {
-  contractName: "RibbonLendVault";
+export interface RibbonLendPoolInterface extends utils.Interface {
+  contractName: "RibbonLendPool";
   functions: {
     "accumulativeRewardOf(address)": FunctionFragment;
     "allowWithdrawalAfterNoAuction()": FunctionFragment;
@@ -624,13 +624,13 @@ export type TransferEvent = TypedEvent<
 
 export type TransferEventFilter = TypedEventFilter<TransferEvent>;
 
-export interface RibbonLendVault extends BaseContract {
-  contractName: "RibbonLendVault";
+export interface RibbonLendPool extends BaseContract {
+  contractName: "RibbonLendPool";
   connect(signerOrProvider: Signer | Provider | string): this;
   attach(addressOrName: string): this;
   deployed(): Promise<this>;
 
-  interface: RibbonLendVaultInterface;
+  interface: RibbonLendPoolInterface;
 
   queryFilter<TEvent extends TypedEvent>(
     event: TypedEventFilter<TEvent>,

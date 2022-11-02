@@ -4,8 +4,8 @@ import { Line } from "react-chartjs-2";
 import colors from "shared/lib/designSystem/colors";
 import styled from "styled-components";
 import { useInterestRateModelData } from "../../hooks/useInterestRateModelData";
-import { useVaultData } from "../../hooks/web3DataContext";
-import { VaultOptions } from "../../constants/constants";
+import { usePoolData } from "../../hooks/web3DataContext";
+import { PoolOptions } from "../../constants/constants";
 import { borrowRate, formatBigNumber, lendingRate } from "../../utils/math";
 
 const ChartContainer = styled.div`
@@ -15,7 +15,7 @@ const ChartContainer = styled.div`
 `;
 
 interface UtilizationCurveProps {
-  pool: VaultOptions;
+  pool: PoolOptions;
   setUtilizationRate: (utilizationRate: number | undefined) => void;
   setBorrowRate: (borrowRate: number | undefined) => void;
   setLendingRate: (lendingRate: number | undefined) => void;
@@ -32,7 +32,7 @@ const UtilizationCurve: React.FC<UtilizationCurveProps> = ({
   } = useInterestRateModelData();
 
   const [hoveredIndex, setIndex] = useState<number>();
-  const { utilizationRate, reserveFactor } = useVaultData(pool);
+  const { utilizationRate, reserveFactor } = usePoolData(pool);
 
   const utilRate = parseFloat(formatBigNumber(utilizationRate, 18, 2)) * 100;
   const utilRateRaw = parseFloat(formatBigNumber(utilizationRate, 18, 4)) * 100;

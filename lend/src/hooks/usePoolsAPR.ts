@@ -1,16 +1,16 @@
 import { useEffect, useMemo, useState } from "react";
-import { VaultOptions } from "../constants/constants";
+import { PoolOptions } from "../constants/constants";
 import useAssetPrice from "./useAssetPrice";
-import { useVaultsData } from "./web3DataContext";
-import { VaultList } from "../constants/constants";
+import { usePoolsData } from "./web3DataContext";
+import { PoolList } from "../constants/constants";
 import { formatUnits } from "ethers/lib/utils";
 
 export type APRMap = {
-  [vault in VaultOptions]: number;
+  [pool in PoolOptions]: number;
 };
 
 export type useDefault = {
-  [vault in VaultOptions]: boolean;
+  [pool in PoolOptions]: boolean;
 };
 
 const defaultAPR = 7;
@@ -19,7 +19,7 @@ export const usePoolsAPR = () => {
   const [aprs, setAprs] = useState<APRMap>();
   const [supplyAprs, setSupplyAprs] = useState<APRMap>();
   const [rbnAprs, setRbnAprs] = useState<APRMap>();
-  const { loading, data: vaultDatas } = useVaultsData();
+  const { loading, data: poolDatas } = usePoolsData();
   const { price: RBNPrice, loading: assetPriceLoading } = useAssetPrice({
     asset: "RBN",
   });
@@ -48,8 +48,8 @@ export const usePoolsAPR = () => {
     };
 
     if (!loading) {
-      VaultList.forEach((pool) => {
-        const poolData = vaultDatas[pool];
+      PoolList.forEach((pool) => {
+        const poolData = poolDatas[pool];
         const supplyRate = parseFloat(formatUnits(poolData.supplyRate, 18));
         const rewardPerSecond = parseFloat(
           formatUnits(poolData.rewardPerSecond, 18)
@@ -73,7 +73,7 @@ export const usePoolsAPR = () => {
       setSupplyAprs(supplyAprsTemp);
       setRbnAprs(rbnAprsTemp);
     }
-  }, [loading, assetPriceLoading, RBNPrice, vaultDatas]);
+  }, [loading, assetPriceLoading, RBNPrice, poolDatas]);
 
   const isLoading = useMemo(() => {
     return loading || !aprs;

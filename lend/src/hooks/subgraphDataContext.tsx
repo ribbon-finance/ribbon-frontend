@@ -2,33 +2,33 @@ import React, { ReactElement } from "react";
 
 import {
   BalanceUpdate,
-  defaultVaultAccountsData,
-  defaultVaultActivitiesData,
-  VaultAccountsData,
-  VaultActivitiesData,
-  VaultTransaction,
-  VaultsSubgraphData,
-  defaultVaultsData,
-} from "../models/vault";
-import useFetchVaultSubgraphData from "./useFetchVaultSubgraphData";
+  defaultPoolAccountsData,
+  defaultPoolActivitiesData,
+  PoolAccountsData,
+  PoolActivitiesData,
+  PoolTransaction,
+  PoolsSubgraphData,
+  defaultPoolsData,
+} from "../models/pool";
+import useFetchPoolSubgraphData from "./useFetchPoolSubgraphData";
 
-export type VaultSubgraphDataContextType = {
-  vaults: VaultsSubgraphData;
-  vaultAccounts: VaultAccountsData;
-  vaultActivities: VaultActivitiesData;
+export type PoolSubgraphDataContextType = {
+  pools: PoolsSubgraphData;
+  poolAccounts: PoolAccountsData;
+  poolActivities: PoolActivitiesData;
   balances: BalanceUpdate[];
-  transactions: VaultTransaction[];
+  transactions: PoolTransaction[];
   loading: boolean;
 };
 
 export type SubgraphDataContextType = {
-  vaultSubgraphData: VaultSubgraphDataContextType;
+  poolSubgraphData: PoolSubgraphDataContextType;
 };
 
-export const defaultVaultSubgraphData: VaultSubgraphDataContextType = {
-  vaults: defaultVaultsData,
-  vaultAccounts: defaultVaultAccountsData,
-  vaultActivities: defaultVaultActivitiesData,
+export const defaultPoolSubgraphData: PoolSubgraphDataContextType = {
+  pools: defaultPoolsData,
+  poolAccounts: defaultPoolAccountsData,
+  poolActivities: defaultPoolActivitiesData,
   balances: [],
   transactions: [],
   loading: true,
@@ -36,19 +36,19 @@ export const defaultVaultSubgraphData: VaultSubgraphDataContextType = {
 
 export const SubgraphDataContext = React.createContext<SubgraphDataContextType>(
   {
-    vaultSubgraphData: defaultVaultSubgraphData,
+    poolSubgraphData: defaultPoolSubgraphData,
   }
 );
 
 export const SubgraphDataContextProvider: React.FC<{
   children: ReactElement;
 }> = ({ children }) => {
-  const vaultSubgraphData = useFetchVaultSubgraphData();
+  const poolSubgraphData = useFetchPoolSubgraphData();
 
   return (
     <SubgraphDataContext.Provider
       value={{
-        vaultSubgraphData,
+        poolSubgraphData,
       }}
     >
       {children}

@@ -6,10 +6,10 @@ import React, {
   useState,
 } from "react";
 import styled from "styled-components";
-import useVaultActivity from "../../hooks/useVaultActivity";
+import usePoolActivity from "../../hooks/usePoolActivity";
 import { ActivityFilter, activityFilters, SortBy, sortByList } from "./types";
 import PoolActivityList from "./PoolActivityList";
-import { VaultOptions, VaultVersion } from "../../constants/constants";
+import { PoolOptions, PoolVersion } from "../../constants/constants";
 import { Title } from "shared/lib/designSystem";
 import { useLocation } from "react-router-dom";
 import useLoadingText from "shared/lib/hooks/useLoadingText";
@@ -20,18 +20,18 @@ const PaginationContainer = styled.div`
 
 const perPage = 6;
 
-interface VaultActivityProps {
-  vault: {
-    vaultOption: VaultOptions;
-    vaultVersion: VaultVersion;
+interface PoolActivityProps {
+  pool: {
+    poolOption: PoolOptions;
+    poolVersion: PoolVersion;
   };
 }
 
-const PoolActivity: React.FC<VaultActivityProps> = ({
-  vault: { vaultOption, vaultVersion },
+const PoolActivity: React.FC<PoolActivityProps> = ({
+  pool: { poolOption, poolVersion },
 }) => {
   const containerRef = useRef<HTMLDivElement>(null);
-  const { activities, loading } = useVaultActivity(vaultOption, vaultVersion);
+  const { activities, loading } = usePoolActivity(poolOption, poolVersion);
   const [activityFilter] = useState<ActivityFilter>(activityFilters[0]);
   const [sortBy] = useState<SortBy>(sortByList[0]);
   const [page, setPage] = useState(1);
@@ -80,7 +80,7 @@ const PoolActivity: React.FC<VaultActivityProps> = ({
     const searchParams = new URLSearchParams(location.search);
     try {
       switch (searchParams.get("jumpTo")) {
-        case "vaultActivity":
+        case "poolActivity":
           const jumpToActivity = filteredActivities.find(
             (activity) =>
               activity.date.valueOf() ===
@@ -142,7 +142,7 @@ const PoolActivity: React.FC<VaultActivityProps> = ({
     <>
       <PoolActivityList
         activities={filteredActivities}
-        vaultOption={vaultOption}
+        poolOption={poolOption}
         page={page}
         setPage={setPage}
         perPage={perPage}

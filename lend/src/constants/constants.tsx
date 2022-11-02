@@ -34,37 +34,37 @@ export const READABLE_NETWORK_NAMES: Record<CHAINID, string> = {
 export const isEthNetwork = (chainId: number): boolean =>
   chainId === CHAINID.ETH_MAINNET;
 
-export const isEthVault = (vault: string) =>
-  isEthNetwork(VaultAddressMap[vault as VaultOptions].chainId);
+export const isEthPool = (pool: string) =>
+  isEthNetwork(PoolAddressMap[pool as PoolOptions].chainId);
 
-export const getVaultChain = (vault: string): Chains => {
-  if (isEthVault(vault)) return Chains.Ethereum;
-  else throw new Error(`Unknown network for ${vault}`);
+export const getPoolChain = (pool: string): Chains => {
+  if (isEthPool(pool)) return Chains.Ethereum;
+  else throw new Error(`Unknown network for ${pool}`);
 };
 
-export const getVaultNetwork = (vault: string): MAINNET_NAMES => {
-  if (isEthVault(vault)) return "mainnet";
-  else throw new Error(`Unknown network for ${vault}`);
+export const getPoolNetwork = (pool: string): MAINNET_NAMES => {
+  if (isEthPool(pool)) return "mainnet";
+  else throw new Error(`Unknown network for ${pool}`);
 };
 
 export const NATIVE_TOKENS = ["WETH"];
 export const isNativeToken = (token: string): boolean =>
   NATIVE_TOKENS.includes(token);
 
-export const VaultVersionList = ["lend"] as const;
-export type VaultVersion = typeof VaultVersionList[number];
+export const PoolVersionList = ["lend"] as const;
+export type PoolVersion = typeof PoolVersionList[number];
 
-export const EVMVaultList = ["wintermute", "folkvang"] as const;
+export const EVMPoolList = ["wintermute", "folkvang"] as const;
 
-const AllVaultOptions = [...EVMVaultList];
+const AllPoolOptions = [...EVMPoolList];
 
-export type VaultOptions = typeof AllVaultOptions[number];
+export type PoolOptions = typeof AllPoolOptions[number];
 
 // @ts-ignore
-export const VaultList: VaultOptions[] = EVMVaultList;
+export const PoolList: PoolOptions[] = EVMPoolList;
 
 export const GAS_LIMITS: {
-  [vault in VaultOptions]: Partial<{
+  [pool in PoolOptions]: Partial<{
     lend: { deposit: number; withdraw: number };
   }>;
 } = {
@@ -82,8 +82,8 @@ export const GAS_LIMITS: {
   },
 };
 
-export const VaultAddressMap: {
-  [vault in VaultOptions]: {
+export const PoolAddressMap: {
+  [pool in PoolOptions]: {
     lend: string;
     chainId: number;
   };
@@ -99,15 +99,15 @@ export const VaultAddressMap: {
 };
 
 /**
- * Used to check if vault of given version exists. Only used for v2 and above
- * @param vaultOption
+ * Used to check if pool of given version exists. Only used for v2 and above
+ * @param poolOption
  * @returns boolean
  */
-export const hasVaultVersion = (
-  vaultOption: VaultOptions,
-  version: VaultVersion
+export const hasPoolVersion = (
+  poolOption: PoolOptions,
+  version: PoolVersion
 ): boolean => {
-  return Boolean(VaultAddressMap[vaultOption][version]);
+  return Boolean(PoolAddressMap[poolOption][version]);
 };
 
 export const EVM_BLOCKCHAIN_EXPLORER_NAME: Record<number, string> = {
@@ -133,22 +133,22 @@ export const getExplorerURI = (chain: Chains) => {
 };
 
 export const getSubgraphURIForVersion = (
-  version: VaultVersion,
+  version: PoolVersion,
   chain: Chains
 ) => {
   return getSubgraphqlURI();
 };
 
-export const getAssets = (vault: VaultOptions): Assets => {
+export const getAssets = (pool: PoolOptions): Assets => {
   return "USDC";
 };
 
-export const getDisplayAssets = (vault: VaultOptions): Assets => {
+export const getDisplayAssets = (pool: PoolOptions): Assets => {
   return "USDC";
 };
 
-export const getMakerLogo = (vault: VaultOptions): string => {
-  switch (vault) {
+export const getMakerLogo = (pool: PoolOptions): string => {
+  switch (pool) {
     case "wintermute":
       return wintermute;
     case "folkvang":
@@ -156,17 +156,16 @@ export const getMakerLogo = (vault: VaultOptions): string => {
   }
 };
 
-export const VaultAllowedDepositAssets: { [vault in VaultOptions]: Assets[] } =
-  {
-    wintermute: ["USDC"],
-    folkvang: ["USDC"],
-  };
+export const PoolAllowedDepositAssets: { [pool in PoolOptions]: Assets[] } = {
+  wintermute: ["USDC"],
+  folkvang: ["USDC"],
+};
 
-export const VaultMaxDeposit: BigNumber = BigNumber.from(100000000).mul(
+export const PoolMaxDeposit: BigNumber = BigNumber.from(100000000).mul(
   BigNumber.from(10).pow(getAssetDecimals(getAssets("wintermute")))
 );
 
-export const VaultFees = {
+export const PoolFees = {
   managementFee: "2",
   performanceFee: "10",
 };
@@ -198,9 +197,9 @@ export const ID_TO_CHAINS: Record<number, number> = {
   [CHAINID.ETH_MAINNET]: Chains.Ethereum,
 };
 
-const WEBAPP_SUBGRAPHS: [VaultVersion, Chains][] = [["lend", Chains.Ethereum]];
+const WEBAPP_SUBGRAPHS: [PoolVersion, Chains][] = [["lend", Chains.Ethereum]];
 
-export const SUBGRAPHS_TO_QUERY: [VaultVersion, Chains][] = WEBAPP_SUBGRAPHS;
+export const SUBGRAPHS_TO_QUERY: [PoolVersion, Chains][] = WEBAPP_SUBGRAPHS;
 
 export const COINGECKO_BASE_URL = "https://api.coingecko.com/api/v3";
 export const COINGECKO_CURRENCIES: { [key in Assets]: string | undefined } = {
@@ -209,7 +208,7 @@ export const COINGECKO_CURRENCIES: { [key in Assets]: string | undefined } = {
   RBN: "ribbon-finance",
 };
 
-interface VaultDetails {
+interface PoolDetails {
   name: string;
   bio: string | JSX.Element;
   contract: string;
@@ -223,7 +222,7 @@ interface VaultDetails {
   };
 }
 
-export const VaultDetailsMap: Record<VaultOptions, VaultDetails> = {
+export const PoolDetailsMap: Record<PoolOptions, PoolDetails> = {
   wintermute: {
     name: "Wintermute",
     bio: (

@@ -3,11 +3,11 @@ import React, { ReactElement, useContext } from "react";
 import {
   getAssets,
   getDisplayAssets,
-  VaultOptions,
+  PoolOptions,
 } from "../constants/constants";
-import { VaultData, defaultVaultData } from "../models/vault";
+import { PoolData, defaultPoolData } from "../models/pool";
 import { getAssetDecimals } from "../utils/asset";
-import useFetchVaultData from "./useFetchVaultData";
+import useFetchPoolData from "./useFetchPoolData";
 import useFetchAssetBalanceData, {
   defaultUserAssetBalanceData,
   UserAssetBalanceData,
@@ -15,16 +15,16 @@ import useFetchAssetBalanceData, {
 import { Assets } from "../store/types";
 
 export type Web3DataContextType = {
-  lend: VaultData;
+  lend: PoolData;
   assetBalance: UserAssetBalanceData;
 };
 
 export const Web3DataContext = React.createContext<Web3DataContextType>({
-  lend: defaultVaultData,
+  lend: defaultPoolData,
   assetBalance: defaultUserAssetBalanceData,
 });
 
-export const useVaultsData = () => {
+export const usePoolsData = () => {
   const contextData = useContext(Web3DataContext);
 
   return {
@@ -33,15 +33,15 @@ export const useVaultsData = () => {
   };
 };
 
-export const useVaultData = (vault: VaultOptions) => {
+export const usePoolData = (pool: PoolOptions) => {
   const contextData = useContext(Web3DataContext);
 
   return {
-    ...contextData.lend.responses[vault],
-    asset: getAssets(vault),
-    displayAsset: getDisplayAssets(vault),
-    decimals: getAssetDecimals(getAssets(vault)),
-    userAssetBalance: contextData.assetBalance.data[getAssets(vault)],
+    ...contextData.lend.responses[pool],
+    asset: getAssets(pool),
+    displayAsset: getDisplayAssets(pool),
+    decimals: getAssetDecimals(getAssets(pool)),
+    userAssetBalance: contextData.assetBalance.data[getAssets(pool)],
     status:
       contextData.lend.loading || contextData.assetBalance.loading
         ? "loading"
@@ -67,13 +67,13 @@ export const useAssetsBalance = () => {
 export const Web3DataContextProvider: React.FC<{ children: ReactElement }> = ({
   children,
 }) => {
-  const vaultData = useFetchVaultData();
+  const poolData = useFetchPoolData();
   const assetBalance = useFetchAssetBalanceData();
 
   return (
     <Web3DataContext.Provider
       value={{
-        lend: vaultData,
+        lend: poolData,
         assetBalance: assetBalance,
       }}
     >

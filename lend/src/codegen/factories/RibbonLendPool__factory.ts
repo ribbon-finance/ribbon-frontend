@@ -5,9 +5,9 @@
 import { Contract, Signer, utils } from "ethers";
 import { Provider } from "@ethersproject/providers";
 import type {
-  RibbonLendVault,
-  RibbonLendVaultInterface,
-} from "../RibbonLendVault";
+  RibbonLendPool,
+  RibbonLendPoolInterface,
+} from "../RibbonLendPool";
 
 const _abi = [
   {
@@ -1234,15 +1234,15 @@ const _abi = [
   },
 ];
 
-export class RibbonLendVault__factory {
+export class RibbonLendPool__factory {
   static readonly abi = _abi;
-  static createInterface(): RibbonLendVaultInterface {
-    return new utils.Interface(_abi) as RibbonLendVaultInterface;
+  static createInterface(): RibbonLendPoolInterface {
+    return new utils.Interface(_abi) as RibbonLendPoolInterface;
   }
   static connect(
     address: string,
     signerOrProvider: Signer | Provider
-  ): RibbonLendVault {
-    return new Contract(address, _abi, signerOrProvider) as RibbonLendVault;
+  ): RibbonLendPool {
+    return new Contract(address, _abi, signerOrProvider) as RibbonLendPool;
   }
 }

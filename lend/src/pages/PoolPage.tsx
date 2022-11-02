@@ -4,8 +4,8 @@ import { useParams } from "react-router-dom";
 import {
   getAssets,
   getMakerLogo,
-  VaultDetailsMap,
-  VaultOptions,
+  PoolDetailsMap,
+  PoolOptions,
 } from "../constants/constants";
 import { BaseLink, Title } from "../designSystem";
 import NotFound from "./NotFound";
@@ -32,7 +32,7 @@ import { truncateAddress } from "shared/lib/utils/address";
 import useWeb3Wallet from "../hooks/useWeb3Wallet";
 import LendModal, { ModalContentEnum } from "../components/Common/LendModal";
 import ActionModal from "../components/ActionModal";
-import { useVaultsData } from "../hooks/web3DataContext";
+import { usePoolsData } from "../hooks/web3DataContext";
 import { usePoolsAPR } from "../hooks/usePoolsAPR";
 import {
   getAssetDecimals,
@@ -323,13 +323,13 @@ export const MobileHeaderCol = styled(Col)`
 `;
 
 const PoolPage = () => {
-  const { poolId }: { poolId: VaultOptions } = useParams();
+  const { poolId }: { poolId: PoolOptions } = useParams();
   const [activePage, setPage] = useState<PageEnum>();
   const [triggerWalletModal, setWalletModal] = useState<boolean>(false);
   const [hoverUtilizationRate, setUtilizationRate] = useState<number>();
   const [hoverLendingRate, setLendingRate] = useState<number>();
   const [hoverBorrowRate, setBorrowRate] = useState<number>();
-  const { loading: vaultLoading, data: vaultDatas } = useVaultsData();
+  const { loading: poolLoading, data: poolDatas } = usePoolsData();
   const { account } = useWeb3Wallet();
   const { loading, aprs: poolAPRs, supplyAprs, rbnAprs } = usePoolsAPR();
   const utilizationDecimals = getUtilizationDecimals();
@@ -338,14 +338,14 @@ const PoolPage = () => {
   if (!poolId) return <NotFound />;
 
   const logo = getMakerLogo(poolId);
-  const poolSize = formatUnits(vaultDatas[poolId].poolSize, usdcDecimals);
-  const manager = vaultDatas[poolId].manager;
+  const poolSize = formatUnits(poolDatas[poolId].poolSize, usdcDecimals);
+  const manager = poolDatas[poolId].manager;
   const apr = poolAPRs[poolId].toFixed(2);
   const supplyApr = supplyAprs[poolId].toFixed(2);
   const rbnApr = rbnAprs[poolId].toFixed(2);
-  const poolDetails = VaultDetailsMap[poolId];
+  const poolDetails = PoolDetailsMap[poolId];
   const utilizationRate = formatBigNumber(
-    vaultDatas[poolId].utilizationRate,
+    poolDatas[poolId].utilizationRate,
     utilizationDecimals
   );
 
@@ -416,7 +416,7 @@ const PoolPage = () => {
                     <Label>Pool size:</Label>
                     <Value>
                       <AssetLogo />{" "}
-                      {currency(vaultLoading ? "0" : poolSize, {
+                      {currency(poolLoading ? "0" : poolSize, {
                         symbol: "",
                       }).format()}
                     </Value>
@@ -504,7 +504,7 @@ const PoolPage = () => {
                         color={colors.primaryText}
                         width={64}
                       />
-                      <Value>{vaultLoading ? "0" : utilizationRate}%</Value>
+                      <Value>{poolLoading ? "0" : utilizationRate}%</Value>
                     </div>
                   </Stat>
                 </StatsWrapper>
@@ -640,9 +640,9 @@ const PoolPage = () => {
                 <DetailsIndex>{account !== manager ? "03" : "02"}</DetailsIndex>
                 <StyledTitle>Pool Activity</StyledTitle>
                 <PoolActivity
-                  vault={{
-                    vaultOption: poolId,
-                    vaultVersion: "lend",
+                  pool={{
+                    poolOption: poolId,
+                    poolVersion: "lend",
                   }}
                 />
               </Details>
@@ -656,9 +656,9 @@ const PoolPage = () => {
           manager={manager}
         />
         <PositionWidget
-          vault={{
-            vaultOption: poolId,
-            vaultVersion: "lend",
+          pool={{
+            poolOption: poolId,
+            poolVersion: "lend",
           }}
         />
       </PoolContainer>
@@ -667,7 +667,7 @@ const PoolPage = () => {
 };
 
 interface HeaderProps {
-  pool: VaultOptions;
+  pool: PoolOptions;
   setWalletModal: (trigger: boolean) => void;
 }
 
@@ -786,12 +786,12 @@ const StyledMarquee = styled(Marquee)<{ delay: number }>`
   ${delayedFade}
 `;
 
-const PoolMarquee = ({ pool }: { pool: VaultOptions }) => {
+const PoolMarquee = ({ pool }: { pool: PoolOptions }) => {
   return (
     <StyledMarquee gradient={false} speed={50} delay={0.1} pauseOnHover>
       {new Array(10).fill("").map((v, i) => (
         <MarqueeItem key={i}>
-          <Title>{VaultDetailsMap[pool].name}</Title>
+          <Title>{PoolDetailsMap[pool].name}</Title>
           <img src={getMakerLogo(pool)} alt={pool} height={20} width={20} />
         </MarqueeItem>
       ))}
