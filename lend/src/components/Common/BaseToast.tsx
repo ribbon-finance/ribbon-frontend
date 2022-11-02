@@ -5,7 +5,7 @@ import BootstrapToast, {
 
 import styled from "styled-components";
 import { CloseIcon } from "shared/lib/assets/icons/icons";
-import { VaultOptions } from "../../constants/constants";
+import { PoolOptions } from "../../constants/constants";
 import { SecondaryText, Title } from "shared/lib/designSystem";
 import colors from "shared/lib/designSystem/colors";
 import sizes from "../../designSystem/sizes";
@@ -73,7 +73,7 @@ interface ToastProps extends BootstrapToastProps, StatusProps {
   subtitle: string;
   icon?: JSX.Element;
   extra?: {
-    vaultOption: VaultOptions;
+    poolOption: PoolOptions;
   };
   onClick?: () => void;
 }

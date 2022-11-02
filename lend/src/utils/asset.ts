@@ -2,7 +2,7 @@ import React from "react";
 import styled, { StyledComponent } from "styled-components";
 import { USDCLogo, WETHLogo } from "shared/lib/assets/icons/erc20Assets";
 import Logo from "shared/lib/assets/icons/logo";
-import { Chains, VaultOptions } from "../constants/constants";
+import { Chains, PoolOptions } from "../constants/constants";
 import colors from "shared/lib/designSystem/colors";
 import { Assets, Wallets } from "../store/types";
 
@@ -12,7 +12,7 @@ export const getChainByAsset = (asset: Assets): Chains => {
   return Chains.Ethereum;
 };
 
-export const getChainByVaultOption = (vault: VaultOptions): Chains => {
+export const getChainByPoolOption = (pool: PoolOptions): Chains => {
   return Chains.Ethereum;
 };
 

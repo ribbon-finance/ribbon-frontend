@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
-import { useVaultsData } from "./web3DataContext";
-import { VaultList } from "../constants/constants";
+import { usePoolsData } from "./web3DataContext";
+import { PoolList } from "../constants/constants";
 import { BigNumber } from "ethers";
 import useWeb3Wallet from "./useWeb3Wallet";
 
@@ -11,14 +11,14 @@ export type AccountBalances = {
   rbnClaimable: BigNumber;
 };
 
-export const useVaultAccountBalances = () => {
+export const usePoolAccountBalances = () => {
   const [accountBalances, setAccountBalances] = useState<AccountBalances>({
     totalBalance: BigNumber.from(0.0),
     rbnEarned: BigNumber.from(0.0),
     rbnClaimed: BigNumber.from(0.0),
     rbnClaimable: BigNumber.from(0.0),
   });
-  const { loading, data: vaultDatas } = useVaultsData();
+  const { loading, data: poolDatas } = usePoolsData();
   const { account } = useWeb3Wallet();
 
   useEffect(() => {
@@ -27,9 +27,9 @@ export const useVaultAccountBalances = () => {
       let rbnEarned = BigNumber.from(0.0);
       let rbnClaimed = BigNumber.from(0.0);
       let rbnClaimable = BigNumber.from(0.0);
-      VaultList.forEach((pool) => {
-        const poolData = vaultDatas[pool];
-        totalBalance = totalBalance.add(poolData.vaultBalanceInAsset);
+      PoolList.forEach((pool) => {
+        const poolData = poolDatas[pool];
+        totalBalance = totalBalance.add(poolData.poolBalanceInAsset);
         rbnEarned = rbnEarned.add(poolData.accumulativeReward);
         rbnClaimed = rbnClaimed.add(poolData.withdrawnReward);
         rbnClaimable = rbnClaimable.add(poolData.withdrawableReward);
@@ -41,7 +41,7 @@ export const useVaultAccountBalances = () => {
         rbnClaimable: rbnClaimable,
       });
     }
-  }, [account, loading, vaultDatas]);
+  }, [account, loading, poolDatas]);
 
   const isLoading = useMemo(() => {
     return loading || !account;

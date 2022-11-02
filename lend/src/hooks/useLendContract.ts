@@ -1,33 +1,33 @@
 import { useWeb3React } from "@web3-react/core";
 import { useEffect, useState } from "react";
-import { RibbonLendVault } from "../codegen";
-import { RibbonLendVault__factory } from "../codegen/factories/RibbonLendVault__factory";
-import { VaultAddressMap, VaultOptions } from "../constants/constants";
+import { RibbonLendPool } from "../codegen";
+import { RibbonLendPool__factory } from "../codegen/factories/RibbonLendPool__factory";
+import { PoolAddressMap, PoolOptions } from "../constants/constants";
 import { useWeb3Context } from "shared/lib/hooks/web3Context";
 
 export const getLendContract = (
   library: any,
-  vaultOption: VaultOptions,
+  poolOption: PoolOptions,
   useSigner: boolean = true
 ) => {
   const provider = useSigner ? library.getSigner() : library;
 
-  return RibbonLendVault__factory.connect(
-    VaultAddressMap[vaultOption].lend,
+  return RibbonLendPool__factory.connect(
+    PoolAddressMap[poolOption].lend,
     provider
   );
 };
 
-const useLendContract = (vaultOption: VaultOptions) => {
+const useLendContract = (poolOption: PoolOptions) => {
   const { active, library } = useWeb3React();
   const { provider } = useWeb3Context();
-  const [vault, setVault] = useState<RibbonLendVault | null>(null);
+  const [pool, setPool] = useState<RibbonLendPool | null>(null);
 
   useEffect(() => {
-    const vault = getLendContract(library || provider, vaultOption, active);
-    setVault(vault);
-  }, [active, library, provider, vaultOption]);
+    const pool = getLendContract(library || provider, poolOption, active);
+    setPool(pool);
+  }, [active, library, provider, poolOption]);
 
-  return vault;
+  return pool;
 };
 export default useLendContract;

@@ -2,7 +2,7 @@ import colors from "shared/lib/designSystem/colors";
 import useWeb3Wallet from "../../hooks/useWeb3Wallet";
 import styled, { css } from "styled-components";
 import { Title, Subtitle, Button } from "../../designSystem";
-import { useVaultAccountBalances } from "../../hooks/useVaultAccountBalances";
+import { usePoolAccountBalances } from "../../hooks/usePoolAccountBalances";
 import {
   getAssetColor,
   getAssetDecimals,
@@ -10,15 +10,15 @@ import {
 } from "../../utils/asset";
 import { formatBigNumber, isPracticallyZero } from "../../utils/math";
 import { useEffect, useMemo, useState } from "react";
-import { useVaultTotalDeposits } from "../../hooks/useVaultTotalDeposits";
+import { usePoolTotalDeposits } from "../../hooks/usePoolTotalDeposits";
 import { formatUnits } from "ethers/lib/utils";
 import LendModal, { ModalContentEnum } from "../Common/LendModal";
 import { delayedFade } from "../animations";
 import { fadeIn } from "shared/lib/designSystem/keyframes";
-import { VaultList } from "../../constants/constants";
-import { useVaultsData } from "../../hooks/web3DataContext";
+import { PoolList } from "../../constants/constants";
+import { usePoolsData } from "../../hooks/web3DataContext";
 import { BigNumber } from "ethers";
-import { usePoolsAPR } from "../../hooks/usePoolsAPR";
+import { usePoolsApr } from "../../hooks/usePoolsApr";
 import currency from "currency.js";
 import { BaseIndicator } from "shared/lib/designSystem";
 const BalanceWrapper = styled.div`
@@ -26,7 +26,7 @@ const BalanceWrapper = styled.div`
   display: flex;
 `;
 
-const VaultContainer = styled.div`
+const PoolContainer = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
@@ -173,11 +173,11 @@ const ClaimValue = styled.span`
 export const Balance = () => {
   const { account } = useWeb3Wallet();
   const Logo = getAssetLogo("USDC");
-  const { loading, accountBalances } = useVaultAccountBalances();
+  const { loading, accountBalances } = usePoolAccountBalances();
 
-  const { loading: depositLoading, totalDeposits } = useVaultTotalDeposits();
-  const { loading: vaultDataLoading, data: vaultDatas } = useVaultsData();
-  const { aprs } = usePoolsAPR();
+  const { loading: depositLoading, totalDeposits } = usePoolTotalDeposits();
+  const { loading: poolDataLoading, data: poolDatas } = usePoolsData();
+  const { aprs } = usePoolsApr();
   const yourBalance = accountBalances.totalBalance;
   const rbnClaimableRewards = accountBalances.rbnClaimable;
   const rbnDecimals = getAssetDecimals("RBN");
@@ -186,21 +186,21 @@ export const Balance = () => {
   const [triggerAnimation, setTriggerAnimation] = useState<boolean>(true);
 
   const [isManager, totalBorrowed, apr] = useMemo(() => {
-    if (account && !vaultDataLoading) {
+    if (account && !poolDataLoading) {
       let managers: string[] = [];
       let totalBorrowed: BigNumber = BigNumber.from(0);
       let apr: number = 0;
-      VaultList.forEach((pool) => {
-        managers.push(vaultDatas[pool].manager);
-        if (vaultDatas[pool].manager === account) {
-          totalBorrowed = vaultDatas[pool].borrows;
+      PoolList.forEach((pool) => {
+        managers.push(poolDatas[pool].manager);
+        if (poolDatas[pool].manager === account) {
+          totalBorrowed = poolDatas[pool].borrows;
           apr = aprs[pool];
         }
       });
       return [managers.includes(account), totalBorrowed, apr];
     }
     return [false, BigNumber.from(0), 0];
-  }, [account, aprs, vaultDataLoading, vaultDatas]);
+  }, [account, aprs, poolDataLoading, poolDatas]);
 
   useEffect(() => {
     setTimeout(() => {
@@ -258,7 +258,7 @@ export const Balance = () => {
         content={ModalContentEnum.WALLET}
       />
       <BalanceWrapper>
-        <VaultContainer>
+        <PoolContainer>
           {!isManager ? (
             <>
               <ProductAssetLogoContainer delay={0.1}>
@@ -319,7 +319,7 @@ export const Balance = () => {
             <>
               <BalanceTitle delay={0.1}>Total Borrowed</BalanceTitle>
               <HeroText delay={0.2}>
-                {vaultDataLoading
+                {poolDataLoading
                   ? "---"
                   : "$" + formatBigNumber(totalBorrowed, decimals, 2)}
               </HeroText>
@@ -337,7 +337,7 @@ export const Balance = () => {
               </HeroSubtitle>
             </>
           )}
-        </VaultContainer>
+        </PoolContainer>
       </BalanceWrapper>
     </>
   );

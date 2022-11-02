@@ -3,7 +3,7 @@ import colors from "shared/lib/designSystem/colors";
 import styled, { keyframes } from "styled-components";
 import { SecondaryText, Title } from "../../designSystem";
 import useWeb3Wallet from "shared/lib/hooks/useWeb3Wallet";
-import { VaultAddressMap, VaultOptions } from "../../constants/constants";
+import { PoolAddressMap, PoolOptions } from "../../constants/constants";
 import { formatBigNumber, isPracticallyZero } from "../../utils/math";
 import { getAssetDecimals, getUtilizationDecimals } from "../../utils/asset";
 import { fadeIn } from "shared/lib/designSystem/keyframes";
@@ -13,13 +13,13 @@ import { useMemo } from "react";
 import { parseUnits } from "ethers/lib/utils";
 import { BaseInput, BaseInputContainer } from "shared/lib/designSystem";
 import {
-  useVaultsData,
+  usePoolsData,
   useAssetBalance,
-  useVaultData,
+  usePoolData,
 } from "../../hooks/web3DataContext";
 import { LoadingText } from "shared/lib/hooks/useLoadingText";
 import useLendContract from "../../hooks/useLendContract";
-import { RibbonLendVault } from "../../codegen";
+import { RibbonLendPool } from "../../codegen";
 import { usePendingTransactions } from "../../hooks/pendingTransactionsContext";
 import HeroContent from "../HeroContent";
 import { PoolValidationErrors } from "./types";
@@ -309,7 +309,7 @@ type Step = "slider" | "typing";
 const StepList = ["slider", "typing"] as const;
 
 interface HeroProps {
-  pool: VaultOptions;
+  pool: PoolOptions;
   page: ActionModalEnum;
   setPage: (page: ActionModalEnum) => void;
   setTxhashMain: (txhash: string) => void;
@@ -331,17 +331,17 @@ const Hero: React.FC<HeroProps> = ({
   show,
   triggerAnimation,
 }) => {
-  const vaultDatas = useVaultsData();
+  const poolDatas = usePoolsData();
   const [inputAmount, setInputAmount] = useState<string>("");
   const [step, setStep] = useState<Step>("slider");
   const [waitingApproval, setWaitingApproval] = useState(false);
   const { active, account } = useWeb3Wallet();
   const Logo = getAssetLogo("USDC");
-  const { utilizationRate, availableToBorrow } = useVaultData(pool);
+  const { utilizationRate, availableToBorrow } = usePoolData(pool);
   const decimals = getAssetDecimals("USDC");
   const { balance: userAssetBalance } = useAssetBalance("USDC");
   const [txhash, setTxhash] = useState("");
-  const lendPool = useLendContract(pool) as RibbonLendVault;
+  const lendPool = useLendContract(pool) as RibbonLendPool;
   const utilizationPercentage = formatBigNumber(
     utilizationRate,
     getUtilizationDecimals()
@@ -349,10 +349,10 @@ const Hero: React.FC<HeroProps> = ({
   const { pendingTransactions, addPendingTransaction } =
     usePendingTransactions();
   const [triggerWalletModal, setWalletModal] = useState<boolean>(false);
-  const poolSize = vaultDatas.data[pool].poolSize;
-  const borrows = vaultDatas.data[pool].borrows;
+  const poolSize = poolDatas.data[pool].poolSize;
+  const borrows = poolDatas.data[pool].borrows;
 
-  const tokenAllowance = useTokenAllowance("usdc", VaultAddressMap[pool].lend);
+  const tokenAllowance = useTokenAllowance("usdc", PoolAddressMap[pool].lend);
 
   // Check if approval needed
   const showTokenApproval = useMemo(() => {
@@ -536,7 +536,7 @@ const Hero: React.FC<HeroProps> = ({
             txhash: res.hash,
             type: "borrow",
             amount: amountStr,
-            vault: pool,
+            pool: pool,
             asset: "USDC",
           });
 
@@ -545,7 +545,7 @@ const Hero: React.FC<HeroProps> = ({
           setPage(ActionModalEnum.TRANSACTION_STEP);
         } else {
           if (showTokenApproval) {
-            const approveToAddress = VaultAddressMap[pool]["lend"];
+            const approveToAddress = PoolAddressMap[pool]["lend"];
             if (tokenContract && approveToAddress) {
               setWaitingApproval(true);
               const amount =
@@ -558,7 +558,7 @@ const Hero: React.FC<HeroProps> = ({
                 txhash,
                 type: "approval",
                 amount: amount,
-                vault: pool,
+                pool: pool,
                 asset: "USDC",
               });
               setTxhash(txhash);
@@ -574,7 +574,7 @@ const Hero: React.FC<HeroProps> = ({
               txhash: res.hash,
               type: "repay",
               amount: amountStr,
-              vault: pool,
+              pool: pool,
               asset: "USDC",
             });
 
