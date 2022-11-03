@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { Col, Row } from "react-bootstrap";
 import colors from "shared/lib/designSystem/colors";
 import styled from "styled-components";
@@ -234,16 +234,18 @@ enum PageEnum {
 }
 
 const LendPage: React.FC = () => {
+  const [triggerWalletModal, setWalletModal] = useState<boolean>(false);
   const search = window.location.search;
   const params = new URLSearchParams(search);
   const referralCode = params.get("code");
-  let walletModalInitialState = false;
-  if (referralCode) {
-    sessionStorage.setItem("code", referralCode);
-    walletModalInitialState = true;
-  }
+  useEffect(() => {
+    if (referralCode) {
+      sessionStorage.setItem("code", referralCode);
+      window.history.replaceState({}, document.title, window.location.pathname);
+      setWalletModal(true);
+    }
+  }, [referralCode]);
   const [activePage, setPage] = useState<PageEnum>(PageEnum.POOLS);
-  const [triggerWalletModal, setWalletModal] = useState<boolean>(walletModalInitialState);
   const { width } = useScreenSize();
   const { loading, data: vaultDatas } = useVaultsData();
   const { account } = useWeb3Wallet();
