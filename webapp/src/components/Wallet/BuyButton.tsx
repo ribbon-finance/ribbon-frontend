@@ -101,7 +101,6 @@ export const BuyButton: React.FC<BuyButtonProps> = (props) => {
         console.log("purchase exited");
       },
     };
-
     initOnRamp(initParams, (_, instance) => {
       if (instance) {
         //check that account connected is same as destination wallet account
@@ -112,10 +111,12 @@ export const BuyButton: React.FC<BuyButtonProps> = (props) => {
         setOnrampInstance(instance);
       }
     });
+
     return () => {
       onrampInstance?.destroy();
     };
-  }, [account, chainId, onrampInstance]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [account, chainId]);
 
   const handleClick = () => {
     onrampInstance?.open();
