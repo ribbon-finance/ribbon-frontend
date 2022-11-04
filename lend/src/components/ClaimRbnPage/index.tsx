@@ -15,6 +15,7 @@ import { getAssetColor, getAssetDecimals } from "../../utils/asset";
 import { VaultAddressMap, VaultList } from "../../constants/constants";
 import Logo from "shared/lib/assets/icons/logo";
 import useWeb3Wallet from "../../hooks/useWeb3Wallet";
+import { ReferralFooter } from "../Referral/ReferralFooter";
 
 const borderStyle = `1px solid ${colors.primaryText}1F`;
 
@@ -92,7 +93,7 @@ const ClaimReferralRewardsButton = styled(Button)`
   }
 `;
 
-const LearnMoreContainer = styled.div`
+const DisclaimerContainer = styled.div`
   display: flex;
   width: 100%;
   text-align: center;
@@ -103,7 +104,7 @@ const LearnMoreContainer = styled.div`
   padding-right: 18px;
 `;
 
-const Footer = styled.div`
+const Disclaimer = styled.div`
   display: flex;
   margin-top: 16px;
   font-size: 14px;
@@ -168,10 +169,6 @@ const FrameBar = styled.div<{
   }
 `;
 
-const StyledExternalLinkIcon = styled(ExternalLinkIcon)`
-  margin-left: 4px;
-`;
-
 const ReferralRewardExternalLinkIcon = styled(ExternalLinkIcon).attrs(() => ({
   width: 24,
   height: 24,
@@ -200,10 +197,49 @@ const CloseButton = styled.button`
   border-left: ${borderStyle};
 `;
 
+const TextContent = styled.div`
+  color: ${colors.primaryText}A3;
+  padding: 24px 16px;
+  overflow: hidden;
+  font-size: 16px;
+`;
+
+const ContinueButtonWrapper = styled.div`
+  border-top: 1px solid ${colors.primaryText}1F;
+  display: block;
+  width: 100%;
+  padding: 16px 24px;
+  text-align: center;
+
+  a {
+    display: block;
+    margin-top: 16px;
+  }
+
+  > * {
+    width: 100%;
+  }
+`;
+
+const ContinueButton = styled(Button)`
+  background-color: ${colors.primaryText};
+  color: #000000;
+  height: 64px;
+  border-radius: 0;
+`;
+
+const LearnMoreContainer = styled.div`
+  display: flex;
+  width: 100%;
+  padding-left: 16px;
+  margin-bottom: 16px;
+`;
+
 export enum ClaimRbnPageEnum {
   CLAIM_RBN = "CLAIM RBN",
   TRANSACTION_STEP = "CLAIMING RBN",
   SUCCESS_STEP = "RBN CLAIMED",
+  REFERRAL_REDIRECT = "VISIT RHINO.FI",
 }
 
 interface ClaimRbnPageProps {
@@ -278,6 +314,11 @@ export const ClaimRbnPage: React.FC<ClaimRbnPageProps> = ({ onHide }) => {
     setRbnClaimStep,
   ]);
 
+  const handleClickReferralRedirectButton = () => {
+    setRbnClaimStep(ClaimRbnPageEnum.REFERRAL_REDIRECT);
+    window.open(`https://app.rhino.fi/`);
+  };
+
   const claimHeader = useMemo(() => {
     return (
       <Header>
@@ -327,17 +368,17 @@ export const ClaimRbnPage: React.FC<ClaimRbnPageProps> = ({ onHide }) => {
           </RbnButtonWrapper>
           <RbnButtonWrapper>
             <ClaimReferralRewardsButton
-              onClick={() => window.open(`https://app.rhino.fi/`)}
+              onClick={() => handleClickReferralRedirectButton()}
             >
               Claim Referral Rewards
               <ReferralRewardExternalLinkIcon />
             </ClaimReferralRewardsButton>
           </RbnButtonWrapper>
-          <LearnMoreContainer>
-            <Footer>
+          <DisclaimerContainer>
+            <Disclaimer>
               IMPORTANT: Referral rewards can only be claimed using Rhino.fi
-            </Footer>
-          </LearnMoreContainer>
+            </Disclaimer>
+          </DisclaimerContainer>
         </>
       );
     }
@@ -366,11 +407,29 @@ export const ClaimRbnPage: React.FC<ClaimRbnPageProps> = ({ onHide }) => {
       );
     }
 
+    if (rbnClaimStep === ClaimRbnPageEnum.REFERRAL_REDIRECT) {
+      return (
+        <>
+          <TextContent>
+            You are being redirected to Rhino where you can make gas-less claims
+            of your RBN referral rewards.
+          </TextContent>
+          <LearnMoreContainer>
+            <ReferralFooter></ReferralFooter>
+          </LearnMoreContainer>
+          <ContinueButtonWrapper>
+            <ContinueButton onClick={() => onHide()}>Continue</ContinueButton>
+          </ContinueButtonWrapper>
+        </>
+      );
+    }
+
     return <></>;
   }, [
     account,
     claimableRbn,
     claimedRbn,
+    onHide,
     handleClickClaimButton,
     loading,
     rbnClaimStep,
@@ -380,12 +439,17 @@ export const ClaimRbnPage: React.FC<ClaimRbnPageProps> = ({ onHide }) => {
 
   const claimPage = useMemo(() => {
     return (
-      <div style={{ minHeight: 480 }}>
+      <div
+        style={{
+          minHeight:
+            rbnClaimStep !== ClaimRbnPageEnum.REFERRAL_REDIRECT ? 480 : 300,
+        }}
+      >
         {claimHeader}
         {claimContent}
       </div>
     );
-  }, [claimHeader, claimContent]);
+  }, [claimHeader, claimContent, rbnClaimStep]);
 
   return claimPage;
 };
