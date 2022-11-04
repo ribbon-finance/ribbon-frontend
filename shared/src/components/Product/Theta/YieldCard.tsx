@@ -464,12 +464,27 @@ const YieldCard: React.FC<YieldCardProps> = ({
   const isActiveVault = vaultVersion === "v2" && !isDisabledVault(vault);
   const isEVMVault = (vault: VaultOptions) =>
     isEthVault(vault) || isAvaxVault(vault);
-  const totalProjectedYield =
-    latestAPY.fetched && !lg5DataLoading
-      ? isActiveVault
-        ? `${(latestAPY.res + (isEVMVault(vault) ? baseAPY : 0)).toFixed(2)}%`
-        : "0%"
-      : loadingText;
+
+  const totalProjectedYield = useMemo(() => {
+    if (!isActiveVault) return loadingText;
+
+    if (isEVMVault(vault)) {
+      return latestAPY.fetched && !lg5DataLoading
+        ? `${(latestAPY.res + baseAPY).toFixed(2)}%`
+        : "0%";
+    } else {
+      return latestAPY.fetched ? `${latestAPY.res.toFixed(2)}%` : "0%";
+    }
+  }, [
+    baseAPY,
+    isActiveVault,
+    latestAPY.fetched,
+    latestAPY.res,
+    lg5DataLoading,
+    loadingText,
+    vault,
+  ]);
+
   const vaultYield = latestAPY.fetched
     ? isActiveVault
       ? `${latestAPY.res.toFixed(2)}%`
