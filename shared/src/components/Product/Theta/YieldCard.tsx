@@ -430,7 +430,7 @@ const YieldCard: React.FC<YieldCardProps> = ({
     data: { totalBalance: v2Deposits, cap: v2VaultLimit, pricePerShare },
     loading: v2DataLoading,
   } = useV2VaultData(vault);
-  const { chainId } = useWeb3Wallet();
+  const { account, chainId } = useWeb3Wallet();
   const { t } = useTranslation();
   const isLoading = useMemo(() => status === "loading", [status]);
   const color = getVaultColor(vault);
@@ -443,7 +443,6 @@ const YieldCard: React.FC<YieldCardProps> = ({
   const { data: lg5Data, loading: lg5DataLoading } =
     useLiquidityGaugeV5PoolData(vault);
   const { prices } = useAssetsPrice();
-  const { account } = useWeb3Wallet();
   const loadingText = useLoadingText();
   const { loading, maxYield } = useAirtable();
   const baseAPY = useMemo(() => {
@@ -463,11 +462,12 @@ const YieldCard: React.FC<YieldCardProps> = ({
   }, [asset, decimals, lg5Data, pricePerShare, prices]);
 
   const isActiveVault = vaultVersion === "v2" && !isDisabledVault(vault);
-
+  const isEVMVault = (vault: VaultOptions) =>
+    isEthVault(vault) || isAvaxVault(vault);
   const totalProjectedYield =
     latestAPY.fetched && !lg5DataLoading
       ? isActiveVault
-        ? `${(latestAPY.res + baseAPY).toFixed(2)}%`
+        ? `${(latestAPY.res + (isEVMVault(vault) ? baseAPY : 0)).toFixed(2)}%`
         : "0%"
       : loadingText;
   const vaultYield = latestAPY.fetched
@@ -717,10 +717,14 @@ const YieldCard: React.FC<YieldCardProps> = ({
                   <span>{t("shared:YieldCard:vaultYield")}</span>
                   <span>{vaultYield}</span>
                 </YieldExplainerStat>
-                <YieldExplainerStat>
-                  <span>{t("shared:YieldCard:baseStakingYield")}</span>
-                  <span>{baseStakingYield}</span>
-                </YieldExplainerStat>
+                {isEVMVault(vault) ? (
+                  <YieldExplainerStat>
+                    <span>{t("shared:YieldCard:baseStakingYield")}</span>
+                    <span>{baseStakingYield}</span>
+                  </YieldExplainerStat>
+                ) : (
+                  <></>
+                )}
                 <br />
                 <p>{t("shared:YieldCard:yieldExplainerDesc")}</p>
               </>
