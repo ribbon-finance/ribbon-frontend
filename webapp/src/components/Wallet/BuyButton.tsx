@@ -44,6 +44,7 @@ type DestinationWallet = {
 export const BuyButton: React.FC<BuyButtonProps> = (props) => {
   const [active, setActive] = useState(false);
   const [walletAccount, setWalletAccount] = useState<string>();
+  const [initializing, setInitializing] = useState(false);
   const [onrampInstance, setOnrampInstance] = useState<
     CBPayInstanceType | undefined
   >();
@@ -51,6 +52,7 @@ export const BuyButton: React.FC<BuyButtonProps> = (props) => {
   const { account, chainId } = useWeb3Wallet();
 
   useEffect(() => {
+    setInitializing(true);
     const destinationWallets: DestinationWallet[] = [];
     const addWallet = (
       blockchain: "ethereum" | "avalanche-c-chain" | "solana"
@@ -108,6 +110,7 @@ export const BuyButton: React.FC<BuyButtonProps> = (props) => {
           setWalletAccount(account);
         }
         setActive(true);
+        setInitializing(false);
         setOnrampInstance(instance);
       }
     });
@@ -119,7 +122,9 @@ export const BuyButton: React.FC<BuyButtonProps> = (props) => {
   }, [account, chainId]);
 
   const handleClick = () => {
-    onrampInstance?.open();
+    if (!initializing) {
+      onrampInstance?.open();
+    }
   };
 
   if (!active || !account || account !== walletAccount) return <></>;
