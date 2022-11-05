@@ -21,7 +21,6 @@ import { useGlobalState } from "shared/lib/store/store";
 import FilterDropdown from "shared/lib/components/Common/FilterDropdown";
 import { useHistory } from "react-router-dom";
 import { useLendLink } from "shared/lib/hooks/useLendLink";
-import { BuyButton } from "../Wallet/BuyButton";
 
 const HeaderContainer = styled.div<MobileMenuOpenProps>`
   height: ${theme.header.height}px;
@@ -285,11 +284,6 @@ const Header = () => {
         </HeaderButtonContainer>
       )}
 
-      {active && (
-        <HeaderButtonContainer>
-          <BuyButton />
-        </HeaderButtonContainer>
-      )}
       <AccountStatus variant="desktop" />
 
       {/* MOBILE MENU */}
