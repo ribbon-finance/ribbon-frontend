@@ -484,7 +484,7 @@ const DepositFormStep: React.FC<{
       case "deposit":
         actionDetails.push({
           key: "Current Position",
-          value: `${currency(formatBigNumber(investedInStrategy, decimals), {
+          value: `${currency(formatUnits(investedInStrategy, decimals), {
             symbol: "",
           })} USDC`,
           tooltip: {
@@ -496,7 +496,7 @@ const DepositFormStep: React.FC<{
 
         actionDetails.push({
           key: "Wallet Balance",
-          value: `${currency(formatBigNumber(userAssetBalance, decimals), {
+          value: `${currency(formatUnits(userAssetBalance, decimals), {
             symbol: "",
           }).format()} USDC`,
           tooltip: {
@@ -508,7 +508,7 @@ const DepositFormStep: React.FC<{
 
         actionDetails.push({
           key: "Vault Capacity",
-          value: `${currency(formatBigNumber(cap.sub(totalBalance), decimals), {
+          value: `${currency(formatUnits(cap.sub(totalBalance), decimals), {
             symbol: "",
           }).format()} USDC`,
           error: "capacityOverflow",

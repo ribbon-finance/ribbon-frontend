@@ -12,7 +12,6 @@ import Logo from "shared/lib/assets/icons/logo";
 import WalletLogo from "shared/lib/components/Wallet/WalletLogo";
 import LearnMoreWallet from "shared/lib/components/Wallet/LearnMoreWallet";
 import { Button } from "../../designSystem";
-import { formatBigNumber } from "../../utils/math";
 import { getAssetDecimals } from "../../utils/asset";
 import {
   EthereumWallet,
@@ -27,6 +26,7 @@ import currency from "currency.js";
 import { useAssetsBalance } from "../../hooks/web3DataContext";
 import Indicator from "shared/lib/components/Indicator/Indicator";
 import { truncateAddress } from "shared/lib/utils/address";
+import { formatUnits } from "ethers/lib/utils";
 
 const borderStyle = `1px solid ${colors.primaryText}1F`;
 
@@ -534,7 +534,7 @@ export const WalletPage = ({ onHide }: WalletPageProps) => {
                     <label>{name} Balance</label>
                     <span>
                       {currency(
-                        formatBigNumber(balances.data[asset], decimals, 2)
+                        formatUnits(balances.data[asset], decimals)
                       ).format({ symbol: "" })}
                     </span>
                   </AssetStat>

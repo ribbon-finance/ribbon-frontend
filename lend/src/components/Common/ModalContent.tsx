@@ -187,7 +187,7 @@ const AboutPage = () => {
       <>
         <p>
           Ribbon Lend is Ribbon Finance’s second product line alongside Ribbon
-          vaults. Ribbon Lend allows depositors to lend unsecured to KYC/AML’d
+          pools. Ribbon Lend allows depositors to lend unsecured to KYC/AML’d
           institutional market makers of their choosing with high liquidity.
           Ribbon Lend offers the best of both worlds between TradFi and DeFi:
         </p>

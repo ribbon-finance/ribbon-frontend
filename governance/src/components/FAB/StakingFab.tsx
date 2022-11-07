@@ -108,13 +108,13 @@ const StakingFAB = () => {
   }, [rbnTokenAccount]);
 
   const stakeMode = useMemo(() => {
-    if (rbnAllowance.isZero()) {
-      return "approve";
-    }
-
     // If has current locked RBN and it has not expired, user can only increase
     if (rbnTokenAccount && rbnTokenAccount.lockEndTimestamp && !lockExpired) {
       return "increase";
+    }
+
+    if (rbnAllowance.isZero()) {
+      return "approve";
     }
 
     return "stake";

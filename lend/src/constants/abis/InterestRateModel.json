@@ -1,0 +1,231 @@
+[
+  {
+    "inputs": [
+      { "internalType": "uint256", "name": "zeroRate_", "type": "uint256" },
+      { "internalType": "uint256", "name": "fullRate_", "type": "uint256" },
+      { "internalType": "uint256", "name": "kink_", "type": "uint256" },
+      { "internalType": "uint256", "name": "kinkRate_", "type": "uint256" }
+    ],
+    "stateMutability": "nonpayable",
+    "type": "constructor"
+  },
+  { "inputs": [], "name": "PRBMathSD59x18__DivInputTooSmall", "type": "error" },
+  {
+    "inputs": [
+      { "internalType": "uint256", "name": "rAbs", "type": "uint256" }
+    ],
+    "name": "PRBMathSD59x18__DivOverflow",
+    "type": "error"
+  },
+  {
+    "inputs": [{ "internalType": "int256", "name": "x", "type": "int256" }],
+    "name": "PRBMathSD59x18__Exp2InputTooBig",
+    "type": "error"
+  },
+  {
+    "inputs": [{ "internalType": "int256", "name": "x", "type": "int256" }],
+    "name": "PRBMathSD59x18__FromIntOverflow",
+    "type": "error"
+  },
+  {
+    "inputs": [{ "internalType": "int256", "name": "x", "type": "int256" }],
+    "name": "PRBMathSD59x18__FromIntUnderflow",
+    "type": "error"
+  },
+  {
+    "inputs": [{ "internalType": "int256", "name": "x", "type": "int256" }],
+    "name": "PRBMathSD59x18__LogInputTooSmall",
+    "type": "error"
+  },
+  { "inputs": [], "name": "PRBMathSD59x18__MulInputTooSmall", "type": "error" },
+  {
+    "inputs": [
+      { "internalType": "uint256", "name": "rAbs", "type": "uint256" }
+    ],
+    "name": "PRBMathSD59x18__MulOverflow",
+    "type": "error"
+  },
+  {
+    "inputs": [
+      { "internalType": "uint256", "name": "prod1", "type": "uint256" }
+    ],
+    "name": "PRBMath__MulDivFixedPointOverflow",
+    "type": "error"
+  },
+  {
+    "inputs": [
+      { "internalType": "uint256", "name": "prod1", "type": "uint256" },
+      { "internalType": "uint256", "name": "denominator", "type": "uint256" }
+    ],
+    "name": "PRBMath__MulDivOverflow",
+    "type": "error"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "zeroRate",
+        "type": "uint256"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "fullRate",
+        "type": "uint256"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "kink",
+        "type": "uint256"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "kinkRate",
+        "type": "uint256"
+      }
+    ],
+    "name": "Configured",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": true,
+        "internalType": "address",
+        "name": "previousOwner",
+        "type": "address"
+      },
+      {
+        "indexed": true,
+        "internalType": "address",
+        "name": "newOwner",
+        "type": "address"
+      }
+    ],
+    "name": "OwnershipTransferred",
+    "type": "event"
+  },
+  {
+    "inputs": [],
+    "name": "MAX_RATE",
+    "outputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "SECONDS_PER_YEAR",
+    "outputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "TYPE",
+    "outputs": [{ "internalType": "string", "name": "", "type": "string" }],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      { "internalType": "uint256", "name": "zeroRate_", "type": "uint256" },
+      { "internalType": "uint256", "name": "fullRate_", "type": "uint256" },
+      { "internalType": "uint256", "name": "kink_", "type": "uint256" },
+      { "internalType": "uint256", "name": "kinkRate_", "type": "uint256" }
+    ],
+    "name": "configure",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "fullRate",
+    "outputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      { "internalType": "uint256", "name": "balance", "type": "uint256" },
+      { "internalType": "uint256", "name": "borrows", "type": "uint256" },
+      { "internalType": "uint256", "name": "reserves", "type": "uint256" }
+    ],
+    "name": "getBorrowRate",
+    "outputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      { "internalType": "uint256", "name": "balance", "type": "uint256" },
+      { "internalType": "uint256", "name": "borrows", "type": "uint256" },
+      { "internalType": "uint256", "name": "reserves", "type": "uint256" },
+      { "internalType": "uint256", "name": "reserveFactor", "type": "uint256" }
+    ],
+    "name": "getSupplyRate",
+    "outputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "kink",
+    "outputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "kinkRate",
+    "outputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "owner",
+    "outputs": [{ "internalType": "address", "name": "", "type": "address" }],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "renounceOwnership",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      { "internalType": "address", "name": "newOwner", "type": "address" }
+    ],
+    "name": "transferOwnership",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      { "internalType": "uint256", "name": "balance", "type": "uint256" },
+      { "internalType": "uint256", "name": "borrows", "type": "uint256" },
+      { "internalType": "uint256", "name": "reserves", "type": "uint256" }
+    ],
+    "name": "utilizationRate",
+    "outputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }],
+    "stateMutability": "pure",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "zeroRate",
+    "outputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }],
+    "stateMutability": "view",
+    "type": "function"
+  }
+]

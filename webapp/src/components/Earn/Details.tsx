@@ -8,10 +8,11 @@ import { SubgraphDataContext } from "shared/lib/hooks/subgraphDataContext";
 import currency from "currency.js";
 import { useContext, useMemo } from "react";
 import { formatUnits } from "ethers/lib/utils";
-import { BigNumber } from "ethers/lib/ethers";
 import useLoadingText from "shared/lib/hooks/useLoadingText";
 import HelpInfo from "shared/lib/components/Common/HelpInfo";
+import { Step } from "./Modal/EarnDetailsModal";
 import { useV2VaultData } from "shared/lib/hooks/web3DataContext";
+
 const ExplainerTitle = styled.div<{ color: string; marginTop?: number }>`
   display: flex;
   font-size: 12px;
@@ -28,6 +29,10 @@ const HighlightedText = styled.span`
   poin &:hover {
     color: ${colors.primaryText}CC;
   }
+`;
+
+const LinkText = styled.span`
+  color: ${colors.primaryText};
 `;
 
 const Link = styled.a`
@@ -56,7 +61,11 @@ const StyledTitle = styled(Title)<{ marginTop: number }>`
   margin-top: ${(props) => props.marginTop}px;
 `;
 
-export const Strategy = () => {
+interface StrategyProps {
+  setStep: (step: Step) => void;
+}
+
+export const Strategy: React.FC<StrategyProps> = ({ setStep }) => {
   const {
     strikePrice,
     baseYield,
@@ -66,22 +75,12 @@ export const Strategy = () => {
     loading,
   } = useAirtable();
 
-  const { vaultSubgraphData } = useContext(SubgraphDataContext);
   const {
-    data: { allocationState },
-    loading: v2DataLoading,
+    loading: vaultLoading,
+    data: { totalBalance },
   } = useV2VaultData("rEARN");
 
   const loadingText = useLoadingText();
-  const TVL = useMemo(() => {
-    if (!vaultSubgraphData.vaults.earn.rEARN) {
-      return BigNumber.from(0.0);
-    }
-    if (!vaultSubgraphData.vaults.earn.rEARN.totalNominalVolume) {
-      return BigNumber.from(0.0);
-    }
-    return vaultSubgraphData.vaults.earn.rEARN.totalNominalVolume;
-  }, [vaultSubgraphData.vaults.earn.rEARN]);
   return (
     <>
       <ParagraphText>
@@ -97,8 +96,15 @@ export const Strategy = () => {
           )}
         />{" "}
         strategy through which depositors can capitalise on the intra-week ETH
-        movements in either direction while also ensuring their capital is
-        protected. The vault earns a base APY and uses the remaining funding to
+        movements in either direction while also ensuring their capital is{" "}
+        <LinkText role={"button"} onClick={() => setStep("risk")}>
+          protected
+        </LinkText>
+        . The vault earns interest by lending capital to our{" "}
+        <LinkText role={"button"} onClick={() => setStep("counterparties")}>
+          counterparties
+        </LinkText>{" "}
+        and uses part of it to generate a base APY and the remaining funding to
         purchase{" "}
         <TooltipExplanation
           title="weekly at-the-money knock-out barrier options"
@@ -110,8 +116,7 @@ export const Strategy = () => {
             </HighlightedText>
           )}
         />
-        . As the epoch of the vault is one month but the options purchased are
-        weekly options, 4 options are purchased within one epoch.
+        .
       </ParagraphText>
       <StyledTitle marginTop={24}>Key Conditions</StyledTitle>
       <ParagraphText marginTop={8}>
@@ -126,7 +131,7 @@ export const Strategy = () => {
       <ExplainerTitle color={colors.tertiaryText}>
         <span>Loan Tenor</span>
       </ExplainerTitle>
-      <StyledTitle marginTop={4}> 28 DAYS</StyledTitle>
+      <StyledTitle marginTop={4}> 7 DAYS</StyledTitle>
       <ExplainerTitle color={colors.tertiaryText}>
         <span>Option Tenor</span>
       </ExplainerTitle>
@@ -187,7 +192,9 @@ export const Strategy = () => {
         <span>TVL</span>
       </ExplainerTitle>
       <StyledTitle marginTop={4}>
-        {<>${parseFloat(formatUnits(TVL, "6")).toFixed(2)}</>}
+        {vaultLoading
+          ? loadingText
+          : parseFloat(formatUnits(totalBalance, "6")).toFixed(2)}
       </StyledTitle>
     </>
   );

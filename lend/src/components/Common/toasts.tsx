@@ -30,7 +30,7 @@ export const TxStatusToast = () => {
       case "withdraw":
         return formatBigNumber(
           BigNumber.from(_currentTx.amount),
-          getAssetDecimals(getAssets(_currentTx.vault))
+          getAssetDecimals(getAssets(_currentTx.pool))
         );
       default:
         return _currentTx.amount;
@@ -53,7 +53,7 @@ export const TxStatusToast = () => {
       switch (_currentTx.type) {
         case "withdraw":
           return `${amountFormatted} ${getAssetDisplay(
-            getAssets(_currentTx.vault)
+            getAssets(_currentTx.pool)
           )} withdrawn`;
         case "deposit":
           const referrerCode = sessionStorage.getItem("code");

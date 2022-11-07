@@ -107,7 +107,7 @@ interface EarnDetailsModalProps {
   vaultOption: VaultOptions;
 }
 
-type Step =
+export type Step =
   | "strategy"
   | "payoff"
   | "performance"
@@ -144,7 +144,7 @@ const EarnDetailsModal: React.FC<EarnDetailsModalProps> = ({
   const modalContent = useMemo(() => {
     switch (step) {
       case "strategy":
-        return <Strategy />;
+        return <Strategy setStep={setStep} />;
       case "payoff":
         return <Payoff />;
       case "risk":

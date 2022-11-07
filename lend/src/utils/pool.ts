@@ -2,12 +2,12 @@ import { BigNumber } from "ethers";
 import { parseUnits } from "ethers/lib/utils";
 import {
   getDisplayAssets,
-  VaultAddressMap,
-  VaultOptions,
+  PoolAddressMap,
+  PoolOptions,
 } from "../constants/constants";
 import { getAssetColor } from "./asset";
 
-export const isVaultFull = (
+export const isPoolFull = (
   deposits: BigNumber,
   cap: BigNumber,
   decimals: number
@@ -16,12 +16,12 @@ export const isVaultFull = (
   return !cap.isZero() && deposits.gte(cap.sub(margin));
 };
 
-export const isVaultSupportedOnChain = (
-  vaultOption: VaultOptions,
+export const isPoolSupportedOnChain = (
+  poolOption: PoolOptions,
   chainId: number
 ): Boolean => {
-  return VaultAddressMap[vaultOption].chainId === chainId;
+  return PoolAddressMap[poolOption].chainId === chainId;
 };
 
-export const getVaultColor = (vault: VaultOptions) =>
-  getAssetColor(getDisplayAssets(vault));
+export const getPoolColor = (pool: PoolOptions) =>
+  getAssetColor(getDisplayAssets(pool));

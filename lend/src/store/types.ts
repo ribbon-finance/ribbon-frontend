@@ -1,19 +1,19 @@
 import { BigNumber } from "ethers";
-import { VaultOptions } from "../constants/constants";
+import { PoolOptions } from "../constants/constants";
 
-export interface UnconnectedVaultData {
+export interface UnconnectedPoolData {
   deposits: BigNumber;
-  vaultLimit: BigNumber;
+  poolLimit: BigNumber;
 }
 
 export type DataResponseStatus = "loading" | "success" | "error";
 
-export type VaultDataErrors = "wrong_network";
+export type PoolDataErrors = "wrong_network";
 
-export type VaultDataResponse = {
+export type PoolDataResponse = {
   status: DataResponseStatus;
-  error: VaultDataErrors | null;
-} & UnconnectedVaultData;
+  error: PoolDataErrors | null;
+} & UnconnectedPoolData;
 
 export const AssetsList = ["RBN", "WETH", "USDC"] as const;
 export type Assets = typeof AssetsList[number];
@@ -28,12 +28,12 @@ export type PendingTransaction = {
   | {
       type: "withdraw";
       amount: string;
-      vault: VaultOptions;
+      pool: PoolOptions;
     }
   | {
       type: "deposit" | "approval" | "repay" | "borrow";
       amount: string;
-      vault: VaultOptions;
+      pool: PoolOptions;
       asset: Assets;
     }
   | {
@@ -43,12 +43,12 @@ export type PendingTransaction = {
   | {
       type: "rewardClaim";
       amount: string;
-      stakeAsset: VaultOptions;
+      stakeAsset: PoolOptions;
     }
   | {
       type: "transfer";
       amount: string;
-      transferVault: VaultOptions;
-      receiveVault: VaultOptions;
+      transferPool: PoolOptions;
+      receivePool: PoolOptions;
     }
 );

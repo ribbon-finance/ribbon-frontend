@@ -47,6 +47,7 @@ interface BaseRewardsCalculationProps {
   decimals: number;
   assetPrice: number;
   rbnPrice: number;
+  lendAPY?: number;
 }
 
 /**
@@ -57,6 +58,7 @@ interface BaseRewardsCalculationProps {
  * @param decimals decimals of the vault
  * @param assetPrice price of the vault asset
  * @param rbnPrice Ribbon price
+ * @param lendAPY APY from lending
  * @returns APY percentage, eg. 40 (40%)
  */
 export const calculateBaseRewards = ({
@@ -66,6 +68,7 @@ export const calculateBaseRewards = ({
   decimals,
   assetPrice,
   rbnPrice,
+  lendAPY,
 }: BaseRewardsCalculationProps) => {
   const poolRewardInUSD = parseFloat(assetToFiat(poolReward, rbnPrice));
   const poolSizeInAsset = poolSize
@@ -75,10 +78,12 @@ export const calculateBaseRewards = ({
     assetToFiat(poolSizeInAsset, assetPrice, decimals)
   );
 
-  return poolSizeInUSD > 0
-    ? // Not compounded
-      (poolRewardInUSD / poolSizeInUSD) * 52 * 100
-    : 0;
+  if (poolSizeInUSD <= 0) {
+    return 0;
+  }
+  const baseReward = (poolRewardInUSD / poolSizeInUSD) * 52 * 100;
+
+  return lendAPY ? baseReward + lendAPY : baseReward;
 };
 
 interface BoostMultiplierCalculationProps {

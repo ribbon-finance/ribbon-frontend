@@ -1,21 +1,21 @@
 import { useEffect, useMemo, useState } from "react";
-import { VaultList } from "../constants/constants";
+import { PoolList } from "../constants/constants";
 import { BigNumber } from "ethers";
-import useVaultAccounts from "./useVaultAccounts";
+import usePoolAccounts from "./usePoolAccounts";
 
-export const useVaultTotalDeposits = () => {
+export const usePoolTotalDeposits = () => {
   const [totalDeposits, setTotalDeposits] = useState<BigNumber>(
     BigNumber.from(0.0)
   );
 
-  const { loading, vaultAccounts } = useVaultAccounts("lend");
+  const { loading, poolAccounts } = usePoolAccounts("lend");
 
   useEffect(() => {
-    if (!loading && vaultAccounts) {
+    if (!loading && poolAccounts) {
       try {
         let deposits = BigNumber.from(0.0);
-        VaultList.forEach((pool) => {
-          const poolAccount = vaultAccounts[pool];
+        PoolList.forEach((pool) => {
+          const poolAccount = poolAccounts[pool];
           if (poolAccount) {
             deposits = deposits.add(poolAccount.totalDeposits);
           }
@@ -25,11 +25,11 @@ export const useVaultTotalDeposits = () => {
         console.log("error", error);
       }
     }
-  }, [loading, vaultAccounts]);
+  }, [loading, poolAccounts]);
 
   const isLoading = useMemo(() => {
-    return loading || !vaultAccounts;
-  }, [loading, vaultAccounts]);
+    return loading || !poolAccounts;
+  }, [loading, poolAccounts]);
 
   if (isLoading) {
     return {

@@ -1,17 +1,18 @@
 import React, { useEffect, useMemo } from "react";
 import styled from "styled-components";
-import { VaultOptions, VaultVersion } from "../../constants/constants";
-import { getVaultColor } from "../../utils/vault";
+import { PoolOptions, PoolVersion } from "../../constants/constants";
+import { getPoolColor } from "../../utils/pool";
 import AssetCircleContainer from "shared/lib/components/Common/AssetCircleContainer";
 import { getAssetDecimals, getAssetLogo } from "../../utils/asset";
 import { Title } from "../../designSystem";
 import colors from "shared/lib/designSystem/colors";
-import { formatBigNumber, isPracticallyZero } from "../../utils/math";
+import { isPracticallyZero } from "../../utils/math";
 import sizes from "../../designSystem/sizes";
-import { useVaultsData } from "../../hooks/web3DataContext";
+import { usePoolsData } from "../../hooks/web3DataContext";
 import { components } from "../../designSystem/components";
 import { delayedUpwardFade } from "../animations";
 import currency from "currency.js";
+import { formatUnits } from "ethers/lib/utils";
 
 const DesktopContainer = styled.div<{ color: string }>`
   display: flex;
@@ -63,37 +64,34 @@ const PositionInfoText = styled(Title)<{ size: number; color?: string }>`
 `;
 
 interface YourPositionProps {
-  vault: {
-    vaultOption: VaultOptions;
-    vaultVersion: VaultVersion;
+  pool: {
+    poolOption: PoolOptions;
+    poolVersion: PoolVersion;
   };
   onShowHook?: (show: boolean) => void;
 }
 
 const PositionWidget: React.FC<YourPositionProps> = ({
-  vault: { vaultOption },
+  pool: { poolOption },
   onShowHook,
 }) => {
   const Logo = getAssetLogo("USDC");
-  const { data: vaultDatas } = useVaultsData();
+  const { data: poolDatas } = usePoolsData();
   const decimals = getAssetDecimals("USDC");
-  const color = getVaultColor(vaultOption);
-  const poolData = vaultDatas[vaultOption];
+  const color = getPoolColor(poolOption);
+  const poolData = poolDatas[poolOption];
 
   useEffect(() => {
     onShowHook &&
       onShowHook(
         Boolean(
-          poolData && !isPracticallyZero(poolData.vaultBalanceInAsset, decimals)
+          poolData && !isPracticallyZero(poolData.poolBalanceInAsset, decimals)
         )
       );
   }, [decimals, onShowHook, poolData]);
 
   const positionWidget = useMemo(() => {
-    if (
-      poolData &&
-      !isPracticallyZero(poolData.vaultBalanceInAsset, decimals)
-    ) {
+    if (poolData && !isPracticallyZero(poolData.poolBalanceInAsset, decimals)) {
       return (
         <DesktopContainer color={color}>
           <FloatingPositionCard color={color}>
@@ -112,10 +110,7 @@ const PositionWidget: React.FC<YourPositionProps> = ({
                     <PositionInfoText size={14}>
                       {poolData
                         ? currency(
-                            formatBigNumber(
-                              poolData.vaultBalanceInAsset,
-                              decimals
-                            ),
+                            formatUnits(poolData.poolBalanceInAsset, decimals),
                             { symbol: "" }
                           ).format()
                         : "0.00"}
