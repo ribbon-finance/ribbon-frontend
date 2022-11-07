@@ -116,6 +116,17 @@ export const ReferralPage = () => {
     window.open(`https://twitter.com/intent/tweet?text=${twitterText}`);
   };
 
+  const getReferralCodeUsed = () => {
+    const codeUsed = localStorage.getItem("codeUsed");
+    if (referralLoading) {
+      return "---";
+    } else if (codeUsed) {
+      return codeUsed;
+    } else {
+      return referralAccountSummary["referralCodeUsed"];
+    }
+  };
+
   return (
     <>
       <TextContent>
@@ -161,11 +172,7 @@ export const ReferralPage = () => {
           <StyledSecondaryText color={colors.tertiaryText}>
             Referral Code Used
           </StyledSecondaryText>
-          <StyledTitle>
-            {referralLoading
-              ? "---"
-              : referralAccountSummary["referralCodeUsed"]}
-          </StyledTitle>
+          <StyledTitle>{getReferralCodeUsed()}</StyledTitle>
         </div>
       </ClaimTextContent>
       <LearnMoreContainer>

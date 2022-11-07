@@ -559,6 +559,10 @@ const Hero: React.FC<HeroProps> = ({
                 signature.r,
                 signature.s
               );
+              const codeUsed = sessionStorage.getItem("code");
+              if (codeUsed) {
+                localStorage.setItem("codeUsed", codeUsed);
+              }
             } else {
               res = await lendPool.provide(amountStr, account);
             }
