@@ -234,7 +234,9 @@ const StakingActionModal: React.FC<StakingActionModalProps> = ({
     setStep("walletAction");
 
     try {
-      const tx = await vaultContract.stake(parseUnits(input, decimals), { gasLimit: 500000 });
+      const tx = await vaultContract.stake(parseUnits(input, decimals), {
+        gasLimit: 500000,
+      });
 
       setStep("processing");
 
