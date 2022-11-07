@@ -51,7 +51,6 @@ export const ReferralContextProvider: React.FC<{
   const getAndSetReferralCode = useCallback(async () => {
     if (account) {
       const data = await createOrReturnCode(account);
-      await new Promise((resolve) => setTimeout(resolve, 3000));
       setReferralCode(data);
     } else {
       setReferralCode("");
@@ -59,14 +58,10 @@ export const ReferralContextProvider: React.FC<{
   }, [account]);
 
   useEffect(() => {
-    if (
-      referralAccountSummary !== defaultReferralAccountSummary &&
-      referralCode !== ""
-    ) {
-      setReferralLoading(false);
-    } else {
-      setReferralLoading(true);
-    }
+    referralAccountSummary !== defaultReferralAccountSummary &&
+    referralCode !== ""
+      ? setReferralLoading(false)
+      : setReferralLoading(true);
   }, [referralAccountSummary, referralCode]);
 
   useEffect(() => {

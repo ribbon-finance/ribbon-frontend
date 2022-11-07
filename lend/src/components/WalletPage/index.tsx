@@ -333,19 +333,23 @@ interface WalletPageProps {
 
 export const WalletPage = ({ onHide }: WalletPageProps) => {
   const { active, account, activate, deactivate } = useWeb3Wallet();
-  let initialWalletPageStep = undefined;
-  if (active) {
-    initialWalletPageStep = WalletPageEnum.ACCOUNT;
-  } else if (Boolean(sessionStorage.getItem("code"))) {
-    initialWalletPageStep = WalletPageEnum.REFEREE;
-  } else {
-    initialWalletPageStep = WalletPageEnum.DISCLAIMER;
-  }
-  const [walletStep, setWalletStep] = useState<WalletPageEnum>(
-    initialWalletPageStep
-  );
+  const referralCode = sessionStorage.getItem("code");
   const [selectedWallet, setWallet] = useState<EthereumWallet>();
   const balances = useAssetsBalance();
+
+  const pickWalletState = () => {
+    if (active) {
+      return WalletPageEnum.ACCOUNT;
+    } else if (referralCode) {
+      return WalletPageEnum.REFEREE;
+    } else {
+      return WalletPageEnum.DISCLAIMER;
+    }
+  };
+
+  const [walletStep, setWalletStep] = useState<WalletPageEnum>(
+    pickWalletState()
+  );
 
   useEffect(() => {
     setTimeout(() => {

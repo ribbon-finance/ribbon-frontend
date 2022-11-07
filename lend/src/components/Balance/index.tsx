@@ -222,12 +222,16 @@ export const Balance = () => {
   const yourBalance = accountBalances.totalBalance;
   const rbnPoolRewards = accountBalances.rbnEarned;
   const rbnDecimals = getAssetDecimals("RBN");
-  const totalRbnRewards = rbnPoolRewards.add(
-    // To avoid floating point imprecision and since BigNumbers only work with int,
-    // we multiply the two decimal place rbnReferralReward by 100
-    BigNumber.from(10)
-      .pow(rbnDecimals - 2)
-      .mul(Math.floor(rbnReferralRewards * 100))
+  const totalRbnRewards = useMemo(
+    () =>
+      rbnPoolRewards.add(
+        // To avoid floating point imprecision and since BigNumbers only work with int,
+        // we multiply the two decimal place rbnReferralReward by 100
+        BigNumber.from(10)
+          .pow(rbnDecimals - 2)
+          .mul(Math.floor(rbnReferralRewards * 100))
+      ),
+    [rbnPoolRewards, rbnReferralRewards, rbnDecimals]
   );
   const decimals = getAssetDecimals("USDC");
   const [triggerWalletModal, setWalletModal] = useState<boolean>(false);
