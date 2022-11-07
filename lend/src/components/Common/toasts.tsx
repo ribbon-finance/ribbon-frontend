@@ -56,9 +56,17 @@ export const TxStatusToast = () => {
             getAssets(_currentTx.vault)
           )} withdrawn`;
         case "deposit":
-          return `${amountFormatted} ${getAssetDisplay(
-            _currentTx.asset
-          )} deposited`;
+          const referrerCode = sessionStorage.getItem("code");
+          if (referrerCode) {
+            sessionStorage.removeItem("code");
+            return `${amountFormatted} ${getAssetDisplay(
+              _currentTx.asset
+            )} deposited using referral code ${referrerCode}`;
+          } else {
+            return `${amountFormatted} ${getAssetDisplay(
+              _currentTx.asset
+            )} deposited`;
+          }
         case "claim":
           return `${amountFormatted} RBN claimed`;
         default:
