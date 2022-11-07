@@ -53,7 +53,7 @@ const UtilizationCurve: React.FC<UtilizationCurveProps> = ({
   );
 
   const [actualBorrowRate, actualLendingRate] = useMemo(() => {
-    const borrowRateTemp = getBorrowRate(utilRate);
+    const borrowRateTemp = getBorrowRate(utilRate / 100) * 100;
     const lendingRateTemp = lendingRate(
       utilRate,
       borrowRateTemp,
@@ -62,7 +62,7 @@ const UtilizationCurve: React.FC<UtilizationCurveProps> = ({
     if (!borrowRateTemp || !lendingRateTemp) {
       return [0, 0];
     }
-    return [borrowRateTemp * 100, lendingRateTemp * 100];
+    return [borrowRateTemp, lendingRateTemp];
   }, [getBorrowRate, reserveFactor, utilRate]);
 
   useEffect(() => {
