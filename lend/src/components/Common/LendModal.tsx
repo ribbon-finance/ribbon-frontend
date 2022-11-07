@@ -38,6 +38,7 @@ export enum ModalContentEnum {
   COMMUNITY = "COMMUNITY",
   WALLET = "CONNECT WALLET",
   CLAIMRBN = "CLAIM RBN",
+  REFERRAL = "REFERRALS",
 }
 
 interface InfoModalProps {
@@ -81,6 +82,7 @@ const LendModal: React.FC<InfoModalProps> = ({ show, onHide, content }) => {
       switch (content) {
         case ModalContentEnum.ABOUT:
         case ModalContentEnum.COMMUNITY:
+        case ModalContentEnum.REFERRAL:
           return (
             <>
               <Header>

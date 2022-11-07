@@ -11,6 +11,7 @@ import github from "../../assets/icons/socials/github.svg";
 import { ProductDisclaimer } from "../ProductDisclaimer";
 import { ModalContentEnum } from "./LendModal";
 import { BaseLink } from "../../designSystem";
+import { ReferralPage } from "../Referral";
 
 const TextContent = styled.div`
   color: ${colors.primaryText}A3;
@@ -149,6 +150,8 @@ export const ModalContent = ({ content, onHide }: ModalContentProps) => {
         return <AboutPage />;
       case ModalContentEnum.COMMUNITY:
         return <CommunityPage />;
+      case ModalContentEnum.REFERRAL:
+        return <ReferralPage />;
       default:
         return null;
     }
