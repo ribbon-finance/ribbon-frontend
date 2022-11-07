@@ -17,6 +17,7 @@ import { LoadingText } from "shared/lib/hooks/useLoadingText";
 import RootApp from "./pages/RootApp";
 import colors from "shared/lib/designSystem/colors";
 import "shared/lib/i18n/config";
+import { ReferralContextProvider } from "./hooks/referralContext";
 
 const Body = styled.div`
   background-color: ${colors.background.one};
@@ -49,15 +50,17 @@ function App() {
     <ChainContextProvider>
       <Web3ContextProvider>
         <Web3ReactProvider getLibrary={getLibrary}>
-          <PendingTransactionsContextProvider>
-            <Web3DataContextProvider>
-              <SubgraphDataContextProvider>
-                <ExternalAPIDataContextProvider>
-                  <RootApp />
-                </ExternalAPIDataContextProvider>
-              </SubgraphDataContextProvider>
-            </Web3DataContextProvider>
-          </PendingTransactionsContextProvider>
+          <ReferralContextProvider>
+            <PendingTransactionsContextProvider>
+              <Web3DataContextProvider>
+                <SubgraphDataContextProvider>
+                  <ExternalAPIDataContextProvider>
+                    <RootApp />
+                  </ExternalAPIDataContextProvider>
+                </SubgraphDataContextProvider>
+              </Web3DataContextProvider>
+            </PendingTransactionsContextProvider>
+          </ReferralContextProvider>
         </Web3ReactProvider>
       </Web3ContextProvider>
     </ChainContextProvider>

@@ -8,8 +8,11 @@ import {
   getAssetDecimals,
   getAssetLogo,
 } from "../../utils/asset";
-import { formatBigNumber, isPracticallyZero } from "../../utils/math";
-import { useEffect, useMemo, useState } from "react";
+import {
+  formatBigNumber,
+  isPracticallyZero,
+} from "../../utils/math";
+import { useContext, useEffect, useMemo, useState } from "react";
 import { useVaultTotalDeposits } from "../../hooks/useVaultTotalDeposits";
 import { formatUnits } from "ethers/lib/utils";
 import LendModal, { ModalContentEnum } from "../Common/LendModal";
@@ -21,6 +24,7 @@ import { BigNumber } from "ethers";
 import { usePoolsAPR } from "../../hooks/usePoolsAPR";
 import currency from "currency.js";
 import { BaseIndicator } from "shared/lib/designSystem";
+import { ReferralContext } from "../../hooks/referralContext";
 const BalanceWrapper = styled.div`
   height: 100%;
   display: flex;
@@ -78,8 +82,46 @@ const ClaimButton = styled(Button)<{
 }>`
   border-radius: 64px;
   font-size: 14px;
+  padding-left: 58.75px;
+  padding-right: 58.75px;
   background: ${colors.primaryText};
   color: ${colors.background.one};
+  &:disabled {
+    color: ${colors.tertiaryText};
+    background: ${colors.background.one};
+    border: 2px solid ${colors.tertiaryText};
+    pointer-events: none;
+  }
+  &:hidden {
+    display: none;
+  }
+  ${({ show, delay }) => {
+    return (
+      show &&
+      css`
+        opacity: 0;
+
+        &:disabled {
+          opacity: 0;
+        }
+
+        animation: ${fadeIn} 1s ease-in-out forwards;
+        animation-delay: ${delay || 0}s;
+      `
+    );
+  }}
+`;
+
+const ReferralButton = styled(Button)<{
+  delay?: number;
+  show: boolean;
+  hidden: boolean;
+}>`
+  border-radius: 64px;
+  font-size: 14px;
+  margin-top: 24px;
+  background: ${colors.background.one};
+  color: ${colors.primaryText};
   &:disabled {
     color: ${colors.tertiaryText};
     background: ${colors.background.one};
@@ -136,7 +178,7 @@ const ConnectButton = styled(Button)<{
   }}
 `;
 
-const ClaimTextContainer = styled.div<{ show: boolean; delay?: number }>`
+const RewardsEarnedContainer = styled.div<{ show: boolean; delay?: number }>`
   display: flex;
   justify-content: center;
   align-items: center;
@@ -159,13 +201,13 @@ const ClaimTextContainer = styled.div<{ show: boolean; delay?: number }>`
   }}
 `;
 
-const ClaimLabel = styled.span`
+const RewardsEarnedLabel = styled.span`
   font-size: 14px;
   color: ${colors.tertiaryText};
   margin-right: 8px;
 `;
 
-const ClaimValue = styled.span`
+const RewardsEarnedValue = styled.span`
   color: ${colors.primaryText};
   font-family: VCR;
 `;
@@ -174,13 +216,22 @@ export const Balance = () => {
   const { account } = useWeb3Wallet();
   const Logo = getAssetLogo("USDC");
   const { loading, accountBalances } = useVaultAccountBalances();
-
+  const { referralLoading, referralAccountSummary } =
+    useContext(ReferralContext);
+  const rbnReferralRewards = referralAccountSummary["totalReferralRewards"];
   const { loading: depositLoading, totalDeposits } = useVaultTotalDeposits();
   const { loading: vaultDataLoading, data: vaultDatas } = useVaultsData();
   const { aprs } = usePoolsAPR();
   const yourBalance = accountBalances.totalBalance;
-  const rbnClaimableRewards = accountBalances.rbnClaimable;
+  const rbnPoolRewards = accountBalances.rbnEarned;
   const rbnDecimals = getAssetDecimals("RBN");
+  const totalRbnRewards = rbnPoolRewards.add(
+    // To avoid floating point imprecision and since BigNumbers only work with int,
+    // we multiply the two decimal place rbnReferralReward by 100
+    BigNumber.from(10)
+      .pow(rbnDecimals - 2)
+      .mul(Math.floor(rbnReferralRewards * 100))
+  );
   const decimals = getAssetDecimals("USDC");
   const [triggerWalletModal, setWalletModal] = useState<boolean>(false);
   const [triggerAnimation, setTriggerAnimation] = useState<boolean>(true);
@@ -237,13 +288,14 @@ export const Balance = () => {
 
   const hasRbnReward = useMemo(() => {
     return !isPracticallyZero(
-      rbnClaimableRewards,
+      totalRbnRewards,
       rbnDecimals,
       (1 / 10 ** 2).toFixed(2)
     );
-  }, [rbnClaimableRewards, rbnDecimals]);
+  }, [totalRbnRewards, rbnDecimals]);
 
   const [triggerClaimModal, setClaimModal] = useState<boolean>(false);
+  const [triggerReferralModal, setReferralModal] = useState<boolean>(false);
 
   return (
     <>
@@ -251,6 +303,11 @@ export const Balance = () => {
         show={triggerClaimModal}
         onHide={() => setClaimModal(false)}
         content={ModalContentEnum.CLAIMRBN}
+      />
+      <LendModal
+        show={triggerReferralModal}
+        onHide={() => setReferralModal(false)}
+        content={ModalContentEnum.REFERRAL}
       />
       <LendModal
         show={Boolean(triggerWalletModal)}
@@ -279,7 +336,7 @@ export const Balance = () => {
                       profit.toFixed(2)
                     ).format()} (${roi.toFixed(2)}%)`}
               </HeroSubtitle>
-              <ClaimTextContainer show={triggerAnimation} delay={0.5}>
+              <RewardsEarnedContainer show={triggerAnimation} delay={0.5}>
                 {hasRbnReward && (
                   <BaseIndicator
                     size={8}
@@ -288,18 +345,18 @@ export const Balance = () => {
                     className="mr-2"
                   />
                 )}
-                <ClaimLabel>Unclaimed RBN Rewards:</ClaimLabel>
-                <ClaimValue>
-                  {loading || !account
+                <RewardsEarnedLabel>RBN Rewards Earned:</RewardsEarnedLabel>
+                <RewardsEarnedValue>
+                  {loading || !account || referralLoading
                     ? "---"
                     : currency(
-                        formatBigNumber(rbnClaimableRewards, rbnDecimals, 2),
+                        formatBigNumber(totalRbnRewards, rbnDecimals, 2),
                         { symbol: "" }
                       ).format()}
-                </ClaimValue>
-              </ClaimTextContainer>
+                </RewardsEarnedValue>
+              </RewardsEarnedContainer>
               <ClaimButton
-                disabled={!hasRbnReward}
+                disabled={referralLoading || !hasRbnReward}
                 hidden={!account}
                 onClick={() => setClaimModal(true)}
                 show={triggerAnimation}
@@ -307,6 +364,15 @@ export const Balance = () => {
               >
                 Claim RBN
               </ClaimButton>
+              <ReferralButton
+                disabled={referralLoading}
+                hidden={!account}
+                onClick={() => setReferralModal(true)}
+                show={triggerAnimation}
+                delay={0.6}
+              >
+                Referral Rewards
+              </ReferralButton>
               <ConnectButton
                 hidden={account !== undefined}
                 delay={0.6}
