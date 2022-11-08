@@ -15,6 +15,7 @@ import {
   VaultOptions,
   VaultVersion,
   getVaultChain,
+  isSolanaVault,
 } from "shared/lib/constants/constants";
 import { BaseButton, SecondaryText, Title } from "shared/lib/designSystem";
 import colors from "shared/lib/designSystem/colors";
@@ -26,6 +27,8 @@ import { useLatestOption } from "shared/lib/hooks/useLatestOption";
 import TooltipExplanation from "shared/lib/components/Common/TooltipExplanation";
 import HelpInfo from "shared/lib/components/Common/HelpInfo";
 import { Assets } from "shared/lib/store/types";
+import { useV2VaultData } from "shared/lib/hooks/web3DataContext";
+import { useSolNextIndicativeStrike } from "../../hooks/useSolNextIndicativeStrike";
 
 const VaultPerformanceChartContainer = styled.div`
   display: flex;
@@ -116,6 +119,11 @@ const WeeklyStrategySnapshot: React.FC<WeeklyStrategySnapshotProps> = ({
   const asset = getAssets(vaultOption);
   const optionAsset = getOptionAssets(vaultOption);
   const { prices } = useAssetsPrice();
+  const solStrikePrice = useSolNextIndicativeStrike();
+  const {
+    data: { strikePrice },
+    loading: v2DataLoading,
+  } = useV2VaultData(vaultOption);
 
   const loading = useMemo(() => {
     return prices[optionAsset].loading || currentOption?.loading;
@@ -199,6 +207,19 @@ const WeeklyStrategySnapshot: React.FC<WeeklyStrategySnapshotProps> = ({
     return `${KPI.roi.toFixed(2)}%`;
   }, [KPI, loading, loadingText]);
 
+  const strikePriceText = useMemo(() => {
+    if (v2DataLoading || !solStrikePrice) return loadingText;
+    if (isSolanaVault(vaultOption)) return currency(solStrikePrice).format();
+    return currency(formatOptionStrike(strikePrice, chain)).format();
+  }, [
+    chain,
+    loadingText,
+    solStrikePrice,
+    strikePrice,
+    v2DataLoading,
+    vaultOption,
+  ]);
+
   const strikeChart = useMemo(() => {
     if (loading || !prices[optionAsset]) {
       return <Title>{loadingText}</Title>;
@@ -280,6 +301,10 @@ const WeeklyStrategySnapshot: React.FC<WeeklyStrategySnapshotProps> = ({
           <DataCol xs="6">
             <DataLabel className="d-block">Time to Expiry</DataLabel>
             <DataNumber>{toExpiryText}</DataNumber>
+          </DataCol>
+          <DataCol xs="6">
+            <DataLabel className="d-block">Next Indicative Strike</DataLabel>
+            <DataNumber>{strikePriceText}</DataNumber>
           </DataCol>
         </Row>
       </VaultPerformanceChartSecondaryContainer>

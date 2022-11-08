@@ -30,6 +30,7 @@ import TooltipExplanation from "shared/lib/components/Common/TooltipExplanation"
 import HelpInfo from "shared/lib/components/Common/HelpInfo";
 import useLoadingText from "shared/lib/hooks/useLoadingText";
 import { useTranslation } from "react-i18next";
+import { Col, Row } from "react-bootstrap";
 
 const VaultPerformanceChartContainer = styled.div`
   background: ${colors.background.two};
@@ -44,14 +45,17 @@ const VaultPerformanceChartSecondaryContainer = styled.div`
   background: ${colors.background.two};
 `;
 
-const VaultPerformanceChartKPI = styled.div`
+const DataCol = styled(Col)`
   display: flex;
   flex-direction: column;
-  width: 50%;
-  padding: 16px;
+  border-top: ${theme.border.width} ${theme.border.style} ${colors.border};
 
-  &:nth-child(odd) {
-    border-right: ${theme.border.width} ${theme.border.style} ${colors.border};
+  && {
+    padding: 16px;
+  }
+
+  &:nth-child(even) {
+    border-left: ${theme.border.width} ${theme.border.style} ${colors.border};
   }
 `;
 
@@ -423,127 +427,199 @@ const VaultPerformanceChart: React.FC<VaultPerformanceChartProps> = ({
             />
           </VaultPerformanceChartContainer>
           <VaultPerformanceChartSecondaryContainer>
-            <VaultPerformanceChartKPI>
-              <div className="d-flex align-items-center">
-                <SecondaryText
-                  fontSize={12}
-                  lineHeight={16}
-                  className="d-block"
-                >
-                  {t("webapp:TooltipExplanations:vaultPerformance:title")}
-                </SecondaryText>
-                <TooltipExplanation
-                  title={t("webapp:TooltipExplanations:vaultPerformance:title")}
-                  explanation={
-                    <>
-                      {t(
-                        "webapp:TooltipExplanations:vaultPerformance:description"
-                      )}
-                      <br />
-                      <br />
-                      <SecondaryText color={colors.primaryText}>
-                        {t(
-                          "webapp:TooltipExplanations:vaultPerformance:weeklyYield"
-                        )}
-                      </SecondaryText>
-                      <br />
-                      <br />
-                      <SecondaryText color={colors.primaryText}>
-                        {t(
-                          "webapp:TooltipExplanations:vaultPerformance:projectedYield"
-                        )}
-                      </SecondaryText>
-                      <br />
-                      <br />
-                      {t(
-                        "webapp:TooltipExplanations:vaultPerformance:feesIncluded"
-                      )}
-                    </>
-                  }
-                  renderContent={({ ref, ...triggerHandler }) => (
-                    <HelpInfo containerRef={ref} {...triggerHandler}>
-                      i
-                    </HelpInfo>
-                  )}
-                />
-              </div>
-              <Title
-                fontSize={16}
-                lineHeight={24}
-                color={colors.green}
-                className="mt-1"
-              >
-                {latestAPY.fetched
-                  ? `+${latestAPY.res.toFixed(2)}%`
-                  : loadingText}
-              </Title>
-            </VaultPerformanceChartKPI>
-            <VaultPerformanceChartKPI>
-              <div className="d-flex align-items-center">
-                <SecondaryText
-                  fontSize={12}
-                  lineHeight={16}
-                  className="d-block"
-                >
-                  Previous Week Performance
-                </SecondaryText>
-                <TooltipExplanation
-                  title="Prev Week’s Performance"
-                  explanation={
-                    isYieldAsset(getDisplayAssets(vaultOption)) ? (
+            <Row noGutters>
+              <DataCol xs="6">
+                <div className="d-flex align-items-center">
+                  <SecondaryText
+                    fontSize={12}
+                    lineHeight={16}
+                    className="d-block"
+                  >
+                    {t("webapp:TooltipExplanations:vaultPerformance:title")}
+                  </SecondaryText>
+                  <TooltipExplanation
+                    title={t(
+                      "webapp:TooltipExplanations:vaultPerformance:title"
+                    )}
+                    explanation={
                       <>
-                        The {getAssetDisplay(asset)} premiums earned from
-                        selling options, plus the weekly{" "}
-                        {getAssetDisplay(getDisplayAssets(vaultOption))} staking
-                        yield expressed as a percentage of the amount of{" "}
-                        {getAssetDisplay(getDisplayAssets(vaultOption))} used to
-                        collateralize the options.
+                        {t(
+                          "webapp:TooltipExplanations:vaultPerformance:description"
+                        )}
                         <br />
                         <br />
                         <SecondaryText color={colors.primaryText}>
-                          Performance = ((Premiums+Staking Yield) / Options
-                          Collateral) * 100
+                          {t(
+                            "webapp:TooltipExplanations:vaultPerformance:weeklyYield"
+                          )}
                         </SecondaryText>
-                        <br />
-                        <br />
-                        Fees are included in this calculation.
-                      </>
-                    ) : (
-                      <>
-                        {" "}
-                        The {getAssetDisplay(asset)} premiums earned from
-                        selling options expressed as a percentage of the amount
-                        of {getAssetDisplay(getDisplayAssets(vaultOption))} used
-                        to collateralize the options.
                         <br />
                         <br />
                         <SecondaryText color={colors.primaryText}>
-                          Performance = (Premiums / Options Collateral) * 100
+                          {t(
+                            "webapp:TooltipExplanations:vaultPerformance:projectedYield"
+                          )}
                         </SecondaryText>
                         <br />
                         <br />
-                        Fees are included in this calculation.
+                        {t(
+                          "webapp:TooltipExplanations:vaultPerformance:feesIncluded"
+                        )}
                       </>
-                    )
-                  }
-                  renderContent={({ ref, ...triggerHandler }) => (
-                    <HelpInfo containerRef={ref} {...triggerHandler}>
-                      i
-                    </HelpInfo>
-                  )}
-                />
-              </div>
-              <Title
-                fontSize={16}
-                lineHeight={24}
-                color={isPrevWeekPerfPositive ? colors.green : colors.red}
-                className="mt-1"
-              >
-                {`${isPrevWeekPerfPositive ? "+" : ""}${prevWeekPerformance[
-                  vaultPerformanceTerm
-                ].toFixed(2)}%`}
-              </Title>
-            </VaultPerformanceChartKPI>
+                    }
+                    renderContent={({ ref, ...triggerHandler }) => (
+                      <HelpInfo containerRef={ref} {...triggerHandler}>
+                        i
+                      </HelpInfo>
+                    )}
+                  />
+                </div>
+                <Title
+                  fontSize={16}
+                  lineHeight={24}
+                  color={colors.green}
+                  className="mt-1"
+                >
+                  {latestAPY.fetched
+                    ? `+${latestAPY.res.toFixed(2)}%`
+                    : loadingText}
+                </Title>
+              </DataCol>
+              <DataCol xs="6">
+                <div className="d-flex align-items-center">
+                  <SecondaryText
+                    fontSize={12}
+                    lineHeight={16}
+                    className="d-block"
+                  >
+                    Previous Week Performance
+                  </SecondaryText>
+                  <TooltipExplanation
+                    title="Prev Week’s Performance"
+                    explanation={
+                      isYieldAsset(getDisplayAssets(vaultOption)) ? (
+                        <>
+                          The {getAssetDisplay(asset)} premiums earned from
+                          selling options, plus the weekly{" "}
+                          {getAssetDisplay(getDisplayAssets(vaultOption))}{" "}
+                          staking yield expressed as a percentage of the amount
+                          of {getAssetDisplay(getDisplayAssets(vaultOption))}{" "}
+                          used to collateralize the options.
+                          <br />
+                          <br />
+                          <SecondaryText color={colors.primaryText}>
+                            Performance = ((Premiums+Staking Yield) / Options
+                            Collateral) * 100
+                          </SecondaryText>
+                          <br />
+                          <br />
+                          Fees are included in this calculation.
+                        </>
+                      ) : (
+                        <>
+                          {" "}
+                          The {getAssetDisplay(asset)} premiums earned from
+                          selling options expressed as a percentage of the
+                          amount of{" "}
+                          {getAssetDisplay(getDisplayAssets(vaultOption))} used
+                          to collateralize the options.
+                          <br />
+                          <br />
+                          <SecondaryText color={colors.primaryText}>
+                            Performance = (Premiums / Options Collateral) * 100
+                          </SecondaryText>
+                          <br />
+                          <br />
+                          Fees are included in this calculation.
+                        </>
+                      )
+                    }
+                    renderContent={({ ref, ...triggerHandler }) => (
+                      <HelpInfo containerRef={ref} {...triggerHandler}>
+                        i
+                      </HelpInfo>
+                    )}
+                  />
+                </div>
+                <Title
+                  fontSize={16}
+                  lineHeight={24}
+                  color={isPrevWeekPerfPositive ? colors.green : colors.red}
+                  className="mt-1"
+                >
+                  {`${isPrevWeekPerfPositive ? "+" : ""}${prevWeekPerformance[
+                    vaultPerformanceTerm
+                  ].toFixed(2)}%`}
+                </Title>
+              </DataCol>
+              <DataCol xs="6">
+                <div className="d-flex align-items-center">
+                  <SecondaryText
+                    fontSize={12}
+                    lineHeight={16}
+                    className="d-block"
+                  >
+                    Hit Ratio
+                  </SecondaryText>
+                  <TooltipExplanation
+                    title={"Hit Ratio"}
+                    explanation={
+                      <>
+                        The percentage of times where the options sold ended
+                        out-of-the-money over the number of trades.
+                      </>
+                    }
+                    renderContent={({ ref, ...triggerHandler }) => (
+                      <HelpInfo containerRef={ref} {...triggerHandler}>
+                        i
+                      </HelpInfo>
+                    )}
+                  />
+                </div>
+                <Title
+                  fontSize={16}
+                  lineHeight={24}
+                  color={colors.green}
+                  className="mt-1"
+                >
+                  {latestAPY.fetched
+                    ? `+${latestAPY.res.toFixed(2)}%`
+                    : loadingText}
+                </Title>
+              </DataCol>
+              <DataCol xs="6">
+                <div className="d-flex align-items-center">
+                  <SecondaryText
+                    fontSize={12}
+                    lineHeight={16}
+                    className="d-block"
+                  >
+                    Average Drawdown
+                  </SecondaryText>
+                  <TooltipExplanation
+                    title="Average Drawdown"
+                    explanation={
+                      "The average percentage loss (in collateral currency) when the options sold end up in-the-money"
+                    }
+                    renderContent={({ ref, ...triggerHandler }) => (
+                      <HelpInfo containerRef={ref} {...triggerHandler}>
+                        i
+                      </HelpInfo>
+                    )}
+                  />
+                </div>
+                <Title
+                  fontSize={16}
+                  lineHeight={24}
+                  color={isPrevWeekPerfPositive ? colors.green : colors.red}
+                  className="mt-1"
+                >
+                  {`${isPrevWeekPerfPositive ? "+" : ""}${prevWeekPerformance[
+                    vaultPerformanceTerm
+                  ].toFixed(2)}%`}
+                </Title>
+              </DataCol>
+            </Row>
           </VaultPerformanceChartSecondaryContainer>
         </motion.div>
       </AnimatePresence>

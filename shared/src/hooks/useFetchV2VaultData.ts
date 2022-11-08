@@ -4,10 +4,12 @@ import { BigNumber } from "ethers";
 import {
   EVMVaultList,
   getVaultNetwork,
+  isEarnVault,
   TreasuryVaultList,
 } from "../constants/constants";
 import { isProduction, isTreasury } from "../utils/env";
 import { getVaultContract } from "./useVaultContract";
+import { getStrikeSelectionContract } from "./useStrikeSelection";
 import { impersonateAddress } from "../utils/development";
 import {
   defaultV2VaultData,
@@ -17,6 +19,9 @@ import {
 import { usePendingTransactions } from "./pendingTransactionsContext";
 import { useEVMWeb3Context } from "./useEVMWeb3Context";
 import { isVaultSupportedOnChain } from "../utils/vault";
+import { getNextFridayTimestamp } from "../utils/math";
+import { useWeb3Context } from "./web3Context";
+import { RibbonV2ThetaVault } from "../codegen";
 
 const useFetchV2VaultData = (): V2VaultData => {
   const {
@@ -26,9 +31,10 @@ const useFetchV2VaultData = (): V2VaultData => {
     library,
   } = useWeb3React();
   const account = impersonateAddress ? impersonateAddress : web3Account;
+  const expiryTimestamp = getNextFridayTimestamp();
   const { transactionsCounter } = usePendingTransactions();
   const { getProviderForNetwork } = useEVMWeb3Context();
-
+  const { provider } = useWeb3Context();
   const [data, setData] = useState<V2VaultData>(defaultV2VaultData);
   const [, setMulticallCounter] = useState(0);
 
@@ -65,27 +71,55 @@ const useFetchV2VaultData = (): V2VaultData => {
           library || inferredProviderFromVault,
           vault,
           active
-        );
+        ) as RibbonV2ThetaVault;
 
         if (!contract) {
           return { vault };
         }
 
+        const strikeSelectionAddress =
+          vault !== "rEARN"
+            ? await contract.strikeSelection().catch((e) => {
+                return undefined;
+              })
+            : undefined;
+
+        const strikeSelectionContract = strikeSelectionAddress
+          ? getStrikeSelectionContract(
+              library || inferredProviderFromVault,
+              strikeSelectionAddress,
+              active
+            )
+          : undefined;
+
         /**
          * 1. Total Balance
          * 2. Cap
+         * 3. Price Per Share
+         * 4. Get Strike Price
          */
         const unconnectedPromises: Promise<
           | BigNumber
           | { amount: BigNumber; round: number }
           | { round: number }
           | { share: BigNumber; round: number }
+          | { newStrikePrice: BigNumber; newDelta: BigNumber }
         >[] = [
           contract.totalBalance(),
           contract.cap(),
           contract.pricePerShare(),
           contract.vaultState(),
+          strikeSelectionContract
+            ? strikeSelectionContract.getStrikePrice(
+                expiryTimestamp,
+                vault.includes("-P-")
+              )
+            : Promise.resolve({
+                newStrikePrice: BigNumber.from(0),
+                newDelta: BigNumber.from(0),
+              }),
         ];
+
         /**
          * 1. Deposit receipts
          * 2. User asset balance
@@ -111,6 +145,7 @@ const useFetchV2VaultData = (): V2VaultData => {
           cap,
           pricePerShare,
           _vaultState,
+          _getStrikePrice,
           _depositReceipts,
           accountVaultBalance,
           _withdrawals,
@@ -122,6 +157,12 @@ const useFetchV2VaultData = (): V2VaultData => {
             })
           )
         );
+
+        const getStrikePrice = (
+          (_getStrikePrice as { newStrikePrice: BigNumber }).newStrikePrice
+            ? _getStrikePrice
+            : { newStrikePrice: BigNumber.from(0) }
+        ) as { newStrikePrice: BigNumber };
 
         const vaultState = (
           (_vaultState as { round?: number }).round ? _vaultState : { round: 1 }
@@ -151,6 +192,7 @@ const useFetchV2VaultData = (): V2VaultData => {
           cap,
           pricePerShare,
           round: vaultState.round,
+          strikePrice: getStrikePrice.newStrikePrice,
           lockedBalanceInAsset: accountVaultBalance,
           depositBalanceInAsset:
             depositReceipts.round === vaultState.round
@@ -184,7 +226,14 @@ const useFetchV2VaultData = (): V2VaultData => {
     if (!isProduction()) {
       console.timeEnd("V2 Vault Data Fetch"); // eslint-disable-line
     }
-  }, [account, chainId, library, web3Active, getProviderForNetwork]);
+  }, [
+    getProviderForNetwork,
+    web3Active,
+    chainId,
+    library,
+    expiryTimestamp,
+    account,
+  ]);
 
   useEffect(() => {
     doMulticall();
