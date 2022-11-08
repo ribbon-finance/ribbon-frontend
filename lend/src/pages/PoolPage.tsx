@@ -438,9 +438,7 @@ const PoolPage = () => {
                               color={
                                 loading || parseFloat(apr) === 0
                                   ? colors.primaryText
-                                  : parseFloat(apr) >= 0
-                                  ? colors.green
-                                  : colors.red
+                                  : colors.green
                               }
                             >
                               <span>Total APR</span>
@@ -489,9 +487,7 @@ const PoolPage = () => {
                       color={
                         loading || parseFloat(apr) === 0
                           ? colors.primaryText
-                          : parseFloat(apr) >= 0
-                          ? colors.green
-                          : colors.red
+                          : colors.green
                       }
                     >
                       {loading ? (

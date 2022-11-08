@@ -7,6 +7,8 @@ import deployment from "./deployments.json";
 import addresses from "shared/lib/constants/externalAddresses.json";
 import wintermute from "../assets/icons/makers/wintermute.svg";
 import folkvang from "../assets/icons/makers/folkvang.svg";
+import amber from "../assets/icons/makers/amber.svg";
+import auros from "../assets/icons/makers/auros.svg";
 import ExternalLinkIcon from "../components/Common/ExternalLinkIcon";
 
 export const secondsPerYear = 31536000;
@@ -54,7 +56,12 @@ export const isNativeToken = (token: string): boolean =>
 export const PoolVersionList = ["lend"] as const;
 export type PoolVersion = typeof PoolVersionList[number];
 
-export const EVMPoolList = ["wintermute", "folkvang"] as const;
+export const EVMPoolList = [
+  "wintermute",
+  "folkvang",
+  "amber",
+  "auros",
+] as const;
 
 const AllPoolOptions = [...EVMPoolList];
 
@@ -80,6 +87,18 @@ export const GAS_LIMITS: {
       withdraw: 100000,
     },
   },
+  amber: {
+    lend: {
+      deposit: 80000,
+      withdraw: 100000,
+    },
+  },
+  auros: {
+    lend: {
+      deposit: 80000,
+      withdraw: 100000,
+    },
+  },
 };
 
 export const PoolAddressMap: {
@@ -94,6 +113,14 @@ export const PoolAddressMap: {
   },
   folkvang: {
     lend: deployment.mainnet.folkvang,
+    chainId: CHAINID.ETH_MAINNET,
+  },
+  amber: {
+    lend: deployment.mainnet.amber,
+    chainId: CHAINID.ETH_MAINNET,
+  },
+  auros: {
+    lend: deployment.mainnet.auros,
     chainId: CHAINID.ETH_MAINNET,
   },
 };
@@ -153,12 +180,18 @@ export const getMakerLogo = (pool: PoolOptions): string => {
       return wintermute;
     case "folkvang":
       return folkvang;
+    case "amber":
+      return amber;
+    case "auros":
+      return auros;
   }
 };
 
 export const PoolAllowedDepositAssets: { [pool in PoolOptions]: Assets[] } = {
   wintermute: ["USDC"],
   folkvang: ["USDC"],
+  amber: ["USDC"],
+  auros: ["USDC"],
 };
 
 export const PoolMaxDeposit: BigNumber = BigNumber.from(100000000).mul(
@@ -352,6 +385,184 @@ export const PoolDetailsMap: Record<PoolOptions, PoolDetails> = {
     credit: {
       rating: "AA",
       borrowLimit: 105000000,
+      content: (
+        <>
+          <p>
+            Credora provides real-time privacy preserving portfolio risk metrics
+            for lenders, and has built a Credit Evaluation Methodology for
+            digital asset firms.
+          </p>
+          <p>
+            The evaluation is split into three main parts, totaling{" "}
+            <strong>[1000]</strong> points in aggregate, which is then converted
+            to a letter rating:
+          </p>
+          <p>
+            <strong>Operations and Due Diligence [200]</strong>: Evaluation of a
+            borrower's corporate and operational risk
+          </p>
+          <p>
+            <strong>Financial Analysis [400]</strong>: Evaluation of a
+            borrower's reported financial data
+          </p>
+          <p>
+            <strong>Risk Monitoring [400]</strong>: Real-time evaluation of a
+            borrower's asset and liability visibility
+          </p>
+          <p>
+            Credora relies on these underlying factors, as they have high
+            correlation to a trading firm's creditworthiness. Through real-time
+            credit evaluation, Credora infrastructure supports data-driven
+            lending for any pool of capital. Credora infrastructure and credit
+            evaluations have successfully facilitated over $850M in credit and
+            currently monitors $3.85B in assets.
+          </p>
+          <p>
+            Read more{" "}
+            <a
+              href="https://credora.gitbook.io/credit-methodology/SbLmTxogePkrzsF4z9IK"
+              target="_blank"
+              rel="noreferrer noopener"
+            >
+              here
+              <ExternalLinkIcon />
+            </a>
+          </p>
+        </>
+      ),
+    },
+  },
+  amber: {
+    name: "Amber",
+    bio: (
+      <>
+        <p>
+          Amber Group is a leader in digital asset trading, products and
+          infrastructure. Operating at the center of markets, they provide
+          liquidity across all major exchanges, applications, and networks.
+          Across all products and categories, they have turned over $1T in
+          volumes since inception.
+        </p>
+        <p>
+          Security and safety of assets are our #1 priority. They have invested
+          years of effort and millions of dollars in cybersecurity,
+          cryptosecurity and operational security across the firm, and hold a
+          SOC 2 Type II certification. Amber Group's comprehensive global
+          insurance coverage program exceeds $100mm, protecting digital assets
+          held in their wallet infrastructure on behalf of clients, including a
+          direct insurance policy, indirect coverage and insurance-backed theft
+          protection.
+        </p>
+        <p>
+          Amber Group is a team of 800+ dynamic, entrepreneurial technologists,
+          traders and engineers on a mission to enable frictionless markets. We
+          operate around the clock and around the globe - headquartered in
+          Singapore with a presence in Athens, Geneva, Dubai, Hong Kong,
+          Istanbul, London, Mexico City, New Jersey, Seoul, Taipei, Tokyo,
+          Vancouver, and Zurich.
+        </p>
+      </>
+    ),
+    contract: "https://etherscan.io/address/" + deployment.mainnet.amber,
+    twitter: "https://twitter.com/ambergroup_io ",
+    website: "https://www.ambergroup.io/",
+    credit: {
+      rating: "A",
+      borrowLimit: 173000000,
+      content: (
+        <>
+          <p>
+            Credora provides real-time privacy preserving portfolio risk metrics
+            for lenders, and has built a Credit Evaluation Methodology for
+            digital asset firms.
+          </p>
+          <p>
+            The evaluation is split into three main parts, totaling{" "}
+            <strong>[1000]</strong> points in aggregate, which is then converted
+            to a letter rating:
+          </p>
+          <p>
+            <strong>Operations and Due Diligence [200]</strong>: Evaluation of a
+            borrower's corporate and operational risk
+          </p>
+          <p>
+            <strong>Financial Analysis [400]</strong>: Evaluation of a
+            borrower's reported financial data
+          </p>
+          <p>
+            <strong>Risk Monitoring [400]</strong>: Real-time evaluation of a
+            borrower's asset and liability visibility
+          </p>
+          <p>
+            Credora relies on these underlying factors, as they have high
+            correlation to a trading firm's creditworthiness. Through real-time
+            credit evaluation, Credora infrastructure supports data-driven
+            lending for any pool of capital. Credora infrastructure and credit
+            evaluations have successfully facilitated over $850M in credit and
+            currently monitors $3.85B in assets.
+          </p>
+          <p>
+            Read more{" "}
+            <a
+              href="https://credora.gitbook.io/credit-methodology/SbLmTxogePkrzsF4z9IK"
+              target="_blank"
+              rel="noreferrer noopener"
+            >
+              here
+              <ExternalLinkIcon />
+            </a>
+          </p>
+        </>
+      ),
+    },
+  },
+  auros: {
+    name: "Auros",
+    bio: (
+      <>
+        <p>
+          Auros is an algorithmic trading and market making firm founded by
+          derivatives traders and trading system architects, each with over 20
+          years of industry experience, generating daily notional turnover in
+          billions of dollars. Auros is also an active partner in Strategic
+          Market Making, offering reliable, consistent, contractually-obligated
+          liquidity to token issuers.
+        </p>
+        <p>
+          Founded in 2019, Auros executes medium and high-frequency principal
+          trading strategies through their proprietary platform and
+          state-of-the-art execution capabilities, capturing value from market
+          inefficiencies and pricing dislocations across thousands of spot and
+          derivative instruments, delivering reliable trading performance. Auros
+          has integration with more than 60 exchanges, both centralized and
+          decentralized, commanding a meaningful share of volume on leading
+          exchanges, recording a cumulative trading volume of almost $2
+          trillion.
+        </p>
+        <p>
+          Auros also utilizes their proprietary, bespoke technology solutions
+          and infrastructure to deliver deep, meaningful liquidity for
+          early-stage token projects, leading to a sustainable and reliable
+          market structure.
+        </p>
+        <p>
+          Auros is now a team of over 60 across 15 different geographies,
+          trading and offering liquidity to token issuers round the clock, 365
+          days a year.
+        </p>
+        <p>
+          Auros will be using the fund to further scale its delta-neutral
+          trading strategies and improve capital efficiency across all of their
+          strategies leading to incremental benefits for all of Auros’ partners.
+        </p>
+      </>
+    ),
+    contract: "https://etherscan.io/address/" + deployment.mainnet.auros,
+    twitter: "https://twitter.com/Auros_global",
+    website: "https://www.auros.global/",
+    credit: {
+      rating: "A",
+      borrowLimit: 88000000,
       content: (
         <>
           <p>

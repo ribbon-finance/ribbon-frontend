@@ -15,6 +15,20 @@ export type UseDefault = {
 
 const defaultApr = 7;
 
+const defaultAprValues: AprMap = {
+  wintermute: defaultApr,
+  folkvang: defaultApr,
+  amber: defaultApr,
+  auros: defaultApr,
+};
+
+const zeroAprValues: AprMap = {
+  wintermute: 0,
+  folkvang: 0,
+  amber: 0,
+  auros: 0,
+};
+
 export const usePoolsApr = () => {
   const [aprs, setAprs] = useState<AprMap>();
   const [supplyAprs, setSupplyAprs] = useState<AprMap>();
@@ -29,23 +43,13 @@ export const usePoolsApr = () => {
     let isDefault: UseDefault = {
       wintermute: false,
       folkvang: false,
+      amber: true,
+      auros: true,
     };
 
-    // 1. When init load schedules
-    let aprsTemp: AprMap = {
-      wintermute: 0,
-      folkvang: 0,
-    };
-
-    let supplyAprsTemp: AprMap = {
-      wintermute: 0,
-      folkvang: 0,
-    };
-
-    let rbnAprsTemp: AprMap = {
-      wintermute: 0,
-      folkvang: 0,
-    };
+    let aprsTemp = { ...zeroAprValues };
+    let supplyAprsTemp = { ...zeroAprValues };
+    let rbnAprsTemp = { ...zeroAprValues };
 
     if (!loading) {
       PoolList.forEach((pool) => {
@@ -55,19 +59,20 @@ export const usePoolsApr = () => {
           formatUnits(poolData.rewardPerSecond, 18)
         );
         const poolSize = parseFloat(formatUnits(poolData.poolSize, 6));
-        const supplyRatePercentage = Math.min(
-          supplyRate * secondsPerYear,
-          0.07
-        );
-        const rbnApr = (rewardPerSecond * RBNPrice * secondsPerYear) / poolSize;
+        const supplyRatePercentage =
+          Math.min(supplyRate * secondsPerYear, 0.07) * 100;
+        const rbnApr =
+          ((rewardPerSecond * RBNPrice * secondsPerYear) / poolSize) * 100;
+
         aprsTemp[pool] = isDefault[pool]
-          ? defaultApr + rbnApr * 100
-          : (supplyRatePercentage + rbnApr) * 100;
+          ? defaultApr + rbnApr
+          : supplyRatePercentage + rbnApr;
+
         supplyAprsTemp[pool] = isDefault[pool]
           ? defaultApr
-          : supplyRatePercentage * 100;
-        rbnAprsTemp[pool] = rbnApr * 100;
-        return;
+          : supplyRatePercentage;
+
+        rbnAprsTemp[pool] = rbnApr;
       });
       setAprs(aprsTemp);
       setSupplyAprs(supplyAprsTemp);
@@ -83,20 +88,13 @@ export const usePoolsApr = () => {
     //placeholder values while values are loading
     return {
       loading: isLoading,
-      aprs: {
-        wintermute: defaultApr,
-        folkvang: defaultApr,
-      },
-      supplyAprs: {
-        wintermute: defaultApr,
-        folkvang: defaultApr,
-      },
-      rbnAprs: {
-        wintermute: 0,
-        folkvang: 0,
-      },
+      rbnAprLoading: !rbnAprs || assetPriceLoading,
+      aprs: defaultAprValues,
+      supplyAprs: defaultAprValues,
+      rbnAprs: zeroAprValues,
     };
   }
+
   return {
     loading: isLoading,
     rbnAprLoading: !rbnAprs || assetPriceLoading,

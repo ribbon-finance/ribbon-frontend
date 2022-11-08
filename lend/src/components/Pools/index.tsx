@@ -25,8 +25,9 @@ import currency from "currency.js";
 import useWeb3Wallet from "../../hooks/useWeb3Wallet";
 import { useMemo } from "react";
 import { LoadingText } from "shared/lib/hooks/useLoadingText";
-const statSideContainer: number = 120;
 
+const statSideContainer: number = 120;
+const imageSize: number = 64;
 const ListRow = styled(Row)`
   display: block;
   padding: 0;
@@ -40,12 +41,12 @@ const PoolLogo = styled.div`
   height: ${statSideContainer}px;
   border-right: 1px solid ${colors.border};
   display: inline-flex;
-
-  > * {
-    overflow: hidden;
-  }
+  justify-content: center;
+  align-items: center;
 
   img {
+    width: ${imageSize}px;
+    height: ${imageSize}px;
     margin: auto;
   }
 `;
