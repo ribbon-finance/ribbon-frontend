@@ -55,10 +55,7 @@ export const usePoolsApr = () => {
           formatUnits(poolData.rewardPerSecond, 18)
         );
         const poolSize = parseFloat(formatUnits(poolData.poolSize, 6));
-        const supplyRatePercentage = Math.min(
-          supplyRate * secondsPerYear,
-          0.07
-        );
+        const supplyRatePercentage = supplyRate * secondsPerYear;
         const rbnApr = (rewardPerSecond * RBNPrice * secondsPerYear) / poolSize;
         aprsTemp[pool] = isDefault[pool]
           ? defaultApr + rbnApr * 100
