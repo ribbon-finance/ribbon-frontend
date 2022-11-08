@@ -31,6 +31,7 @@ import HelpInfo from "shared/lib/components/Common/HelpInfo";
 import useLoadingText from "shared/lib/hooks/useLoadingText";
 import { useTranslation } from "react-i18next";
 import { Col, Row } from "react-bootstrap";
+import { useAirtableVaultAnalytics } from "shared/lib/hooks/useAirtableVaultAnalytics";
 
 const VaultPerformanceChartContainer = styled.div`
   background: ${colors.background.two};
@@ -84,7 +85,7 @@ const VaultPerformanceChart: React.FC<VaultPerformanceChartProps> = ({
   const { priceHistory } = useVaultPriceHistory(vaultOption, vaultVersion);
   const { searchAssetPriceFromTimestamp } = useAssetsPriceHistory();
   const latestAPY = useLatestAPY(vaultOption, vaultVersion);
-
+  const loadingText = useLoadingText();
   const [vaultPerformanceTerm, setVaultPerformanceTerm] = useState<
     "crypto" | "fiat"
   >("crypto");
@@ -92,7 +93,18 @@ const VaultPerformanceChart: React.FC<VaultPerformanceChartProps> = ({
   const [chartIndex, setChartIndex] = useState(0);
   const asset = getAssets(vaultOption);
   const decimals = getAssetDecimals(asset);
+  const {
+    loading: airtableLoading,
+    records: { responses },
+  } = useAirtableVaultAnalytics();
+  const [hitRatioText, averageLossText] = useMemo(() => {
+    if (airtableLoading) return [loadingText, loadingText];
 
+    return [
+      `${(responses[vaultOption].hitRatio * 100).toFixed(2)}%`,
+      `-${(responses[vaultOption].averageLoss * 100).toFixed(2)}%`,
+    ];
+  }, [airtableLoading, loadingText, responses, vaultOption]);
   const { yields, timestamps } = useMemo(() => {
     if (priceHistory.length === 0) {
       return {
@@ -327,7 +339,6 @@ const VaultPerformanceChart: React.FC<VaultPerformanceChartProps> = ({
   );
 
   const isPrevWeekPerfPositive = prevWeekPerformance[vaultPerformanceTerm] >= 0;
-  const loadingText = useLoadingText();
 
   return (
     <>
@@ -579,12 +590,10 @@ const VaultPerformanceChart: React.FC<VaultPerformanceChartProps> = ({
                 <Title
                   fontSize={16}
                   lineHeight={24}
-                  color={colors.green}
+                  color={colors.primaryText}
                   className="mt-1"
                 >
-                  {latestAPY.fetched
-                    ? `+${latestAPY.res.toFixed(2)}%`
-                    : loadingText}
+                  {hitRatioText}
                 </Title>
               </DataCol>
               <DataCol xs="6">
@@ -611,12 +620,10 @@ const VaultPerformanceChart: React.FC<VaultPerformanceChartProps> = ({
                 <Title
                   fontSize={16}
                   lineHeight={24}
-                  color={isPrevWeekPerfPositive ? colors.green : colors.red}
+                  color={colors.primaryText}
                   className="mt-1"
                 >
-                  {`${isPrevWeekPerfPositive ? "+" : ""}${prevWeekPerformance[
-                    vaultPerformanceTerm
-                  ].toFixed(2)}%`}
+                  {averageLossText}
                 </Title>
               </DataCol>
             </Row>
