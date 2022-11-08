@@ -316,7 +316,9 @@ export const ClaimRbnPage: React.FC<ClaimRbnPageProps> = ({ onHide }) => {
 
   const handleClickReferralRedirectButton = () => {
     setRbnClaimStep(ClaimRbnPageEnum.REFERRAL_REDIRECT);
-    window.open(`https://app.rhino.fi/`);
+    setTimeout(() => {
+      window.open(`https://app.rhino.fi/`);
+    }, 2000);
   };
 
   const claimHeader = useMemo(() => {
