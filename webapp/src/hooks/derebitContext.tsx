@@ -15,11 +15,11 @@ import {
   Option,
   getInstrumentName,
 } from "shared/lib/utils/derebit";
-import { getNextFridayTimestamp } from "shared/lib/utils/derebitMath";
+import { getNextFridayTimestamp } from "shared/lib/utils/math";
 import { Asset } from "shared/lib/utils/derebit";
 import useAssetPrice from "shared/lib/hooks/useAssetPrice";
+import { LISTED_ON_DERIBIT } from "shared/lib/utils/derebit";
 
-const LISTED_ON_DERIBIT: Asset[] = ["SOL"];
 const queue = new Queue({
   rules: {
     deribit: {

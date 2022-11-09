@@ -2,25 +2,12 @@ import { Moment } from "moment";
 import axios from "axios";
 import { get10dStrikeFromDeribit } from "./derebitMath";
 
-export const ASSETS = [
-  "BTC",
-  "ETH",
-  "AAVE",
-  "APE",
-  "AVAX",
-  // "SAVAX",
-  "SOL",
-  "PERP",
-  "BADGER",
-  "BAL",
-  "SPELL",
-];
+export const ASSETS = ["SOL"];
 
-export const LISTED_ON_DERIBIT = ["BTC", "ETH", "SOL"];
+export const LISTED_ON_DERIBIT = ["SOL"];
 
 export type Asset = typeof ASSETS[number];
 
-// SOL: 5,
 interface DeribitInstrumentDetails {
   result: {
     base_currency: string;

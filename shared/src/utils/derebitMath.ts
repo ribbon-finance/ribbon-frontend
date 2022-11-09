@@ -12,26 +12,6 @@ export interface Option {
   markPrice: number;
 }
 
-export const getNextFridayTimestamp = () => {
-  const now = moment().utc();
-  let friday;
-
-  switch (now.isoWeekday()) {
-    case 1:
-    case 2:
-    case 3:
-      friday = moment().utc().day(5);
-      break;
-    case 4:
-    case 5:
-    case 6:
-    case 7:
-      friday = moment().utc().day(5).add(1, "week");
-      break;
-  }
-  return (friday as Moment).hours(8).minutes(0).seconds(0).unix();
-};
-
 export const getLastFridayOfMonthTimestamp = () => {
   let result;
   result = moment().endOf("month");
@@ -48,24 +28,6 @@ export const getLastFridayOfMonthTimestamp = () => {
   }
 
   return (result as Moment).hours(8).minutes(0).seconds(0).unix();
-};
-
-/* The cummulative Normal distribution function: */
-const CND = (x: number): number => {
-  if (x < 0) {
-    return 1 - CND(-x);
-  } else {
-    const k = 1 / (1 + 0.2316419 * x);
-    return (
-      1 -
-      (Math.exp((-x * x) / 2) / Math.sqrt(2 * Math.PI)) *
-        k *
-        (0.31938153 +
-          k *
-            (-0.356563782 +
-              k * (1.781477937 + k * (-1.821255978 + k * 1.330274429))))
-    );
-  }
 };
 
 export interface StrikeData {
