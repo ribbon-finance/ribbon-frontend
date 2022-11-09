@@ -1,7 +1,7 @@
-import { get10dStrikeFromDeribit } from "shared/lib/utils/derebitMath";
+import { get10dStrikeFromDeribit } from "shared/lib/utils/deribitMath";
 import { useMemo } from "react";
 import useAssetPrice from "shared/lib/hooks/useAssetPrice";
-import { useDeribitContext } from "./derebitContext";
+import { useDeribitContext } from "./deribitContext";
 
 const defaultOptions = {
   asset: "SOL",

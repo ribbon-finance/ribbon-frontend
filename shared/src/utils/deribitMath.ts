@@ -1,5 +1,5 @@
 import moment, { Moment } from "moment";
-import { Asset } from "./derebit";
+import { Asset } from "./deribit";
 
 export interface Option {
   asset: Asset;

@@ -1,6 +1,6 @@
 import { Moment } from "moment";
 import axios from "axios";
-import { get10dStrikeFromDeribit } from "./derebitMath";
+import { get10dStrikeFromDeribit } from "./deribitMath";
 
 export const ASSETS = ["SOL"];
 
@@ -116,17 +116,3 @@ export async function getIndexPrices() {
 }
 
 export type AssetOptions = Record<Asset, Record<number, Option>>;
-
-export async function getIVDetailsfromDeribit(
-  asset: Asset,
-  isPut: boolean,
-  spot: number,
-  options: AssetOptions
-) {
-  const option = get10dStrikeFromDeribit(isPut, spot, 5, options[asset]);
-  if (!options[asset][option.strikePrice]) {
-    throw new Error("Options chain not fully loaded");
-  }
-  const { markIV, bidIV } = options[asset][option.strikePrice];
-  return [markIV, bidIV];
-}

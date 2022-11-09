@@ -4,7 +4,7 @@ import { BigNumber } from "ethers";
 import {
   EVMVaultList,
   getVaultNetwork,
-  isEarnVault,
+  isPutVault,
   TreasuryVaultList,
 } from "../constants/constants";
 import { isProduction, isTreasury } from "../utils/env";
@@ -112,7 +112,7 @@ const useFetchV2VaultData = (): V2VaultData => {
           strikeSelectionContract
             ? strikeSelectionContract.getStrikePrice(
                 expiryTimestamp,
-                vault.includes("-P-")
+                isPutVault(vault)
               )
             : Promise.resolve({
                 newStrikePrice: BigNumber.from(0),

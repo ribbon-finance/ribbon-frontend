@@ -1,21 +1,20 @@
 import Airtable, { Record, FieldSet } from "airtable";
-import dotenv from "dotenv";
 import { useEffect, useMemo, useState } from "react";
 import { VaultList, VaultOptions } from "../constants/constants";
 
-export type HitRatioResponses = {
+export type VaultAnalyticsResponses = {
   [vault in VaultOptions]: {
     hitRatio: number;
     averageLoss: number;
   };
 };
 
-export type HitRatioData = {
-  responses: HitRatioResponses;
+export type VaultAnalyticsData = {
+  responses: VaultAnalyticsResponses;
   loading: boolean;
 };
 
-export const defaultHitRatioData: HitRatioData = {
+export const defaultVaultAnalyticsData: VaultAnalyticsData = {
   responses: Object.fromEntries(
     VaultList.map((vault) => [
       vault,
@@ -24,13 +23,11 @@ export const defaultHitRatioData: HitRatioData = {
         averageLoss: 0,
       },
     ])
-  ) as HitRatioResponses,
+  ) as VaultAnalyticsResponses,
   loading: true,
 };
 
 const airtableValueArray = ["hitRatio", "averageLoss"];
-
-dotenv.config();
 
 const recordHasUndefined = (recordTemp: any): boolean => {
   for (const key in airtableValueArray) {
@@ -73,7 +70,7 @@ export const useAirtableVaultAnalytics = () => {
 
   const hitRatioData = useMemo(() => {
     if (!records) {
-      return defaultHitRatioData;
+      return defaultVaultAnalyticsData;
     }
 
     const responses = Object.fromEntries(
@@ -98,7 +95,7 @@ export const useAirtableVaultAnalytics = () => {
           },
         ];
       })
-    ) as HitRatioResponses;
+    ) as VaultAnalyticsResponses;
 
     return {
       responses: responses,
@@ -107,6 +104,6 @@ export const useAirtableVaultAnalytics = () => {
   }, [records]);
 
   return {
-    records: !records ? defaultHitRatioData : hitRatioData,
+    records: !records ? defaultVaultAnalyticsData : hitRatioData,
   };
 };

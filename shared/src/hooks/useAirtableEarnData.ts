@@ -1,5 +1,4 @@
 import Airtable from "airtable";
-import dotenv from "dotenv";
 import { useEffect, useMemo, useState } from "react";
 import useAssetPrice from "./useAssetPrice";
 
@@ -18,8 +17,6 @@ const airtableValueArray = [
   "barrierPercentage",
   "borrowRate",
 ];
-
-dotenv.config();
 
 const recordHasUndefined = (recordTemp: any): boolean => {
   for (const key in airtableValueArray) {

@@ -14,23 +14,21 @@ import {
   getDeribitInstrumentDetails,
   Option,
   getInstrumentName,
-} from "shared/lib/utils/derebit";
+} from "shared/lib/utils/deribit";
 import { getNextFridayTimestamp } from "shared/lib/utils/math";
-import { Asset } from "shared/lib/utils/derebit";
+import { Asset, AssetOptions } from "shared/lib/utils/deribit";
 import useAssetPrice from "shared/lib/hooks/useAssetPrice";
-import { LISTED_ON_DERIBIT } from "shared/lib/utils/derebit";
+import { LISTED_ON_DERIBIT } from "shared/lib/utils/deribit";
 
 const queue = new Queue({
   rules: {
     deribit: {
-      rate: 8, // 8 message
+      rate: 1, // 1 message
       limit: 10, // per 10 seconds
       priority: 1,
     },
   },
 });
-
-export type AssetOptions = Record<Asset, Record<number, Option>>;
 
 interface DeribitContextType {
   options: AssetOptions;
