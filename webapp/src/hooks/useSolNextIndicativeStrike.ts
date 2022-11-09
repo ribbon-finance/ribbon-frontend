@@ -21,13 +21,18 @@ export const useSolNextIndicativeStrike = (): number => {
   });
 
   const { options } = useDeribitContext();
+
   const strikeData = useMemo(() => {
     const spotPrice = solPrice as number;
     if (assetPriceLoading || !Object.keys(options.SOL).length) {
       return defaultOptions;
     }
-    const option = get10dStrikeFromDeribit(false, spotPrice, 5, options["SOL"]);
-    return option;
+
+    try {
+      return get10dStrikeFromDeribit(false, spotPrice, 5, options.SOL);
+    } catch (err) {
+      return defaultOptions;
+    }
   }, [solPrice, assetPriceLoading, options]);
 
   return strikeData.strikePrice;

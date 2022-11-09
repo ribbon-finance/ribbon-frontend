@@ -1,6 +1,5 @@
 import { Moment } from "moment";
 import axios from "axios";
-import { get10dStrikeFromDeribit } from "./deribitMath";
 
 export const ASSETS = ["SOL"];
 

@@ -207,9 +207,13 @@ const WeeklyStrategySnapshot: React.FC<WeeklyStrategySnapshotProps> = ({
   }, [KPI, loading, loadingText]);
 
   const strikePriceText = useMemo(() => {
-    if (v2DataLoading || !solStrikePrice) return loadingText;
-    if (isSolanaVault(vaultOption)) return currency(solStrikePrice).format();
-    return currency(formatOptionStrike(strikePrice, chain)).format();
+    if (isSolanaVault(vaultOption)) {
+      return !solStrikePrice ? loadingText : currency(solStrikePrice).format();
+    }
+
+    return v2DataLoading
+      ? loadingText
+      : currency(formatOptionStrike(strikePrice, chain)).format();
   }, [
     chain,
     loadingText,
