@@ -12,7 +12,7 @@ import { SecondaryText, Title } from "shared/lib/designSystem";
 import SegmentPagination from "shared/lib/components/Common/SegmentPagination";
 
 import { useGlobalState } from "shared/lib/store/store";
-import { useAirtable } from "shared/lib/hooks/useAirtable";
+import { useAirtableEarnData } from "shared/lib/hooks/useAirtableEarnData";
 
 const ExplainerContainer = styled.div`
   display: flex;
@@ -81,7 +81,7 @@ type ExplanationStep = typeof ExplanationStepList[number];
 const EarnStrategyExplainer: React.FC = () => {
   const containerRef = useRef(null);
   const [, setShowEarnVault] = useGlobalState("showEarnVault");
-  const { loading, maxYield } = useAirtable();
+  const { loading, maxYield } = useAirtableEarnData();
   const [step, setStep] = useState<ExplanationStep>(ExplanationStepList[0]);
 
   const setShowOnboardingCallback = useCallback(() => {
@@ -109,7 +109,7 @@ const EarnStrategyExplainer: React.FC = () => {
         case "step1":
           return (
             <>
-              Earn up to {loading ? "---" : (maxYield * 100).toFixed(2) + "% "}
+              Earn up to {loading ? "---" : (maxYield * 100).toFixed(2) + "%"}{" "}
               yield with principal protection
             </>
           );

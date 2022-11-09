@@ -19,7 +19,7 @@ import {
 import { BoostIcon, ExternalIcon } from "shared/lib/assets/icons/icons";
 import { Counterparty } from "./Counterparties";
 import { formatUnits } from "ethers/lib/utils";
-import { useAirtable } from "shared/lib/hooks/useAirtable";
+import { useAirtableEarnData } from "shared/lib/hooks/useAirtableEarnData";
 import { useV2VaultData } from "shared/lib/hooks/web3DataContext";
 
 const BoostLogoContainer = styled.div`
@@ -113,7 +113,7 @@ const CounterpartyDetail: React.FC<VaultStrategyExplainerProps> = ({
   counterparty,
 }) => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const { borrowRate, loading } = useAirtable();
+  const { borrowRate, loading } = useAirtableEarnData();
   const onToggleMenu = useCallback(() => {
     setIsMenuOpen((open) => !open);
   }, []);

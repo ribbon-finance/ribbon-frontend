@@ -1,5 +1,4 @@
 import Airtable from "airtable";
-import dotenv from "dotenv";
 import { useEffect, useMemo, useState } from "react";
 import useAssetPrice from "./useAssetPrice";
 
@@ -19,8 +18,6 @@ const airtableValueArray = [
   "borrowRate",
 ];
 
-dotenv.config();
-
 const recordHasUndefined = (recordTemp: any): boolean => {
   for (const key in airtableValueArray) {
     if (recordTemp.fields[airtableValueArray[key]] === undefined) {
@@ -39,7 +36,7 @@ const BASE_NAME = "Earn";
 
 const base = Airtable.base("appkUHzxJ1lehQTIt");
 
-export const useAirtable = () => {
+export const useAirtableEarnData = () => {
   const [values, setValues] = useState<AirtableValues>();
   const [itmRecords, setItmRecords] = useState<any>([]);
   const [, setError] = useState<string>();
