@@ -116,7 +116,7 @@ export const BuyButton: React.FC<BuyButtonProps> = (props) => {
     });
 
     return () => {
-      onrampInstance?.destroy();
+      onrampInstance?.current?.destroy();
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [account, chainId]);
