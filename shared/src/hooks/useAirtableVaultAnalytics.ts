@@ -107,7 +107,6 @@ export const useAirtableVaultAnalytics = () => {
   }, [records]);
 
   return {
-    loading: Boolean(!records),
     records: !records ? defaultHitRatioData : hitRatioData,
   };
 };

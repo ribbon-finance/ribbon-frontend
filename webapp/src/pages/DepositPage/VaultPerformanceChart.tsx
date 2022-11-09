@@ -93,24 +93,19 @@ const VaultPerformanceChart: React.FC<VaultPerformanceChartProps> = ({
   const [chartIndex, setChartIndex] = useState(0);
   const asset = getAssets(vaultOption);
   const decimals = getAssetDecimals(asset);
-  const {
-    loading: airtableLoading,
-    records: { responses },
-  } = useAirtableVaultAnalytics();
-  const [hitRatioText, averageLossText] = useMemo(() => {
-    if (airtableLoading) return [loadingText, loadingText, false];
+  const { records } = useAirtableVaultAnalytics();
 
-    const hitRatio = responses[vaultOption].hitRatio;
-    const averageLoss = responses[vaultOption].averageLoss;
+  const [hitRatioText, averageLossText] = useMemo(() => {
+    if (records.loading) {
+      return [loadingText, loadingText, false];
+    }
+    const hitRatio = records.responses[vaultOption].hitRatio;
+    const averageLoss = records.responses[vaultOption].averageLoss;
     return [
-      hitRatio === 0
-        ? "---"
-        : `${(responses[vaultOption].hitRatio * 100).toFixed(2)}%`,
-      averageLoss === 0
-        ? "--- "
-        : `-${(responses[vaultOption].averageLoss * 100).toFixed(2)}%`,
+      hitRatio === 0 ? "---" : `${(hitRatio * 100).toFixed(2)}%`,
+      averageLoss === 0 ? "--- " : `-${(averageLoss * 100).toFixed(2)}%`,
     ];
-  }, [airtableLoading, loadingText, responses, vaultOption]);
+  }, [loadingText, records.loading, records.responses, vaultOption]);
   const { yields, timestamps } = useMemo(() => {
     if (priceHistory.length === 0) {
       return {
