@@ -53,7 +53,7 @@ import HelpInfo from "../../Common/HelpInfo";
 import { calculateBaseRewards } from "../../../utils/governanceMath";
 import { useAssetsPrice } from "../../../hooks/useAssetPrice";
 import EarnCard from "../../Common/EarnCard";
-import { useAirtable } from "../../../hooks/useAirtable";
+import { useAirtableEarnData } from "../../../hooks/useAirtableEarnData";
 import { usePausedPosition } from "../../../hooks/usePausedPosition";
 const { formatUnits } = ethers.utils;
 
@@ -445,7 +445,7 @@ const YieldCard: React.FC<YieldCardProps> = ({
   const { prices } = useAssetsPrice();
   const { account } = useWeb3Wallet();
   const loadingText = useLoadingText();
-  const { loading, maxYield } = useAirtable();
+  const { loading, maxYield } = useAirtableEarnData();
   const baseAPY = useMemo(() => {
     if (!lg5Data) {
       return 0;

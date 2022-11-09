@@ -98,11 +98,17 @@ const VaultPerformanceChart: React.FC<VaultPerformanceChartProps> = ({
     records: { responses },
   } = useAirtableVaultAnalytics();
   const [hitRatioText, averageLossText] = useMemo(() => {
-    if (airtableLoading) return [loadingText, loadingText];
+    if (airtableLoading) return [loadingText, loadingText, false];
 
+    const hitRatio = responses[vaultOption].hitRatio;
+    const averageLoss = responses[vaultOption].averageLoss;
     return [
-      `${(responses[vaultOption].hitRatio * 100).toFixed(2)}%`,
-      `-${(responses[vaultOption].averageLoss * 100).toFixed(2)}%`,
+      hitRatio === 0
+        ? "---"
+        : `${(responses[vaultOption].hitRatio * 100).toFixed(2)}%`,
+      averageLoss === 0
+        ? "--- "
+        : `-${(responses[vaultOption].averageLoss * 100).toFixed(2)}%`,
     ];
   }, [airtableLoading, loadingText, responses, vaultOption]);
   const { yields, timestamps } = useMemo(() => {

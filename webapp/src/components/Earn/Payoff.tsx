@@ -10,7 +10,7 @@ import colors from "shared/lib/designSystem/colors";
 import EarnModalContentExtra from "shared/lib/components/Common/EarnModalContentExtra";
 import TooltipExplanation from "shared/lib/components/Common/TooltipExplanation";
 import HelpInfo from "shared/lib/components/Common/HelpInfo";
-import { useAirtable } from "shared/lib/hooks/useAirtable";
+import { useAirtableEarnData } from "shared/lib/hooks/useAirtableEarnData";
 import useLoadingText from "shared/lib/hooks/useLoadingText";
 
 const ChartContainer = styled.div`
@@ -81,7 +81,7 @@ const Payoff: React.FC<ProfitCalculatorProps> = () => {
     absolutePerformance,
     barrierPercentage,
     loading,
-  } = useAirtable();
+  } = useAirtableEarnData();
 
   const loadingText = useLoadingText();
 

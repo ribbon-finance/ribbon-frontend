@@ -39,7 +39,7 @@ const BASE_NAME = "Earn";
 
 const base = Airtable.base("appkUHzxJ1lehQTIt");
 
-export const useAirtable = () => {
+export const useAirtableEarnData = () => {
   const [values, setValues] = useState<AirtableValues>();
   const [itmRecords, setItmRecords] = useState<any>([]);
   const [, setError] = useState<string>();

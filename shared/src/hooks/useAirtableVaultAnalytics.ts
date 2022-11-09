@@ -1,7 +1,6 @@
 import Airtable, { Record, FieldSet } from "airtable";
 import dotenv from "dotenv";
 import { useEffect, useMemo, useState } from "react";
-import useAssetPrice from "./useAssetPrice";
 import { VaultList, VaultOptions } from "../constants/constants";
 
 export type HitRatioResponses = {
@@ -70,9 +69,6 @@ export const useAirtableVaultAnalytics = () => {
       .catch((e) => {
         setError("ERROR FETCHING");
       });
-  }, []);
-  const loading = useMemo(() => {
-    return false;
   }, []);
 
   const hitRatioData = useMemo(() => {

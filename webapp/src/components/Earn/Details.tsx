@@ -3,7 +3,7 @@ import TooltipExplanation from "shared/lib/components/Common/TooltipExplanation"
 import { Title, SecondaryText, PrimaryText } from "shared/lib/designSystem";
 import colors from "shared/lib/designSystem/colors";
 import { ExternalIcon } from "shared/lib/assets/icons/icons";
-import { useAirtable } from "shared/lib/hooks/useAirtable";
+import { useAirtableEarnData } from "shared/lib/hooks/useAirtableEarnData";
 import { SubgraphDataContext } from "shared/lib/hooks/subgraphDataContext";
 import currency from "currency.js";
 import { useContext, useMemo } from "react";
@@ -73,7 +73,7 @@ export const Strategy: React.FC<StrategyProps> = ({ setStep }) => {
     ethLowerBarrier,
     ethUpperBarrier,
     loading,
-  } = useAirtable();
+  } = useAirtableEarnData();
 
   const {
     loading: vaultLoading,
@@ -311,7 +311,7 @@ export const Backtest = () => {
 };
 
 export const Analysis = () => {
-  const { itmPerformance, loading } = useAirtable();
+  const { itmPerformance, loading } = useAirtableEarnData();
   const loadingText = useLoadingText();
   const { vaultSubgraphData } = useContext(SubgraphDataContext);
   const [numberOfHits, optionsTraded] = useMemo(() => {

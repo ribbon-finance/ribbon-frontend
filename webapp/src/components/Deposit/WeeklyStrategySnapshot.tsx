@@ -29,7 +29,6 @@ import HelpInfo from "shared/lib/components/Common/HelpInfo";
 import { Assets } from "shared/lib/store/types";
 import { useV2VaultData } from "shared/lib/hooks/web3DataContext";
 import { useSolNextIndicativeStrike } from "../../hooks/useSolNextIndicativeStrike";
-import { useAirtableVaultAnalytics } from "shared/lib/hooks/useAirtableVaultAnalytics";
 const VaultPerformanceChartContainer = styled.div`
   display: flex;
   align-items: center;

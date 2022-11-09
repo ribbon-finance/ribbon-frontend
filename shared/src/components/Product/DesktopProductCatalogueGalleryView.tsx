@@ -37,7 +37,7 @@ import {
 import YourPosition from "../Vault/YourPosition";
 import { useWeb3React } from "@web3-react/core";
 import { useChain } from "../../hooks/chainContext";
-import { useAirtable } from "../../hooks/useAirtable";
+import { useAirtableEarnData } from "../../hooks/useAirtableEarnData";
 
 const FullscreenContainer = styled(Container)<{ height: number }>`
   padding-top: 24px;
@@ -135,7 +135,7 @@ const DesktopProductCatalogueGalleryView: React.FC<
   const [currentVault, setCurrentVault] = useState<VaultOptions | undefined>(
     filteredProducts[page - 1]
   );
-  const { loading, maxYield } = useAirtable();
+  const { loading, maxYield } = useAirtableEarnData();
   // Prevent page overflow
   useEffect(() => {
     if (filteredProducts.length <= 0) {
