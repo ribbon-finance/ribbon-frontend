@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import styled from "styled-components";
 import { initOnRamp } from "@coinbase/cbpay-js";
 import type { CBPayInstanceType, InitOnRampParams } from "@coinbase/cbpay-js";
@@ -104,6 +104,7 @@ export const BuyButton: React.FC<BuyButtonProps> = (props) => {
       },
     };
     initOnRamp(initParams, (_, instance) => {
+      onrampInstance?.destroy();
       if (instance) {
         //check that account connected is same as destination wallet account
         if (account) {
@@ -116,7 +117,7 @@ export const BuyButton: React.FC<BuyButtonProps> = (props) => {
     });
 
     return () => {
-      onrampInstance?.current?.destroy();
+      onrampInstance?.destroy();
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [account, chainId]);
