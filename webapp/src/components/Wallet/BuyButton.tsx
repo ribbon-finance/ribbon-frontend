@@ -45,9 +45,7 @@ export const BuyButton: React.FC<BuyButtonProps> = (props) => {
   const [active, setActive] = useState(false);
   const [walletAccount, setWalletAccount] = useState<string>();
   const [initializing, setInitializing] = useState(false);
-  const [onrampInstance, setOnrampInstance] = useState<
-    CBPayInstanceType | undefined
-  >();
+  const onrampInstance = useRef<CBPayInstanceType>();
 
   const { account, chainId } = useWeb3Wallet();
 
@@ -78,8 +76,7 @@ export const BuyButton: React.FC<BuyButtonProps> = (props) => {
       }
     }
     if (destinationWallets.length < 1) {
-      onrampInstance?.destroy();
-      setOnrampInstance(undefined);
+      onrampInstance?.current?.destroy();
       setActive(false);
       return;
     }
@@ -104,7 +101,7 @@ export const BuyButton: React.FC<BuyButtonProps> = (props) => {
       },
     };
     initOnRamp(initParams, (_, instance) => {
-      onrampInstance?.destroy();
+      onrampInstance?.current?.destroy();
       if (instance) {
         //check that account connected is same as destination wallet account
         if (account) {
@@ -112,19 +109,19 @@ export const BuyButton: React.FC<BuyButtonProps> = (props) => {
         }
         setActive(true);
         setInitializing(false);
-        setOnrampInstance(instance);
+        onrampInstance.current = instance;
       }
     });
 
     return () => {
-      onrampInstance?.destroy();
+      onrampInstance?.current?.destroy();
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [account, chainId]);
 
   const handleClick = () => {
     if (!initializing) {
-      onrampInstance?.open();
+      onrampInstance?.current?.open();
     }
   };
 
