@@ -41,7 +41,6 @@ export const ReferralContextProvider: React.FC<{
   const getAndSetAccountSummary = useCallback(async () => {
     if (account) {
       const data = await getAccountSummary(account);
-      await new Promise((resolve) => setTimeout(resolve, 3000));
       setAccountSummary(data);
     } else {
       setAccountSummary(defaultReferralAccountSummary);
