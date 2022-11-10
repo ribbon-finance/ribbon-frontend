@@ -14,7 +14,11 @@ import {
   isPracticallyZero,
 } from "shared/lib/utils/math";
 import usePullUp from "../../hooks/usePullUp";
-import { VaultList, VaultOptions } from "shared/lib/constants/constants";
+import {
+  isEarnVault,
+  VaultList,
+  VaultOptions,
+} from "shared/lib/constants/constants";
 import { Subtitle } from "shared/lib/designSystem";
 import useVaultOption from "../../hooks/useVaultOption";
 import { getVaultColor } from "shared/lib/utils/vault";
@@ -344,7 +348,7 @@ const EarnPage = () => {
   }, [vaultAccount]);
 
   const isVaultMaxCapacity = useMemo(() => {
-    if (isLoading || vaultOption !== "rEARN") {
+    if (isLoading || (vaultOption && !isEarnVault(vaultOption))) {
       return undefined;
     }
     return isPracticallyZero(v2VaultLimit.sub(v2Deposits), 6);

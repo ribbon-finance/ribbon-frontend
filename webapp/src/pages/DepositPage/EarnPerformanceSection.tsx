@@ -263,7 +263,7 @@ const EarnPerformanceSection: React.FC<EarnPerformanceSectionProps> = ({
             themeColor={termThemeColor[vaultPerformanceTerm]}
           />
         ) : step === "analysis" ? (
-          <Analysis />
+          <Analysis vaultOption={vaultOption} />
         ) : (
           <Backtest />
         )}

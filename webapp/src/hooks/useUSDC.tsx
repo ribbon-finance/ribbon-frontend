@@ -3,7 +3,6 @@
 import { BigNumber } from "ethers";
 import { useCallback, useMemo } from "react";
 import { useWeb3Wallet } from "shared/lib/hooks/useWeb3Wallet";
-import { getAssets } from "shared/lib/constants/constants";
 import { getERC20Token } from "shared/lib/hooks/useERC20Token";
 import { ERC20Token } from "shared/lib/models/eth";
 import { splitSignature } from "shared/lib/utils/signing";
@@ -24,7 +23,7 @@ const EIP2612_TYPE = [
 ];
 
 const useUSDC = () => {
-  const depositAsset = getAssets("rEARN");
+  const depositAsset = "USDC";
 
   const { chainId, ethereumProvider, account } = useWeb3Wallet();
 

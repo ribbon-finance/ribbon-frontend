@@ -130,6 +130,7 @@ const StepList = [
 const EarnDetailsModal: React.FC<EarnDetailsModalProps> = ({
   show,
   onClose,
+  vaultOption,
 }) => {
   const { width } = useScreenSize();
 
@@ -144,16 +145,16 @@ const EarnDetailsModal: React.FC<EarnDetailsModalProps> = ({
   const modalContent = useMemo(() => {
     switch (step) {
       case "strategy":
-        return <Strategy setStep={setStep} />;
+        return <Strategy setStep={setStep} vaultOption={vaultOption} />;
       case "payoff":
         return <Payoff />;
       case "risk":
-        return <Risk />;
+        return <Risk vaultOption={vaultOption} />;
       case "performance":
         return (
           <EarnPerformanceSection
             vault={{
-              vaultOption: "rEARN",
+              vaultOption,
               vaultVersion: "earn",
             }}
           />
@@ -162,17 +163,17 @@ const EarnDetailsModal: React.FC<EarnDetailsModalProps> = ({
         return (
           <EarnVaultActivity
             vault={{
-              vaultOption: "rEARN",
+              vaultOption,
               vaultVersion: "earn",
             }}
           />
         );
       case "counterparties":
-        return <Counterparties />;
+        return <Counterparties vaultOption={vaultOption} />;
       case "fees":
         return <Fees />;
     }
-  }, [step]);
+  }, [step, vaultOption]);
 
   return (
     <>

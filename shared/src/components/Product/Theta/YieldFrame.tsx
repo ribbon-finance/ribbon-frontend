@@ -4,6 +4,7 @@ import React, { useMemo } from "react";
 import styled from "styled-components";
 
 import {
+  isEarnVault,
   isPutVault,
   VaultOptions,
   VaultVersion,
@@ -131,7 +132,7 @@ const YieldFrame: React.FC<YieldFrameProps> = ({
   const { status, deposits, vaultLimit, asset, displayAsset, decimals } =
     useVaultData(vault);
   const {
-    data: { totalBalance: v2Deposits, cap: v2VaultLimit, decimals: v2Decimals },
+    data: { totalBalance: v2Deposits, cap: v2VaultLimit },
     loading: v2DataLoading,
   } = useV2VaultData(vault);
 
@@ -148,7 +149,7 @@ const YieldFrame: React.FC<YieldFrameProps> = ({
   const Logo = getAssetLogo(displayAsset);
 
   const isVaultMaxCapacity = useMemo(() => {
-    if (v2DataLoading || vault !== "rEARN") {
+    if (v2DataLoading || !isEarnVault(vault)) {
       return undefined;
     }
     return isPracticallyZero(v2VaultLimit.sub(v2Deposits), 6);
@@ -243,7 +244,7 @@ const YieldFrame: React.FC<YieldFrameProps> = ({
       role="button"
       onClick={() => onVaultPress(vault, vaultVersion)}
     >
-      {vault === "rEARN" ? (
+      {isEarnVault(vault) ? (
         <ProductCard color={color} vault={vault}>
           <ProductInfoEarn>
             <EarnCapacityText>

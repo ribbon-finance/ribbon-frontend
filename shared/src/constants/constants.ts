@@ -358,8 +358,7 @@ export const isEarnVault = (vault: VaultOptions): boolean =>
   EarnVault.includes(vault);
 
 export const EarnAddresses: { [key: string]: string } = {
-  RibbonDiversifiedWeek1: v2deployment.mainnet.RibbonEarnRibbonDiversifiedWeek1,
-  CitadelWeek1: v2deployment.mainnet.RibbonEarnCitadelWeek1,
+  RibbonEarnUSDC: v2deployment.mainnet.RibbonEarnUSDC,
 };
 
 export const VaultAddressMap: {
@@ -519,7 +518,7 @@ export const VaultAddressMap: {
     chainId: CHAINID.ETH_MAINNET,
   },
   rEARN: {
-    earn: v2deployment.mainnet.RibbonEarnRibbonDiversifiedWeek1, //default earn address
+    earn: v2deployment.mainnet.RibbonEarnUSDC, //default earn address
     chainId: CHAINID.ETH_MAINNET,
   },
 };

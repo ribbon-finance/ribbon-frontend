@@ -4,14 +4,15 @@ import { Title, SecondaryText, PrimaryText } from "shared/lib/designSystem";
 import colors from "shared/lib/designSystem/colors";
 import { ExternalIcon } from "shared/lib/assets/icons/icons";
 import { useAirtableEarnData } from "shared/lib/hooks/useAirtableEarnData";
-import { SubgraphDataContext } from "shared/lib/hooks/subgraphDataContext";
 import currency from "currency.js";
-import { useContext, useMemo } from "react";
 import { formatUnits } from "ethers/lib/utils";
 import useLoadingText from "shared/lib/hooks/useLoadingText";
 import HelpInfo from "shared/lib/components/Common/HelpInfo";
 import { Step } from "./Modal/EarnDetailsModal";
 import { useV2VaultData } from "shared/lib/hooks/web3DataContext";
+import { VaultOptions } from "shared/lib/constants/constants";
+import { useVaultsSubgraphData } from "shared/lib/hooks/useVaultData";
+import { useMemo } from "react";
 
 const ExplainerTitle = styled.div<{ color: string; marginTop?: number }>`
   display: flex;
@@ -63,9 +64,10 @@ const StyledTitle = styled(Title)<{ marginTop: number }>`
 
 interface StrategyProps {
   setStep: (step: Step) => void;
+  vaultOption: VaultOptions;
 }
 
-export const Strategy: React.FC<StrategyProps> = ({ setStep }) => {
+export const Strategy: React.FC<StrategyProps> = ({ setStep, vaultOption }) => {
   const {
     strikePrice,
     baseYield,
@@ -78,7 +80,7 @@ export const Strategy: React.FC<StrategyProps> = ({ setStep }) => {
   const {
     loading: vaultLoading,
     data: { totalBalance },
-  } = useV2VaultData("rEARN");
+  } = useV2VaultData(vaultOption);
 
   const loadingText = useLoadingText();
   return (
@@ -200,7 +202,11 @@ export const Strategy: React.FC<StrategyProps> = ({ setStep }) => {
   );
 };
 
-export const Risk = () => {
+interface RiskProps {
+  vaultOption: VaultOptions;
+}
+
+export const Risk: React.FC<RiskProps> = ({ vaultOption }) => {
   return (
     <>
       <Title>Credit Risk</Title>
@@ -310,25 +316,26 @@ export const Backtest = () => {
   );
 };
 
-export const Analysis = () => {
+interface AnalysisProps {
+  vaultOption: VaultOptions;
+}
+
+export const Analysis: React.FC<AnalysisProps> = ({ vaultOption }) => {
   const { itmPerformance, loading } = useAirtableEarnData();
   const loadingText = useLoadingText();
-  const { vaultSubgraphData } = useContext(SubgraphDataContext);
+  const { data, loading: subgraphLoading } = useVaultsSubgraphData();
+
+  const vault = data.earn[vaultOption];
   const [numberOfHits, optionsTraded] = useMemo(() => {
-    if (!vaultSubgraphData.vaults.earn.rEARN) {
+    if (!vault || subgraphLoading) {
       return [0, 0];
     }
-    if (
-      !vaultSubgraphData.vaults.earn.rEARN.numberOfHits ||
-      !vaultSubgraphData.vaults.earn.rEARN.optionsTraded
-    ) {
+
+    if (!vault.numberOfHits || !vault.optionsTraded) {
       return [0, 0];
     }
-    return [
-      vaultSubgraphData.vaults.earn.rEARN.numberOfHits,
-      vaultSubgraphData.vaults.earn.rEARN.optionsTraded,
-    ];
-  }, [vaultSubgraphData.vaults.earn.rEARN]);
+    return [vault.numberOfHits, vault.optionsTraded];
+  }, [subgraphLoading, vault]);
 
   return (
     <AnalysisContainer>

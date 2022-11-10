@@ -39,6 +39,7 @@ import {
   VaultList,
   VaultOptions,
   VaultVersion,
+  isEarnVault,
 } from "shared/lib/constants/constants";
 import { CHAINID } from "shared/lib/utils/env";
 import { getVaultColor } from "shared/lib/utils/vault";
@@ -445,7 +446,7 @@ const AccountStatus: React.FC<AccountStatusProps> = ({
 
   return (
     <AccountStatusContainer variant={variant}>
-      {vault && vault.vaultOption !== "rEARN" && (
+      {vault && !isEarnVault(vault.vaultOption) && (
         <YourPosition
           vault={vault}
           variant="mobile"
@@ -456,16 +457,14 @@ const AccountStatus: React.FC<AccountStatusProps> = ({
       <WalletContainer variant={variant} ref={desktopMenuRef}>
         <WalletButton
           variant={variant}
-          showInvestButton={
-            vault !== undefined && vault.vaultOption !== "rEARN"
-          }
+          showInvestButton={vault && !isEarnVault(vault.vaultOption)}
           connected={active}
           role="button"
           onClick={handleButtonClick}
         >
           {renderButtonContent()}
         </WalletButton>
-        {vault && vault.vaultOption !== "rEARN" && (
+        {vault && !isEarnVault(vault.vaultOption) && (
           <InvestButton
             onClick={handleInvestButtonClick}
             color={getVaultColor(vault.vaultOption)}
