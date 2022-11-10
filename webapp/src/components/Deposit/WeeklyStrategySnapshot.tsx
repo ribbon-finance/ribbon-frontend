@@ -309,6 +309,7 @@ const WeeklyStrategySnapshot: React.FC<WeeklyStrategySnapshotProps> = ({
             <DataLabel className="d-block">Next Indicative Strike</DataLabel>
             <DataNumber>{strikePriceText}</DataNumber>
           </DataCol>
+          <DataCol xs="6"></DataCol>
         </Row>
       </VaultPerformanceChartSecondaryContainer>
       {currentOption && (
