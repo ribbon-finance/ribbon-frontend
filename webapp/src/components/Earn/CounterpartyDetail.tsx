@@ -21,6 +21,7 @@ import { Counterparty } from "./Counterparties";
 import { formatUnits } from "ethers/lib/utils";
 import { useAirtableEarnData } from "shared/lib/hooks/useAirtableEarnData";
 import { useV2VaultData } from "shared/lib/hooks/web3DataContext";
+import { VaultOptions } from "shared/lib/constants/constants";
 
 const BoostLogoContainer = styled.div`
   display: flex;
@@ -107,10 +108,12 @@ const Part = styled.div`
 
 interface VaultStrategyExplainerProps {
   counterparty: Counterparty;
+  vaultOption: VaultOptions;
 }
 
 const CounterpartyDetail: React.FC<VaultStrategyExplainerProps> = ({
   counterparty,
+  vaultOption,
 }) => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const { borrowRate, loading } = useAirtableEarnData();
@@ -125,7 +128,7 @@ const CounterpartyDetail: React.FC<VaultStrategyExplainerProps> = ({
   const {
     loading: vaultLoading,
     data: { totalBalance },
-  } = useV2VaultData("rEARN");
+  } = useV2VaultData(vaultOption);
   const renderLogo = useCallback((s: Counterparty) => {
     switch (s) {
       case "R-EARN DIVERSIFIED":

@@ -30,6 +30,7 @@ import {
   isAvaxVault,
   isSolanaVault,
   isDisabledVault,
+  isEarnVault,
 } from "../../../constants/constants";
 import { BoostIcon } from "../../../assets/icons/icons";
 import { getAssetDisplay, getAssetLogo } from "../../../utils/asset";
@@ -497,7 +498,7 @@ const YieldCard: React.FC<YieldCardProps> = ({
     : loadingText;
 
   const isVaultMaxCapacity = useMemo(() => {
-    if (v2DataLoading || vault !== "rEARN") {
+    if (v2DataLoading || !isEarnVault(vault)) {
       return undefined;
     }
     return isPracticallyZero(v2VaultLimit.sub(v2Deposits), 6);
@@ -919,7 +920,7 @@ const YieldCard: React.FC<YieldCardProps> = ({
           color={color}
           vault={vault}
         >
-          {vault === "rEARN" ? (
+          {isEarnVault(vault) ? (
             <>
               <ProductInfoEarn
                 connected={

@@ -9,6 +9,7 @@ import {
   VaultVersion,
   getAssets,
   isPutVault,
+  isEarnVault,
 } from "../../constants/constants";
 import { SecondaryText, Title } from "../../designSystem";
 import colors from "../../designSystem/colors";
@@ -152,7 +153,7 @@ const DesktopProductCatalogueGalleryView: React.FC<
   }, [page, filteredProducts]);
 
   const renderDescription = useCallback(() => {
-    if (currentVault === "rEARN") {
+    if (currentVault && isEarnVault(currentVault)) {
       return (
         "Earn up to " +
         (loading ? "---" : (maxYield * 100).toFixed(2) + "%") +
@@ -192,7 +193,7 @@ const DesktopProductCatalogueGalleryView: React.FC<
           <SecondaryText className="mt-3">{renderDescription()}</SecondaryText>
 
           {active &&
-            (currentVault === "rEARN" ? (
+            (currentVault && isEarnVault(currentVault) ? (
               <div className="mt-4">
                 <YourPosition
                   vault={{

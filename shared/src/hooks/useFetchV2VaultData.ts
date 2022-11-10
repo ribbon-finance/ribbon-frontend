@@ -4,6 +4,7 @@ import { BigNumber } from "ethers";
 import {
   EVMVaultList,
   getVaultNetwork,
+  isEarnVault,
   isPutVault,
   TreasuryVaultList,
 } from "../constants/constants";
@@ -20,7 +21,6 @@ import { usePendingTransactions } from "./pendingTransactionsContext";
 import { useEVMWeb3Context } from "./useEVMWeb3Context";
 import { isVaultSupportedOnChain } from "../utils/vault";
 import { getNextFridayTimestamp } from "../utils/math";
-import { useWeb3Context } from "./web3Context";
 import { RibbonV2ThetaVault } from "../codegen";
 
 const useFetchV2VaultData = (): V2VaultData => {
@@ -34,7 +34,6 @@ const useFetchV2VaultData = (): V2VaultData => {
   const expiryTimestamp = getNextFridayTimestamp();
   const { transactionsCounter } = usePendingTransactions();
   const { getProviderForNetwork } = useEVMWeb3Context();
-  const { provider } = useWeb3Context();
   const [data, setData] = useState<V2VaultData>(defaultV2VaultData);
   const [, setMulticallCounter] = useState(0);
 
@@ -77,12 +76,11 @@ const useFetchV2VaultData = (): V2VaultData => {
           return { vault };
         }
 
-        const strikeSelectionAddress =
-          vault !== "rEARN"
-            ? await contract.strikeSelection().catch((e) => {
-                return undefined;
-              })
-            : undefined;
+        const strikeSelectionAddress = !isEarnVault(vault)
+          ? await contract.strikeSelection().catch((e) => {
+              return undefined;
+            })
+          : undefined;
 
         const strikeSelectionContract = strikeSelectionAddress
           ? getStrikeSelectionContract(
