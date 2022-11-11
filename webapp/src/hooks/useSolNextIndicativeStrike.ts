@@ -14,6 +14,8 @@ const defaultOptions = {
   markPrice: 0,
 };
 
+const solRounding = 1;
+
 // get the next indicative strike for SOL
 export const useSolNextIndicativeStrike = (): number => {
   const { price: solPrice, loading: assetPriceLoading } = useAssetPrice({
@@ -29,8 +31,14 @@ export const useSolNextIndicativeStrike = (): number => {
     }
 
     try {
-      return get10dStrikeFromDeribit(false, spotPrice, 5, options.SOL);
+      return get10dStrikeFromDeribit(
+        false,
+        spotPrice,
+        solRounding,
+        options.SOL
+      );
     } catch (err) {
+      console.log(err);
       return defaultOptions;
     }
   }, [solPrice, assetPriceLoading, options]);
