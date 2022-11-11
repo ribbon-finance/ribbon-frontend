@@ -100,7 +100,8 @@ export const getChainByVaultOption = (vault: VaultOptions): Chains => {
     case "rBTC-THETA":
     case "rAAVE-THETA":
     case "rAPE-THETA":
-    case "rEARN":
+    case "rEARN-USDC":
+    case "rEARN-STETH":
       return Chains.Ethereum;
     case "rAVAX-THETA":
     case "rsAVAX-THETA":

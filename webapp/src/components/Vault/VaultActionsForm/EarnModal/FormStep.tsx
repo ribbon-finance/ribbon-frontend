@@ -114,6 +114,7 @@ const FormTitle = styled(Title)<{ delay?: number; show?: boolean }>`
 
 const StyledTitle = styled(Title)<{ color?: string }>`
   color: ${(props) => props.color};
+  text-transform: none;
 `;
 
 const WarningContainer = styled.div<{
@@ -486,11 +487,10 @@ const DepositFormStep: React.FC<{
           key: "Current Position",
           value: `${currency(formatUnits(investedInStrategy, decimals), {
             symbol: "",
-          })} USDC`,
+          })} ${asset}`,
           tooltip: {
             title: "Current Position",
-            explanation:
-              "Current amount of USDC deposited by your address in the vault.",
+            explanation: `Current amount of ${asset} deposited by your address in the vault.`,
           },
         });
 
@@ -498,10 +498,10 @@ const DepositFormStep: React.FC<{
           key: "Wallet Balance",
           value: `${currency(formatUnits(userAssetBalance, decimals), {
             symbol: "",
-          }).format()} USDC`,
+          }).format()} ${asset}`,
           tooltip: {
             title: "Wallet Balance",
-            explanation: "Current amount of USDC available in your wallet.",
+            explanation: `Current amount of ${asset} available in your wallet.`,
           },
           error: "insufficientBalance",
         });
@@ -510,12 +510,11 @@ const DepositFormStep: React.FC<{
           key: "Vault Capacity",
           value: `${currency(formatUnits(cap.sub(totalBalance), decimals), {
             symbol: "",
-          }).format()} USDC`,
+          }).format()} ${asset}`,
           error: "capacityOverflow",
           tooltip: {
             title: "Vault Capacity",
-            explanation:
-              "Total capacity of the vault in USDC. Once this amount is filled, no additional deposit can be made",
+            explanation: `Total capacity of the vault in ${asset}. Once this amount is filled, no additional deposit can be made`,
           },
         });
 
@@ -731,7 +730,7 @@ const DepositFormStep: React.FC<{
               >
                 <PrimaryText fontSize={14} lineHeight={20} color={color}>
                   IMPORTANT: You can withdraw{" "}
-                  {formatBigNumber(depositBalanceInAsset, decimals)} USDC via
+                  {formatBigNumber(depositBalanceInAsset, decimals)} {asset} via
                   instant withdrawals as these funds have not yet been deployed
                   in the vault’s strategy
                 </PrimaryText>
@@ -744,6 +743,7 @@ const DepositFormStep: React.FC<{
     }
   }, [
     actionType,
+    asset,
     canStandardWithdraw,
     color,
     decimals,

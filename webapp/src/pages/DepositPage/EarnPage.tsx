@@ -443,22 +443,22 @@ const EarnPage = () => {
     <>
       <CirclesContainer offset={pageOffset}>
         <FadeDiv delaySeconds={0.3} show={!isDepositSuccess}>
-          <StyledEarnOuterRing type={"blue"} />
+          <StyledEarnOuterRing color={color} />
         </FadeDiv>
         <FadeDiv delaySeconds={0.3} show={isDepositSuccess}>
-          <StyledEarnOuterRing type={"green"} />
+          <StyledEarnOuterRing color={"green"} />
         </FadeDiv>
         <FadeDiv delaySeconds={0.2} show={!isDepositSuccess}>
-          <StyledEarnMiddleRing type={"blue"} />
+          <StyledEarnMiddleRing color={color} />
         </FadeDiv>
         <FadeDiv delaySeconds={0.2} show={isDepositSuccess}>
-          <StyledEarnMiddleRing type={"green"} />
+          <StyledEarnMiddleRing color={"green"} />
         </FadeDiv>
         <FadeDiv delaySeconds={0.1} show={!isDepositSuccess}>
-          <StyledEarnInnerRing type={"blue"} />
+          <StyledEarnInnerRing color={color} />
         </FadeDiv>
         <FadeDiv delaySeconds={0.1} show={isDepositSuccess}>
-          <StyledEarnInnerRing type={"green"} />
+          <StyledEarnInnerRing color={"green"} />
         </FadeDiv>
       </CirclesContainer>
       <PageContainer offset={pageOffset}>
@@ -503,12 +503,11 @@ const EarnPage = () => {
                     </ProductAssetLogoContainer>
                   )}
                 </PendingOrLogoContainer>
-                <BalanceTitle delay={0.2}>Your Balance</BalanceTitle>
+                <BalanceTitle delay={0.2}>Your Balance ({asset})</BalanceTitle>
                 <HeroText delay={0.3}>
                   {isLoading || !account
                     ? "---"
-                    : "$" +
-                      formatBigNumber(
+                    : formatBigNumber(
                         BigNumber.from(investedInStrategy),
                         decimals,
                         2
@@ -583,9 +582,12 @@ const EarnPage = () => {
                     <VaultFullText>Vault is currently full</VaultFullText>
                   ) : (
                     formatAmount(totalDepositStr) +
-                    " USDC / " +
+                    " " +
+                    asset +
+                    " / " +
                     formatAmount(depositLimitStr) +
-                    " USDC"
+                    " " +
+                    asset
                   )}
                 </EarnCapacityText>
               </VaultContainer>

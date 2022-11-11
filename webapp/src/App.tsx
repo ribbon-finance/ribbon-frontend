@@ -6,7 +6,6 @@ import {
   getSolflareWallet,
 } from "@solana/wallet-adapter-wallets";
 import { WalletProvider as SolanaWalletProvider } from "@solana/wallet-adapter-react";
-
 import RootApp from "./components/RootApp";
 import { Web3ContextProvider } from "shared/lib/hooks/web3Context";
 import { ConnectionProvider } from "@solana/wallet-adapter-react";

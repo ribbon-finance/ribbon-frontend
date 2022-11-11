@@ -34,7 +34,7 @@ export const getVaultURI = (
         ]
       }`;
     case "earn":
-      return `/${
+      return `/earn/${
         Object.keys(VaultNameOptionMap)[
           Object.values(VaultNameOptionMap).indexOf(vaultOption)
         ]

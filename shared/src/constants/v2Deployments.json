@@ -64,7 +64,8 @@
     "RibbonREarnLiquidityGauge": "0x9674126Ff31e5EcE36De0CF03A49351a7C814587",
     "RibbonThetaVaultAPECall": "0xc0cF10Dd710aefb209D9dc67bc746510ffd98A53",
     "RibbonVaultPauser": "0xE04e8Ae290965AD4F7E40c68041c493d2e89cDC3",
-    "RibbonEarnUSDC": "0x84c2b16fa6877a8ff4f3271db7ea837233dfd6f0"
+    "RibbonEarnUSDC": "0x84c2b16fa6877a8ff4f3271db7ea837233dfd6f0",
+    "RibbonEarnSTETH": "0x84c2b16fa6877a8ff4f3271db7ea837233dfd6f0"
   },
   "fuji": {
     "ManualVolOracle": "0x8c58dDE5156DE3b3Fb93664DccBc1BeB1d5Ac923",
