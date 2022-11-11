@@ -350,7 +350,7 @@ export const PoolDetailsMap: Record<PoolOptions, PoolDetails> = {
     twitter: "https://twitter.com/folkvangtrading",
     website: "https://folkvang.io",
     credit: {
-      rating: "AA",
+      rating: "A",
       borrowLimit: 105000000,
       content: (
         <>
