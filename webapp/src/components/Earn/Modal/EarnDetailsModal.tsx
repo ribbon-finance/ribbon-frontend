@@ -9,6 +9,7 @@ import EarnPerformanceSection from "../../../pages/DepositPage/EarnPerformanceSe
 import EarnVaultActivity from "../../Vault/EarnVaultActivity";
 import Payoff from "../Payoff";
 import Counterparties from "../Counterparties";
+import FundingSource from "../FundingSource";
 import Fees from "../Fees";
 import { motion } from "framer-motion";
 import sizes from "shared/lib/designSystem/sizes";
@@ -112,7 +113,7 @@ export type Step =
   | "payoff"
   | "performance"
   | "risk"
-  | "counterparties"
+  | "funding source"
   | "activity"
   | "fees";
 
@@ -121,7 +122,7 @@ const StepList = [
   "payoff",
   "performance",
   "risk",
-  "counterparties",
+  "funding source",
   "activity",
   "fees",
 ] as const;
@@ -168,8 +169,12 @@ const EarnDetailsModal: React.FC<EarnDetailsModalProps> = ({
             }}
           />
         );
-      case "counterparties":
-        return <Counterparties vaultOption={vaultOption} />;
+      case "funding source":
+        return vaultOption === "rEARN-USDC" ? (
+          <Counterparties vaultOption={vaultOption} />
+        ) : (
+          <FundingSource vaultOption={vaultOption} />
+        );
       case "fees":
         return <Fees />;
     }

@@ -327,11 +327,10 @@ const EarnPage = () => {
   const { vaultAccounts } = useVaultAccounts(vaultVersion);
   const vaultAccount = vaultAccounts[vaultOption || VaultList[0]];
   const Logo = getAssetLogo(asset);
-
   const isLoading = status === "loading" || loading;
   useRedirectOnSwitchChain(getChainByVaultOption(vaultOption as VaultOptions));
 
-  let logo = <Logo height="100%" />;
+  const logo = <Logo height="100%" />;
 
   const color = useMemo(() => {
     if (vaultOption) {

@@ -103,7 +103,7 @@ export const Strategy: React.FC<StrategyProps> = ({ setStep, vaultOption }) => {
           protected
         </LinkText>
         . The vault earns interest by lending capital to our{" "}
-        <LinkText role={"button"} onClick={() => setStep("counterparties")}>
+        <LinkText role={"button"} onClick={() => setStep("funding source")}>
           counterparties
         </LinkText>{" "}
         and uses part of it to generate a base APY and the remaining funding to
