@@ -63,6 +63,11 @@ export type PoolOptions = typeof AllPoolOptions[number];
 // @ts-ignore
 export const PoolList: PoolOptions[] = EVMPoolList;
 
+const DepositDisabledPoolList: PoolOptions[] = ["folkvang"];
+
+export const isDepositDisabledPool = (pool: PoolOptions): boolean =>
+  DepositDisabledPoolList.includes(pool);
+
 export const GAS_LIMITS: {
   [pool in PoolOptions]: Partial<{
     lend: { deposit: number; withdraw: number };
