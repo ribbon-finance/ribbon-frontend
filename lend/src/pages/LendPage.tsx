@@ -322,6 +322,7 @@ export const FooterButton = styled(Button)<{
   isActive?: boolean;
   delay: number;
   disabled?: boolean;
+  tooltip?: boolean;
   width?: string;
 }>`
   font-size: 14px;
@@ -338,12 +339,11 @@ export const FooterButton = styled(Button)<{
   }
   &:disabled {
     color: ${colors.tertiaryText};
-    pointer-events: none;
+    pointer-events: ${(props) => (props.tooltip ? "auto" : "none")};
   }
   &:not(:last-of-type) {
     border-right: 1px solid ${colors.border};
   }
-
   ${delayedFade}
 `;
 

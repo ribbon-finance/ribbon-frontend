@@ -4,6 +4,7 @@ import { useParams } from "react-router-dom";
 import {
   getAssets,
   getMakerLogo,
+  isDepositDisabledPool,
   PoolDetailsMap,
   PoolOptions,
 } from "../constants/constants";
@@ -661,6 +662,7 @@ const PoolPage = () => {
           setPage={setPage}
           setWalletModal={setWalletModal}
           manager={manager}
+          pool={poolId}
         />
         <PositionWidget
           pool={{
@@ -710,14 +712,10 @@ interface FooterProps {
   setPage: (page: PageEnum) => void;
   setWalletModal: (trigger: boolean) => void;
   manager: string;
+  pool: PoolOptions;
 }
 
-const Footer = ({
-  activePage,
-  setPage,
-  setWalletModal,
-  manager,
-}: FooterProps) => {
+const Footer = ({ setPage, setWalletModal, manager, pool }: FooterProps) => {
   const { account, active } = useWeb3Wallet();
 
   return (
@@ -732,10 +730,32 @@ const Footer = ({
           <>
             <FooterButton
               delay={0.2}
+              disabled={isDepositDisabledPool(pool)}
+              tooltip={isDepositDisabledPool(pool)}
               isActive={true}
               onClick={() => setPage(PageEnum.DEPOSIT)}
             >
-              Deposit
+              <div className="d-flex justify-content-center align-items-center">
+                Deposit{" "}
+                {isDepositDisabledPool(pool) && (
+                  <TooltipExplanation
+                    explanation={
+                      <>
+                        Lending to Folkvang has been temporarily disabled. Loans
+                        to the Wintermute pool are still open.
+                      </>
+                    }
+                    renderContent={({ ref, ...triggerHandler }) => (
+                      <HelpInfo containerRef={ref} {...triggerHandler}>
+                        i
+                      </HelpInfo>
+                    )}
+                    learnMoreURL={
+                      "https://twitter.com/folkvangtrading/status/1591360107094626304"
+                    }
+                  />
+                )}
+              </div>
             </FooterButton>
             <FooterButton
               delay={0.3}
