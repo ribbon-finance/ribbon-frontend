@@ -83,7 +83,10 @@ const LinkBoxContainer = styled.div`
 `;
 
 const LinkBox = styled.div`
-  padding: 24px 9px;
+  padding-top: 24px;
+  padding-bottom: 24px;
+  padding-left: 8px;
+  padding-right: 0px;
   color: ${colors.primaryText};
   .baseLink {
     color: #ffffff52;
