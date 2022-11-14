@@ -4,7 +4,7 @@ import colors from "shared/lib/designSystem/colors";
 import { SecondaryText, Title } from "shared/lib/designSystem";
 import { Button, PrimaryText } from "../../designSystem";
 import { ReferralContext } from "../../hooks/referralContext";
-import twitter from "landing/src/img/Footer/twitter.svg";
+import { ReactComponent as TwitterLogo } from "landing/src/img/Footer/twitter.svg";
 import { ReferralFooter } from "./ReferralFooter";
 
 const TextContent = styled.div`
@@ -28,7 +28,7 @@ const StyledSecondaryText = styled(SecondaryText)<{ color?: string }>`
   font-weight: 500;
 `;
 
-const ClaimTextContent = styled.div`
+const ReferralPageContent = styled.div`
   padding: 24px 16px;
 `;
 
@@ -45,7 +45,7 @@ const RbnButtonWrapper = styled.div`
 const CopyToClipboardButton = styled(Button)`
   background: ${colors.buttons.secondaryBackground};
   color: ${colors.buttons.secondaryText};
-  width: 74%;
+  width: 78.75%;
   border: none;
   border-radius: 0;
   padding: 20px;
@@ -56,12 +56,15 @@ const CopyToClipboardButton = styled(Button)`
 const TwitterButton = styled(Button)`
   background: #1da1f229;
   color: ${colors.buttons.secondaryText};
-  width: 24%;
+  width: 20.75%;
   border: none;
   border-radius: 0;
-  padding: 20px;
+  padding-top: 18px;
+  padding-left: 20px;
+  padding-right: 20px;
+  padding-bottom: 19px;
   margin-top: 16px;
-  margin-left: 2%;
+  margin-left: 0.5%;
   img {
     color: red;
     fill: red;
@@ -101,6 +104,12 @@ const LearnMoreContainer = styled.div`
   justify-content: center;
   align-items: center;
   margin-bottom: 16px;
+`;
+
+const StyledTwitterLogo = styled(TwitterLogo)`
+  & path {
+    fill: #1da1f2;
+  }
 `;
 
 export const ReferralPage = () => {
@@ -149,10 +158,10 @@ export const ReferralPage = () => {
           {buttonDisplayText}
         </CopyToClipboardButton>
         <TwitterButton onClick={handleTwitterOnClick}>
-          <img src={twitter} alt="twitter" />
+          <StyledTwitterLogo />
         </TwitterButton>
       </RbnButtonWrapper>
-      <ClaimTextContent>
+      <ReferralPageContent>
         <div className="d-flex w-100 flex-row align-items-center justify-content-between">
           <StyledSecondaryText color={colors.tertiaryText}>
             RBN Referral Rewards
@@ -191,7 +200,7 @@ export const ReferralPage = () => {
             {getReferralCodeUsed()}
           </StyledTitle>
         </div>
-      </ClaimTextContent>
+      </ReferralPageContent>
       <LearnMoreContainer>
         <ReferralFooter></ReferralFooter>
       </LearnMoreContainer>
