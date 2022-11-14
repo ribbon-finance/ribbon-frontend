@@ -14,8 +14,11 @@ const TextContent = styled.div`
   font-size: 16px;
 `;
 
-const StyledTitle = styled(Title)<{ color?: string; position?: string }>`
-  color: ${(props) => props.color};
+const StyledTitle = styled(Title)<{ color?: string; value?: string }>`
+  color: ${(props) =>
+    props.value === "0" || props.value === "---"
+      ? colors.quaternaryText
+      : props.color};
   text-align: right;
 `;
 
@@ -154,7 +157,13 @@ export const ReferralPage = () => {
           <StyledSecondaryText color={colors.tertiaryText}>
             RBN Referral Rewards
           </StyledSecondaryText>
-          <StyledTitle>
+          <StyledTitle
+            value={
+              referralLoading
+                ? "---"
+                : referralAccountSummary["totalReferralRewards"].toString()
+            }
+          >
             {referralLoading
               ? "---"
               : referralAccountSummary["totalReferralRewards"]}
@@ -164,7 +173,13 @@ export const ReferralPage = () => {
           <StyledSecondaryText color={colors.tertiaryText}>
             Users Referred
           </StyledSecondaryText>
-          <StyledTitle>
+          <StyledTitle
+            value={
+              referralLoading
+                ? "---"
+                : referralAccountSummary["userReferred"].toString()
+            }
+          >
             {referralLoading ? "---" : referralAccountSummary["userReferred"]}
           </StyledTitle>
         </div>
@@ -172,7 +187,9 @@ export const ReferralPage = () => {
           <StyledSecondaryText color={colors.tertiaryText}>
             Referral Code Used
           </StyledSecondaryText>
-          <StyledTitle>{getReferralCodeUsed()}</StyledTitle>
+          <StyledTitle value={getReferralCodeUsed()}>
+            {getReferralCodeUsed()}
+          </StyledTitle>
         </div>
       </ClaimTextContent>
       <LearnMoreContainer>
