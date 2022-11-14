@@ -1,4 +1,4 @@
-import React, { useCallback, useMemo, useState } from "react";
+import { useCallback, useContext, useMemo, useState } from "react";
 import { getAssets } from "../../constants/constants";
 import { usePendingTransactions } from "../../hooks/pendingTransactionsContext";
 import { PendingTransaction } from "../../store/types";
@@ -7,6 +7,7 @@ import { capitalize } from "shared/lib/utils/text";
 import Toast from ".//BaseToast";
 import { formatBigNumber } from "../../utils/math";
 import { BigNumber } from "ethers";
+import { ReferralContext } from "../../hooks/referralContext";
 
 export const TxStatusToast = () => {
   const { pendingTransactions, transactionsCounter } = usePendingTransactions();
@@ -114,5 +115,31 @@ export const TxStatusToast = () => {
           subtitle={getSubtitle(currentTx)}
         />
       );
+  }
+};
+
+export const ReferralStatusToast = () => {
+  const { referralNotifications, referralLoading, referralCode } =
+    useContext(ReferralContext);
+
+  if (referralNotifications.length > 0 && !referralLoading) {
+    return (
+      <>
+        {referralNotifications.map((referralNotification) => (
+          <Toast
+            key={referralNotification.recordID}
+            type="success"
+            title={`Referral Reward Earned`}
+            subtitle={
+              referralNotification.type === "Referee"
+                ? `You earned ${referralNotification.amount} RBN from using referral code ${referralCode}`
+                : `You earned ${referralNotification.amount} RBN from referring new depositors`
+            }
+          />
+        ))}
+      </>
+    );
+  } else {
+    return <></>;
   }
 };

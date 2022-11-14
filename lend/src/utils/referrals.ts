@@ -58,9 +58,61 @@ export const createOrReturnCode = async (address: string) => {
     if (response.data.success) {
       return response.data.data["referralCode"];
     } else {
-      throw new Error("Error getting or creating referral code from address provided");
+      throw new Error(
+        "Error getting or creating referral code from address provided"
+      );
     }
   } catch (err) {
-    throw new Error("Error while calling backend to get or create referral code from address");
+    throw new Error(
+      "Error while calling backend to get or create referral code from address"
+    );
+  }
+};
+
+export type ReferralNotification = {
+  recordID: string;
+  amount: number;
+  type: "Referee" | "Referrer";
+};
+
+export const getNotifications = async (
+  address: string,
+  type: "Referee" | "Referrer"
+): Promise<ReferralNotification[]> => {
+  const apiURL = `${REFERRALS_API_BASE_URL}/getNotifications?address=${address}&type=${type}`;
+  try {
+    const response = await axios.get(apiURL);
+    if (response.data.success) {
+      return response.data.data;
+    } else {
+      throw new Error(
+        `Error getting notifications for address provided: ${response.data.message}`
+      );
+    }
+  } catch (err) {
+    throw new Error("Error while calling backend to get notifications for address");
+  }
+};
+
+export const setNotifications = async (
+  recordIDs: string[],
+  type: "Referee" | "Referrer"
+) => {
+  if (recordIDs.length > 10) {
+    throw new Error(
+      "Provided recordIDs cannot be more than size 10. Please break into multiple requests."
+    );
+  }
+  const apiURL = `${REFERRALS_API_BASE_URL}/setNotifications?type=${type}`;
+  try {
+    const body = { recordIDs: recordIDs };
+    const response = await axios.put(apiURL, body);
+    if (!response.data.success) {
+      throw new Error(
+        `Error setting notifications for address provided: ${response.data.message}`
+      );
+    }
+  } catch (err) {
+    throw new Error("Error while calling backend to set notifications for address");
   }
 };

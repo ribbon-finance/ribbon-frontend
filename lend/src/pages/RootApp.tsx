@@ -6,7 +6,7 @@ import LendPage from "./LendPage";
 import NotFound from "./NotFound";
 import useEagerConnect from "shared/lib/hooks/useEagerConnect";
 import colors from "shared/lib/designSystem/colors";
-import { TxStatusToast } from "../components/Common/toasts";
+import { ReferralStatusToast, TxStatusToast } from "../components/Common/toasts";
 import PoolPage from "./PoolPage";
 
 const Body = styled.div`
@@ -23,6 +23,7 @@ const RootApp = () => {
     <Body>
       <Router>
         <TxStatusToast />
+        <ReferralStatusToast />
         <LendVerticalHeader />
         <Switch>
           <Route path="/" exact>
