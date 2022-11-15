@@ -8,6 +8,63 @@ import Toast from ".//BaseToast";
 import { formatBigNumber } from "../../utils/math";
 import { BigNumber } from "ethers";
 import { ReferralContext } from "../../hooks/referralContext";
+import { SecondaryText } from "shared/lib/designSystem";
+import { useEffect } from "react";
+
+const getReferralText = (
+  type: "Referee" | "Referrer",
+  amount: number,
+  referralCode?: string
+) => {
+  switch (type) {
+    case "Referee":
+      return (
+        <span>
+          <SecondaryText fontSize={12} lineHeight={16} className="mt-1">
+            You earned
+          </SecondaryText>
+          <SecondaryText
+            fontSize={12}
+            lineHeight={16}
+            color="#FFFFFF"
+            className="mt-1"
+          >
+            {` ${amount} RBN `}
+          </SecondaryText>
+          <SecondaryText fontSize={12} lineHeight={16} className="mt-1">
+            from using referral code
+          </SecondaryText>
+          <SecondaryText
+            fontSize={12}
+            lineHeight={16}
+            color="#FFFFFF"
+            className="mt-1"
+          >
+            {` ${referralCode}`}
+          </SecondaryText>
+        </span>
+      );
+    case "Referrer":
+      return (
+        <span>
+          <SecondaryText fontSize={12} lineHeight={16} className="mt-1">
+            You earned
+          </SecondaryText>
+          <SecondaryText
+            fontSize={12}
+            lineHeight={16}
+            color="#FFFFFF"
+            className="mt-1"
+          >
+            {` ${amount} RBN `}
+          </SecondaryText>
+          <SecondaryText fontSize={12} lineHeight={16} className="mt-1">
+            from referring new depositors
+          </SecondaryText>
+        </span>
+      );
+  }
+};
 
 export const TxStatusToast = () => {
   const { pendingTransactions, transactionsCounter } = usePendingTransactions();
@@ -122,24 +179,35 @@ export const ReferralStatusToast = () => {
   const { referralNotifications, referralLoading, referralCode } =
     useContext(ReferralContext);
 
-  if (referralNotifications.length > 0 && !referralLoading) {
+  const [currShowState, setCurrShowState] = useState(false);
+
+  useEffect(() => {
+    if (referralNotifications.length > 0 && !referralLoading) {
+      setCurrShowState(true);
+    }
+  }, [referralNotifications, referralLoading, referralCode]);
+
+  const notifications = useMemo(() => {
     return (
       <>
         {referralNotifications.map((referralNotification) => (
           <Toast
+            show={currShowState}
+            onClose={() => setCurrShowState(false)}
             key={referralNotification.recordID}
-            type="success"
+            type="referral"
             title={`Referral Reward Earned`}
-            subtitle={
-              referralNotification.type === "Referee"
-                ? `You earned ${referralNotification.amount} RBN from using referral code ${referralCode}`
-                : `You earned ${referralNotification.amount} RBN from referring new depositors`
-            }
-          />
+            subtitle={""} // Unused, will be overwritten by passed referralText
+            referralText={getReferralText(
+              referralNotification.type,
+              referralNotification.amount,
+              referralCode
+            )}
+          ></Toast>
         ))}
       </>
     );
-  } else {
-    return <></>;
-  }
+  }, [currShowState, referralNotifications, referralCode]);
+
+  return notifications;
 };

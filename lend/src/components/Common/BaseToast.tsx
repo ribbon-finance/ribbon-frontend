@@ -10,7 +10,7 @@ import { SecondaryText, Title } from "shared/lib/designSystem";
 import colors from "shared/lib/designSystem/colors";
 import sizes from "../../designSystem/sizes";
 interface StatusProps {
-  type: "success" | "error" | "claim" | "reminder";
+  type: "success" | "error" | "claim" | "reminder" | "referral";
 }
 
 const StyledToast = styled(BootstrapToast)<StatusProps>`
@@ -72,6 +72,7 @@ interface ToastProps extends BootstrapToastProps, StatusProps {
   title: string;
   subtitle: string;
   icon?: JSX.Element;
+  referralText?: JSX.Element;
   extra?: {
     poolOption: PoolOptions;
   };
@@ -83,6 +84,7 @@ const BaseToast: React.FC<ToastProps> = ({
   title,
   subtitle,
   icon: _icon,
+  referralText,
   extra,
   onClick,
   ...props
@@ -117,9 +119,13 @@ const BaseToast: React.FC<ToastProps> = ({
           >
             {title}
           </Title>
-          <SecondaryText fontSize={12} lineHeight={16} className="mt-1">
-            {subtitle}
-          </SecondaryText>
+          {type === "referral" ? (
+            referralText
+          ) : (
+            <SecondaryText fontSize={12} lineHeight={16} className="mt-1">
+              {subtitle}
+            </SecondaryText>
+          )}
         </div>
         <CloseIconBox>
           <CloseIcon
