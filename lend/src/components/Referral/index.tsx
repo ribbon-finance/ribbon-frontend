@@ -6,6 +6,7 @@ import { Button, PrimaryText } from "../../designSystem";
 import { ReferralContext } from "../../hooks/referralContext";
 import { ReactComponent as TwitterLogo } from "landing/src/img/Footer/twitter.svg";
 import { ReferralFooter } from "./ReferralFooter";
+import useWeb3Wallet from "shared/lib/hooks/useWeb3Wallet";
 
 const TextContent = styled.div`
   color: ${colors.primaryText}A3;
@@ -120,6 +121,7 @@ export const ReferralPage = () => {
     useState("Copy Referral Link");
   const { referralLoading, referralAccountSummary, referralCode } =
     useContext(ReferralContext);
+  const { account } = useWeb3Wallet();
   const baseLink = "https://lend.ribbon.finance/app?code=";
   const twitterText = `Lend USDC on Ribbon Lend using my referral link and earn a 0.25%25 payback in $RBN rewards! ${baseLink}${referralCode} 🎀`;
   // We use "0.25%25" as hacky way to display percentage after URL encoding
@@ -132,11 +134,10 @@ export const ReferralPage = () => {
   };
 
   const getReferralCodeUsed = () => {
-    const codeUsed = localStorage.getItem("codeUsed");
     if (referralLoading) {
       return "---";
-    } else if (codeUsed) {
-      return codeUsed;
+    } else if (account && localStorage.getItem(account)) {
+      return localStorage.getItem(account)!;
     } else {
       return referralAccountSummary["referralCodeUsed"];
     }

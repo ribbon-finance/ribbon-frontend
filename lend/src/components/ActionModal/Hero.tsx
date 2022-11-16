@@ -547,13 +547,14 @@ const Hero: React.FC<HeroProps> = ({
             if (!account) {
               return;
             }
+            const referrerAddress = await getReferrerAddressToUse();
             if (connectedWallet !== EthereumWallet.WalletConnect) {
               if (!signature) {
                 return;
               }
               res = await lendPool.provideWithPermit(
                 amountStr,
-                await getReferrerAddressToUse(),
+                referrerAddress,
                 signature.deadline,
                 signature.v,
                 signature.r,
@@ -561,10 +562,14 @@ const Hero: React.FC<HeroProps> = ({
               );
               const codeUsed = sessionStorage.getItem("code");
               if (codeUsed) {
-                localStorage.setItem("codeUsed", codeUsed);
+                localStorage.setItem(account, codeUsed);
               }
             } else {
-              res = await lendPool.provide(amountStr, account);
+              res = await lendPool.provide(amountStr, referrerAddress);
+              const codeUsed = sessionStorage.getItem("code");
+              if (codeUsed) {
+                localStorage.setItem(account, codeUsed);
+              }
             }
 
             addPendingTransaction({
