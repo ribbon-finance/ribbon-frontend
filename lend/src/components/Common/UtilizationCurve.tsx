@@ -6,8 +6,8 @@ import styled from "styled-components";
 import { useInterestRateModelData } from "../../hooks/useInterestRateModelData";
 import { usePoolData } from "../../hooks/web3DataContext";
 import { PoolOptions } from "shared/lib/constants/lendConstants";
-import { borrowRate, formatBigNumber, lendingRate } from "../../utils/math";
-
+import { borrowRate, lendingRate } from "../../utils/math";
+import { formatBigNumber } from "shared/lib/utils/math";
 const ChartContainer = styled.div`
   height: 350px;
   margin: 0;

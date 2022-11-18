@@ -6,7 +6,7 @@ import {
 } from "../../constants/constants";
 import { PoolList } from "shared/lib/constants/lendConstants";
 import { usePoolsData } from "../../hooks/web3DataContext";
-import { formatBigNumber } from "../../utils/math";
+import { formatBigNumber } from "shared/lib/utils/math";
 import { getAssetDecimals, getUtilizationDecimals } from "../../utils/asset";
 import styled, { keyframes } from "styled-components";
 import { BaseButton, Subtitle, Title } from "../../designSystem";
@@ -16,7 +16,7 @@ import { Row } from "react-bootstrap";
 import colors from "shared/lib/designSystem/colors";
 import { usePoolsApr } from "../../hooks/usePoolsApr";
 import { Link } from "react-router-dom";
-import { isPracticallyZero } from "../../utils/math";
+import { isPracticallyZero } from "shared/lib/utils/math";
 import usePoolAccounts from "../../hooks/usePoolAccounts";
 import { formatUnits } from "ethers/lib/utils";
 import sizes from "../../designSystem/sizes";

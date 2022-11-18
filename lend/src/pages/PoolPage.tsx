@@ -40,7 +40,7 @@ import {
   getAssetLogo,
   getUtilizationDecimals,
 } from "../utils/asset";
-import { formatBigNumber } from "../utils/math";
+import { formatBigNumber } from "shared/lib/utils/math";
 import colors from "shared/lib/designSystem/colors";
 import ExternalLinkIcon from "../components/Common/ExternalLinkIcon";
 import currency from "currency.js";

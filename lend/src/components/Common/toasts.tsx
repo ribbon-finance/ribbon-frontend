@@ -5,7 +5,7 @@ import { PendingTransaction } from "../../store/types";
 import { getAssetDecimals, getAssetDisplay } from "../../utils/asset";
 import { capitalize } from "shared/lib/utils/text";
 import Toast from ".//BaseToast";
-import { formatBigNumber } from "../../utils/math";
+import { formatBigNumber } from "shared/lib/utils/math";
 import { BigNumber } from "ethers";
 
 export const TxStatusToast = () => {

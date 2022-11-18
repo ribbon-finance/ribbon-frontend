@@ -8,7 +8,7 @@ import {
   getAssetDecimals,
   getAssetLogo,
 } from "../../utils/asset";
-import { formatBigNumber, isPracticallyZero } from "../../utils/math";
+import { formatBigNumber, isPracticallyZero } from "shared/lib/utils/math";
 import { useEffect, useMemo, useState } from "react";
 import { usePoolTotalDeposits } from "../../hooks/usePoolTotalDeposits";
 import { formatUnits } from "ethers/lib/utils";

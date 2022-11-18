@@ -13,7 +13,7 @@ import { Pools, Positions } from "../components/Pools";
 import useWeb3Wallet from "shared/lib/hooks/useWeb3Wallet";
 import LendModal, { ModalContentEnum } from "../components/Common/LendModal";
 import { PoolList } from "shared/lib/constants/lendConstants";
-import { isPracticallyZero } from "../utils/math";
+import { isPracticallyZero } from "shared/lib/utils/math";
 import { usePoolsData } from "../hooks/web3DataContext";
 import { getAssetDecimals } from "../utils/asset";
 import useScreenSize from "shared/lib/hooks/useScreenSize";

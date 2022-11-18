@@ -7,7 +7,7 @@ import { PrimaryText, Title } from "../../designSystem";
 import sizes from "../../designSystem/sizes";
 import { getEtherscanURI } from "../../constants/constants";
 import { PoolOptions } from "shared/lib/constants/lendConstants";
-import { formatBigNumber } from "../../utils/math";
+import { formatBigNumber } from "shared/lib/utils/math";
 import { getUtilizationDecimals } from "../../utils/asset";
 import { usePoolsApr } from "../../hooks/usePoolsApr";
 import { fadeIn } from "shared/lib/designSystem/keyframes";

@@ -7,7 +7,7 @@ import {
   PoolAddressMap,
   PoolOptions,
 } from "shared/lib/constants/lendConstants";
-import { formatBigNumber, isPracticallyZero } from "../../utils/math";
+import { formatBigNumber, isPracticallyZero } from "shared/lib/utils/math";
 import { getAssetDecimals, getUtilizationDecimals } from "../../utils/asset";
 import { fadeIn } from "shared/lib/designSystem/keyframes";
 import { css } from "styled-components";
