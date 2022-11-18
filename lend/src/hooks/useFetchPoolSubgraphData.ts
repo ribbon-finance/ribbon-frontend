@@ -19,7 +19,7 @@ import {
   resolvePoolAccountsSubgraphResponse,
   poolAccountsGraphql,
 } from "./usePoolAccounts";
-import { isProduction } from "../utils/env";
+import { isProduction } from "shared/lib/utils/env";
 import {
   resolveTransactionsSubgraphResponse,
   transactionsGraphql,

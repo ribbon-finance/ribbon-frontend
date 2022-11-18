@@ -7,7 +7,7 @@ import { getLendContract } from "./useLendContract";
 import { PoolList } from "shared/lib/constants/lendConstants";
 import { impersonateAddress } from "shared/lib/utils/development";
 import { defaultPoolData, PoolData, PoolDataResponses } from "../models/pool";
-import { isProduction } from "../utils/env";
+import { isProduction } from "shared/lib/utils/env";
 import { usePendingTransactions } from "./pendingTransactionsContext";
 import { isPoolSupportedOnChain } from "../utils/pool";
 
