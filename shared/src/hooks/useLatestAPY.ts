@@ -17,7 +17,7 @@ import { VaultPriceHistory } from "../models/vault";
 import { getAssetDecimals } from "../utils/asset";
 import useLidoAPY from "./useLidoOracle";
 import { useV2VaultData, useV2VaultsData } from "./web3DataContext";
-import { apyFromPricePerShare } from "shared/lib/utils/math";
+import { apyFromPricePerShare } from "../utils/math";
 
 /**
  *

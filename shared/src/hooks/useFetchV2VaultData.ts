@@ -20,7 +20,7 @@ import {
 import { usePendingTransactions } from "./pendingTransactionsContext";
 import { useEVMWeb3Context } from "./useEVMWeb3Context";
 import { isVaultSupportedOnChain } from "../utils/vault";
-import { getNextFridayTimestamp } from "shared/lib/utils/math";
+import { getNextFridayTimestamp } from "../utils/math";
 import { RibbonV2ThetaVault } from "../codegen";
 
 const useFetchV2VaultData = (): V2VaultData => {
