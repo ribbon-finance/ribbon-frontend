@@ -2,7 +2,7 @@ import { useWeb3React } from "@web3-react/core";
 import { BigNumber } from "ethers";
 import { useCallback, useEffect, useState } from "react";
 import { getLendContract } from "./getLendContract";
-import { PoolList } from "../constants/constants";
+import { PoolAddressMap, PoolList } from "../constants/lendConstants";
 
 export const useFetchPoolData = () => {
   const { library } = useWeb3React();
@@ -11,7 +11,11 @@ export const useFetchPoolData = () => {
   const doMulticall = useCallback(async () => {
     const responses = await Promise.all(
       PoolList.map(async (pool) => {
-        const contract = getLendContract(library, pool, false);
+        const contract = getLendContract(
+          library,
+          PoolAddressMap[pool].lend,
+          false
+        );
 
         if (!contract) {
           return { pool };

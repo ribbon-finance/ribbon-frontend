@@ -4,7 +4,7 @@ import { useWeb3React } from "@web3-react/core";
 
 import { useWeb3Context } from "./web3Context";
 import { getLendContract } from "./useLendContract";
-import { PoolList } from "../constants/constants";
+import { PoolList } from "shared/lib/constants/lendConstants";
 import { impersonateAddress } from "shared/lib/utils/development";
 import { defaultPoolData, PoolData, PoolDataResponses } from "../models/pool";
 import { isProduction } from "../utils/env";

@@ -2,7 +2,12 @@ import { useContext } from "react";
 import { BigNumber } from "ethers";
 
 import { PoolTransaction } from "../models/pool";
-import { Chains, PoolVersion, PoolVersionList } from "../constants/constants";
+import { Chains } from "../constants/constants";
+
+import {
+  PoolVersion,
+  PoolVersionList,
+} from "shared/lib/constants/lendConstants";
 import { SubgraphDataContext } from "./subgraphDataContext";
 
 export const transactionsGraphql = (account: string, chain: Chains) => `

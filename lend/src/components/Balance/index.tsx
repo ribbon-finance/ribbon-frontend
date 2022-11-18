@@ -15,7 +15,7 @@ import { formatUnits } from "ethers/lib/utils";
 import LendModal, { ModalContentEnum } from "../Common/LendModal";
 import { delayedFade } from "../animations";
 import { fadeIn } from "shared/lib/designSystem/keyframes";
-import { PoolList } from "../../constants/constants";
+import { PoolList } from "shared/lib/constants/lendConstants";
 import { usePoolsData } from "../../hooks/web3DataContext";
 import { BigNumber } from "ethers";
 import { usePoolsApr } from "../../hooks/usePoolsApr";

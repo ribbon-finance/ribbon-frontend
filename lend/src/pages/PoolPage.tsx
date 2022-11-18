@@ -6,8 +6,8 @@ import {
   getMakerLogo,
   isDepositDisabledPool,
   PoolDetailsMap,
-  PoolOptions,
 } from "../constants/constants";
+import { PoolOptions } from "shared/lib/constants/lendConstants";
 import { BaseLink, Title } from "../designSystem";
 import NotFound from "./NotFound";
 import Marquee from "react-fast-marquee/dist";
@@ -57,6 +57,7 @@ import ActionMMModal from "../components/ActionMMModal";
 import { LoadingText } from "shared/lib/hooks/useLoadingText";
 import { formatUnits } from "ethers/lib/utils";
 import UtilizationCurve from "../components/Common/UtilizationCurve";
+import { useCredoraData } from "shared/lib/hooks/useCredoraData";
 
 const PoolContainer = styled.div`
   width: calc(100% - ${components.sidebar}px);
@@ -342,6 +343,8 @@ const PoolPage = () => {
   const utilizationDecimals = getUtilizationDecimals();
   const usdcDecimals = getAssetDecimals("USDC");
   const { width } = useScreenSize();
+  const { data: credoraData } = useCredoraData();
+
   if (!poolId) return <NotFound />;
 
   const logo = getMakerLogo(poolId);
@@ -625,7 +628,7 @@ const PoolPage = () => {
                       </div>
                       <Value>
                         <AssetLogo />{" "}
-                        {currency(poolDetails.credit.borrowLimit).format({
+                        {currency(credoraData[poolId].borrowCapacity).format({
                           symbol: "",
                         })}
                       </Value>

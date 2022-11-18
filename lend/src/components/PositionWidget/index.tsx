@@ -1,6 +1,6 @@
 import React, { useEffect, useMemo } from "react";
 import styled from "styled-components";
-import { PoolOptions, PoolVersion } from "../../constants/constants";
+import { PoolVersion, PoolOptions } from "shared/lib/constants/lendConstants";
 import { getPoolColor } from "../../utils/pool";
 import AssetCircleContainer from "shared/lib/components/Common/AssetCircleContainer";
 import { getAssetDecimals, getAssetLogo } from "../../utils/asset";

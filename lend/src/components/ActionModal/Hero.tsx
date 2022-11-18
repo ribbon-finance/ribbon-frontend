@@ -3,7 +3,10 @@ import colors from "shared/lib/designSystem/colors";
 import styled, { keyframes } from "styled-components";
 import { SecondaryText } from "../../designSystem";
 import useWeb3Wallet from "../../hooks/useWeb3Wallet";
-import { PoolAddressMap, PoolOptions } from "../../constants/constants";
+import {
+  PoolAddressMap,
+  PoolOptions,
+} from "shared/lib/constants/lendConstants";
 import { formatBigNumber, isPracticallyZero } from "../../utils/math";
 import { getAssetDecimals } from "../../utils/asset";
 import { ActionType } from "./types";

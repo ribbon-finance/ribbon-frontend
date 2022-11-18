@@ -2,7 +2,10 @@ import { useWeb3React } from "@web3-react/core";
 import { useEffect, useState } from "react";
 import { RibbonLendPool } from "../codegen";
 import { RibbonLendPool__factory } from "../codegen/factories/RibbonLendPool__factory";
-import { PoolAddressMap, PoolOptions } from "../constants/constants";
+import {
+  PoolAddressMap,
+  PoolOptions,
+} from "shared/lib/constants/lendConstants";
 import { useWeb3Context } from "shared/lib/hooks/web3Context";
 
 export const getLendContract = (

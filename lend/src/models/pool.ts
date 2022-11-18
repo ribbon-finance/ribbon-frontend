@@ -1,11 +1,9 @@
 import { BigNumber } from "ethers";
+import { PoolList, PoolOptions } from "shared/lib/constants/lendConstants";
 import {
-  PoolList,
-  PoolOptions,
   PoolVersion,
   PoolVersionList,
-} from "../constants/constants";
-
+} from "shared/lib/constants/lendConstants";
 export interface Pool {
   id: string;
   name: string;

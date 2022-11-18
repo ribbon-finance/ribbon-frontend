@@ -1,5 +1,5 @@
 import { useMemo } from "react";
-import { PoolList } from "../constants/constants";
+import { PoolAddressMap, PoolList } from "../constants/lendConstants";
 import useAssetPrice from "./useAssetPrice";
 import { formatUnits } from "ethers/lib/utils";
 import { useFetchPoolData } from "./useFetchPoolData";
@@ -17,7 +17,7 @@ export const useLendAPY = () => {
     let cumulativeAPY = 0;
     if (!loading) {
       PoolList.forEach((pool) => {
-        const poolData = data[pool];
+        const poolData = data[PoolAddressMap[pool].lend];
         const poolSize = parseFloat(formatUnits(poolData.poolSize, 6));
         const rewardPerSecond = parseFloat(
           formatUnits(poolData.rewardPerSecond, 18)

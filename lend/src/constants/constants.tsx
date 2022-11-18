@@ -8,60 +8,31 @@ import addresses from "shared/lib/constants/externalAddresses.json";
 import wintermute from "../assets/icons/makers/wintermute.svg";
 import folkvang from "../assets/icons/makers/folkvang.svg";
 import ExternalLinkIcon from "../components/Common/ExternalLinkIcon";
+import {
+  PoolVersion,
+  PoolAddressMap,
+  PoolOptions,
+} from "shared/lib/constants/lendConstants";
+import { MAINNET_NAMES, NETWORKS } from "shared/lib/constants/constants";
 
 export const secondsPerYear = 31536000;
-
-export type NETWORK_NAMES = "mainnet";
-export type TESTNET_NAMES = "kovan";
-export type MAINNET_NAMES = Exclude<NETWORK_NAMES, TESTNET_NAMES>;
 
 export enum Chains {
   NotSelected,
   Ethereum,
 }
 
-export const NETWORKS: Record<number, NETWORK_NAMES> = {
-  [CHAINID.ETH_MAINNET]: "mainnet",
-};
-
-export const CHAINID_TO_NATIVE_TOKENS: Record<CHAINID, Assets> = {
-  [CHAINID.ETH_MAINNET]: "WETH",
-};
-export const READABLE_NETWORK_NAMES: Record<CHAINID, string> = {
-  [CHAINID.ETH_MAINNET]: "Ethereum",
-};
-
-export const isEthNetwork = (chainId: number): boolean =>
-  chainId === CHAINID.ETH_MAINNET;
-
-export const isEthPool = (pool: string) =>
-  isEthNetwork(PoolAddressMap[pool as PoolOptions].chainId);
-
 export const getPoolChain = (pool: string): Chains => {
-  if (isEthPool(pool)) return Chains.Ethereum;
-  else throw new Error(`Unknown network for ${pool}`);
+  return Chains.Ethereum;
 };
 
 export const getPoolNetwork = (pool: string): MAINNET_NAMES => {
-  if (isEthPool(pool)) return "mainnet";
-  else throw new Error(`Unknown network for ${pool}`);
+  return "mainnet";
 };
 
 export const NATIVE_TOKENS = ["WETH"];
 export const isNativeToken = (token: string): boolean =>
   NATIVE_TOKENS.includes(token);
-
-export const PoolVersionList = ["lend"] as const;
-export type PoolVersion = typeof PoolVersionList[number];
-
-export const EVMPoolList = ["wintermute", "folkvang"] as const;
-
-const AllPoolOptions = [...EVMPoolList];
-
-export type PoolOptions = typeof AllPoolOptions[number];
-
-// @ts-ignore
-export const PoolList: PoolOptions[] = EVMPoolList;
 
 const DepositDisabledPoolList: PoolOptions[] = ["folkvang"];
 
@@ -87,22 +58,6 @@ export const GAS_LIMITS: {
   },
 };
 
-export const PoolAddressMap: {
-  [pool in PoolOptions]: {
-    lend: string;
-    chainId: number;
-  };
-} = {
-  wintermute: {
-    lend: deployment.mainnet.wintermute,
-    chainId: CHAINID.ETH_MAINNET,
-  },
-  folkvang: {
-    lend: deployment.mainnet.folkvang,
-    chainId: CHAINID.ETH_MAINNET,
-  },
-};
-
 /**
  * Used to check if pool of given version exists. Only used for v2 and above
  * @param poolOption
@@ -122,8 +77,6 @@ export const EVM_BLOCKCHAIN_EXPLORER_NAME: Record<number, string> = {
 export const EVM_BLOCKCHAIN_EXPLORER_URI: Record<number, string> = {
   [CHAINID.ETH_MAINNET]: "https://etherscan.io",
 };
-
-export const AVAX_BRIDGE_URI = "https://bridge.avax.network";
 
 export const getExplorerName = (chain: Chains) => {
   return EVM_BLOCKCHAIN_EXPLORER_NAME[CHAINS_TO_ID[chain]];

@@ -5,7 +5,7 @@ import colors from "shared/lib/designSystem/colors";
 import styled from "styled-components";
 import { useInterestRateModelData } from "../../hooks/useInterestRateModelData";
 import { usePoolData } from "../../hooks/web3DataContext";
-import { PoolOptions } from "../../constants/constants";
+import { PoolOptions } from "shared/lib/constants/lendConstants";
 import { borrowRate, formatBigNumber, lendingRate } from "../../utils/math";
 
 const ChartContainer = styled.div`

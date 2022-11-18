@@ -2,9 +2,9 @@ import { getAssetLogo } from "shared/lib/utils/asset";
 import {
   getAssets,
   getMakerLogo,
-  PoolList,
   PoolDetailsMap,
 } from "../../constants/constants";
+import { PoolList } from "shared/lib/constants/lendConstants";
 import { usePoolsData } from "../../hooks/web3DataContext";
 import { formatBigNumber } from "../../utils/math";
 import { getAssetDecimals, getUtilizationDecimals } from "../../utils/asset";
@@ -25,6 +25,8 @@ import currency from "currency.js";
 import useWeb3Wallet from "../../hooks/useWeb3Wallet";
 import { useMemo } from "react";
 import { LoadingText } from "shared/lib/hooks/useLoadingText";
+import { useCredoraData } from "shared/lib/hooks/useCredoraData";
+
 const statSideContainer: number = 120;
 
 const ListRow = styled(Row)`
@@ -203,7 +205,7 @@ export const Pools = () => {
   const { loading, aprs } = usePoolsApr();
   const { account } = useWeb3Wallet();
   const AssetLogo = getAssetLogo("USDC");
-
+  const { data: credoraData } = useCredoraData();
   const [filteredList, isManager] = useMemo(() => {
     if (!account) {
       return [PoolList, false];
@@ -227,7 +229,7 @@ export const Pools = () => {
         const poolSize = poolDatas.data[pool].poolSize;
         const utilizationRate = poolDatas.data[pool].utilizationRate;
         const totalBorrowed = poolDatas.data[pool].borrows;
-        const rating = PoolDetailsMap[pool].credit.rating;
+        const rating = credoraData[pool].creditScoreRating;
         const poolLogo = getMakerLogo(pool);
         const asset = getAssets(pool);
         const decimals = getAssetDecimals(asset);

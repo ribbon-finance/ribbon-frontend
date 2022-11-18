@@ -1,10 +1,7 @@
 import React, { ReactElement, useContext } from "react";
 
-import {
-  getAssets,
-  getDisplayAssets,
-  PoolOptions,
-} from "../constants/constants";
+import { getAssets, getDisplayAssets } from "../constants/constants";
+import { PoolOptions } from "shared/lib/constants/lendConstants";
 import { PoolData, defaultPoolData } from "../models/pool";
 import { getAssetDecimals } from "../utils/asset";
 import useFetchPoolData from "./useFetchPoolData";
