@@ -24,7 +24,7 @@ import { delayedFade } from "../animations";
 import currency from "currency.js";
 import useWeb3Wallet from "../../hooks/useWeb3Wallet";
 import { useMemo } from "react";
-import { LoadingText } from "shared/lib/hooks/useLoadingText";
+import useLoadingText, { LoadingText } from "shared/lib/hooks/useLoadingText";
 import { useCredoraData } from "shared/lib/hooks/useCredoraData";
 
 const statSideContainer: number = 120;
@@ -205,7 +205,8 @@ export const Pools = () => {
   const { loading, aprs } = usePoolsApr();
   const { account } = useWeb3Wallet();
   const AssetLogo = getAssetLogo("USDC");
-  const { data: credoraData } = useCredoraData();
+  const { data: credoraData, loading: credoraLoading } = useCredoraData();
+  const loadingText = useLoadingText();
   const [filteredList, isManager] = useMemo(() => {
     if (!account) {
       return [PoolList, false];
@@ -233,7 +234,7 @@ export const Pools = () => {
         const poolLogo = getMakerLogo(pool);
         const asset = getAssets(pool);
         const decimals = getAssetDecimals(asset);
-        const apr = aprs[pool];
+        const apr = aprs[pool].toFixed(2);
         return (
           <motion.div
             key={i}
@@ -264,8 +265,10 @@ export const Pools = () => {
                 <Stat>
                   <StyledTitle>{PoolDetailsMap[pool].name}</StyledTitle>
                   <StyledSubtitle>
-                    Rating {rating} - Utilization{" "}
-                    {formatBigNumber(utilizationRate, utilizationDecimals)}%
+                    {credoraLoading
+                      ? loadingText
+                      : `Rating ${rating} - Utilization
+                    ${formatBigNumber(utilizationRate, utilizationDecimals)}%`}
                   </StyledSubtitle>
                 </Stat>
                 <Stat>
@@ -286,15 +289,17 @@ export const Pools = () => {
                     </StyledTitle>
                   </Value>
                   <StyledSubtitle
-                    color={loading ? colors.primaryText : colors.green}
+                    color={
+                      loading || parseFloat(apr) === 0
+                        ? colors.primaryText
+                        : colors.green
+                    }
                   >
-                    {loading ? (
-                      <LoadingText>LOADING</LoadingText>
-                    ) : (
-                      `${currency(apr.toFixed(2), {
-                        symbol: "",
-                      }).format()}% APR`
-                    )}
+                    {loading
+                      ? loadingText
+                      : `${currency(apr, {
+                          symbol: "",
+                        }).format()}% APR`}
                   </StyledSubtitle>
                 </Stat>
               </PoolStats>

@@ -16,7 +16,7 @@ export type PoolsCredoraData = {
 
 export const defaultPoolCredoraData = {
   loading: true,
-  creditScoreRating: "Inactive-Unrated",
+  creditScoreRating: "UNRATED",
   borrowCapacity: 0,
 };
 

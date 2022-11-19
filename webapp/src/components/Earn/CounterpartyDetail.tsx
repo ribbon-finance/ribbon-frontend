@@ -20,6 +20,9 @@ import { useCredoraData } from "shared/lib/hooks/useCredoraData";
 import { useV2VaultData } from "shared/lib/hooks/web3DataContext";
 import { VaultOptions } from "shared/lib/constants/constants";
 import { PoolList } from "shared/lib/constants/lendConstants";
+import TooltipExplanation from "shared/lib/components/Common/TooltipExplanation";
+import HelpInfo from "shared/lib/components/Common/HelpInfo";
+import useLoadingText from "shared/lib/hooks/useLoadingText";
 const BoostLogoContainer = styled.div`
   display: flex;
   align-items: center;
@@ -114,8 +117,9 @@ const CounterpartyDetail: React.FC<VaultStrategyExplainerProps> = ({
 }) => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const { borrowRate, loading } = useAirtableEarnData();
-  const { data } = useCredoraData();
+  const { loading: credoraLoading, data } = useCredoraData();
   const { records } = useAirtableEarnLoanAllocation();
+  const loadingText = useLoadingText();
   const onToggleMenu = useCallback(() => {
     setIsMenuOpen((open) => !open);
   }, []);
@@ -287,7 +291,40 @@ const CounterpartyDetail: React.FC<VaultStrategyExplainerProps> = ({
                 </div>
               </WalletContentText>
               {PoolList.map((pool) => {
-                return <Title>{data[pool].creditScoreRating}</Title>;
+                return (
+                  <div className="d-flex align-items-center">
+                    {credoraLoading ? (
+                      loadingText
+                    ) : (
+                      <>
+                        <Title>{data[pool].creditScoreRating}</Title>
+                        {data[pool].creditScoreRating === "UNRATED" &&
+                          pool === "folkvang" && (
+                            <TooltipExplanation
+                              explanation={
+                                <>
+                                  Lending to Folkvang has been temporarily
+                                  disabled. Loans to the Wintermute pool are
+                                  still open.
+                                </>
+                              }
+                              renderContent={({ ref, ...triggerHandler }) => (
+                                <HelpInfo
+                                  containerRef={ref}
+                                  {...triggerHandler}
+                                >
+                                  i
+                                </HelpInfo>
+                              )}
+                              learnMoreURL={
+                                "https://twitter.com/folkvangtrading/status/1591360107094626304"
+                              }
+                            />
+                          )}
+                      </>
+                    )}
+                  </div>
+                );
               })}
             </Part>
           </Details>

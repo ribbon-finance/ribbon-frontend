@@ -507,8 +507,7 @@ const EarnPage = () => {
                 <HeroText delay={0.3}>
                   {isLoading || !account
                     ? "---"
-                    : "$" +
-                      formatBigNumber(
+                    : formatBigNumber(
                         BigNumber.from(investedInStrategy),
                         decimals,
                         2
