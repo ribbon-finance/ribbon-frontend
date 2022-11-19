@@ -11,11 +11,6 @@ import colors from "shared/lib/designSystem/colors";
 import theme from "shared/lib/designSystem/theme";
 import EarnFloatingMenu from "./FloatingMenu";
 import ButtonArrow from "shared/lib/components/Common/ButtonArrow";
-import {
-  OrthogonalLogo,
-  AlamedaResearchLogo,
-  CitadelLogo,
-} from "shared/lib/assets/icons/logo";
 import { BoostIcon, ExternalIcon } from "shared/lib/assets/icons/icons";
 import { Counterparty } from "./Counterparties";
 import { formatUnits } from "ethers/lib/utils";
@@ -42,7 +37,7 @@ const ParagraphText = styled(SecondaryText)`
   margin-bottom: 16px;
 `;
 
-const WalletContent = styled.div`
+const CounterpartyContent = styled.div`
   display: flex;
   flex-direction: column;
   align-items: left;
@@ -53,7 +48,7 @@ const WalletContent = styled.div`
   }
 `;
 
-const WalletContentText = styled(SecondaryText)<{
+const FundingSourceData = styled(SecondaryText)<{
   marginTop?: number;
 }>`
   color: ${colors.tertiaryText};
@@ -65,7 +60,7 @@ const WalletContentText = styled(SecondaryText)<{
 const StyledTitle = styled(Title)`
   text-align: left;
 `;
-const WalletButton = styled(BaseButton)`
+const OpenCounterpartyButton = styled(BaseButton)`
   position: relative;
   display: flex;
   justify-content: space-between;
@@ -82,7 +77,7 @@ const WalletButton = styled(BaseButton)`
   }
 `;
 
-const WalletContainer = styled.div`
+const CounterpartyContainer = styled.div`
   position: relative;
   display: flex;
   justify-content: space-between;
@@ -99,7 +94,7 @@ const Details = styled.div`
   width: 100%;
 `;
 
-const Part = styled.div`
+const Detail = styled.div`
   display: flex;
   flex-direction: column;
   width: 50%;
@@ -129,6 +124,7 @@ const CounterpartyDetail: React.FC<VaultStrategyExplainerProps> = ({
     loading: vaultLoading,
     data: { totalBalance },
   } = useV2VaultData(vaultOption);
+
   const renderLogo = useCallback((s: Counterparty) => {
     switch (s) {
       case "R-EARN DIVERSIFIED":
@@ -140,25 +136,6 @@ const CounterpartyDetail: React.FC<VaultStrategyExplainerProps> = ({
             />
           </BoostLogoContainer>
         );
-      case "ORTHOGONAL":
-        return <OrthogonalLogo />;
-      case "ALAMEDA RESEARCH":
-        return <AlamedaResearchLogo />;
-      case "CITADEL":
-        return <CitadelLogo />;
-    }
-  }, []);
-
-  const renderAPR = useCallback((s: Counterparty) => {
-    switch (s) {
-      case "R-EARN DIVERSIFIED":
-        return <>---</>;
-      case "ORTHOGONAL":
-        return <>7.01</>;
-      case "ALAMEDA RESEARCH":
-        return <>7.02</>;
-      case "CITADEL":
-        return <>7.03</>;
     }
   }, []);
 
@@ -205,45 +182,6 @@ const CounterpartyDetail: React.FC<VaultStrategyExplainerProps> = ({
             .
           </>
         );
-      case "ORTHOGONAL":
-        return (
-          <>
-            {" "}
-            Orthogonal Trading is a multi-strategy cryptocurrency trading firm
-            focused solely on the digital asset markets. The team bring
-            experience in portfolio and risk management, auditing, quantitative
-            trading, and blockchain system development from Goldman Sachs,
-            Morgan Stanley, B2C2 and more.
-          </>
-        );
-      case "ALAMEDA RESEARCH":
-        return (
-          <>
-            {" "}
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Curabitur
-            ultrices ac tortor in convallis. Cras sed euismod enim. Vestibulum
-            semper viverra dolor, ut dignissim quam suscipit convallis. Vivamus
-            non pretium felis. Nam a tellus nisl. Lorem ipsum dolor sit amet,
-            consectetur adipiscing elit. Duis tincidunt gravida finibus. Nullam
-            neque tellus, dignissim ut mi pellentesque, facilisis aliquet
-            lectus. Nunc convallis elit ac nulla blandit, eu ultrices ipsum
-            accumsan.
-          </>
-        );
-      case "CITADEL":
-        return (
-          <>
-            {" "}
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Curabitur
-            ultrices ac tortor in convallis. Cras sed euismod enim. Vestibulum
-            semper viverra dolor, ut dignissim quam suscipit convallis. Vivamus
-            non pretium felis. Nam a tellus nisl. Lorem ipsum dolor sit amet,
-            consectetur adipiscing elit. Duis tincidunt gravida finibus. Nullam
-            neque tellus, dignissim ut mi pellentesque, facilisis aliquet
-            lectus. Nunc convallis elit ac nulla blandit, eu ultrices ipsum
-            accumsan.
-          </>
-        );
     }
   }, []);
 
@@ -260,12 +198,6 @@ const CounterpartyDetail: React.FC<VaultStrategyExplainerProps> = ({
                   )}
             </>
           );
-        case "ORTHOGONAL":
-          return <>$15.00M</>;
-        case "ALAMEDA RESEARCH":
-          return <>$15.00M</>;
-        case "CITADEL":
-          return <>$15.00M</>;
       }
     },
     [totalBalance, vaultLoading]
@@ -279,68 +211,50 @@ const CounterpartyDetail: React.FC<VaultStrategyExplainerProps> = ({
       switch (s) {
         case "R-EARN DIVERSIFIED":
           return <>{(borrowRate * 100).toFixed(2)}%</>;
-        case "ORTHOGONAL":
-          return <>7.00%</>;
-        case "ALAMEDA RESEARCH":
-          return <>7.00%</>;
-        case "CITADEL":
-          return <>7.00%</>;
       }
     },
     [borrowRate, loading]
   );
 
-  const renderCreditRating = useCallback((s: Counterparty) => {
-    switch (s) {
-      case "R-EARN DIVERSIFIED":
-        return <>---</>;
-      case "ORTHOGONAL":
-        return <>---</>;
-      case "ALAMEDA RESEARCH":
-        return <>---</>;
-      case "CITADEL":
-        return <>---</>;
-    }
-  }, []);
   return (
     <>
-      <WalletContainer>
-        <WalletButton role="button" onClick={handleButtonClick}>
+      <CounterpartyContainer>
+        <OpenCounterpartyButton role="button" onClick={handleButtonClick}>
           {renderLogo(counterparty)}
-          <WalletContent>
+          <CounterpartyContent>
             <StyledTitle>{counterparty}</StyledTitle>
-            <WalletContentText>
+            <FundingSourceData>
               {renderBorrowRate(counterparty)} Borrow Rate (APR)
-            </WalletContentText>
-          </WalletContent>
+            </FundingSourceData>
+          </CounterpartyContent>
           <ButtonArrow isOpen={isMenuOpen} color="white"></ButtonArrow>
-        </WalletButton>
-      </WalletContainer>
+        </OpenCounterpartyButton>
+      </CounterpartyContainer>
       <div>
         <EarnFloatingMenu isOpen={isMenuOpen}>
           <ParagraphText>{renderDescription(counterparty)}</ParagraphText>
           <Details>
-            <Part>
-              <WalletContentText color={colors.tertiaryText} fontSize={12}>
+            <Detail>
+              <FundingSourceData color={colors.tertiaryText} fontSize={12}>
                 Principal Outstanding
-              </WalletContentText>
+              </FundingSourceData>
               <Title>{renderPrincipleOutstanding(counterparty)}</Title>
-              <WalletContentText
+              <FundingSourceData
                 color={colors.tertiaryText}
                 fontSize={12}
                 marginTop={16}
               >
                 Market Maker
-              </WalletContentText>
+              </FundingSourceData>
               <Title>{"Wintermute"}</Title>
               <Title>{"Folkvang"}</Title>
-            </Part>
-            <Part>
-              <WalletContentText color={colors.tertiaryText} fontSize={12}>
+            </Detail>
+            <Detail>
+              <FundingSourceData color={colors.tertiaryText} fontSize={12}>
                 Borrow Rate (APR)
-              </WalletContentText>
+              </FundingSourceData>
               <Title>{renderBorrowRate(counterparty)}</Title>
-              <WalletContentText
+              <FundingSourceData
                 color={colors.tertiaryText}
                 fontSize={12}
                 marginTop={16}
@@ -362,11 +276,11 @@ const CounterpartyDetail: React.FC<VaultStrategyExplainerProps> = ({
                     </BaseLink>
                   </div>
                 </div>
-              </WalletContentText>
+              </FundingSourceData>
               {/* <Title>{renderCreditRating(counterparty)}</Title> */}
               <Title>A</Title>
               <Title>AA</Title>
-            </Part>
+            </Detail>
           </Details>
         </EarnFloatingMenu>
       </div>

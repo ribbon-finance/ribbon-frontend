@@ -1,13 +1,16 @@
 import React from "react";
 import styled from "styled-components";
 import { SecondaryText } from "shared/lib/designSystem";
-import CounterpartyDetail from "./CounterpartyDetail";
 import { getDisplayAssets, VaultOptions } from "shared/lib/constants/constants";
 import colors from "shared/lib/designSystem/colors";
 import theme from "shared/lib/designSystem/theme";
-import { getAssetColor, getAssetLogo } from "shared/lib/utils/asset";
-import { getVaultColor } from "shared/lib/utils/vault";
+import { getAssetDecimals, getAssetLogo } from "shared/lib/utils/asset";
 import { Title } from "shared/lib/designSystem";
+import { useV2VaultData } from "shared/lib/hooks/web3DataContext";
+import { formatUnits } from "ethers/lib/utils";
+import { useSTETHStakingApr } from "../../hooks/useSTETHStakingApr";
+import useLoadingText from "shared/lib/hooks/useLoadingText";
+
 const ParagraphText = styled(SecondaryText)`
   color: rgba(255, 255, 255, 0.64);
   font-weight: 400;
@@ -58,6 +61,28 @@ const StyledSecondaryText = styled(SecondaryText)<{
   line-height: 24px;
 `;
 
+const CounterpartyData = styled(SecondaryText)<{
+  marginTop?: number;
+}>`
+  color: ${colors.tertiaryText};
+  margin-top: ${(props) => (props.marginTop ? `${props.marginTop}px` : `0px`)};
+  font-size: 12px;
+  line-height: 24px;
+`;
+
+const CounterpartyDetails = styled.div`
+  display: flex;
+  flex-direction: row;
+  width: 100%;
+`;
+
+const Detail = styled.div`
+  display: flex;
+  flex-direction: column;
+  width: 50%;
+  margin-top: 16px;
+`;
+
 interface FundingSourceProps {
   vaultOption: VaultOptions;
 }
@@ -66,22 +91,62 @@ interface FundingSourceProps {
 const FundingSource: React.FC<FundingSourceProps> = ({ vaultOption }) => {
   const asset = getDisplayAssets(vaultOption);
   const Logo = getAssetLogo(asset);
-  const color = getVaultColor(vaultOption);
+  const loadingText = useLoadingText();
+  const { loading: stakingAprLoading, stakingApr } = useSTETHStakingApr();
+  const decimals = getAssetDecimals(asset);
   const logo = <Logo height="100%" />;
-
+  const {
+    loading: vaultLoading,
+    data: { totalBalance },
+  } = useV2VaultData(vaultOption);
   return (
     <Container>
       <TitleRow>
         <ProductAssetLogoContainer>{logo}</ProductAssetLogoContainer>
         <TitleContent>
           <Title>LIDO</Title>
-          <StyledSecondaryText>4.23% Staking Yield</StyledSecondaryText>
+          <StyledSecondaryText>
+            {stakingAprLoading ? loadingText : `${stakingApr.toFixed(2)}%`}{" "}
+            Staking Yield
+          </StyledSecondaryText>
         </TitleContent>
       </TitleRow>
       <ParagraphText>
         The vault funds its weekly sharkfin strategy with the yield earned by
         staking stETH in Lido.
       </ParagraphText>
+      <CounterpartyDetails>
+        <Detail>
+          <CounterpartyData color={colors.tertiaryText} fontSize={12}>
+            Principal Outstanding
+          </CounterpartyData>
+          <Title>
+            <>
+              {vaultLoading
+                ? "---"
+                : `${(
+                    parseFloat(formatUnits(totalBalance, decimals)) * 0.9956
+                  ).toFixed(2)} ${asset}`}
+            </>
+          </Title>
+          <CounterpartyData
+            color={colors.tertiaryText}
+            fontSize={12}
+            marginTop={16}
+          >
+            Weekly Average Yield
+          </CounterpartyData>
+          <Title>0</Title>
+        </Detail>
+        <Detail>
+          <CounterpartyData color={colors.tertiaryText} fontSize={12}>
+            Current Staking Yield
+          </CounterpartyData>
+          <Title>
+            {stakingAprLoading ? loadingText : `${stakingApr.toFixed(2)}%`}
+          </Title>
+        </Detail>
+      </CounterpartyDetails>
     </Container>
   );
 };
