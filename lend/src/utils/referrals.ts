@@ -90,7 +90,9 @@ export const getNotifications = async (
       );
     }
   } catch (err) {
-    throw new Error("Error while calling backend to get notifications for address");
+    throw new Error(
+      "Error while calling backend to get notifications for address"
+    );
   }
 };
 
@@ -113,6 +115,8 @@ export const setNotifications = async (
       );
     }
   } catch (err) {
-    throw new Error("Error while calling backend to set notifications for address");
+    throw new Error(
+      "Error while calling backend to set notifications for address"
+    );
   }
 };
