@@ -2,6 +2,8 @@ import { useState } from "react";
 import { Col } from "react-bootstrap";
 import { useParams } from "react-router-dom";
 import {
+  CreditRating,
+  Disclaimers,
   getAssets,
   getMakerLogo,
   isDepositDisabledPool,
@@ -54,7 +56,7 @@ import credora from "../assets/icons/credora.svg";
 import MobileHeader from "../components/MobileHeader";
 import PositionWidget from "../components/PositionWidget";
 import ActionMMModal from "../components/ActionMMModal";
-import { LoadingText } from "shared/lib/hooks/useLoadingText";
+import useLoadingText, { LoadingText } from "shared/lib/hooks/useLoadingText";
 import { formatUnits } from "ethers/lib/utils";
 import UtilizationCurve from "../components/Common/UtilizationCurve";
 import { useCredoraData } from "shared/lib/hooks/useCredoraData";
@@ -218,7 +220,7 @@ const DetailsStatWrapper = styled.div`
   }
 `;
 
-const CreditRating = styled.div`
+const CreditRatingContainer = styled.div`
   margin: 24px auto;
   color: ${colors.tertiaryText};
 
@@ -344,6 +346,8 @@ const PoolPage = () => {
   const usdcDecimals = getAssetDecimals("USDC");
   const { width } = useScreenSize();
   const { data: credoraData } = useCredoraData();
+  const loadingText = useLoadingText();
+  const { loading: credoraDataLoading, data } = useCredoraData();
 
   if (!poolId) return <NotFound />;
 
@@ -593,7 +597,7 @@ const PoolPage = () => {
                 <Details delay={0.75}>
                   <DetailsIndex>02</DetailsIndex>
                   <StyledTitle>Credit Rating</StyledTitle>
-                  <Paragraph>{poolDetails.credit.content}</Paragraph>
+                  <Paragraph>{CreditRating}</Paragraph>
                   <DetailsStatWrapper>
                     <Stat>
                       <Label>Credit Rating:</Label>
@@ -602,7 +606,11 @@ const PoolPage = () => {
                         target="_blank"
                         rel="noreferrer noopener"
                       >
-                        <Value>{poolDetails.credit.rating}</Value>
+                        <Value>
+                          {credoraDataLoading
+                            ? loadingText
+                            : data[poolId].creditScoreRating}
+                        </Value>
                       </StyledBaseLink>
                     </Stat>
                     <Stat>
@@ -634,7 +642,7 @@ const PoolPage = () => {
                       </Value>
                     </Stat>
                   </DetailsStatWrapper>
-                  <CreditRating>
+                  <CreditRatingContainer>
                     Credit ratings provided by{" "}
                     <BaseLink
                       color={colors.primaryText}
@@ -644,7 +652,7 @@ const PoolPage = () => {
                     >
                       <img src={credora} alt="credora" />
                     </BaseLink>
-                  </CreditRating>
+                  </CreditRatingContainer>
                 </Details>
               )}
               <Details delay={account !== manager ? 1 : 0.5}>
@@ -657,6 +665,13 @@ const PoolPage = () => {
                   }}
                 />
               </Details>
+              {account !== manager && (
+                <Details delay={1.25}>
+                  <DetailsIndex>04</DetailsIndex>
+                  <StyledTitle>Disclaimers</StyledTitle>
+                  <Paragraph>{Disclaimers}</Paragraph>
+                </Details>
+              )}
             </PoolDetailsWrapper>
           </Col>
         </ScrollableContent>

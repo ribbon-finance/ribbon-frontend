@@ -24,7 +24,7 @@ import { delayedFade } from "../animations";
 import currency from "currency.js";
 import useWeb3Wallet from "../../hooks/useWeb3Wallet";
 import { useMemo } from "react";
-import useLoadingText, { LoadingText } from "shared/lib/hooks/useLoadingText";
+import useLoadingText from "shared/lib/hooks/useLoadingText";
 import { useCredoraData } from "shared/lib/hooks/useCredoraData";
 
 const statSideContainer: number = 120;

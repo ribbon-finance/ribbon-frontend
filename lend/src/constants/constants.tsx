@@ -172,12 +172,6 @@ interface PoolDetails {
   contract: string;
   twitter: string;
   website: string;
-
-  credit: {
-    rating: string;
-    borrowLimit: number;
-    content: string | JSX.Element;
-  };
 }
 
 export const PoolDetailsMap: Record<PoolOptions, PoolDetails> = {
@@ -224,55 +218,6 @@ export const PoolDetailsMap: Record<PoolOptions, PoolDetails> = {
     contract: "https://etherscan.io/address/" + deployment.mainnet.wintermute,
     twitter: "https://twitter.com/wintermute_t",
     website: "https://www.wintermute.com",
-    credit: {
-      rating: "A",
-      borrowLimit: 223000000,
-      content: (
-        <>
-          <p>
-            Credora provides real-time privacy preserving portfolio risk metrics
-            for lenders, and has built a Credit Evaluation Methodology for
-            digital asset firms.
-          </p>
-          <p>
-            The evaluation is split into three main parts, totaling{" "}
-            <strong>[1000]</strong> points in aggregate, which is then converted
-            to a letter rating:
-          </p>
-          <p>
-            <strong>Operations and Due Diligence [200]</strong>: Evaluation of a
-            borrower's corporate and operational risk
-          </p>
-          <p>
-            <strong>Financial Analysis [400]</strong>: Evaluation of a
-            borrower's reported financial data
-          </p>
-          <p>
-            <strong>Risk Monitoring [400]</strong>: Real-time evaluation of a
-            borrower's asset and liability visibility
-          </p>
-          <p>
-            Credora relies on these underlying factors, as they have high
-            correlation to a trading firm's creditworthiness. Through real-time
-            credit evaluation, Credora infrastructure supports data-driven
-            lending for any pool of capital. Credora infrastructure and credit
-            evaluations have successfully facilitated over $850M in credit and
-            currently monitors $3.85B in assets.
-          </p>
-          <p>
-            Read more{" "}
-            <a
-              href="https://credora.gitbook.io/credit-methodology/SbLmTxogePkrzsF4z9IK"
-              target="_blank"
-              rel="noreferrer noopener"
-            >
-              here
-              <ExternalLinkIcon />
-            </a>
-          </p>
-        </>
-      ),
-    },
   },
   folkvang: {
     name: "Folkvang",
@@ -307,54 +252,90 @@ export const PoolDetailsMap: Record<PoolOptions, PoolDetails> = {
     contract: "https://etherscan.io/address/" + deployment.mainnet.folkvang,
     twitter: "https://twitter.com/folkvangtrading",
     website: "https://folkvang.io",
-    credit: {
-      rating: "A",
-      borrowLimit: 105000000,
-      content: (
-        <>
-          <p>
-            Credora provides real-time privacy preserving portfolio risk metrics
-            for lenders, and has built a Credit Evaluation Methodology for
-            digital asset firms.
-          </p>
-          <p>
-            The evaluation is split into three main parts, totaling{" "}
-            <strong>[1000]</strong> points in aggregate, which is then converted
-            to a letter rating:
-          </p>
-          <p>
-            <strong>Operations and Due Diligence [200]</strong>: Evaluation of a
-            borrower's corporate and operational risk
-          </p>
-          <p>
-            <strong>Financial Analysis [400]</strong>: Evaluation of a
-            borrower's reported financial data
-          </p>
-          <p>
-            <strong>Risk Monitoring [400]</strong>: Real-time evaluation of a
-            borrower's asset and liability visibility
-          </p>
-          <p>
-            Credora relies on these underlying factors, as they have high
-            correlation to a trading firm's creditworthiness. Through real-time
-            credit evaluation, Credora infrastructure supports data-driven
-            lending for any pool of capital. Credora infrastructure and credit
-            evaluations have successfully facilitated over $850M in credit and
-            currently monitors $3.85B in assets.
-          </p>
-          <p>
-            Read more{" "}
-            <a
-              href="https://credora.gitbook.io/credit-methodology/SbLmTxogePkrzsF4z9IK"
-              target="_blank"
-              rel="noreferrer noopener"
-            >
-              here
-              <ExternalLinkIcon />
-            </a>
-          </p>
-        </>
-      ),
-    },
   },
 };
+
+export const CreditRating: JSX.Element = (
+  <>
+    <p>
+      Credora provides real-time privacy preserving portfolio risk metrics for
+      lenders, and has built a Credit Evaluation Methodology for digital asset
+      firms.
+    </p>
+    <p>
+      The evaluation is split into three main parts, totaling{" "}
+      <strong>[1000]</strong> points in aggregate, which is then converted to a
+      letter rating:
+    </p>
+    <p>
+      <strong>Operations and Due Diligence [200]</strong>: Evaluation of a
+      borrower's corporate and operational risk
+    </p>
+    <p>
+      <strong>Financial Analysis [400]</strong>: Evaluation of a borrower's
+      reported financial data
+    </p>
+    <p>
+      <strong>Risk Monitoring [400]</strong>: Real-time evaluation of a
+      borrower's asset and liability visibility
+    </p>
+    <p>
+      Credora relies on these underlying factors, as they have high correlation
+      to a trading firm's creditworthiness. Through real-time credit evaluation,
+      Credora infrastructure supports data-driven lending for any pool of
+      capital. Credora infrastructure and credit evaluations have successfully
+      facilitated over $850M in credit and currently monitors $3.85B in assets.
+    </p>
+    <p>
+      Read more{" "}
+      <a
+        href="https://credora.gitbook.io/credit-methodology/SbLmTxogePkrzsF4z9IK"
+        target="_blank"
+        rel="noreferrer noopener"
+      >
+        here
+        <ExternalLinkIcon />
+      </a>
+    </p>
+  </>
+);
+
+export const Disclaimers: JSX.Element = (
+  <>
+    <p>
+      <strong>Deposit Risk</strong>: You are aware of and accept that the USDC
+      held in the Vault on your behalf is not subject to deposit insurance
+      protection, investor insurance protection, or any other relevant
+      protection in any jurisdiction.
+    </p>
+    <p>
+      <strong>USDC Risk</strong>: You are aware of and accept the risk of using
+      USDC in https://lend.ribbon.finance/app. We are not responsible for any
+      losses due to any actions performed by the USDC Issuer (Circle Internet
+      Financial, LLC.) At any point in time, the Issuer may, with or without
+      notice, at its sole discretion, "block" this Vault Smart Contract address,
+      associated addresses or your address. USDC may be permanently frozen,
+      resulting in a loss of funds.
+    </p>
+    <p>
+      <strong>Other Risks</strong>: You are aware of and accept the risks
+      further detailed in the{" "}
+      <a
+        href="https://www.ribbon.finance/terms"
+        target="_blank"
+        rel="noreferrer noopener"
+      >
+        Terms and Conditions
+      </a>{" "}
+      and the{" "}
+      <a
+        href="https://www.ribbon.finance/policy"
+        target="_blank"
+        rel="noreferrer noopener"
+      >
+        Privacy Policy
+      </a>
+      .
+    </p>
+  </>
+);
