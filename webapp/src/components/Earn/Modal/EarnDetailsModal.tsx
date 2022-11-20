@@ -149,7 +149,11 @@ const EarnDetailsModal: React.FC<EarnDetailsModalProps> = ({
       case "strategy":
         return <Strategy setStep={setStep} vaultOption={vaultOption} />;
       case "payoff":
-        return vaultOption === "rEARN-USDC" ? <PayoffUSDC /> : <PayoffSTETH />;
+        return vaultOption === "rEARN-USDC" ? (
+          <PayoffUSDC vaultOption={vaultOption} />
+        ) : (
+          <PayoffSTETH vaultOption={vaultOption} />
+        );
       case "risk":
         return <Risk vaultOption={vaultOption} />;
       case "performance":

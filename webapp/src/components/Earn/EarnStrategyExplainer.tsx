@@ -13,6 +13,7 @@ import SegmentPagination from "shared/lib/components/Common/SegmentPagination";
 
 import { useGlobalState } from "shared/lib/store/store";
 import { useAirtableEarnData } from "shared/lib/hooks/useAirtableEarnData";
+import { VaultOptions } from "shared/lib/constants/constants";
 
 const ExplainerContainer = styled.div`
   display: flex;
@@ -78,10 +79,16 @@ const ExplanationStepList = ["step1", "step2", "step3"] as const;
 
 type ExplanationStep = typeof ExplanationStepList[number];
 
-const EarnStrategyExplainer: React.FC = () => {
+interface EarnStrategyExplainerProps {
+  vaultOption: VaultOptions;
+}
+
+export const EarnStrategyExplainer: React.FC<EarnStrategyExplainerProps> = ({
+  vaultOption,
+}) => {
   const containerRef = useRef(null);
   const [, setShowEarnVault] = useGlobalState("showEarnVault");
-  const { loading, maxYield } = useAirtableEarnData();
+  const { loading, maxYield } = useAirtableEarnData(vaultOption);
   const [step, setStep] = useState<ExplanationStep>(ExplanationStepList[0]);
 
   const setShowOnboardingCallback = useCallback(() => {

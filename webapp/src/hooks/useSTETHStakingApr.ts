@@ -1,30 +1,24 @@
 import axios from "axios";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 
-// export type PoolsCredoraData = {
-//   [pool in PoolOptions]: {
-//     loading: boolean;
-//     creditScoreRating: string;
-//     borrowCapacity: number;
-//   };
-// };
+export type STETHStakingAprData = {
+  loading: boolean;
+  currentApr: number;
+  weeklyAvgApr: number;
+};
 
-// export const defaultPoolCredoraData = {
-//   loading: true,
-//   creditScoreRating: "UNRATED",
-//   borrowCapacity: 0,
-// };
-
-// export const defaultPoolsCredoraData = Object.fromEntries(
-//   PoolList.map((pool) => [pool, defaultPoolCredoraData])
-// ) as PoolsCredoraData;
+export const defaultSTETHStakingAprData = {
+  loading: true,
+  currentApr: 0,
+  weeklyAvgApr: 0,
+};
 
 export const useSTETHStakingApr = () => {
   const [loading, setLoading] = useState(false);
-  const [apr, setApr] = useState<number>();
+  const [data, setData] = useState<any>();
 
   const fetchSTETHStakingApr = useCallback(async () => {
-    if (apr) {
+    if (data) {
       return;
     }
 
@@ -34,19 +28,32 @@ export const useSTETHStakingApr = () => {
       setLoading(true);
       const response = await axios.get(apiURL);
       const { data } = response;
-      setApr(data.data.smaApr);
+      setData(data.data);
       setLoading(false);
     } catch (error) {
       console.log(error);
     }
-  }, [apr]);
+  }, [data]);
 
   useEffect(() => {
     fetchSTETHStakingApr();
   }, [fetchSTETHStakingApr]);
 
-  return {
-    stakingApr: apr || 0,
-    loading,
-  };
+  const sTETHStakingAprData = useMemo(() => {
+    if (loading || !data) {
+      return defaultSTETHStakingAprData;
+    }
+    try {
+      const currentApr = data.aprs.at(-1).apr;
+      return {
+        loading: false,
+        currentApr,
+        weeklyAvgApr: data.smaApr,
+      } as STETHStakingAprData;
+    } catch (error) {
+      console.log(error);
+      return defaultSTETHStakingAprData;
+    }
+  }, [data, loading]);
+  return sTETHStakingAprData;
 };

@@ -111,7 +111,7 @@ const CounterpartyDetail: React.FC<VaultStrategyExplainerProps> = ({
   vaultOption,
 }) => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const { borrowRate, loading } = useAirtableEarnData();
+  const { borrowRate, loading } = useAirtableEarnData(vaultOption);
   const onToggleMenu = useCallback(() => {
     setIsMenuOpen((open) => !open);
   }, []);

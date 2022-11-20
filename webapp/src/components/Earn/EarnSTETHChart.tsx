@@ -14,8 +14,10 @@ interface ProfitChartProps {
   onHoverPrice: (price: number | undefined) => void;
   onHoverPercentage: (percentage: number | undefined) => void;
   performance: number;
+  baseYield: number;
   maxYield: number;
-  barrierPercentage: number;
+  lowerBarrierPercentage: number;
+  upperBarrierPercentage: number;
   moneynessRange: number[];
   yieldRange: number[];
 }
@@ -24,8 +26,10 @@ const EarnSTETHChart: React.FC<ProfitChartProps> = ({
   onHoverPrice,
   onHoverPercentage,
   performance,
+  baseYield,
   maxYield,
-  barrierPercentage,
+  lowerBarrierPercentage,
+  upperBarrierPercentage,
   moneynessRange,
   yieldRange,
 }) => {
@@ -64,7 +68,7 @@ const EarnSTETHChart: React.FC<ProfitChartProps> = ({
        * Draw price text
        */
       ctx.fillStyle =
-        Math.abs(price) > barrierPercentage * 100
+        Math.abs(price) > upperBarrierPercentage * 100
           ? `${colors.red}`
           : `${colors.green}`;
       const fontSize = 14;
@@ -74,13 +78,12 @@ const EarnSTETHChart: React.FC<ProfitChartProps> = ({
       ctx.textAlign = "center";
       ctx.textBaseline = "middle";
       const padding = 8;
-
       const text = `${
-        drawIndex === 0 || price < -barrierPercentage * 100
-          ? `<<< ${(-barrierPercentage * 100).toFixed(2)}%`
+        drawIndex === 0 || price < -upperBarrierPercentage * 100
+          ? `<<< ${(lowerBarrierPercentage * 100).toFixed(2)}%`
           : drawIndex === meta.data.length - 1 ||
-            price > barrierPercentage * 100
-          ? `>>> ${(barrierPercentage * 100).toFixed(2)}%`
+            price > upperBarrierPercentage * 100
+          ? `>>> ${(upperBarrierPercentage * 100).toFixed(2)}%`
           : `${price.toFixed(2)}%`
       }`;
 
@@ -100,7 +103,7 @@ const EarnSTETHChart: React.FC<ProfitChartProps> = ({
 
       ctx.globalCompositeOperation = "source-over";
     },
-    [barrierPercentage]
+    [lowerBarrierPercentage, upperBarrierPercentage]
   );
 
   const drawDefaultPricePoint = useCallback(
@@ -137,7 +140,7 @@ const EarnSTETHChart: React.FC<ProfitChartProps> = ({
        * Draw price text
        */
       ctx.fillStyle =
-        Math.abs(price) > barrierPercentage * 100
+        Math.abs(price) > upperBarrierPercentage * 100
           ? `${colors.red}`
           : `${colors.green}`;
       const fontSize = 14;
@@ -150,11 +153,12 @@ const EarnSTETHChart: React.FC<ProfitChartProps> = ({
 
       const text = `${
         drawIndex === 0 || price < -5
-          ? "<<< -5.00%"
+          ? `<<< ${(lowerBarrierPercentage * 100).toFixed(2)}%`
           : drawIndex === meta.data.length - 1 || price > 15
-          ? " >>> 15.00%"
+          ? `>>> ${(upperBarrierPercentage * 100).toFixed(2)}%`
           : `${price.toFixed(2)}%`
       }`;
+
       const textLength = ctx.measureText(text).width;
 
       let xPosition = priceX;
@@ -169,7 +173,7 @@ const EarnSTETHChart: React.FC<ProfitChartProps> = ({
 
       ctx.fillText(text, xPosition, bottomY + 46);
     },
-    [barrierPercentage]
+    [lowerBarrierPercentage, upperBarrierPercentage]
   );
 
   const drawDefaultBarriers = useCallback(
@@ -323,7 +327,7 @@ const EarnSTETHChart: React.FC<ProfitChartProps> = ({
                 return null;
               }
               if (p === -5) {
-                return 4;
+                return baseYield * 100;
               }
               if (p === 15) {
                 return maxYield * 100;
@@ -338,7 +342,7 @@ const EarnSTETHChart: React.FC<ProfitChartProps> = ({
         ],
       };
     },
-    [performance, moneynessRange, yieldRange, hoveredIndex, maxYield]
+    [performance, moneynessRange, yieldRange, hoveredIndex, baseYield, maxYield]
   );
 
   const chart = useMemo(() => {

@@ -5,15 +5,14 @@ import {
   SecondaryText,
   Title,
 } from "shared/lib/designSystem";
-import EarnChart from "./EarnChart";
 import colors from "shared/lib/designSystem/colors";
 import EarnModalContentExtra from "shared/lib/components/Common/EarnModalContentExtra";
 import TooltipExplanation from "shared/lib/components/Common/TooltipExplanation";
 import HelpInfo from "shared/lib/components/Common/HelpInfo";
-import { useAirtableEarnSTETHData } from "shared/lib/hooks/useAirtableEarnSTETHData";
+import { useAirtableEarnData } from "shared/lib/hooks/useAirtableEarnData";
 import useLoadingText from "shared/lib/hooks/useLoadingText";
-import { useSTETHStakingApr } from "../../hooks/useSTETHStakingApr";
 import EarnSTETHChart from "./EarnSTETHChart";
+import { VaultOptions } from "shared/lib/constants/constants";
 
 const ChartContainer = styled.div`
   height: 264px;
@@ -72,21 +71,22 @@ const CalculationData = styled(Title)<{ variant?: "red" | "green" }>`
   }};
 `;
 
-const PayoffSTETH = () => {
+interface PayoffSTETHProps {
+  vaultOption: VaultOptions;
+}
+
+// Calls user_checkpoint and shows a transaction loading screen
+const PayoffSTETH: React.FC<PayoffSTETHProps> = ({ vaultOption }) => {
   const {
+    baseYield,
     maxYield,
     expectedYield,
     lowerBarrierPercentage,
     upperBarrierPercentage,
     performance,
     loading,
-  } = useAirtableEarnSTETHData();
+  } = useAirtableEarnData(vaultOption);
 
-  const { loading: stethAprLoading, stakingApr: stethStakingYield } =
-    useSTETHStakingApr();
-
-  // const baseYield = stethStakingYield / 100;
-  const baseYield = 0.04;
   const loadingText = useLoadingText();
 
   const [hoverPrice, setHoverPrice] = useState<number>();
@@ -146,7 +146,7 @@ const PayoffSTETH = () => {
     let rightArray = [];
 
     for (let i = 0; i < 2500; i += 1) {
-      leftArray.push(4);
+      leftArray.push(baseYield * 100);
     }
 
     for (
@@ -156,7 +156,7 @@ const PayoffSTETH = () => {
       i += 1
     ) {
       array.push(
-        4 +
+        baseYield * 100 +
           Math.abs(
             i / 100 / ((upperBarrierPercentage - lowerBarrierPercentage) * 100)
           ) *
@@ -166,24 +166,17 @@ const PayoffSTETH = () => {
     }
 
     for (let i = 0; i < 2000; i += 1) {
-      rightArray.push(4);
+      rightArray.push(baseYield * 100);
     }
-    return [...leftArray, 4, ...array, 4, ...rightArray];
+    return [
+      ...leftArray,
+      baseYield * 100,
+      ...array,
+      baseYield * 100,
+      ...rightArray,
+    ];
   }, [lowerBarrierPercentage, upperBarrierPercentage, maxYield, baseYield]);
 
-  console.log(
-    4 +
-      Math.abs(
-        (Math.round((upperBarrierPercentage - lowerBarrierPercentage) * 100) *
-          100) /
-          100 /
-          ((upperBarrierPercentage - lowerBarrierPercentage) * 100)
-      ) *
-        (maxYield - baseYield) *
-        100
-  );
-  console.log(maxYield);
-  console.log(baseYield);
   return (
     <>
       <BaseModalContentColumn marginTop={-2}>
@@ -215,7 +208,9 @@ const PayoffSTETH = () => {
               onHoverPrice={setHoverPrice}
               onHoverPercentage={setHoverPercentage}
               performance={performance}
-              barrierPercentage={upperBarrierPercentage}
+              baseYield={baseYield}
+              lowerBarrierPercentage={lowerBarrierPercentage}
+              upperBarrierPercentage={upperBarrierPercentage}
               maxYield={maxYield}
               moneynessRange={moneynessRange}
               yieldRange={yieldRange}

@@ -72,10 +72,10 @@ export const Strategy: React.FC<StrategyProps> = ({ setStep, vaultOption }) => {
     strikePrice,
     baseYield,
     maxYield,
-    ethLowerBarrier,
-    ethUpperBarrier,
+    lowerBarrierETHPrice,
+    upperBarrierETHPrice,
     loading,
-  } = useAirtableEarnData();
+  } = useAirtableEarnData(vaultOption);
 
   const {
     loading: vaultLoading,
@@ -142,13 +142,17 @@ export const Strategy: React.FC<StrategyProps> = ({ setStep, vaultOption }) => {
         <span>Upside Barrier</span>
       </ExplainerTitle>
       <StyledTitle marginTop={4}>
-        {loading ? loadingText : `108% (${currency(ethUpperBarrier).format()})`}
+        {loading
+          ? loadingText
+          : `108% (${currency(upperBarrierETHPrice).format()})`}
       </StyledTitle>
       <ExplainerTitle color={colors.tertiaryText}>
         <span>Downside Barrier</span>
       </ExplainerTitle>
       <StyledTitle marginTop={4}>
-        {loading ? loadingText : `92% (${currency(ethLowerBarrier).format()})`}
+        {loading
+          ? loadingText
+          : `92% (${currency(lowerBarrierETHPrice).format()})`}
       </StyledTitle>
       <ExplainerTitle color={colors.tertiaryText}>
         <span>Strike</span>
@@ -321,7 +325,7 @@ interface AnalysisProps {
 }
 
 export const Analysis: React.FC<AnalysisProps> = ({ vaultOption }) => {
-  const { itmPerformance, loading } = useAirtableEarnData();
+  const { avgPerformance, loading } = useAirtableEarnData(vaultOption);
   const loadingText = useLoadingText();
   const { data, loading: subgraphLoading } = useVaultsSubgraphData();
 
@@ -381,7 +385,7 @@ export const Analysis: React.FC<AnalysisProps> = ({ vaultOption }) => {
         />
       </ExplainerTitle>
       <StyledTitle marginTop={4}>
-        {loading ? loadingText : `${(itmPerformance * 100).toFixed(2)}%`}{" "}
+        {loading ? loadingText : `${(avgPerformance * 100).toFixed(2)}%`}{" "}
       </StyledTitle>
     </AnalysisContainer>
   );

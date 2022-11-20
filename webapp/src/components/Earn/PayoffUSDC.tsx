@@ -12,6 +12,7 @@ import TooltipExplanation from "shared/lib/components/Common/TooltipExplanation"
 import HelpInfo from "shared/lib/components/Common/HelpInfo";
 import { useAirtableEarnData } from "shared/lib/hooks/useAirtableEarnData";
 import useLoadingText from "shared/lib/hooks/useLoadingText";
+import { VaultOptions } from "shared/lib/constants/constants";
 
 const ChartContainer = styled.div`
   height: 264px;
@@ -70,16 +71,22 @@ const CalculationData = styled(Title)<{ variant?: "red" | "green" }>`
   }};
 `;
 
-const PayoffUSDC = () => {
+interface PayoffUSDCProps {
+  vaultOption: VaultOptions;
+}
+
+// Calls user_checkpoint and shows a transaction loading screen
+const PayoffUSDC: React.FC<PayoffUSDCProps> = ({ vaultOption }) => {
   const {
     maxYield,
     expectedYield,
     baseYield,
     performance,
     absolutePerformance,
-    barrierPercentage,
+    lowerBarrierPercentage,
+    upperBarrierPercentage,
     loading,
-  } = useAirtableEarnData();
+  } = useAirtableEarnData(vaultOption);
 
   const loadingText = useLoadingText();
 
@@ -89,13 +96,18 @@ const PayoffUSDC = () => {
 
   const optionMoneyness = useMemo(() => {
     return hoverPercentage
-      ? Math.abs(hoverPercentage) > barrierPercentage * 100
+      ? Math.abs(hoverPercentage) > upperBarrierPercentage * 100
         ? 0
         : hoverPercentage / 100
-      : absolutePerformance > barrierPercentage
+      : absolutePerformance > upperBarrierPercentage
       ? 0
       : performance;
-  }, [absolutePerformance, performance, barrierPercentage, hoverPercentage]);
+  }, [
+    absolutePerformance,
+    performance,
+    upperBarrierPercentage,
+    hoverPercentage,
+  ]);
 
   // x axis
   const moneynessRange = useMemo(() => {
@@ -104,29 +116,29 @@ const PayoffUSDC = () => {
     let rightArray = [];
 
     for (let i = 0; i < 2000; i += 1) {
-      leftArray.push(-Math.round(barrierPercentage * 100) - (2000 - i));
+      leftArray.push(-Math.round(upperBarrierPercentage * 100) - (2000 - i));
     }
 
     for (
-      let i = -(Math.round(barrierPercentage * 100) * 100);
-      i <= Math.round(barrierPercentage * 100) * 100;
+      let i = -(Math.round(upperBarrierPercentage * 100) * 100);
+      i <= Math.round(upperBarrierPercentage * 100) * 100;
       i += 1
     ) {
       array.push(i / 100);
     }
 
     for (let i = 0; i < 2000; i += 1) {
-      rightArray.push(Math.round(barrierPercentage * 100) + i + 1);
+      rightArray.push(Math.round(upperBarrierPercentage * 100) + i + 1);
     }
 
     return [
       ...leftArray,
-      -(barrierPercentage * 100) - 0.01,
+      -(upperBarrierPercentage * 100) - 0.01,
       ...array,
-      barrierPercentage * 100 + 0.01,
+      upperBarrierPercentage * 100 + 0.01,
       ...rightArray,
     ];
-  }, [barrierPercentage]);
+  }, [upperBarrierPercentage]);
 
   const yieldRange = useMemo(() => {
     let leftArray = [];
@@ -138,13 +150,13 @@ const PayoffUSDC = () => {
     }
 
     for (
-      let i = -Math.round(barrierPercentage * 100) * 100;
-      i <= Math.round(barrierPercentage * 100) * 100;
+      let i = -Math.round(upperBarrierPercentage * 100) * 100;
+      i <= Math.round(upperBarrierPercentage * 100) * 100;
       i += 1
     ) {
       array.push(
         4 +
-          Math.abs(i / 100 / (barrierPercentage * 100)) *
+          Math.abs(i / 100 / (upperBarrierPercentage * 100)) *
             (maxYield - baseYield) *
             100
       );
@@ -154,7 +166,7 @@ const PayoffUSDC = () => {
       rightArray.push(4);
     }
     return [...leftArray, 4, ...array, 4, ...rightArray];
-  }, [barrierPercentage, baseYield, maxYield]);
+  }, [upperBarrierPercentage, baseYield, maxYield]);
 
   return (
     <>
@@ -187,7 +199,8 @@ const PayoffUSDC = () => {
               onHoverPrice={setHoverPrice}
               onHoverPercentage={setHoverPercentage}
               performance={performance}
-              barrierPercentage={barrierPercentage}
+              lowerBarrierPercentage={lowerBarrierPercentage}
+              upperBarrierPercentage={upperBarrierPercentage}
               maxYield={maxYield}
               moneynessRange={moneynessRange}
               yieldRange={yieldRange}

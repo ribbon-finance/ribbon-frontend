@@ -445,7 +445,7 @@ const YieldCard: React.FC<YieldCardProps> = ({
     useLiquidityGaugeV5PoolData(vault);
   const { prices } = useAssetsPrice();
   const loadingText = useLoadingText();
-  const { loading, maxYield } = useAirtableEarnData();
+  const { loading, maxYield } = useAirtableEarnData(vault);
   const baseAPY = useMemo(() => {
     if (!lg5Data) {
       return 0;

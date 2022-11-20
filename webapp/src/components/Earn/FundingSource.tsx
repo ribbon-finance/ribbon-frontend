@@ -92,7 +92,11 @@ const FundingSource: React.FC<FundingSourceProps> = ({ vaultOption }) => {
   const asset = getDisplayAssets(vaultOption);
   const Logo = getAssetLogo(asset);
   const loadingText = useLoadingText();
-  const { loading: stakingAprLoading, stakingApr } = useSTETHStakingApr();
+  const {
+    loading: stakingAprLoading,
+    currentApr,
+    weeklyAvgApr,
+  } = useSTETHStakingApr();
   const decimals = getAssetDecimals(asset);
   const logo = <Logo height="100%" />;
   const {
@@ -106,8 +110,8 @@ const FundingSource: React.FC<FundingSourceProps> = ({ vaultOption }) => {
         <TitleContent>
           <Title>LIDO</Title>
           <StyledSecondaryText>
-            {stakingAprLoading ? loadingText : `${stakingApr.toFixed(2)}%`}{" "}
-            Staking Yield
+            {stakingAprLoading ? "---" : `${currentApr.toFixed(2)}%`} Staking
+            Yield
           </StyledSecondaryText>
         </TitleContent>
       </TitleRow>
@@ -136,14 +140,16 @@ const FundingSource: React.FC<FundingSourceProps> = ({ vaultOption }) => {
           >
             Weekly Average Yield
           </CounterpartyData>
-          <Title>0%</Title>
+          <Title>
+            {stakingAprLoading ? loadingText : `${weeklyAvgApr.toFixed(2)}%`}
+          </Title>
         </Detail>
         <Detail>
           <CounterpartyData color={colors.tertiaryText} fontSize={12}>
             Current Staking Yield
           </CounterpartyData>
           <Title>
-            {stakingAprLoading ? loadingText : `${stakingApr.toFixed(2)}%`}
+            {stakingAprLoading ? loadingText : `${currentApr.toFixed(2)}%`}
           </Title>
         </Detail>
       </CounterpartyDetails>
