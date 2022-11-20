@@ -136,7 +136,7 @@ const FundingSource: React.FC<FundingSourceProps> = ({ vaultOption }) => {
           >
             Weekly Average Yield
           </CounterpartyData>
-          <Title>0</Title>
+          <Title>0%</Title>
         </Detail>
         <Detail>
           <CounterpartyData color={colors.tertiaryText} fontSize={12}>

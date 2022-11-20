@@ -70,9 +70,7 @@ const CalculationData = styled(Title)<{ variant?: "red" | "green" }>`
   }};
 `;
 
-interface ProfitCalculatorProps {}
-
-const Payoff: React.FC<ProfitCalculatorProps> = () => {
+const PayoffUSDC = () => {
   const {
     maxYield,
     expectedYield,
@@ -299,4 +297,4 @@ const Payoff: React.FC<ProfitCalculatorProps> = () => {
   );
 };
 
-export default Payoff;
+export default PayoffUSDC;
