@@ -196,7 +196,7 @@ export const TxStatusToast = () => {
           return "";
       }
     },
-    [depositWithdrawalDate, getAmountFormatted, t]
+    [withdrawalDate, getAmountFormatted, t]
   );
 
   if (!status || !currentTx) {
