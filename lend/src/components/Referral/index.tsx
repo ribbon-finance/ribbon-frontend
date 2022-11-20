@@ -60,10 +60,7 @@ const TwitterButton = styled(Button)`
   width: 20.75%;
   border: none;
   border-radius: 0;
-  padding-top: 18px;
-  padding-left: 20px;
-  padding-right: 20px;
-  padding-bottom: 19px;
+  padding: 18px 20px 19px 20px;
   margin-top: 16px;
   margin-left: 0.5%;
   img {
@@ -84,10 +81,7 @@ const LinkBoxContainer = styled.div`
 `;
 
 const LinkBox = styled.div`
-  padding-top: 24px;
-  padding-bottom: 24px;
-  padding-left: 8px;
-  padding-right: 0px;
+  padding: 24px 0px 24px 8px;
   color: ${colors.primaryText};
   .baseLink {
     color: #ffffff52;

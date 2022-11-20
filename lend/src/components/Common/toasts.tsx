@@ -10,6 +10,7 @@ import { BigNumber } from "ethers";
 import { ReferralContext } from "../../hooks/referralContext";
 import { SecondaryText } from "shared/lib/designSystem";
 import { useEffect } from "react";
+import colors from "shared/lib/designSystem/colors";
 
 const getReferralText = (
   type: "Referee" | "Referrer",
@@ -26,7 +27,7 @@ const getReferralText = (
           <SecondaryText
             fontSize={12}
             lineHeight={16}
-            color="#FFFFFF"
+            color={colors.primaryText}
             className="mt-1"
           >
             {` ${amount} RBN `}
@@ -37,7 +38,7 @@ const getReferralText = (
           <SecondaryText
             fontSize={12}
             lineHeight={16}
-            color="#FFFFFF"
+            color={colors.primaryText}
             className="mt-1"
           >
             {` ${referralCode}`}
@@ -53,7 +54,7 @@ const getReferralText = (
           <SecondaryText
             fontSize={12}
             lineHeight={16}
-            color="#FFFFFF"
+            color={colors.primaryText}
             className="mt-1"
           >
             {` ${amount} RBN `}
