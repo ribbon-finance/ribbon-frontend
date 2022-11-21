@@ -115,8 +115,8 @@ const PayoffSTETH: React.FC<PayoffSTETHProps> = ({ vaultOption }) => {
     let array = [];
     let rightArray = [];
 
-    for (let i = 0; i < 2500; i += 1) {
-      leftArray.push(Math.round(lowerBarrierPercentage * 100) - (2500 - i));
+    for (let i = 0; i < 3000; i += 1) {
+      leftArray.push(Math.round(lowerBarrierPercentage * 100) - (3000 - i));
     }
 
     for (
@@ -145,7 +145,7 @@ const PayoffSTETH: React.FC<PayoffSTETHProps> = ({ vaultOption }) => {
     let array = [];
     let rightArray = [];
 
-    for (let i = 0; i < 2500; i += 1) {
+    for (let i = 0; i < 3000; i += 1) {
       leftArray.push(baseYield * 100);
     }
 

@@ -609,7 +609,7 @@ const EarnPage = () => {
                 ease: "easeInOut",
               }}
             >
-              <EarnStrategyExplainer />
+              <EarnStrategyExplainer vaultOption={vaultOption} />
             </motion.div>
           )}
         </AnimatePresence>

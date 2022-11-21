@@ -68,7 +68,8 @@ const EarnSTETHChart: React.FC<ProfitChartProps> = ({
        * Draw price text
        */
       ctx.fillStyle =
-        Math.abs(price) > upperBarrierPercentage * 100
+        price < lowerBarrierPercentage * 100 ||
+        price > upperBarrierPercentage * 100
           ? `${colors.red}`
           : `${colors.green}`;
       const fontSize = 14;
@@ -79,7 +80,7 @@ const EarnSTETHChart: React.FC<ProfitChartProps> = ({
       ctx.textBaseline = "middle";
       const padding = 8;
       const text = `${
-        drawIndex === 0 || price < -upperBarrierPercentage * 100
+        drawIndex === 0 || price < lowerBarrierPercentage * 100
           ? `<<< ${(lowerBarrierPercentage * 100).toFixed(2)}%`
           : drawIndex === meta.data.length - 1 ||
             price > upperBarrierPercentage * 100
@@ -140,7 +141,8 @@ const EarnSTETHChart: React.FC<ProfitChartProps> = ({
        * Draw price text
        */
       ctx.fillStyle =
-        Math.abs(price) > upperBarrierPercentage * 100
+        price < lowerBarrierPercentage * 100 ||
+        price > upperBarrierPercentage * 100
           ? `${colors.red}`
           : `${colors.green}`;
       const fontSize = 14;
@@ -152,9 +154,10 @@ const EarnSTETHChart: React.FC<ProfitChartProps> = ({
       const padding = 8;
 
       const text = `${
-        drawIndex === 0 || price < -5
+        drawIndex === 0 || price < lowerBarrierPercentage * 100
           ? `<<< ${(lowerBarrierPercentage * 100).toFixed(2)}%`
-          : drawIndex === meta.data.length - 1 || price > 15
+          : drawIndex === meta.data.length - 1 ||
+            price > upperBarrierPercentage * 100
           ? `>>> ${(upperBarrierPercentage * 100).toFixed(2)}%`
           : `${price.toFixed(2)}%`
       }`;
@@ -267,9 +270,11 @@ const EarnSTETHChart: React.FC<ProfitChartProps> = ({
       green.addColorStop(0.9, `${colors.green}01`);
       green.addColorStop(0, `${colors.green}20`);
       const performanceRounded =
-        performance > 15 || performance < -5
+        performance > 0.15 || performance < -0.05
           ? Math.round(performance * 100)
           : Math.round(performance * 100 * 1e2) / 1e2;
+      console.log({ performanceRounded });
+      console.log({ moneynessRange });
       return {
         labels: moneynessRange,
         datasets: [
@@ -413,6 +418,7 @@ const EarnSTETHChart: React.FC<ProfitChartProps> = ({
                   (data: any) => data !== null
                 );
 
+                console.log({ defaultDataIndex });
                 drawDefaultPricePoint(
                   chart,
                   moneynessRange[defaultDataIndex],
