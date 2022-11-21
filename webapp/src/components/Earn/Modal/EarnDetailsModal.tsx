@@ -7,8 +7,7 @@ import SegmentControl from "shared/lib/components/Common/SegmentControl";
 import { Strategy, Risk } from "../Details";
 import EarnPerformanceSection from "../../../pages/DepositPage/EarnPerformanceSection";
 import EarnVaultActivity from "../../Vault/EarnVaultActivity";
-import PayoffUSDC from "../PayoffUSDC";
-import PayoffSTETH from "../PayoffSTETH";
+import Payoff from "../Payoff";
 import Counterparties from "../Counterparties";
 import FundingSource from "../FundingSource";
 import Fees from "../Fees";
@@ -149,11 +148,7 @@ const EarnDetailsModal: React.FC<EarnDetailsModalProps> = ({
       case "strategy":
         return <Strategy setStep={setStep} vaultOption={vaultOption} />;
       case "payoff":
-        return vaultOption === "rEARN-USDC" ? (
-          <PayoffUSDC vaultOption={vaultOption} />
-        ) : (
-          <PayoffSTETH vaultOption={vaultOption} />
-        );
+        return <Payoff vaultOption={vaultOption} />;
       case "risk":
         return <Risk vaultOption={vaultOption} />;
       case "performance":

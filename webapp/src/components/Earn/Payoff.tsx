@@ -11,8 +11,13 @@ import TooltipExplanation from "shared/lib/components/Common/TooltipExplanation"
 import HelpInfo from "shared/lib/components/Common/HelpInfo";
 import { useAirtableEarnData } from "shared/lib/hooks/useAirtableEarnData";
 import useLoadingText from "shared/lib/hooks/useLoadingText";
-import EarnSTETHChart from "./EarnSTETHChart";
+import EarnSTETHChart from "./EarnChart";
 import { VaultOptions } from "shared/lib/constants/constants";
+import {
+  getOptionMoneyness,
+  getOptionMoneynessRange,
+  getYieldRange,
+} from "./PayoffHelper";
 
 const ChartContainer = styled.div`
   height: 264px;
@@ -76,7 +81,7 @@ interface PayoffSTETHProps {
 }
 
 // Calls user_checkpoint and shows a transaction loading screen
-const PayoffSTETH: React.FC<PayoffSTETHProps> = ({ vaultOption }) => {
+const Payoff: React.FC<PayoffSTETHProps> = ({ vaultOption }) => {
   const {
     baseYield,
     maxYield,
@@ -94,15 +99,12 @@ const PayoffSTETH: React.FC<PayoffSTETHProps> = ({ vaultOption }) => {
   const [, setChartHovering] = useState(false);
 
   const optionMoneyness = useMemo(() => {
-    return hoverPercentage
-      ? hoverPercentage / 100 < lowerBarrierPercentage ||
-        hoverPercentage / 100 > upperBarrierPercentage
-        ? 0
-        : hoverPercentage / 100
-      : performance < lowerBarrierPercentage ||
-        performance > upperBarrierPercentage
-      ? 0
-      : performance;
+    return getOptionMoneyness(
+      hoverPercentage,
+      lowerBarrierPercentage,
+      upperBarrierPercentage,
+      performance
+    );
   }, [
     hoverPercentage,
     lowerBarrierPercentage,
@@ -110,72 +112,29 @@ const PayoffSTETH: React.FC<PayoffSTETHProps> = ({ vaultOption }) => {
     performance,
   ]);
 
-  const moneynessRange = useMemo(() => {
-    let leftArray = [];
-    let array = [];
-    let rightArray = [];
-
-    for (let i = 0; i < 3000; i += 1) {
-      leftArray.push(Math.round(lowerBarrierPercentage * 100) - (3000 - i));
-    }
-
-    for (
-      let i = Math.round(lowerBarrierPercentage * 100) * 100;
-      i <= Math.round(upperBarrierPercentage * 100) * 100;
-      i += 1
-    ) {
-      array.push(i / 100);
-    }
-
-    for (let i = 0; i < 2000; i += 1) {
-      rightArray.push(Math.round(upperBarrierPercentage * 100) + i + 1);
-    }
-
-    return [
-      ...leftArray,
-      lowerBarrierPercentage * 100 - 0.01,
-      ...array,
-      upperBarrierPercentage * 100 + 0.01,
-      ...rightArray,
-    ];
-  }, [lowerBarrierPercentage, upperBarrierPercentage]);
+  const optionMoneynessRange = useMemo(() => {
+    return getOptionMoneynessRange(
+      vaultOption,
+      lowerBarrierPercentage,
+      upperBarrierPercentage
+    );
+  }, [lowerBarrierPercentage, upperBarrierPercentage, vaultOption]);
 
   const yieldRange = useMemo(() => {
-    let leftArray = [];
-    let array = [];
-    let rightArray = [];
-
-    for (let i = 0; i < 3000; i += 1) {
-      leftArray.push(baseYield * 100);
-    }
-
-    for (
-      let i = 0;
-      i <=
-      Math.round((upperBarrierPercentage - lowerBarrierPercentage) * 100) * 100;
-      i += 1
-    ) {
-      array.push(
-        baseYield * 100 +
-          Math.abs(
-            i / 100 / ((upperBarrierPercentage - lowerBarrierPercentage) * 100)
-          ) *
-            (maxYield - baseYield) *
-            100
-      );
-    }
-
-    for (let i = 0; i < 2000; i += 1) {
-      rightArray.push(baseYield * 100);
-    }
-    return [
-      ...leftArray,
-      baseYield * 100,
-      ...array,
-      baseYield * 100,
-      ...rightArray,
-    ];
-  }, [lowerBarrierPercentage, upperBarrierPercentage, maxYield, baseYield]);
+    return getYieldRange(
+      vaultOption,
+      lowerBarrierPercentage,
+      upperBarrierPercentage,
+      maxYield,
+      baseYield
+    );
+  }, [
+    vaultOption,
+    lowerBarrierPercentage,
+    upperBarrierPercentage,
+    maxYield,
+    baseYield,
+  ]);
 
   return (
     <>
@@ -212,8 +171,9 @@ const PayoffSTETH: React.FC<PayoffSTETHProps> = ({ vaultOption }) => {
               lowerBarrierPercentage={lowerBarrierPercentage}
               upperBarrierPercentage={upperBarrierPercentage}
               maxYield={maxYield}
-              moneynessRange={moneynessRange}
+              moneynessRange={optionMoneynessRange}
               yieldRange={yieldRange}
+              vaultOption={vaultOption}
             />
           </ChartContainer>
         </RelativeContainer>
@@ -320,4 +280,4 @@ const PayoffSTETH: React.FC<PayoffSTETHProps> = ({ vaultOption }) => {
   );
 };
 
-export default PayoffSTETH;
+export default Payoff;

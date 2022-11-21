@@ -2,6 +2,12 @@ import React, { useCallback, useMemo, useState } from "react";
 import Chart, { ChartOptions, ChartData } from "chart.js";
 import { Line } from "react-chartjs-2";
 import colors from "shared/lib/designSystem/colors";
+import {
+  isPerformanceAboveBarriers,
+  isPerformanceBelowBarriers,
+  isPerformanceOutsideBarriers,
+} from "./PayoffHelper";
+import { VaultOptions } from "shared/lib/constants/constants";
 
 /**
  * Strike: Strike price of the option
@@ -14,25 +20,66 @@ interface ProfitChartProps {
   onHoverPrice: (price: number | undefined) => void;
   onHoverPercentage: (percentage: number | undefined) => void;
   performance: number;
+  baseYield: number;
   maxYield: number;
   lowerBarrierPercentage: number;
   upperBarrierPercentage: number;
   moneynessRange: number[];
   yieldRange: number[];
+  vaultOption: VaultOptions;
 }
 
-const EarnChart: React.FC<ProfitChartProps> = ({
+const EarnSTETHChart: React.FC<ProfitChartProps> = ({
   onHoverPrice,
   onHoverPercentage,
   performance,
+  baseYield,
   maxYield,
   lowerBarrierPercentage,
   upperBarrierPercentage,
   moneynessRange,
   yieldRange,
+  vaultOption,
 }) => {
   const [hoveredIndex, setIndex] = useState<number>();
 
+  const optionMoneynessText = (
+    price: number,
+    lowerBarrierPercentage: number,
+    upperBarrierPercentage: number,
+    drawIndex: number
+  ) => {
+    const isBelowBarrier = isPerformanceBelowBarriers(
+      price / 100,
+      lowerBarrierPercentage
+    );
+    const isAboveBarrier = isPerformanceAboveBarriers(
+      price / 100,
+      upperBarrierPercentage
+    );
+
+    const arrows = () => {
+      if (isBelowBarrier) {
+        return `<<<`;
+      } else if (isAboveBarrier) {
+        return `>>>`;
+      } else {
+        return ``;
+      }
+    };
+
+    const priceText = () => {
+      if (drawIndex === 0 || isBelowBarrier) {
+        return (lowerBarrierPercentage * 100).toFixed(2);
+      } else if (isAboveBarrier) {
+        return (upperBarrierPercentage * 100).toFixed(2);
+      } else {
+        return price.toFixed(2);
+      }
+    };
+
+    return `${arrows()} ${priceText()}%`;
+  };
   const drawPricePoint = useCallback(
     (chart: any, price: number, drawIndex: number) => {
       const ctx: CanvasRenderingContext2D = chart.chart.ctx;
@@ -65,10 +112,13 @@ const EarnChart: React.FC<ProfitChartProps> = ({
       /**
        * Draw price text
        */
-      ctx.fillStyle =
-        Math.abs(price) > upperBarrierPercentage * 100
-          ? `${colors.red}`
-          : `${colors.green}`;
+      ctx.fillStyle = isPerformanceOutsideBarriers(
+        price / 100,
+        lowerBarrierPercentage,
+        upperBarrierPercentage
+      )
+        ? `${colors.red}`
+        : `${colors.green}`;
       const fontSize = 14;
       const fontStyle = "normal";
       const fontFamily = "VCR, sans-serif";
@@ -77,14 +127,12 @@ const EarnChart: React.FC<ProfitChartProps> = ({
       ctx.textBaseline = "middle";
       const padding = 8;
 
-      const text = `${
-        drawIndex === 0 || price < -upperBarrierPercentage * 100
-          ? `<<< ${(-upperBarrierPercentage * 100).toFixed(2)}%`
-          : drawIndex === meta.data.length - 1 ||
-            price > upperBarrierPercentage * 100
-          ? `>>> ${(upperBarrierPercentage * 100).toFixed(2)}%`
-          : `${price.toFixed(2)}%`
-      }`;
+      const text = optionMoneynessText(
+        price,
+        lowerBarrierPercentage,
+        upperBarrierPercentage,
+        drawIndex
+      );
 
       const textLength = ctx.measureText(text).width;
 
@@ -102,7 +150,7 @@ const EarnChart: React.FC<ProfitChartProps> = ({
 
       ctx.globalCompositeOperation = "source-over";
     },
-    [upperBarrierPercentage]
+    [lowerBarrierPercentage, upperBarrierPercentage]
   );
 
   const drawDefaultPricePoint = useCallback(
@@ -138,10 +186,13 @@ const EarnChart: React.FC<ProfitChartProps> = ({
       /**
        * Draw price text
        */
-      ctx.fillStyle =
-        Math.abs(price) > upperBarrierPercentage * 100
-          ? `${colors.red}`
-          : `${colors.green}`;
+      ctx.fillStyle = isPerformanceOutsideBarriers(
+        price / 100,
+        lowerBarrierPercentage,
+        upperBarrierPercentage
+      )
+        ? `${colors.red}`
+        : `${colors.green}`;
       const fontSize = 14;
       const fontStyle = "normal";
       const fontFamily = "VCR, sans-serif";
@@ -150,13 +201,13 @@ const EarnChart: React.FC<ProfitChartProps> = ({
       ctx.textBaseline = "middle";
       const padding = 8;
 
-      const text = `${
-        drawIndex === 0 || price < -8
-          ? "<<< -8.00%"
-          : drawIndex === meta.data.length - 1 || price > 8
-          ? " >>> 8.00%"
-          : `${price.toFixed(2)}%`
-      }`;
+      const text = optionMoneynessText(
+        price,
+        lowerBarrierPercentage,
+        upperBarrierPercentage,
+        drawIndex
+      );
+
       const textLength = ctx.measureText(text).width;
 
       let xPosition = priceX;
@@ -171,7 +222,7 @@ const EarnChart: React.FC<ProfitChartProps> = ({
 
       ctx.fillText(text, xPosition, bottomY + 46);
     },
-    [upperBarrierPercentage]
+    [lowerBarrierPercentage, upperBarrierPercentage]
   );
 
   const drawDefaultBarriers = useCallback(
@@ -265,10 +316,9 @@ const EarnChart: React.FC<ProfitChartProps> = ({
       green.addColorStop(0.9, `${colors.green}01`);
       green.addColorStop(0, `${colors.green}20`);
       const performanceRounded =
-        performance > 0.08 || performance < -0.08
+        performance > 0.15 || performance < -0.05
           ? Math.round(performance * 100)
           : Math.round(performance * 100 * 1e2) / 1e2;
-
       return {
         labels: moneynessRange,
         datasets: [
@@ -321,13 +371,25 @@ const EarnChart: React.FC<ProfitChartProps> = ({
           },
           {
             label: "breakevenPoint",
-            data: moneynessRange.map((p) =>
-              !hoveredIndex &&
-              (p === upperBarrierPercentage * 100 ||
-                p === -upperBarrierPercentage * 100)
-                ? maxYield * 100
-                : null
-            ),
+            data: moneynessRange.map((p) => {
+              if (hoveredIndex) {
+                return null;
+              }
+              if (p === lowerBarrierPercentage * 100) {
+                switch (vaultOption) {
+                  case "rEARN-USDC":
+                    return maxYield * 100;
+                  case "rEARN-STETH":
+                    return baseYield * 100;
+                  default:
+                    return maxYield * 100;
+                }
+              }
+              if (p === upperBarrierPercentage * 100) {
+                return maxYield * 100;
+              }
+              return null;
+            }),
             type: "line",
             pointRadius: 4,
             pointHoverRadius: 4,
@@ -341,8 +403,11 @@ const EarnChart: React.FC<ProfitChartProps> = ({
       moneynessRange,
       yieldRange,
       hoveredIndex,
+      lowerBarrierPercentage,
       upperBarrierPercentage,
+      vaultOption,
       maxYield,
+      baseYield,
     ]
   );
 
@@ -416,20 +481,20 @@ const EarnChart: React.FC<ProfitChartProps> = ({
 
                 drawDefaultPricePoint(
                   chart,
-                  moneynessRange[defaultDataIndex],
+                  moneynessRange[defaultDataIndex] ?? moneynessRange[-1],
                   defaultDataIndex
                 );
               }
 
               drawDefaultBarriers(
                 chart,
-                upperBarrierPercentage * 100,
-                moneynessRange.indexOf(upperBarrierPercentage * 100)
+                lowerBarrierPercentage * 100,
+                moneynessRange.indexOf(lowerBarrierPercentage * 100)
               );
               drawDefaultBarriers(
                 chart,
-                -upperBarrierPercentage * 100,
-                moneynessRange.indexOf(-upperBarrierPercentage * 100)
+                upperBarrierPercentage * 100,
+                moneynessRange.indexOf(upperBarrierPercentage * 100)
               );
             },
           },
@@ -440,13 +505,14 @@ const EarnChart: React.FC<ProfitChartProps> = ({
     getData,
     options,
     drawDefaultBarriers,
-    upperBarrierPercentage,
+    lowerBarrierPercentage,
     moneynessRange,
-    drawDefaultPricePoint,
+    upperBarrierPercentage,
     drawPricePoint,
+    drawDefaultPricePoint,
   ]);
 
   return chart;
 };
 
-export default EarnChart;
+export default EarnSTETHChart;
