@@ -15,18 +15,22 @@ export const useLendAPY = () => {
 
   const poolsAvgAPY = useMemo(() => {
     let cumulativeAPY = 0;
-    if (!loading) {
-      PoolList.forEach((pool) => {
-        const poolData = data[PoolAddressMap[pool].lend];
-        const poolSize = parseFloat(formatUnits(poolData.poolSize, 6));
-        const rewardPerSecond = parseFloat(
-          formatUnits(poolData.rewardPerSecond, 18)
-        );
-        cumulativeAPY +=
-          ((rewardPerSecond * RBNPrice * secondsInYear) / poolSize) * 100;
-      });
+    try {
+      if (!loading) {
+        PoolList.forEach((pool) => {
+          const poolData = data[pool];
+          const poolSize = parseFloat(formatUnits(poolData.poolSize, 6));
+          const rewardPerSecond = parseFloat(
+            formatUnits(poolData.rewardPerSecond, 18)
+          );
+          cumulativeAPY +=
+            ((rewardPerSecond * RBNPrice * secondsInYear) / poolSize) * 100;
+        });
+      }
+      return cumulativeAPY / PoolList.length;
+    } catch (error) {
+      return 0;
     }
-    return cumulativeAPY / PoolList.length;
   }, [loading, data, RBNPrice]);
 
   const isLoading = useMemo(() => {
