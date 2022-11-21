@@ -67,7 +67,7 @@ type TxStatuses = "processing" | "success" | "error" | undefined;
 export const TxStatusToast = () => {
   const { pendingTransactions, transactionsCounter } = usePendingTransactions();
   const { t } = useTranslation();
-  const { depositWithdrawalDate } = useEarnStrategyTime();
+  const { withdrawalDate } = useEarnStrategyTime();
 
   const [showedPendingTxCounter, setShowPendingTxCounter] =
     useState(transactionsCounter);
@@ -151,7 +151,7 @@ export const TxStatusToast = () => {
               getAssets(_currentTx.vault)
             )} withdrawal from ${t(
               `shared:ProductCopies:${_currentTx.vault}:title`
-            )}. You can complete your withdrawal any time after 12pm UTC on ${depositWithdrawalDate}.`;
+            )}. You can complete your withdrawal any time after 12pm UTC on ${withdrawalDate}.`;
           }
           return `Initiated ${amountFormatted} ${getAssetDisplay(
             getAssets(_currentTx.vault)
@@ -196,7 +196,7 @@ export const TxStatusToast = () => {
           return "";
       }
     },
-    [depositWithdrawalDate, getAmountFormatted, t]
+    [withdrawalDate, getAmountFormatted, t]
   );
 
   if (!status || !currentTx) {

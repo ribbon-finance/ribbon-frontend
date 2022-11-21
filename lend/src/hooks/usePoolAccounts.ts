@@ -1,13 +1,12 @@
 import { BigNumber } from "ethers";
 import { useContext } from "react";
-
 import {
   PoolAddressMap,
   PoolList,
   PoolOptions,
   PoolVersion,
   PoolVersionList,
-} from "../constants/constants";
+} from "shared/lib/constants/lendConstants";
 import { PoolAccount, PoolAccountsData } from "../models/pool";
 import { SubgraphDataContext } from "./subgraphDataContext";
 

@@ -15,12 +15,7 @@ const Container = styled.div`
   overflow-x: hidden;
 `;
 
-const CounterpartyList = [
-  "R-EARN DIVERSIFIED",
-  "ORTHOGONAL",
-  "ALAMEDA RESEARCH",
-  "CITADEL",
-] as const;
+const CounterpartyList = ["R-EARN DIVERSIFIED"] as const;
 
 export type Counterparty = typeof CounterpartyList[number];
 const CounterpartyListSubset: Counterparty[] = ["R-EARN DIVERSIFIED"];

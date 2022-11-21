@@ -1,14 +1,16 @@
 import { useContext } from "react";
 import { BigNumber } from "ethers";
 
+import { Chains } from "../constants/constants";
 import {
-  Chains,
   PoolAddressMap,
   PoolList,
   PoolOptions,
+} from "shared/lib/constants/lendConstants";
+import {
   PoolVersion,
   PoolVersionList,
-} from "../constants/constants";
+} from "shared/lib/constants/lendConstants";
 import { PoolActivitiesData } from "../models/pool";
 import { SubgraphDataContext } from "./subgraphDataContext";
 import { isEVMChain } from "../utils/chains";

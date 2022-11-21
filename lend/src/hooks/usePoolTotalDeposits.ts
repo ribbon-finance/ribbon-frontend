@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
-import { PoolList } from "../constants/constants";
+import { PoolList } from "shared/lib/constants/lendConstants";
 import { BigNumber } from "ethers";
 import usePoolAccounts from "./usePoolAccounts";
 

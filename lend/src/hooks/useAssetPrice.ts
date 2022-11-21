@@ -3,7 +3,7 @@ import { useCallback, useContext, useEffect, useState } from "react";
 import { Moment } from "moment";
 
 import { Assets, AssetsList } from "../store/types";
-import { isProduction } from "../utils/env";
+import { isProduction } from "shared/lib/utils/env";
 import {
   AssetsPriceData,
   defaultAssetsPriceData,

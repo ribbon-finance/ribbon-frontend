@@ -9,7 +9,7 @@ import styled from "styled-components";
 import usePoolActivity from "../../hooks/usePoolActivity";
 import { ActivityFilter, activityFilters, SortBy, sortByList } from "./types";
 import PoolActivityList from "./PoolActivityList";
-import { PoolOptions, PoolVersion } from "../../constants/constants";
+import { PoolOptions, PoolVersion } from "shared/lib/constants/lendConstants";
 import { Title } from "shared/lib/designSystem";
 import { useLocation } from "react-router-dom";
 import useLoadingText from "shared/lib/hooks/useLoadingText";

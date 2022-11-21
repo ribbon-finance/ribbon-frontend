@@ -1,7 +1,11 @@
 import { BigNumber } from "ethers";
 import { useContext } from "react";
 
-import { Chains, PoolVersion, PoolVersionList } from "../constants/constants";
+import { Chains } from "../constants/constants";
+import {
+  PoolVersion,
+  PoolVersionList,
+} from "shared/lib/constants/lendConstants";
 import { BalanceUpdate } from "../models/pool";
 import { SubgraphDataContext } from "./subgraphDataContext";
 

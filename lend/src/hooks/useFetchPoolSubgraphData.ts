@@ -4,9 +4,12 @@ import axios from "axios";
 import {
   getSubgraphURIForVersion,
   SUBGRAPHS_TO_QUERY,
+} from "../constants/constants";
+
+import {
   PoolVersion,
   PoolVersionList,
-} from "../constants/constants";
+} from "shared/lib/constants/lendConstants";
 import {
   defaultPoolSubgraphData,
   PoolSubgraphDataContextType,
@@ -16,7 +19,7 @@ import {
   resolvePoolAccountsSubgraphResponse,
   poolAccountsGraphql,
 } from "./usePoolAccounts";
-import { isProduction } from "../utils/env";
+import { isProduction } from "shared/lib/utils/env";
 import {
   resolveTransactionsSubgraphResponse,
   transactionsGraphql,

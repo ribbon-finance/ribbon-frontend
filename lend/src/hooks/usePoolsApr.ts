@@ -1,8 +1,8 @@
 import { useEffect, useMemo, useState } from "react";
-import { PoolOptions, secondsPerYear } from "../constants/constants";
+import { secondsPerYear } from "../constants/constants";
+import { PoolOptions, PoolList } from "shared/lib/constants/lendConstants";
 import useAssetPrice from "./useAssetPrice";
 import { usePoolsData } from "./web3DataContext";
-import { PoolList } from "../constants/constants";
 import { formatUnits } from "ethers/lib/utils";
 
 export type AprMap = {

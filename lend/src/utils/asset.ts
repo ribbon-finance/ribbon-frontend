@@ -2,7 +2,8 @@ import React from "react";
 import styled, { StyledComponent } from "styled-components";
 import { USDCLogo, WETHLogo } from "shared/lib/assets/icons/erc20Assets";
 import Logo from "shared/lib/assets/icons/logo";
-import { Chains, PoolOptions } from "../constants/constants";
+import { Chains } from "../constants/constants";
+import { PoolOptions } from "shared/lib/constants/lendConstants";
 import colors from "shared/lib/designSystem/colors";
 import { Assets, Wallets } from "../store/types";
 
