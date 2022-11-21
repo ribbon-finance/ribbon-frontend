@@ -86,6 +86,7 @@ const Payoff: React.FC<PayoffSTETHProps> = ({ vaultOption }) => {
     baseYield,
     maxYield,
     expectedYield,
+    participationRate,
     lowerBarrierPercentage,
     upperBarrierPercentage,
     performance,
@@ -126,7 +127,8 @@ const Payoff: React.FC<PayoffSTETHProps> = ({ vaultOption }) => {
       lowerBarrierPercentage,
       upperBarrierPercentage,
       maxYield,
-      baseYield
+      baseYield,
+      participationRate
     );
   }, [
     vaultOption,
@@ -134,6 +136,7 @@ const Payoff: React.FC<PayoffSTETHProps> = ({ vaultOption }) => {
     upperBarrierPercentage,
     maxYield,
     baseYield,
+    participationRate,
   ]);
 
   return (

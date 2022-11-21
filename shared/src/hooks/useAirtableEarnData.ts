@@ -112,27 +112,31 @@ const recordHasUndefined = (recordTemp: any): boolean => {
 const calculateMaxYield = (
   vault: VaultOptions,
   baseYield: number,
-  maxBarrierPercentage: number,
+  lowerBarrierPercentage: number,
+  upperBarrierPercentage: number,
   participationRate: number
 ) => {
   switch (vault) {
     case "rEARN-USDC":
       return (
         baseYield +
-        (maxBarrierPercentage * participationRate * 4 + 1) ** (365 / 28) -
+        (upperBarrierPercentage * participationRate * 4 + 1) ** (365 / 28) -
         1
       );
     case "rEARN-STETH":
       return (
         baseYield +
-        (maxBarrierPercentage * participationRate + 1) ** (365 / 7) -
+        (((upperBarrierPercentage - lowerBarrierPercentage) /
+          (1 + upperBarrierPercentage)) *
+          participationRate +
+          1) **
+          (365 / 7) -
         1
       );
     default:
       return 0;
   }
 };
-
 const calculateExpectedYield = (
   vault: VaultOptions,
   baseYield: number,
@@ -156,7 +160,8 @@ const calculateExpectedYield = (
       return performanceBetweenBarriers
         ? baseYield
         : baseYield +
-            ((((performance - lowerBarrierPercentage) * 3) / 4) *
+            (((performance - lowerBarrierPercentage) /
+              (1 + lowerBarrierPercentage + performance)) *
               participationRate +
               1) **
               (365 / 7) -
@@ -229,6 +234,7 @@ export const useAirtableEarnData = (vaultOption: VaultOptions) => {
     const maxYield = calculateMaxYield(
       vaultOption,
       values.baseYield,
+      values.lowerBarrierPercentage,
       values.upperBarrierPercentage,
       values.participationRate
     );

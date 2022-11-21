@@ -142,7 +142,8 @@ export const getYieldRange = (
   lowerBarrierPercentage: number,
   upperBarrierPercentage: number,
   maxYield: number,
-  baseYield: number
+  baseYield: number,
+  participationRate: number
 ) => {
   let leftArray = [];
   let array = [];
@@ -191,15 +192,22 @@ export const getYieldRange = (
           100;
         i += 1
       ) {
+        const percentage =
+          i /
+          (Math.round((upperBarrierPercentage - lowerBarrierPercentage) * 100) *
+            100);
         array.push(
-          baseYieldPercentage +
-            Math.abs(
-              i /
-                100 /
-                ((upperBarrierPercentage - lowerBarrierPercentage) * 100)
-            ) *
-              (maxYield - baseYield) *
-              100
+          (baseYield +
+            (((percentage * (upperBarrierPercentage - lowerBarrierPercentage)) /
+              (1 +
+                lowerBarrierPercentage +
+                percentage *
+                  (upperBarrierPercentage - lowerBarrierPercentage))) *
+              participationRate +
+              1) **
+              (365 / 7) -
+            1) *
+            100
         );
       }
 

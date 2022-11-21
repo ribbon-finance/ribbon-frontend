@@ -287,6 +287,12 @@ const EarnSTETHChart: React.FC<ProfitChartProps> = ({
         ],
         xAxes: [{ display: false }],
       },
+      elements: {
+        line: {
+          tension: 1,
+          borderJoinStyle: vaultOption === "rEARN-STETH" ? "round" : undefined,
+        },
+      },
       animation: { duration: 0 },
       hover: { animationDuration: 0, intersect: false },
       tooltips: {
@@ -306,7 +312,13 @@ const EarnSTETHChart: React.FC<ProfitChartProps> = ({
         }
       },
     };
-  }, [moneynessRange, yieldRange, onHoverPrice, onHoverPercentage]);
+  }, [
+    vaultOption,
+    onHoverPrice,
+    yieldRange,
+    onHoverPercentage,
+    moneynessRange,
+  ]);
 
   const getData = useCallback(
     (canvas: any): ChartData => {
