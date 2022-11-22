@@ -1,4 +1,6 @@
 import { VaultOptions } from "shared/lib/constants/constants";
+import { calculateExpectedYieldSTETH } from "shared/lib/hooks/useAirtableEarnData";
+import { updateTypePredicateNodeWithModifier } from "typescript";
 
 export const isPerformanceBelowBarriers = (
   performance: number,
@@ -185,29 +187,21 @@ export const getYieldRange = (
         leftArray.push(baseYieldPercentage);
       }
 
-      for (
-        let i = 0;
-        i <=
-        Math.round((upperBarrierPercentage - lowerBarrierPercentage) * 100) *
-          100;
-        i += 1
-      ) {
-        const percentage =
-          i /
-          (Math.round((upperBarrierPercentage - lowerBarrierPercentage) * 100) *
-            100);
+      const barriersSum = upperBarrierPercentage - lowerBarrierPercentage;
+      // we multiply the number by 10000 to make plotting easier
+      const barriersSumLargeNumber = Math.round(barriersSum * 100) * 100;
+
+      // add incremental amounts of expected yield from base yield to max yield
+      for (let i = 0; i <= barriersSumLargeNumber; i += 1) {
+        const percentage = i / barriersSumLargeNumber;
+        const performance = percentage * barriersSum + lowerBarrierPercentage;
         array.push(
-          (baseYield +
-            (((percentage * (upperBarrierPercentage - lowerBarrierPercentage)) /
-              (1 +
-                lowerBarrierPercentage +
-                percentage *
-                  (upperBarrierPercentage - lowerBarrierPercentage))) *
-              participationRate +
-              1) **
-              (365 / 7) -
-            1) *
-            100
+          calculateExpectedYieldSTETH(
+            baseYield,
+            performance,
+            lowerBarrierPercentage,
+            participationRate
+          ) * 100
         );
       }
 

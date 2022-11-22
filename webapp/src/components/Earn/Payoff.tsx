@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from "react";
+import React, { useMemo, useState, useCallback } from "react";
 import styled from "styled-components";
 import {
   BaseModalContentColumn,
@@ -18,6 +18,7 @@ import {
   getOptionMoneynessRange,
   getYieldRange,
 } from "./PayoffHelper";
+import { render } from "@testing-library/react";
 
 const ChartContainer = styled.div`
   height: 264px;
@@ -139,6 +140,40 @@ const Payoff: React.FC<PayoffSTETHProps> = ({ vaultOption }) => {
     participationRate,
   ]);
 
+  const maxYieldText = useCallback(() => {
+    const commonText =
+      "The max yield is defined as the max payout if the price of the underlying asset is at the barrier at expiry. The formula used to compute the max yield is as follows: ";
+    switch (vaultOption) {
+      case "rEARN-USDC":
+        return (
+          commonText +
+          "BASE APY + (MAX PERF * 4 * PARTICIPATION RATE + 1)^(365 / 28) - 1"
+        );
+      case "rEARN-STETH":
+        return (
+          commonText +
+          "BASE APY + (MAX PERF * PARTICIPATION RATE + 1)^(365 / 7) - 1"
+        );
+    }
+  }, [vaultOption]);
+
+  const expectedYieldText = useCallback(() => {
+    const commonText =
+      "The expected yield is computed using the current moneyness. The formula used to compute the expected yield is as follows: ";
+    switch (vaultOption) {
+      case "rEARN-USDC":
+        return (
+          commonText +
+          "BASE APY + (CURRENT PERF * 4 * PARTICIPATION RATE + 1)^(365 / 28) - 1"
+        );
+      case "rEARN-STETH":
+        return (
+          commonText +
+          "BASE APY + (CURRENT PERF * PARTICIPATION RATE + 1)^(365 / 7) - 1"
+        );
+    }
+  }, [vaultOption]);
+
   return (
     <>
       <BaseModalContentColumn marginTop={-2}>
@@ -147,7 +182,7 @@ const Payoff: React.FC<PayoffSTETHProps> = ({ vaultOption }) => {
             <ParagraphText fontWeight={500}>Max Yield (APY) </ParagraphText>
             <TooltipExplanation
               title="MAX YIELD"
-              explanation="The max yield is defined as the max payout if the price of the underlying asset is at the barrier at expiry. The formula used to compute the max yield is as follows: BASE APY + (MAX PERF * 4 * PARTICIPATION RATE + 1)^(365 / 28) - 1"
+              explanation={maxYieldText()}
               renderContent={({ ref, ...triggerHandler }) => (
                 <HelpInfo containerRef={ref} {...triggerHandler}>
                   i
@@ -259,7 +294,7 @@ const Payoff: React.FC<PayoffSTETHProps> = ({ vaultOption }) => {
             <div className="mr-auto">
               <TooltipExplanation
                 title="EXPECTED YIELD"
-                explanation="The expected yield is computed using the current moneyness. The formula used to compute the expected yield is as follows: BASE APY + (CURRENT PERF * 4 * PARTICIPATION RATE + 1)^(365 / 28) - 1"
+                explanation={expectedYieldText()}
                 renderContent={({ ref, ...triggerHandler }) => (
                   <HelpInfo containerRef={ref} {...triggerHandler}>
                     i

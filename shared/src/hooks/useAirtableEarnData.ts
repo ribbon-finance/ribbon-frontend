@@ -160,8 +160,7 @@ const calculateExpectedYield = (
       return performanceBetweenBarriers
         ? baseYield
         : baseYield +
-            (((performance - lowerBarrierPercentage) /
-              (1 + lowerBarrierPercentage + performance)) *
+            (((performance - lowerBarrierPercentage) / (1 + performance)) *
               participationRate +
               1) **
               (365 / 7) -
@@ -169,6 +168,22 @@ const calculateExpectedYield = (
     default:
       return 0;
   }
+};
+
+export const calculateExpectedYieldSTETH = (
+  baseYield: number,
+  performance: number,
+  lowerBarrierPercentage: number,
+  participationRate: number
+) => {
+  return (
+    baseYield +
+    (((performance - lowerBarrierPercentage) / (1 + performance)) *
+      participationRate +
+      1) **
+      (365 / 7) -
+    1
+  );
 };
 
 export const useAirtableEarnData = (vaultOption: VaultOptions) => {
