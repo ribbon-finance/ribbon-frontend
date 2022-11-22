@@ -12,7 +12,8 @@ import { Step } from "./Modal/EarnDetailsModal";
 import { useV2VaultData } from "shared/lib/hooks/web3DataContext";
 import { VaultOptions } from "shared/lib/constants/constants";
 import { useVaultsSubgraphData } from "shared/lib/hooks/useVaultData";
-import { useMemo } from "react";
+import { useMemo, useCallback } from "react";
+import { render } from "@testing-library/react";
 
 const ExplainerTitle = styled.div<{ color: string; marginTop?: number }>`
   display: flex;
@@ -72,6 +73,8 @@ export const Strategy: React.FC<StrategyProps> = ({ setStep, vaultOption }) => {
     strikePrice,
     baseYield,
     maxYield,
+    lowerBarrierPercentage,
+    upperBarrierPercentage,
     lowerBarrierETHPrice,
     upperBarrierETHPrice,
     loading,
@@ -83,57 +86,169 @@ export const Strategy: React.FC<StrategyProps> = ({ setStep, vaultOption }) => {
   } = useV2VaultData(vaultOption);
 
   const loadingText = useLoadingText();
+
+  const lowerBarrier = ((1 + lowerBarrierPercentage) * 100).toFixed(0);
+  const upperBarrier = ((1 + upperBarrierPercentage) * 100).toFixed(0);
+
+  const renderDescription = useCallback(() => {
+    switch (vaultOption) {
+      case "rEARN-USDC":
+        return (
+          <ParagraphText>
+            The R-Earn vault employs a fully funded{" "}
+            <TooltipExplanation
+              title="TWIN WIN"
+              explanation={`A Twin Win is a structured product where the investor can win if the underlying asset goes in either direction up to a specific level. It is similar to a straddle (call + put option) with additional barriers which limit the exposure on both sides.`}
+              learnMoreURL="https://bookdown.org/maxime_debellefroid/MyBook/certificates.html#twin-win-certificates"
+              renderContent={({ ref, ...triggerHandler }) => (
+                <HighlightedText ref={ref} {...triggerHandler}>
+                  twin win
+                </HighlightedText>
+              )}
+            />{" "}
+            strategy through which depositors can capitalise on the intra-week
+            ETH movements in either direction while also ensuring their capital
+            is{" "}
+            <LinkText role={"button"} onClick={() => setStep("risk")}>
+              protected
+            </LinkText>
+            . The vault earns interest by lending capital to our{" "}
+            <LinkText role={"button"} onClick={() => setStep("funding source")}>
+              counterparties
+            </LinkText>{" "}
+            and uses part of it to generate a base APY and the remaining funding
+            to purchase{" "}
+            <TooltipExplanation
+              title="weekly at-the-money knock-out barrier options"
+              explanation={`The options bought are expiring every Friday, with a one week maturity and the strike price is set to the current underlying asset price. The knock-out barriers are used to define when the payoff is inactive, i.e. if the price of the underlying asset at maturity is below the lower barrier or greater than the upper barrier, the option is worthless.`}
+              learnMoreURL="https://bookdown.org/maxime_debellefroid/MyBook/barrier-options.html#knock-out-options"
+              renderContent={({ ref, ...triggerHandler }) => (
+                <HighlightedText ref={ref} {...triggerHandler}>
+                  weekly at-the-money knock-out barrier options
+                </HighlightedText>
+              )}
+            />
+            .
+          </ParagraphText>
+        );
+      case "rEARN-STETH":
+        return (
+          <ParagraphText>
+            The R-Earn vault employs a fully funded{" "}
+            <TooltipExplanation
+              title="DOLPHIN"
+              explanation={`A Dolphin is a structured product where the investor can win if the underlying asset goes in either direction up to a specific level. It is similar to a straddle (call + put option) with additional barriers which limit the exposure on both sides.`}
+              learnMoreURL="https://bookdown.org/maxime_debellefroid/MyBook/certificates.html#twin-win-certificates"
+              renderContent={({ ref, ...triggerHandler }) => (
+                <HighlightedText ref={ref} {...triggerHandler}>
+                  dolphin
+                </HighlightedText>
+              )}
+            />{" "}
+            strategy through which depositors can capitalise on the upside ETH
+            movements while also ensuring their capital is protected. The vault
+            earns a base APY and uses the remaining funding to purchase{" "}
+            <TooltipExplanation
+              title="weekly at-the-money knock-out barrier options"
+              explanation={`The options bought are expiring every Friday, with a one week maturity and the strike price is set to the current underlying asset price. The knock-out barriers are used to define when the payoff is inactive, i.e. if the price of the underlying asset at maturity is below the lower barrier or greater than the upper barrier, the option is worthless.`}
+              learnMoreURL="https://bookdown.org/maxime_debellefroid/MyBook/barrier-options.html#knock-out-options"
+              renderContent={({ ref, ...triggerHandler }) => (
+                <HighlightedText ref={ref} {...triggerHandler}>
+                  weekly at-the-money knock-out barrier options
+                </HighlightedText>
+              )}
+            />
+            . The funding here comes from Lido staking yield.
+          </ParagraphText>
+        );
+    }
+  }, [setStep, vaultOption]);
+
+  const renderKeyConditions = useCallback(() => {
+    switch (vaultOption) {
+      case "rEARN-USDC":
+        return (
+          <ParagraphText marginTop={8}>
+            The weekly barrier options enable the vault to participate in any
+            ETH upside up to {upperBarrier}% of the ETH's spot level at the
+            start of the week (upside barrier) and any ETH downside down to{" "}
+            {lowerBarrier}% of ETH's spot level at the start of the week
+            (downside barrier). However, if the price of ETH has increased or
+            decreased by more than {upperBarrierPercentage * 100}% at the end of
+            the week, the barrier options expire worthless and the vault earns
+            the base APY only.
+          </ParagraphText>
+        );
+      case "rEARN-STETH":
+        return (
+          <ParagraphText marginTop={8}>
+            The weekly barrier options enable the vault to participate in any
+            ETH upside from {lowerBarrier}% up to {upperBarrier}% of the ETH's
+            spot level at the start of the week (upside barrier). However, if
+            the price of ETH has increased by more than{" "}
+            {upperBarrierPercentage * 100}% at the end of the week, the barrier
+            options expire worthless and the vault earns the base APY only.
+          </ParagraphText>
+        );
+    }
+  }, [lowerBarrier, upperBarrier, upperBarrierPercentage, vaultOption]);
+
+  const renderLoanTenor = useCallback(() => {
+    switch (vaultOption) {
+      case "rEARN-USDC":
+        return (
+          <>
+            <ExplainerTitle color={colors.tertiaryText}>
+              <span>Loan Tenor</span>
+            </ExplainerTitle>
+            <StyledTitle marginTop={4}> 7 DAYS</StyledTitle>
+          </>
+        );
+      case "rEARN-STETH":
+        return <></>;
+    }
+  }, [vaultOption]);
+
+  const renderCapitalProtection = useCallback(() => {
+    switch (vaultOption) {
+      case "rEARN-USDC":
+        return (
+          <>
+            <ExplainerTitle color={colors.tertiaryText}>
+              <span>Capital Protection</span>
+            </ExplainerTitle>
+            <StyledTitle marginTop={4}>100%</StyledTitle>
+          </>
+        );
+      case "rEARN-STETH":
+        return <></>;
+    }
+  }, [vaultOption]);
+
+  const renderLoanAllocation = useCallback(() => {
+    switch (vaultOption) {
+      case "rEARN-USDC":
+        return (
+          <>
+            <ExplainerTitle color={colors.tertiaryText}>
+              <span>Loan Allocation</span>
+            </ExplainerTitle>
+            {/* querying loanAllocationPCT seems to give the wrong value so we use constant here*/}
+            <StyledTitle marginTop={4}>99.56%</StyledTitle>
+          </>
+        );
+      case "rEARN-STETH":
+        return <></>;
+    }
+  }, [vaultOption]);
+
   return (
     <>
-      <ParagraphText>
-        The R-Earn vault employs a fully funded{" "}
-        <TooltipExplanation
-          title="TWIN WIN"
-          explanation={`A Twin Win is a structured product where the investor can win if the underlying asset goes in either direction up to a specific level. It is similar to a straddle (call + put option) with additional barriers which limit the exposure on both sides.`}
-          learnMoreURL="https://bookdown.org/maxime_debellefroid/MyBook/certificates.html#twin-win-certificates"
-          renderContent={({ ref, ...triggerHandler }) => (
-            <HighlightedText ref={ref} {...triggerHandler}>
-              twin win
-            </HighlightedText>
-          )}
-        />{" "}
-        strategy through which depositors can capitalise on the intra-week ETH
-        movements in either direction while also ensuring their capital is{" "}
-        <LinkText role={"button"} onClick={() => setStep("risk")}>
-          protected
-        </LinkText>
-        . The vault earns interest by lending capital to our{" "}
-        <LinkText role={"button"} onClick={() => setStep("funding source")}>
-          counterparties
-        </LinkText>{" "}
-        and uses part of it to generate a base APY and the remaining funding to
-        purchase{" "}
-        <TooltipExplanation
-          title="weekly at-the-money knock-out barrier options"
-          explanation={`The options bought are expiring every Friday, with a one week maturity and the strike price is set to the current underlying asset price. The knock-out barriers are used to define when the payoff is inactive, i.e. if the price of the underlying asset at maturity is below the lower barrier or greater than the upper barrier, the option is worthless.`}
-          learnMoreURL="https://bookdown.org/maxime_debellefroid/MyBook/barrier-options.html#knock-out-options"
-          renderContent={({ ref, ...triggerHandler }) => (
-            <HighlightedText ref={ref} {...triggerHandler}>
-              weekly at-the-money knock-out barrier options
-            </HighlightedText>
-          )}
-        />
-        .
-      </ParagraphText>
+      {renderDescription()}
       <StyledTitle marginTop={24}>Key Conditions</StyledTitle>
-      <ParagraphText marginTop={8}>
-        The weekly barrier options enable the vault to participate in any ETH
-        upside up to 108% of the ETH's spot level at the start of the week
-        (upside barrier) and any ETH downside down to 92% of ETH's spot level at
-        the start of the week (downside barrier). However, if the price of ETH
-        has increased or decreased by more than 8% at the end of the week, the
-        barrier options expire worthless and the vault earns the base APY only.
-      </ParagraphText>
+      {renderKeyConditions()}
       <StyledTitle marginTop={24}>Vault Specifications</StyledTitle>
-      <ExplainerTitle color={colors.tertiaryText}>
-        <span>Loan Tenor</span>
-      </ExplainerTitle>
-      <StyledTitle marginTop={4}> 7 DAYS</StyledTitle>
+      {renderLoanTenor()}
       <ExplainerTitle color={colors.tertiaryText}>
         <span>Option Tenor</span>
       </ExplainerTitle>
@@ -144,7 +259,7 @@ export const Strategy: React.FC<StrategyProps> = ({ setStep, vaultOption }) => {
       <StyledTitle marginTop={4}>
         {loading
           ? loadingText
-          : `108% (${currency(upperBarrierETHPrice).format()})`}
+          : `${upperBarrier}% (${currency(upperBarrierETHPrice).format()})`}
       </StyledTitle>
       <ExplainerTitle color={colors.tertiaryText}>
         <span>Downside Barrier</span>
@@ -152,18 +267,15 @@ export const Strategy: React.FC<StrategyProps> = ({ setStep, vaultOption }) => {
       <StyledTitle marginTop={4}>
         {loading
           ? loadingText
-          : `92% (${currency(lowerBarrierETHPrice).format()})`}
+          : `${lowerBarrier}% (${currency(lowerBarrierETHPrice).format()})`}
       </StyledTitle>
       <ExplainerTitle color={colors.tertiaryText}>
         <span>Strike</span>
       </ExplainerTitle>
       <StyledTitle marginTop={4}>
         {loading ? loadingText : `100% (${currency(strikePrice).format()})`}
-      </StyledTitle>{" "}
-      <ExplainerTitle color={colors.tertiaryText}>
-        <span>Capital Protection</span>
-      </ExplainerTitle>
-      <StyledTitle marginTop={4}>100%</StyledTitle>{" "}
+      </StyledTitle>
+      {renderCapitalProtection()}
       <ExplainerTitle color={colors.tertiaryText}>
         <span>Base APY</span>
       </ExplainerTitle>
@@ -180,11 +292,7 @@ export const Strategy: React.FC<StrategyProps> = ({ setStep, vaultOption }) => {
         <span>Barrier Type</span>
       </ExplainerTitle>
       <StyledTitle marginTop={4}>European (Observed at Maturity)</StyledTitle>
-      <ExplainerTitle color={colors.tertiaryText}>
-        <span>Loan Allocation</span>
-      </ExplainerTitle>
-      {/* querying loanAllocationPCT seems to give the wrong value so we use constant here*/}
-      <StyledTitle marginTop={4}>99.56%</StyledTitle>
+      {renderLoanAllocation()}
       <ExplainerTitle color={colors.tertiaryText}>
         <span>Options Allocation</span>
       </ExplainerTitle>
