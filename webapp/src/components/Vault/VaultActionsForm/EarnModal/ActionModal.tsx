@@ -9,7 +9,6 @@ import sizes from "shared/lib/designSystem/sizes";
 import { ThinBackIcon, CloseIcon } from "shared/lib/assets/icons/icons";
 import { VaultOptions, VaultVersion } from "shared/lib/constants/constants";
 import theme from "shared/lib/designSystem/theme";
-
 import { capitalize } from "shared/lib/utils/text";
 
 const ModalNavigation = styled.div`
@@ -44,16 +43,6 @@ const ModalBody = styled.div<ModalBodyProps>`
   border-radius: 8px;
   width: ${(props) => (props.variant === "desktop" ? "343px" : "375px")};
   max-width: 450px;
-  min-height: ${(props) => {
-    switch (props.steps) {
-      case STEPS.confirmationStep:
-      case STEPS.submittedStep:
-      case STEPS.previewStep:
-      case STEPS.formStep:
-        return "unset";
-      default:
-        return "396px";
-    }
   }};
 
   ${(props) =>

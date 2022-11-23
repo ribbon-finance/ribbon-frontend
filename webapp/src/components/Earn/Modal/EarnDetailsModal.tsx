@@ -5,7 +5,7 @@ import { BaseModalContentColumn, Title } from "shared/lib/designSystem";
 import BasicModal from "shared/lib/components/Common/BasicModal";
 import SegmentControl from "shared/lib/components/Common/SegmentControl";
 import { Strategy, Risk } from "../Details";
-import EarnPerformanceSection from "../../../pages/DepositPage/EarnPerformanceSection";
+import EarnPerformanceSection from "../EarnPerformanceSection";
 import EarnVaultActivity from "../../Vault/EarnVaultActivity";
 import Payoff from "../Payoff";
 import Counterparties from "../Counterparties";

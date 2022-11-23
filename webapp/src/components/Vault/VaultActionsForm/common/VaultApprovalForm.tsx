@@ -34,6 +34,7 @@ import {
 import useVaultActionForm from "../../../../hooks/useVaultActionForm";
 import ButtonArrow from "shared/lib/components/Common/ButtonArrow";
 import theme from "shared/lib/designSystem/theme";
+import { Assets } from "shared/lib/store/types";
 
 const ApprovalIconContainer = styled.div`
   display: flex;
@@ -161,12 +162,16 @@ interface VaultApprovalFormProps {
   vaultOption: VaultOptions;
   version: VaultVersion;
   showDepositAssetSwap?: boolean;
+  earnHandleDepositAssetChange?: (asset: Assets) => void;
+  earnDepositAsset?: Assets;
 }
 
 const VaultApprovalForm: React.FC<VaultApprovalFormProps> = ({
   vaultOption,
   version,
   showDepositAssetSwap = false,
+  earnHandleDepositAssetChange,
+  earnDepositAsset,
 }) => {
   const { vaultActionForm, handleDepositAssetChange } =
     useVaultActionForm(vaultOption);
@@ -180,6 +185,8 @@ const VaultApprovalForm: React.FC<VaultApprovalFormProps> = ({
 
   const depositAsset = useMemo(() => {
     switch (version) {
+      case "earn":
+        return earnDepositAsset || VaultAllowedDepositAssets[vaultOption][0];
       case "v1":
         return asset;
       default:
@@ -188,7 +195,13 @@ const VaultApprovalForm: React.FC<VaultApprovalFormProps> = ({
           VaultAllowedDepositAssets[vaultOption][0]
         );
     }
-  }, [asset, vaultActionForm.depositAsset, vaultOption, version]);
+  }, [
+    asset,
+    earnDepositAsset,
+    vaultActionForm.depositAsset,
+    vaultOption,
+    version,
+  ]);
   const Logo = getAssetLogo(depositAsset);
 
   const tokenContract = useMemo(() => {
@@ -285,7 +298,12 @@ const VaultApprovalForm: React.FC<VaultApprovalFormProps> = ({
                     <DepositAssetsSwitchDropdownItem
                       color={getAssetColor(assetOption)}
                       active={assetOption === depositAsset}
-                      onClick={() => handleDepositAssetChange(assetOption)}
+                      onClick={() => {
+                        handleDepositAssetChange(assetOption);
+                        if (earnHandleDepositAssetChange) {
+                          earnHandleDepositAssetChange(assetOption);
+                        }
+                      }}
                     >
                       <DepositAssetSwitchContainerLogo
                         color={getAssetColor(assetOption)}

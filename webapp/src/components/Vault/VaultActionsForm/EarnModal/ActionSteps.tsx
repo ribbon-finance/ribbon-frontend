@@ -5,6 +5,7 @@ import PreviewStep from "./PreviewStep";
 import TransactionStep from "./TransactionStep";
 import {
   getAssets,
+  VaultAllowedDepositAssets,
   VaultOptions,
   VaultVersion,
 } from "shared/lib/constants/constants";
@@ -19,6 +20,8 @@ import { RibbonEarnVault } from "shared/lib/codegen";
 import DepositFormStep from "./FormStep";
 import useVaultContract from "shared/lib/hooks/useVaultContract";
 import { DepositSignature } from "../../../../hooks/useUSDC";
+import { Assets } from "shared/lib/store/types";
+
 export interface ActionStepsProps {
   vault: {
     vaultOption: VaultOptions;
@@ -44,14 +47,9 @@ const ActionSteps: React.FC<ActionStepsProps> = ({
   actionType,
 }) => {
   const { data: priceHistories } = useVaultsPriceHistory();
-
-  const firstStep = useMemo(() => {
-    return v2WithdrawOption === "complete" ? STEPS.previewStep : STEPS.formStep;
-  }, [v2WithdrawOption]);
-
-  const [txhash, setTxhash] = useState("");
-
-  const earnVault = useVaultContract(vaultOption);
+  const [depositAsset, earnHandleDepositAssetChange] = useState<Assets>(
+    VaultAllowedDepositAssets[vaultOption][0]
+  );
 
   const { pendingTransactions, addPendingTransaction } =
     usePendingTransactions();
@@ -66,6 +64,17 @@ const ActionSteps: React.FC<ActionStepsProps> = ({
     },
   } = useV2VaultData(vaultOption);
   const { priceHistory } = useVaultPriceHistory(vaultOption, "earn");
+
+  const firstStep = useMemo(() => {
+    if (v2WithdrawOption === "complete") {
+      return STEPS.previewStep;
+    }
+    return STEPS.formStep;
+  }, [v2WithdrawOption]);
+
+  const [txhash, setTxhash] = useState("");
+
+  const earnVault = useVaultContract(vaultOption);
 
   const vaultBalanceInAsset = useMemo(() => {
     const priceHistory = priceHistories.v2[vaultOption as VaultOptions].find(
@@ -245,10 +254,12 @@ const ActionSteps: React.FC<ActionStepsProps> = ({
         onClickUpdateInput={setInputAmount}
         onClickUpdateWithdrawOption={setWithdrawOption}
         onClickConfirmButton={handleClickNextButton}
-        asset={asset}
+        asset={depositAsset}
         vaultOption={vaultOption}
         vaultVersion={vaultVersion}
         show={show}
+        showSwapDepositAsset={VaultAllowedDepositAssets[vaultOption].length > 1}
+        earnHandleDepositAssetChange={earnHandleDepositAssetChange}
       />
     ),
     1: (

@@ -10,10 +10,9 @@ import useLoadingText from "shared/lib/hooks/useLoadingText";
 import HelpInfo from "shared/lib/components/Common/HelpInfo";
 import { Step } from "./Modal/EarnDetailsModal";
 import { useV2VaultData } from "shared/lib/hooks/web3DataContext";
-import { VaultOptions } from "shared/lib/constants/constants";
+import { getDisplayAssets, VaultOptions } from "shared/lib/constants/constants";
 import { useVaultsSubgraphData } from "shared/lib/hooks/useVaultData";
 import { useMemo, useCallback } from "react";
-import { render } from "@testing-library/react";
 
 const ExplainerTitle = styled.div<{ color: string; marginTop?: number }>`
   display: flex;
@@ -137,8 +136,7 @@ export const Strategy: React.FC<StrategyProps> = ({ setStep, vaultOption }) => {
             The R-Earn vault employs a fully funded{" "}
             <TooltipExplanation
               title="DOLPHIN"
-              explanation={`A Dolphin is a structured product where the investor can win if the underlying asset goes in either direction up to a specific level. It is similar to a straddle (call + put option) with additional barriers which limit the exposure on both sides.`}
-              learnMoreURL="https://bookdown.org/maxime_debellefroid/MyBook/certificates.html#twin-win-certificates"
+              explanation={`A Dolphin is a structured product where the investor can win if the underlying asset rises up to a specific level. It is similar to a call options with an additional barrier which limit the exposure on the upside. The product derives its name from its payoff diagram which looks like a shark fin or a dolphin for the less belligerent investors.`}
               renderContent={({ ref, ...triggerHandler }) => (
                 <HighlightedText ref={ref} {...triggerHandler}>
                   dolphin
@@ -150,7 +148,7 @@ export const Strategy: React.FC<StrategyProps> = ({ setStep, vaultOption }) => {
             earns a base APY and uses the remaining funding to purchase{" "}
             <TooltipExplanation
               title="weekly at-the-money knock-out barrier options"
-              explanation={`The options bought are expiring every Friday, with a one week maturity and the strike price is set to the current underlying asset price. The knock-out barriers are used to define when the payoff is inactive, i.e. if the price of the underlying asset at maturity is below the lower barrier or greater than the upper barrier, the option is worthless.`}
+              explanation={`The options bought are expiring every Friday, with a one week maturity and the strike price is set to 95% of the underlying asset price. The knock-out barrier is used to define when the payoff is inactive, i.e. if the price of the underlying asset at maturity is greater than the upper barrier, the option is worthless.`}
               learnMoreURL="https://bookdown.org/maxime_debellefroid/MyBook/barrier-options.html#knock-out-options"
               renderContent={({ ref, ...triggerHandler }) => (
                 <HighlightedText ref={ref} {...triggerHandler}>
@@ -319,33 +317,114 @@ interface RiskProps {
 }
 
 export const Risk: React.FC<RiskProps> = ({ vaultOption }) => {
+  const asset = getDisplayAssets(vaultOption);
+
+  const renderExchangeRateRisk = useCallback(() => {
+    switch (vaultOption) {
+      case "rEARN-USDC":
+        return <></>;
+      case "rEARN-STETH":
+        return (
+          <>
+            <Title>Exchange Rate Risk</Title>
+            <ParagraphText marginTop={8}>
+              As the payoff is based on the ETH price but is paid in stETH, the
+              actual quantity of stETH earned is dependent on the exchange rate
+              between ETH and stETH.
+            </ParagraphText>
+          </>
+        );
+    }
+  }, [vaultOption]);
+
+  const renderCreditRisk = useCallback(() => {
+    switch (vaultOption) {
+      case "rEARN-USDC":
+        return (
+          <>
+            <Title>Credit Risk</Title>
+            <ParagraphText marginTop={8}>
+              Market makers taking the other side of Ribbon Earn trades carry
+              credit risk and could potentially default in the case of extreme
+              events. This means that both the principal and yield invested
+              could be lost in the event of market makers defaulting. Ribbon
+              works with accredited market makers who have a history of credit
+              worthiness in order to minimize the risk of default for retail
+              investors.
+            </ParagraphText>
+          </>
+        );
+      case "rEARN-STETH":
+        return <></>;
+    }
+  }, [vaultOption]);
+
+  const renderUSDCRisk = useCallback(() => {
+    switch (vaultOption) {
+      case "rEARN-USDC":
+        return (
+          <>
+            <StyledTitle marginTop={24}>USDC Risk</StyledTitle>
+            <ParagraphText marginTop={8}>
+              You are aware of and accept the risk of using USDC in
+              ribbon.finance. We are not responsible for any losses due to any
+              actions performed by the USDC Issuer (Circle Internet Financial,
+              LLC.) At any point in time, the Issuer may, with or without
+              notice, at its sole discretion, "block" this Vault Smart Contract
+              address, associated addresses or your address. USDC may be
+              permanently frozen, resulting in a loss of funds.
+            </ParagraphText>
+          </>
+        );
+      case "rEARN-STETH":
+        return <></>;
+    }
+  }, [vaultOption]);
+
+  const renderCounterpartyRisk = useCallback(() => {
+    switch (vaultOption) {
+      case "rEARN-USDC":
+        return (
+          <>
+            <StyledTitle marginTop={24}>Counterparty Risk</StyledTitle>
+            <ParagraphText marginTop={8}>
+              In the situation that the knock-out options expire{" "}
+              <TooltipExplanation
+                title="IN-THE-MONEY"
+                explanation={`The option payout will be positive as the underlying spot is within the barriers range and as such, a bonus coupon will be paid.`}
+                learnMoreURL="https://www.investopedia.com/terms/i/inthemoney.asp"
+                renderContent={({ ref, ...triggerHandler }) => (
+                  <HighlightedText ref={ref} {...triggerHandler}>
+                    in-the-money
+                  </HighlightedText>
+                )}
+              />
+              , sellers of the knock-out options structure may be unable to
+              fulfill part of their obligations to the vault.
+            </ParagraphText>
+          </>
+        );
+      case "rEARN-STETH":
+        return (
+          <>
+            <StyledTitle marginTop={24}>Counterparty Risk</StyledTitle>
+            <ParagraphText marginTop={8}>
+              The Ribbon Earn smart contract purchases options from Market
+              Makers. While Market Makers sign agreements to fulfil their
+              obligations if the options end up in the-money, there is a risk
+              that they can not make the payments. Ribbon works with accredited
+              Market Makers and sign trade confirmations to mitigate this risk.
+            </ParagraphText>
+          </>
+        );
+    }
+  }, [vaultOption]);
+
   return (
     <>
-      <Title>Credit Risk</Title>
-      <ParagraphText marginTop={8}>
-        Market makers taking the other side of Ribbon Earn trades carry credit
-        risk and could potentially default in the case of extreme events. This
-        means that both the principal and yield invested could be lost in the
-        event of market makers defaulting. Ribbon works with accredited market
-        makers who have a history of credit worthiness in order to minimize the
-        risk of default for retail investors.
-      </ParagraphText>
-      <StyledTitle marginTop={24}>Counterparty Risk</StyledTitle>
-      <ParagraphText marginTop={8}>
-        In the situation that the knock-out options expire{" "}
-        <TooltipExplanation
-          title="IN-THE-MONEY"
-          explanation={`The option payout will be positive as the underlying spot is within the barriers range and as such, a bonus coupon will be paid.`}
-          learnMoreURL="https://www.investopedia.com/terms/i/inthemoney.asp"
-          renderContent={({ ref, ...triggerHandler }) => (
-            <HighlightedText ref={ref} {...triggerHandler}>
-              in-the-money
-            </HighlightedText>
-          )}
-        />{" "}
-        sellers of the knock-out options structure may be unable to fulfill part
-        of their obligations to the vault.
-      </ParagraphText>
+      {renderExchangeRateRisk()}
+      {renderCreditRisk()}
+      {renderCounterpartyRisk()}
       <StyledTitle marginTop={24}>Smart Contract Risk</StyledTitle>
       <ParagraphText marginTop={8}>
         The Ribbon Earn smart contracts have been{" "}
@@ -373,20 +452,12 @@ export const Risk: React.FC<RiskProps> = ({ vaultOption }) => {
       </ParagraphText>
       <StyledTitle marginTop={24}>Deposit Risk</StyledTitle>
       <ParagraphText marginTop={8}>
-        You are aware of and accept that the USDC held in your the Vault on your
-        behalf is not subject to deposit insurance protection, investor
+        You are aware of and accept that the {asset} held in your the Vault on
+        your behalf is not subject to deposit insurance protection, investor
         insurance protection, or any other relevant protection in any
         jurisdiction.
       </ParagraphText>
-      <StyledTitle marginTop={24}>USDC Risk</StyledTitle>
-      <ParagraphText marginTop={8}>
-        You are aware of and accept the risk of using USDC in ribbon.finance. We
-        are not responsible for any losses due to any actions performed by the
-        USDC Issuer (Circle Internet Financial, LLC.) At any point in time, the
-        Issuer may, with or without notice, at its sole discretion, "block" this
-        Vault Smart Contract address, associated addresses or your address. USDC
-        may be permanently frozen, resulting in a loss of funds.
-      </ParagraphText>
+      {renderUSDCRisk()}
     </>
   );
 };

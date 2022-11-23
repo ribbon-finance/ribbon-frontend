@@ -18,7 +18,6 @@ import {
   getOptionMoneynessRange,
   getYieldRange,
 } from "./PayoffHelper";
-import { render } from "@testing-library/react";
 
 const ChartContainer = styled.div`
   height: 264px;

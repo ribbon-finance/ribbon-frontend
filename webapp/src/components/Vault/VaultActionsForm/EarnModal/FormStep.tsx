@@ -10,16 +10,24 @@ import {
   BaseInput,
   BaseInputButton,
 } from "shared/lib/designSystem";
-import { Frame, TargetAndTransition } from "framer";
+import { AnimatePresence, Frame, motion, TargetAndTransition } from "framer";
 import { ActionButton } from "shared/lib/components/Common/buttons";
 import { ActionType, V2WithdrawOption, V2WithdrawOptionList } from "./types";
 import { formatBigNumber, isPracticallyZero } from "shared/lib/utils/math";
-import { getAssetDecimals, getAssetDisplay } from "shared/lib/utils/asset";
+import {
+  getAssetColor,
+  getAssetDecimals,
+  getAssetDisplay,
+  getAssetLogo,
+} from "shared/lib/utils/asset";
 import { Assets } from "shared/lib/store/types";
 import {
   VaultOptions,
   VaultVersion,
   VaultMaxDeposit,
+  VaultAllowedDepositAssets,
+  VaultAddressMap,
+  isNativeToken,
 } from "shared/lib/constants/constants";
 import { getVaultColor } from "shared/lib/utils/vault";
 import {
@@ -42,6 +50,10 @@ import useEarnStrategyTime from "../../../../hooks/useEarnStrategyTime";
 import { fadeIn } from "shared/lib/designSystem/keyframes";
 import useVaultPriceHistory from "shared/lib/hooks/useVaultPerformanceUpdate";
 import { VaultValidationErrors } from "../types";
+import ButtonArrow from "shared/lib/components/Common/ButtonArrow";
+import useTokenAllowance from "shared/lib/hooks/useTokenAllowance";
+import { ERC20Token } from "shared/lib/models/eth";
+import VaultApprovalForm from "../common/VaultApprovalForm";
 
 const Logo = styled.div<{ delay?: number; show?: boolean }>`
   margin-top: -40px;
@@ -82,6 +94,7 @@ const InputContainer = styled(BaseInputContainer)<{
   delay?: number;
   show?: boolean;
 }>`
+  z-index: 2000;
   ${({ show, delay }) => {
     return (
       show &&
@@ -235,6 +248,91 @@ const WithdrawTypeSegmentControlBackground = styled(Frame)`
   background-color: ${colors.green}0A !important;
 `;
 
+const DepositAssetButton = styled.div`
+  position: absolute;
+  top: 50%;
+  right: 40px;
+  transform: translate(-16px, -50%);
+  height: 32px;
+  width: 56px;
+  background: ${colors.background.four};
+  border-radius: 100px;
+`;
+
+const DepositAssetButtonLogo = styled.div<{ color: string }>`
+  display: flex;
+  position: relative;
+  align-items: center;
+  justify-content: center;
+  height: 24px;
+  width: 24px;
+  border-radius: 100px;
+  border: 1px solid ${(props) => props.color};
+  background: ${colors.background.one};
+
+  &:before {
+    position: absolute;
+    content: " ";
+    width: 100%;
+    height: 100%;
+    background: ${(props) => `${props.color}14`};
+    border-radius: 100px;
+  }
+`;
+
+const DepositAssetsDropdown = styled(motion.div)<{
+  isOpen: boolean;
+}>`
+  ${(props) =>
+    props.isOpen
+      ? `
+          position: absolute;
+          z-index: 2000;
+          padding: 8px;
+
+          background-color: ${colors.background.four};
+          border-radius: ${theme.border.radius};
+          top: 36px;
+          right: 0;
+        `
+      : `
+          display: none;
+        `}
+`;
+
+const DepositAssetsDropdownItem = styled.div<{
+  color: string;
+  active: boolean;
+}>`
+  display: flex;
+  align-items: center;
+  padding: 4px;
+  opacity: 0.48;
+  border-radius: 100px;
+  background: ${(props) => `${props.color}14`};
+  margin-bottom: 8px;
+  border: ${theme.border.width} ${theme.border.style} transparent;
+  transition: border 150ms;
+
+  &:last-child {
+    margin-bottom: 0px;
+  }
+
+  ${(props) => {
+    if (props.active) {
+      return `
+        opacity: 1;
+        border: ${theme.border.width} ${theme.border.style} ${props.color};
+      `;
+    }
+    return `
+      &:hover {
+        opacity: 1;
+      }
+    `;
+  }}
+`;
+
 const DepositFormStep: React.FC<{
   onClickUpdateInput: (amount: string) => void;
   inputAmount: string;
@@ -245,6 +343,8 @@ const DepositFormStep: React.FC<{
   vaultOption: VaultOptions;
   vaultVersion: VaultVersion;
   show: boolean;
+  showSwapDepositAsset: boolean;
+  earnHandleDepositAssetChange: (asset: Assets) => void;
 }> = ({
   onClickUpdateInput,
   inputAmount,
@@ -255,7 +355,10 @@ const DepositFormStep: React.FC<{
   vaultOption,
   vaultVersion,
   show,
+  showSwapDepositAsset,
+  earnHandleDepositAssetChange,
 }) => {
+  const [showDepositAssetMenu, setShowDepositAssetMenu] = useState(false);
   const color = getVaultColor(vaultOption);
   const {
     data: {
@@ -268,6 +371,28 @@ const DepositFormStep: React.FC<{
     },
     loading,
   } = useV2VaultData(vaultOption);
+
+  const tokenAllowance = useTokenAllowance(
+    isNativeToken(asset)
+      ? undefined
+      : ((asset?.toLowerCase() ||
+          VaultAllowedDepositAssets[
+            vaultOption
+          ][0].toLowerCase()) as ERC20Token),
+    VaultAddressMap[vaultOption][vaultVersion]
+  );
+
+  const showTokenApproval = useMemo(() => {
+    if (actionType === "deposit") {
+      return (
+        !isNativeToken(asset || VaultAllowedDepositAssets[vaultOption][0]) &&
+        tokenAllowance &&
+        isPracticallyZero(tokenAllowance, decimals)
+      );
+    }
+
+    return false;
+  }, [actionType, asset, decimals, tokenAllowance, vaultOption]);
 
   const { balance: userAssetBalance } = useAssetBalance(asset);
   const vaultBalanceInAsset = depositBalanceInAsset.add(lockedBalanceInAsset);
@@ -411,6 +536,106 @@ const DepositFormStep: React.FC<{
     [withdrawalDate]
   );
 
+  const renderDepositAssetButton = useMemo(() => {
+    if (active && showSwapDepositAsset && asset) {
+      const Logo = getAssetLogo(asset);
+
+      return (
+        <DepositAssetButton
+          role="button"
+          onClick={() => setShowDepositAssetMenu((show) => !show)}
+        >
+          <div className="d-flex w-100 h-100 align-items-center position-relative p-1">
+            <AnimatePresence exitBeforeEnter>
+              <motion.div
+                key={asset}
+                initial={{
+                  rotate: -180,
+                  opacity: 0,
+                }}
+                animate={{
+                  rotate: 0,
+                  opacity: 1,
+                }}
+                exit={{
+                  rotate: 180,
+                  opacity: 0,
+                }}
+                transition={{
+                  type: "keyframes",
+                  duration: 0.1,
+                }}
+              >
+                <DepositAssetButtonLogo color={getAssetColor(asset)}>
+                  <Logo height="20px" width="20px" />
+                </DepositAssetButtonLogo>
+              </motion.div>
+            </AnimatePresence>
+            <div className="d-flex flex-grow-1 justify-content-center">
+              <ButtonArrow
+                color={colors.primaryText}
+                isOpen={showDepositAssetMenu}
+                fontSize={12}
+              />
+            </div>
+            <AnimatePresence>
+              <DepositAssetsDropdown
+                key={showDepositAssetMenu.toString()}
+                isOpen={showDepositAssetMenu}
+                initial={{
+                  opacity: 0,
+                  y: 20,
+                }}
+                animate={{
+                  opacity: 1,
+                  y: 0,
+                }}
+                exit={{
+                  opacity: 0,
+                  y: 20,
+                }}
+                transition={{
+                  type: "keyframes",
+                  duration: 0.2,
+                }}
+              >
+                {VaultAllowedDepositAssets[vaultOption].map((depositAsset) => {
+                  const Logo = getAssetLogo(depositAsset);
+                  return (
+                    <DepositAssetsDropdownItem
+                      color={getAssetColor(depositAsset)}
+                      active={asset === depositAsset}
+                      onClick={() => {
+                        earnHandleDepositAssetChange(depositAsset);
+                      }}
+                    >
+                      <DepositAssetButtonLogo
+                        color={getAssetColor(depositAsset)}
+                      >
+                        <Logo height="20px" width="20px" />
+                      </DepositAssetButtonLogo>
+                      <Title fontSize={11} lineHeight={16} className="ml-1">
+                        {getAssetDisplay(depositAsset)}
+                      </Title>
+                    </DepositAssetsDropdownItem>
+                  );
+                })}
+              </DepositAssetsDropdown>
+            </AnimatePresence>
+          </div>
+        </DepositAssetButton>
+      );
+    }
+
+    return <></>;
+  }, [
+    active,
+    asset,
+    earnHandleDepositAssetChange,
+    showDepositAssetMenu,
+    showSwapDepositAsset,
+    vaultOption,
+  ]);
   const error = useMemo((): VaultValidationErrors | undefined => {
     try {
       /** Check block with input requirement */
@@ -487,10 +712,10 @@ const DepositFormStep: React.FC<{
           key: "Current Position",
           value: `${currency(formatUnits(investedInStrategy, decimals), {
             symbol: "",
-          })} ${asset}`,
+          })} ${assetDisplay}`,
           tooltip: {
             title: "Current Position",
-            explanation: `Current amount of ${asset} deposited by your address in the vault.`,
+            explanation: `Current amount of ${assetDisplay} deposited by your address in the vault.`,
           },
         });
 
@@ -498,10 +723,10 @@ const DepositFormStep: React.FC<{
           key: "Wallet Balance",
           value: `${currency(formatUnits(userAssetBalance, decimals), {
             symbol: "",
-          }).format()} ${asset}`,
+          }).format()} ${assetDisplay}`,
           tooltip: {
             title: "Wallet Balance",
-            explanation: `Current amount of ${asset} available in your wallet.`,
+            explanation: `Current amount of ${assetDisplay} available in your wallet.`,
           },
           error: "insufficientBalance",
         });
@@ -510,11 +735,11 @@ const DepositFormStep: React.FC<{
           key: "Vault Capacity",
           value: `${currency(formatUnits(cap.sub(totalBalance), decimals), {
             symbol: "",
-          }).format()} ${asset}`,
+          }).format()} ${assetDisplay}`,
           error: "capacityOverflow",
           tooltip: {
             title: "Vault Capacity",
-            explanation: `Total capacity of the vault in ${asset}. Once this amount is filled, no additional deposit can be made`,
+            explanation: `Total capacity of the vault in ${assetDisplay}. Once this amount is filled, no additional deposit can be made`,
           },
         });
 
@@ -730,9 +955,9 @@ const DepositFormStep: React.FC<{
               >
                 <PrimaryText fontSize={14} lineHeight={20} color={color}>
                   IMPORTANT: You can withdraw{" "}
-                  {formatBigNumber(depositBalanceInAsset, decimals)} {asset} via
-                  instant withdrawals as these funds have not yet been deployed
-                  in the vault’s strategy
+                  {formatBigNumber(depositBalanceInAsset, decimals)}{" "}
+                  {assetDisplay} via instant withdrawals as these funds have not
+                  yet been deployed in the vault’s strategy
                 </PrimaryText>
               </WarningContainer>
             );
@@ -743,7 +968,7 @@ const DepositFormStep: React.FC<{
     }
   }, [
     actionType,
-    asset,
+    assetDisplay,
     canStandardWithdraw,
     color,
     decimals,
@@ -754,6 +979,17 @@ const DepositFormStep: React.FC<{
     withdrawOption,
   ]);
 
+  if (showTokenApproval) {
+    return (
+      <VaultApprovalForm
+        vaultOption={vaultOption}
+        version={vaultVersion}
+        showDepositAssetSwap={VaultAllowedDepositAssets[vaultOption].length > 1}
+        earnHandleDepositAssetChange={earnHandleDepositAssetChange}
+        earnDepositAsset={asset}
+      />
+    );
+  }
   return (
     <div className="d-flex flex-column align-items-center">
       {/* Logo */}
@@ -766,7 +1002,7 @@ const DepositFormStep: React.FC<{
       {actionType === "deposit" ? (
         <>
           <StyledBaseInputLabel delay={0.3} show={show}>
-            AMOUNT ({getAssetDisplay(asset)})
+            AMOUNT ({assetDisplay})
           </StyledBaseInputLabel>
           <InputContainer
             delay={0.4}
@@ -781,9 +1017,9 @@ const DepositFormStep: React.FC<{
               placeholder="0"
               value={inputAmount}
               onChange={handleInputChange}
-              inputWidth={"80%"}
+              inputWidth={"65%"}
             />
-            {/* {renderDepositAssetButton} */}
+            {renderDepositAssetButton}
             {active && (
               <BaseInputButton onClick={handleMaxClick}>MAX</BaseInputButton>
             )}

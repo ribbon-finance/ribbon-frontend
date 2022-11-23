@@ -1,6 +1,5 @@
 import { VaultOptions } from "shared/lib/constants/constants";
 import { calculateExpectedYieldSTETH } from "shared/lib/hooks/useAirtableEarnData";
-import { updateTypePredicateNodeWithModifier } from "typescript";
 
 export const isPerformanceBelowBarriers = (
   performance: number,
