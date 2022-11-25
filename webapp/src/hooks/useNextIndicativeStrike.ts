@@ -7,14 +7,17 @@ import { useMemo } from "react";
 import { useAssetsPrice } from "shared/lib/hooks/useAssetPrice";
 import { useDeribitContext } from "./deribitContext";
 import {
-  getDeribitAssets,
   getOptionAssets,
   isPutVault,
   VaultList,
   VaultOptions,
 } from "shared/lib/constants/constants";
 import { VolProvider } from "./useRealizedVol";
-import { isAltcoin, ROUNDING } from "shared/lib/constants/deribitConstants";
+import {
+  isAltcoin,
+  ROUNDING,
+  getDeribitAssets,
+} from "shared/lib/constants/deribitConstants";
 
 export type StrikePriceData = {
   loading: boolean;
