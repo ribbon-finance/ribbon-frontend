@@ -15,16 +15,23 @@ import {
   Option,
   getInstrumentName,
 } from "shared/lib/utils/deribit";
+import {
+  LISTED_ON_DERIBIT,
+  Asset,
+} from "shared/lib/constants/deribitConstants";
 import { getNextFridayTimestamp } from "shared/lib/utils/math";
-import { Asset, AssetOptions } from "shared/lib/utils/deribit";
-import useAssetPrice from "shared/lib/hooks/useAssetPrice";
-import { LISTED_ON_DERIBIT } from "shared/lib/utils/deribit";
+import { AssetOptions } from "shared/lib/utils/deribit";
+import { useAssetsPrice } from "shared/lib/hooks/useAssetPrice";
+import {
+  DERIBIT_STRIKE_OFFSETS,
+  HAS_PUT_PRODUCTS,
+} from "shared/lib/constants/deribitConstants";
 
 const queue = new Queue({
   rules: {
     deribit: {
       rate: 1, // 1 message
-      limit: 10, // per 10 seconds
+      limit: 1, // per second
       priority: 1,
     },
   },
@@ -49,15 +56,24 @@ export const useDeribitContext = () => {
   return useContext(DeribitContext);
 };
 
+export const assetToName = (asset: string) => {
+  if (asset === "BTC") {
+    return "WBTC";
+  }
+  if (asset === "ETH") {
+    return "WETH";
+  }
+  return asset;
+};
+
 export const DeribitContextProvider: React.FC<{ children: ReactElement }> = ({
   children,
 }) => {
   const [options, setOptions] = useState<AssetOptions>(
     Object.fromEntries(LISTED_ON_DERIBIT.map((a) => [a, {}]))
   );
-  const { price: spotPrice } = useAssetPrice({
-    asset: "SOL",
-  });
+
+  const { prices: spotPrices } = useAssetsPrice();
 
   const intervalRef = useRef<number>();
 
@@ -88,14 +104,14 @@ export const DeribitContextProvider: React.FC<{ children: ReactElement }> = ({
   );
 
   const spotPricesExist = useMemo(() => {
-    return Object.values(spotPrice).every(Boolean);
-  }, [spotPrice]);
+    return Object.values(spotPrices).every(Boolean);
+  }, [spotPrices]);
 
   const refreshOptions = useCallback(async () => {
     if (spotPricesExist) {
-      await fetchAllOptionData(spotPrice, mergeOptions);
+      await fetchAllOptionData(spotPrices, mergeOptions);
     }
-  }, [spotPrice, spotPricesExist, mergeOptions]);
+  }, [spotPrices, spotPricesExist, mergeOptions]);
 
   useEffect(() => {
     refreshOptions();
@@ -125,7 +141,7 @@ export const DeribitContextProvider: React.FC<{ children: ReactElement }> = ({
 };
 
 const fetchAllOptionData = async (
-  spotPrice: number,
+  spotPrices: any,
   mergeOptions: (options: AssetOptions) => void
 ) => {
   const expiryDateTime = moment.unix(getNextFridayTimestamp());
@@ -138,9 +154,11 @@ const fetchAllOptionData = async (
 
   const assetStrikes = strikePriceResponses.map((s, idx) => {
     return s.filter((strike) => {
-      const hasPut = 0;
-      const strikeOffset = 0.4;
-      const spot = spotPrice;
+      const asset = LISTED_ON_DERIBIT[idx];
+      const assetName = assetToName(asset);
+      const hasPut = HAS_PUT_PRODUCTS[asset] ? 1 : 0;
+      const strikeOffset = DERIBIT_STRIKE_OFFSETS[asset];
+      const spot = spotPrices[assetName].price;
       return (
         strike >= spot - spot * strikeOffset * hasPut &&
         strike <= spot + spot * strikeOffset
@@ -156,7 +174,8 @@ const fetchAllOptionData = async (
 
   const assetOptions: AssetOption[][] = assetStrikes.map((s, idx) => {
     const asset = LISTED_ON_DERIBIT[idx];
-    const spot = spotPrice!;
+    const assetName = assetToName(asset);
+    const spot = spotPrices[assetName].price;
     return s.map((strike) => ({
       asset,
       isPut: strike < spot,
@@ -186,7 +205,7 @@ const fetchAllOptionData = async (
             if (counter >= 10 || e.response.status === 429) {
               reject(e);
             }
-            return retry(1000);
+            return retry(100);
           }
         },
         i,

@@ -15,7 +15,6 @@ import {
   VaultOptions,
   VaultVersion,
   getVaultChain,
-  isSolanaVault,
 } from "shared/lib/constants/constants";
 import { BaseButton, SecondaryText, Title } from "shared/lib/designSystem";
 import colors from "shared/lib/designSystem/colors";
@@ -27,8 +26,8 @@ import { useLatestOption } from "shared/lib/hooks/useLatestOption";
 import TooltipExplanation from "shared/lib/components/Common/TooltipExplanation";
 import HelpInfo from "shared/lib/components/Common/HelpInfo";
 import { Assets } from "shared/lib/store/types";
-import { useV2VaultData } from "shared/lib/hooks/web3DataContext";
-import { useSolNextIndicativeStrike } from "../../hooks/useSolNextIndicativeStrike";
+import { useNextIndicativeStrike } from "../../hooks/useNextIndicativeStrike";
+
 const VaultPerformanceChartContainer = styled.div`
   display: flex;
   align-items: center;
@@ -118,12 +117,8 @@ const WeeklyStrategySnapshot: React.FC<WeeklyStrategySnapshotProps> = ({
   const asset = getAssets(vaultOption);
   const optionAsset = getOptionAssets(vaultOption);
   const { prices } = useAssetsPrice();
-  const solStrikePrice = useSolNextIndicativeStrike();
-  const {
-    data: { strikePrice },
-    loading: v2DataLoading,
-  } = useV2VaultData(vaultOption);
-
+  const { loading: strikeLoading, strikePrice } =
+    useNextIndicativeStrike(vaultOption);
   const loading = useMemo(() => {
     return prices[optionAsset].loading || currentOption?.loading;
   }, [currentOption?.loading, optionAsset, prices]);
@@ -207,21 +202,8 @@ const WeeklyStrategySnapshot: React.FC<WeeklyStrategySnapshotProps> = ({
   }, [KPI, loading, loadingText]);
 
   const strikePriceText = useMemo(() => {
-    if (isSolanaVault(vaultOption)) {
-      return !solStrikePrice ? loadingText : currency(solStrikePrice).format();
-    }
-
-    return v2DataLoading
-      ? loadingText
-      : currency(formatOptionStrike(strikePrice, chain)).format();
-  }, [
-    chain,
-    loadingText,
-    solStrikePrice,
-    strikePrice,
-    v2DataLoading,
-    vaultOption,
-  ]);
+    return strikeLoading ? loadingText : currency(strikePrice).format();
+  }, [loadingText, strikeLoading, strikePrice]);
 
   const strikeChart = useMemo(() => {
     if (loading || !prices[optionAsset]) {
