@@ -4,13 +4,10 @@ import { BigNumber } from "ethers";
 import {
   EVMVaultList,
   getVaultNetwork,
-  isEarnVault,
-  isPutVault,
   TreasuryVaultList,
 } from "../constants/constants";
 import { isProduction, isTreasury } from "../utils/env";
 import { getVaultContract } from "./useVaultContract";
-import { getStrikeSelectionContract } from "./useStrikeSelection";
 import { impersonateAddress } from "../utils/development";
 import {
   defaultV2VaultData,
@@ -20,7 +17,6 @@ import {
 import { usePendingTransactions } from "./pendingTransactionsContext";
 import { useEVMWeb3Context } from "./useEVMWeb3Context";
 import { isVaultSupportedOnChain } from "../utils/vault";
-import { getNextFridayTimestamp } from "../utils/math";
 import { RibbonV2ThetaVault } from "../codegen";
 
 const useFetchV2VaultData = (): V2VaultData => {
@@ -31,7 +27,6 @@ const useFetchV2VaultData = (): V2VaultData => {
     library,
   } = useWeb3React();
   const account = impersonateAddress ? impersonateAddress : web3Account;
-  const expiryTimestamp = getNextFridayTimestamp();
   const { transactionsCounter } = usePendingTransactions();
   const { getProviderForNetwork } = useEVMWeb3Context();
   const [data, setData] = useState<V2VaultData>(defaultV2VaultData);
@@ -76,20 +71,6 @@ const useFetchV2VaultData = (): V2VaultData => {
           return { vault };
         }
 
-        const strikeSelectionAddress = !isEarnVault(vault)
-          ? await contract.strikeSelection().catch((e) => {
-              return undefined;
-            })
-          : undefined;
-
-        const strikeSelectionContract = strikeSelectionAddress
-          ? getStrikeSelectionContract(
-              library || inferredProviderFromVault,
-              strikeSelectionAddress,
-              active
-            )
-          : undefined;
-
         /**
          * 1. Total Balance
          * 2. Cap
@@ -101,21 +82,11 @@ const useFetchV2VaultData = (): V2VaultData => {
           | { amount: BigNumber; round: number }
           | { round: number }
           | { share: BigNumber; round: number }
-          | { newStrikePrice: BigNumber; newDelta: BigNumber }
         >[] = [
           contract.totalBalance(),
           contract.cap(),
           contract.pricePerShare(),
           contract.vaultState(),
-          strikeSelectionContract
-            ? strikeSelectionContract.getStrikePrice(
-                expiryTimestamp,
-                isPutVault(vault)
-              )
-            : Promise.resolve({
-                newStrikePrice: BigNumber.from(0),
-                newDelta: BigNumber.from(0),
-              }),
         ];
 
         /**
@@ -143,7 +114,6 @@ const useFetchV2VaultData = (): V2VaultData => {
           cap,
           pricePerShare,
           _vaultState,
-          _getStrikePrice,
           _depositReceipts,
           accountVaultBalance,
           _withdrawals,
@@ -155,12 +125,6 @@ const useFetchV2VaultData = (): V2VaultData => {
             })
           )
         );
-
-        const getStrikePrice = (
-          (_getStrikePrice as { newStrikePrice: BigNumber }).newStrikePrice
-            ? _getStrikePrice
-            : { newStrikePrice: BigNumber.from(0) }
-        ) as { newStrikePrice: BigNumber };
 
         const vaultState = (
           (_vaultState as { round?: number }).round ? _vaultState : { round: 1 }
@@ -190,7 +154,6 @@ const useFetchV2VaultData = (): V2VaultData => {
           cap,
           pricePerShare,
           round: vaultState.round,
-          strikePrice: getStrikePrice.newStrikePrice,
           lockedBalanceInAsset: accountVaultBalance,
           depositBalanceInAsset:
             depositReceipts.round === vaultState.round
@@ -224,14 +187,7 @@ const useFetchV2VaultData = (): V2VaultData => {
     if (!isProduction()) {
       console.timeEnd("V2 Vault Data Fetch"); // eslint-disable-line
     }
-  }, [
-    getProviderForNetwork,
-    web3Active,
-    chainId,
-    library,
-    expiryTimestamp,
-    account,
-  ]);
+  }, [getProviderForNetwork, web3Active, chainId, library, account]);
 
   useEffect(() => {
     doMulticall();

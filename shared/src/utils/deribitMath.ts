@@ -20,7 +20,6 @@ export interface StrikeData {
   price: number;
 }
 
-
 export type RealizedVols = Record<string, number[]>;
 
 export const getLastFridayOfMonthTimestamp = () => {
