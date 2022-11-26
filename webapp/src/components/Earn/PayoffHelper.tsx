@@ -50,9 +50,9 @@ export const getOptionMoneyness = (
 
 const getLeftBaseYieldPoints = (vaultOption: VaultOptions) => {
   switch (vaultOption) {
-    case "rEARN-USDC":
+    case "rEARN":
       return 2000;
-    case "rEARN-STETH":
+    case "rEARN-stETH":
       return 3000;
     default:
       return 0;
@@ -61,9 +61,9 @@ const getLeftBaseYieldPoints = (vaultOption: VaultOptions) => {
 
 const getRightBaseYieldPoints = (vaultOption: VaultOptions) => {
   switch (vaultOption) {
-    case "rEARN-USDC":
+    case "rEARN":
       return 2000;
-    case "rEARN-STETH":
+    case "rEARN-stETH":
       return 2000;
     default:
       return 0;
@@ -81,7 +81,7 @@ export const getOptionMoneynessRange = (
   const leftBaseYieldPoints = getLeftBaseYieldPoints(vaultOption);
   const rightBaseYieldPoints = getRightBaseYieldPoints(vaultOption);
   switch (vaultOption) {
-    case "rEARN-USDC":
+    case "rEARN":
       for (let i = 0; i < leftBaseYieldPoints; i += 1) {
         leftArray.push(
           Math.round(lowerBarrierPercentage * 100) - (leftBaseYieldPoints - i)
@@ -107,7 +107,7 @@ export const getOptionMoneynessRange = (
         upperBarrierPercentage * 100 + 0.01,
         ...rightArray,
       ];
-    case "rEARN-STETH":
+    case "rEARN-stETH":
       for (let i = 0; i < leftBaseYieldPoints; i += 1) {
         leftArray.push(
           Math.round(lowerBarrierPercentage * 100) - (leftBaseYieldPoints - i)
@@ -153,7 +153,7 @@ export const getYieldRange = (
   const rightBaseYieldPoints = getRightBaseYieldPoints(vaultOption);
   const baseYieldPercentage = baseYield * 100;
   switch (vaultOption) {
-    case "rEARN-USDC":
+    case "rEARN":
       for (let i = 0; i < leftBaseYieldPoints; i += 1) {
         leftArray.push(baseYieldPercentage);
       }
@@ -181,7 +181,7 @@ export const getYieldRange = (
         baseYieldPercentage,
         ...rightArray,
       ];
-    case "rEARN-STETH":
+    case "rEARN-stETH":
       for (let i = 0; i < leftBaseYieldPoints; i += 1) {
         leftArray.push(baseYieldPercentage);
       }

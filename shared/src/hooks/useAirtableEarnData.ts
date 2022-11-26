@@ -56,9 +56,9 @@ export const defaultEarnSTETHData: EarnData = {
 
 export const defaultEarnData = (vaultOption: VaultOptions) => {
   switch (vaultOption) {
-    case "rEARN-USDC":
+    case "rEARN":
       return defaultEarnUSDCData;
-    case "rEARN-STETH":
+    case "rEARN-stETH":
       return defaultEarnSTETHData;
     default:
       return defaultEarnUSDCData;
@@ -89,9 +89,9 @@ Airtable.configure({
 
 const baseName = (vault: VaultOptions) => {
   switch (vault) {
-    case "rEARN-USDC":
+    case "rEARN":
       return "EarnTest";
-    case "rEARN-STETH":
+    case "rEARN-stETH":
       return "EarnSTETH";
     default:
       return "EarnTest";
@@ -117,13 +117,13 @@ const calculateMaxYield = (
   participationRate: number
 ) => {
   switch (vault) {
-    case "rEARN-USDC":
+    case "rEARN":
       return (
         baseYield +
         (upperBarrierPercentage * participationRate * 4 + 1) ** (365 / 28) -
         1
       );
-    case "rEARN-STETH":
+    case "rEARN-stETH":
       return (
         baseYield +
         (((upperBarrierPercentage - lowerBarrierPercentage) /
@@ -150,13 +150,13 @@ const calculateExpectedYield = (
     performance < lowerBarrierPercentage ||
     performance > upperBarrierPercentage;
   switch (vault) {
-    case "rEARN-USDC":
+    case "rEARN":
       return performanceBetweenBarriers
         ? baseYield
         : baseYield +
             (absolutePerformance * participationRate * 4 + 1) ** (365 / 28) -
             1;
-    case "rEARN-STETH":
+    case "rEARN-stETH":
       return performanceBetweenBarriers
         ? baseYield
         : baseYield +
@@ -290,7 +290,7 @@ export const useAirtableEarnData = (vaultOption: VaultOptions) => {
       maxYield,
       lowerBarrierETHPrice,
       upperBarrierETHPrice,
-      avgPerformance,
+      isNaN(avgPerformance) ? 0 : avgPerformance,
     ];
   }, [values, ETHPrice, vaultOption, itmRecords]);
 

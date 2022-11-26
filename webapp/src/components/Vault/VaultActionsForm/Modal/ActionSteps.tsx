@@ -95,7 +95,7 @@ const ActionSteps: React.FC<ActionStepsProps> = ({
   );
   const v2Vault = useVaultContract(vaultOption);
   const { contract, getMinSTETHAmount } = useLidoCurvePool();
-  const stETHDepositHelper = useSTETHDepositHelper();
+  const stETHDepositHelper = useSTETHDepositHelper(vaultVersion);
 
   const { pendingTransactions, addPendingTransaction } =
     usePendingTransactions();

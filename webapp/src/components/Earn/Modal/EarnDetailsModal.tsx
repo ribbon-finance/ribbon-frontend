@@ -170,7 +170,7 @@ const EarnDetailsModal: React.FC<EarnDetailsModalProps> = ({
           />
         );
       case "funding source":
-        return vaultOption === "rEARN-USDC" ? (
+        return vaultOption === "rEARN" ? (
           <Counterparties vaultOption={vaultOption} />
         ) : (
           <FundingSource vaultOption={vaultOption} />

@@ -91,7 +91,7 @@ export const Strategy: React.FC<StrategyProps> = ({ setStep, vaultOption }) => {
 
   const renderDescription = useCallback(() => {
     switch (vaultOption) {
-      case "rEARN-USDC":
+      case "rEARN":
         return (
           <ParagraphText>
             The R-Earn vault employs a fully funded{" "}
@@ -130,7 +130,7 @@ export const Strategy: React.FC<StrategyProps> = ({ setStep, vaultOption }) => {
             .
           </ParagraphText>
         );
-      case "rEARN-STETH":
+      case "rEARN-stETH":
         return (
           <ParagraphText>
             The R-Earn vault employs a fully funded{" "}
@@ -164,7 +164,7 @@ export const Strategy: React.FC<StrategyProps> = ({ setStep, vaultOption }) => {
 
   const renderKeyConditions = useCallback(() => {
     switch (vaultOption) {
-      case "rEARN-USDC":
+      case "rEARN":
         return (
           <ParagraphText marginTop={8}>
             The weekly barrier options enable the vault to participate in any
@@ -177,7 +177,7 @@ export const Strategy: React.FC<StrategyProps> = ({ setStep, vaultOption }) => {
             the base APY only.
           </ParagraphText>
         );
-      case "rEARN-STETH":
+      case "rEARN-stETH":
         return (
           <ParagraphText marginTop={8}>
             The weekly barrier options enable the vault to participate in any
@@ -193,7 +193,7 @@ export const Strategy: React.FC<StrategyProps> = ({ setStep, vaultOption }) => {
 
   const renderLoanTenor = useCallback(() => {
     switch (vaultOption) {
-      case "rEARN-USDC":
+      case "rEARN":
         return (
           <>
             <ExplainerTitle color={colors.tertiaryText}>
@@ -202,14 +202,14 @@ export const Strategy: React.FC<StrategyProps> = ({ setStep, vaultOption }) => {
             <StyledTitle marginTop={4}> 7 DAYS</StyledTitle>
           </>
         );
-      case "rEARN-STETH":
+      case "rEARN-stETH":
         return <></>;
     }
   }, [vaultOption]);
 
   const renderCapitalProtection = useCallback(() => {
     switch (vaultOption) {
-      case "rEARN-USDC":
+      case "rEARN":
         return (
           <>
             <ExplainerTitle color={colors.tertiaryText}>
@@ -218,14 +218,14 @@ export const Strategy: React.FC<StrategyProps> = ({ setStep, vaultOption }) => {
             <StyledTitle marginTop={4}>100%</StyledTitle>
           </>
         );
-      case "rEARN-STETH":
+      case "rEARN-stETH":
         return <></>;
     }
   }, [vaultOption]);
 
   const renderLoanAllocation = useCallback(() => {
     switch (vaultOption) {
-      case "rEARN-USDC":
+      case "rEARN":
         return (
           <>
             <ExplainerTitle color={colors.tertiaryText}>
@@ -235,7 +235,7 @@ export const Strategy: React.FC<StrategyProps> = ({ setStep, vaultOption }) => {
             <StyledTitle marginTop={4}>99.56%</StyledTitle>
           </>
         );
-      case "rEARN-STETH":
+      case "rEARN-stETH":
         return <></>;
     }
   }, [vaultOption]);
@@ -321,9 +321,9 @@ export const Risk: React.FC<RiskProps> = ({ vaultOption }) => {
 
   const renderExchangeRateRisk = useCallback(() => {
     switch (vaultOption) {
-      case "rEARN-USDC":
+      case "rEARN":
         return <></>;
-      case "rEARN-STETH":
+      case "rEARN-stETH":
         return (
           <>
             <Title>Exchange Rate Risk</Title>
@@ -339,7 +339,7 @@ export const Risk: React.FC<RiskProps> = ({ vaultOption }) => {
 
   const renderCreditRisk = useCallback(() => {
     switch (vaultOption) {
-      case "rEARN-USDC":
+      case "rEARN":
         return (
           <>
             <Title>Credit Risk</Title>
@@ -354,14 +354,14 @@ export const Risk: React.FC<RiskProps> = ({ vaultOption }) => {
             </ParagraphText>
           </>
         );
-      case "rEARN-STETH":
+      case "rEARN-stETH":
         return <></>;
     }
   }, [vaultOption]);
 
   const renderUSDCRisk = useCallback(() => {
     switch (vaultOption) {
-      case "rEARN-USDC":
+      case "rEARN":
         return (
           <>
             <StyledTitle marginTop={24}>USDC Risk</StyledTitle>
@@ -376,14 +376,14 @@ export const Risk: React.FC<RiskProps> = ({ vaultOption }) => {
             </ParagraphText>
           </>
         );
-      case "rEARN-STETH":
+      case "rEARN-stETH":
         return <></>;
     }
   }, [vaultOption]);
 
   const renderCounterpartyRisk = useCallback(() => {
     switch (vaultOption) {
-      case "rEARN-USDC":
+      case "rEARN":
         return (
           <>
             <StyledTitle marginTop={24}>Counterparty Risk</StyledTitle>
@@ -404,7 +404,7 @@ export const Risk: React.FC<RiskProps> = ({ vaultOption }) => {
             </ParagraphText>
           </>
         );
-      case "rEARN-STETH":
+      case "rEARN-stETH":
         return (
           <>
             <StyledTitle marginTop={24}>Counterparty Risk</StyledTitle>
@@ -535,8 +535,8 @@ export const Analysis: React.FC<AnalysisProps> = ({ vaultOption }) => {
         />
       </ExplainerTitle>
       <StyledTitle marginTop={4}>
-        {" "}
-        {numberOfHits} / {optionsTraded - 1}
+        {numberOfHits} /{" "}
+        {optionsTraded === 0 ? optionsTraded : optionsTraded - 1}
       </StyledTitle>
       <ExplainerTitle color={colors.tertiaryText}>
         <span>Options Traded</span>{" "}

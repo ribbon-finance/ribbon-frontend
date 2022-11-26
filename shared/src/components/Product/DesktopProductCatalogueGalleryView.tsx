@@ -136,9 +136,7 @@ const DesktopProductCatalogueGalleryView: React.FC<
   const [currentVault, setCurrentVault] = useState<VaultOptions | undefined>(
     filteredProducts[page - 1]
   );
-  const { loading, maxYield } = useAirtableEarnData(
-    currentVault ?? "rEARN-USDC"
-  );
+  const { loading, maxYield } = useAirtableEarnData(currentVault ?? "rEARN");
   // Prevent page overflow
   useEffect(() => {
     if (filteredProducts.length <= 0) {

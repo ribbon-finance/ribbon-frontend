@@ -290,7 +290,7 @@ const EarnSTETHChart: React.FC<ProfitChartProps> = ({
       elements: {
         line: {
           tension: 1,
-          borderJoinStyle: vaultOption === "rEARN-STETH" ? "round" : undefined,
+          borderJoinStyle: vaultOption === "rEARN-stETH" ? "round" : undefined,
         },
       },
       animation: { duration: 0 },
@@ -389,9 +389,9 @@ const EarnSTETHChart: React.FC<ProfitChartProps> = ({
               }
               if (p === lowerBarrierPercentage * 100) {
                 switch (vaultOption) {
-                  case "rEARN-USDC":
+                  case "rEARN":
                     return maxYield * 100;
-                  case "rEARN-STETH":
+                  case "rEARN-stETH":
                     return baseYield * 100;
                   default:
                     return maxYield * 100;

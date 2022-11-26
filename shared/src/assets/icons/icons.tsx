@@ -1,6 +1,7 @@
 import React from "react";
 import styled from "styled-components";
 import theme from "../../designSystem/theme";
+import { getVaultColor } from "../../utils/vault";
 
 type SVGProps = React.SVGAttributes<SVGElement>;
 
@@ -754,9 +755,11 @@ export const EarnOuterRing: React.FC<EarnRingProps> = ({
         <feColorMatrix
           type="matrix"
           values={
-            type === "green"
-              ? "0 0 0 0 0.0862745 0 0 0 0 0.807843 0 0 0 0 0.72549 0 0 0 0.25 0"
-              : "0 0 0 0 0.243137 0 0 0 0 0.45098 0 0 0 0 0.768627 0 0 0 0.25 0"
+            type === getVaultColor("rEARN")
+              ? "0 0 0 0 0.243137 0 0 0 0 0.45098 0 0 0 0 0.768627 0 0 0 0.25 0"
+              : type === getVaultColor("rEARN-stETH")
+              ? "0 0 0 0 0 0 0 0 0 0.639216 0 0 0 0 1 0 0 0 0.25 0"
+              : "0 0 0 0 0.0862745 0 0 0 0 0.807843 0 0 0 0 0.72549 0 0 0 0.25 0"
           }
         />
         <feBlend

@@ -46,7 +46,7 @@ export const vaultActivitiesGraphql = (version: VaultVersion, chain: Chains) =>
         acc +
         `
             ${getVaultActivityKey(vault, "vaultOpenLoans")}:
-            vaultOpenLoans
+            vaultOpenLoans(where: { vault_in: ["${vaultAddress}"] })
             {
               id
               loanAmount
@@ -54,7 +54,7 @@ export const vaultActivitiesGraphql = (version: VaultVersion, chain: Chains) =>
               openTxhash
             }
             ${getVaultActivityKey(vault, "vaultCloseLoans")}:
-            vaultCloseLoans
+            vaultCloseLoans(where: { vault_in: ["${vaultAddress}"] })
             {
               id
               paidAmount
@@ -62,7 +62,7 @@ export const vaultActivitiesGraphql = (version: VaultVersion, chain: Chains) =>
               closeTxhash
             }
             ${getVaultActivityKey(vault, "vaultOptionSolds")}:
-            vaultOptionSolds
+            vaultOptionSolds(where: { vault_in: ["${vaultAddress}"] })
             {
               id
               premium
@@ -72,7 +72,7 @@ export const vaultActivitiesGraphql = (version: VaultVersion, chain: Chains) =>
               txhash
             }
             ${getVaultActivityKey(vault, "vaultOptionYields")}:
-            vaultOptionYields
+            vaultOptionYields(where: { vault_in: ["${vaultAddress}"] })
             {
               id
               _yield

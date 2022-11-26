@@ -92,13 +92,13 @@
       "title": "T-APE-C",
       "subtitle": "APE Covered Call"
     },
-    "rEARN-USDC": {
-      "title": "R-EARN-USDC",
-      "subtitle": "Ribbon Earn USDC"
+    "rEARN": {
+      "title": "r-EARN",
+      "subtitle": "Ribbon Earn"
     },
-    "rEARN-STETH": {
+    "rEARN-stETH": {
       "title": "R-EARN-STETH",
-      "subtitle": "Ribbon Earn STETH"
+      "subtitle": "Ribbon Earn stETH"
     }
   },
   "TooltipExplanations": {

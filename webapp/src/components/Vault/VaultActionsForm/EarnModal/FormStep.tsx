@@ -383,7 +383,7 @@ const DepositFormStep: React.FC<{
   );
 
   const showTokenApproval = useMemo(() => {
-    if (actionType === "deposit") {
+    if (actionType === "deposit" && asset !== "USDC") {
       return (
         !isNativeToken(asset || VaultAllowedDepositAssets[vaultOption][0]) &&
         tokenAllowance &&

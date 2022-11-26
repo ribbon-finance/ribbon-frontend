@@ -149,21 +149,24 @@ const FadeDiv = styled.div<{
   animation-delay: ${({ delaySeconds }) => `${delaySeconds || 0}s`};
 `;
 
-const StyledEarnInnerRing = styled(EarnInnerRing)`
+const StyledEarnInnerRing = styled(EarnInnerRing)<{ color: string }>`
+  color: ${(props) => props.color};
   animation: ${rotateClockwise} 60s linear infinite;
   @media (max-width: 700px) {
     display: none;
   }
 `;
 
-const StyledEarnMiddleRing = styled(EarnMiddleRing)`
+const StyledEarnMiddleRing = styled(EarnMiddleRing)<{ color: string }>`
+  color: ${(props) => props.color};
   animation: ${rotateAnticlockwise} 60s linear infinite;
   @media (max-width: 700px) {
     height: 500px;
   }
 `;
 
-const StyledEarnOuterRing = styled(EarnOuterRing)`
+const StyledEarnOuterRing = styled(EarnOuterRing)<{ color: string }>`
+  color: ${(props) => props.color};
   animation: ${rotateClockwise} 60s linear infinite;
   @media (max-width: 700px) {
     height: 650px;
@@ -442,22 +445,22 @@ const EarnPage = () => {
     <>
       <CirclesContainer offset={pageOffset}>
         <FadeDiv delaySeconds={0.3} show={!isDepositSuccess}>
-          <StyledEarnOuterRing color={color} />
+          <StyledEarnOuterRing type={color} color={color} />
         </FadeDiv>
         <FadeDiv delaySeconds={0.3} show={isDepositSuccess}>
-          <StyledEarnOuterRing color={"green"} />
+          <StyledEarnOuterRing color={colors.green} />
         </FadeDiv>
         <FadeDiv delaySeconds={0.2} show={!isDepositSuccess}>
-          <StyledEarnMiddleRing color={color} />
+          <StyledEarnMiddleRing type={color} color={color} />
         </FadeDiv>
         <FadeDiv delaySeconds={0.2} show={isDepositSuccess}>
-          <StyledEarnMiddleRing color={"green"} />
+          <StyledEarnMiddleRing color={colors.green} />
         </FadeDiv>
         <FadeDiv delaySeconds={0.1} show={!isDepositSuccess}>
-          <StyledEarnInnerRing color={color} />
+          <StyledEarnInnerRing type={color} color={color} />
         </FadeDiv>
         <FadeDiv delaySeconds={0.1} show={isDepositSuccess}>
-          <StyledEarnInnerRing color={"green"} />
+          <StyledEarnInnerRing color={colors.green} />
         </FadeDiv>
       </CirclesContainer>
       <PageContainer offset={pageOffset}>
