@@ -515,8 +515,7 @@ const PreviewStep: React.FC<{
         );
       }
   }
-  console.log(getAssetDisplay(asset));
-  console.log(asset);
+
   return (
     <div className="d-flex flex-column align-items-center">
       {/* Logo */}

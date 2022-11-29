@@ -446,20 +446,20 @@ export const WithdrawGlowIcon: React.FC<SVGPropsWithColor> = ({
         width="64"
         height="64"
         rx="32"
-        fill="#3E73C4"
+        fill={color || "white"}
         fillOpacity="0.12"
         shapeRendering="crispEdges"
       />
       <path
         d="M86 81.3333V62.6666"
-        stroke="#3E73C4"
+        stroke={color || "white"}
         strokeWidth="2"
         strokeLinecap="round"
         strokeLinejoin="round"
       />
       <path
         d="M76.6663 72L85.9997 62.6667L95.333 72"
-        stroke="#3E73C4"
+        stroke={color || "white"}
         strokeWidth="2"
         strokeLinecap="round"
         strokeLinejoin="round"
@@ -470,7 +470,7 @@ export const WithdrawGlowIcon: React.FC<SVGPropsWithColor> = ({
         width="62"
         height="62"
         rx="31"
-        stroke="#3E73C4"
+        stroke={color || "white"}
         strokeWidth="2"
         shapeRendering="crispEdges"
       />

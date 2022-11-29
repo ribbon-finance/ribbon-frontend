@@ -60,7 +60,6 @@ const ActionSteps: React.FC<ActionStepsProps> = ({
     usePendingTransactions();
   const {
     data: {
-      asset,
       decimals,
       lockedBalanceInAsset,
       depositBalanceInAsset,
@@ -69,6 +68,12 @@ const ActionSteps: React.FC<ActionStepsProps> = ({
     },
   } = useV2VaultData(vaultOption);
   const { priceHistory } = useVaultPriceHistory(vaultOption, "earn");
+
+  const asset = useMemo(() => {
+    return vaultOption === "rEARN-stETH" && actionType === "withdraw"
+      ? "stETH"
+      : depositAsset;
+  }, [actionType, depositAsset, vaultOption]);
 
   const firstStep = useMemo(() => {
     if (v2WithdrawOption === "complete") {
@@ -299,7 +304,11 @@ const ActionSteps: React.FC<ActionStepsProps> = ({
         onClickUpdateInput={setInputAmount}
         onClickUpdateWithdrawOption={setWithdrawOption}
         onClickConfirmButton={handleClickNextButton}
-        asset={depositAsset}
+        asset={
+          vaultOption === "rEARN-stETH" && actionType === "withdraw"
+            ? "stETH"
+            : depositAsset
+        }
         vaultOption={vaultOption}
         vaultVersion={vaultVersion}
         show={show}
@@ -318,7 +327,11 @@ const ActionSteps: React.FC<ActionStepsProps> = ({
         }
         positionAmount={vaultBalanceInAsset}
         onClickConfirmButton={handleClickConfirmButton}
-        asset={depositAsset}
+        asset={
+          vaultOption === "rEARN-stETH" && actionType === "withdraw"
+            ? "stETH"
+            : depositAsset
+        }
         withdrawOption={withdrawOption}
         vaultOption={vaultOption}
         vaultVersion={vaultVersion}
