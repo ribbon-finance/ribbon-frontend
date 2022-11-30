@@ -7,7 +7,6 @@ import React, {
 } from "react";
 import styled from "styled-components";
 import { AnimatePresence, motion } from "framer-motion";
-import colors from "shared/lib/designSystem/colors";
 import { SecondaryText, Title } from "shared/lib/designSystem";
 import SegmentPagination from "shared/lib/components/Common/SegmentPagination";
 

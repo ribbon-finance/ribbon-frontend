@@ -38,7 +38,7 @@ import {
 } from "shared/lib/assets/icons/icons";
 import ActionModal from "../../components/Vault/VaultActionsForm/EarnModal/ActionModal";
 import { usePendingTransactions } from "shared/lib/hooks/pendingTransactionsContext";
-import useEarnStrategyTime from "../../hooks/useEarnStrategyTime";
+import { useEarnStrategyTime } from "../../constants/constants";
 import useLoadingText from "shared/lib/hooks/useLoadingText";
 import { ACTIONS } from "../../components/Vault/VaultActionsForm/EarnModal/types";
 import {
@@ -281,7 +281,7 @@ const EarnPage = () => {
   const { vaultOption, vaultVersion } = useVaultOption();
   const { active, account, chainId } = useWeb3Wallet();
   const loadingText = useLoadingText();
-  const { strategyStartTime } = useEarnStrategyTime();
+  const { strategyStartTime } = useEarnStrategyTime(vaultOption ?? "rEARN");
 
   useRedirectOnWrongChain(vaultOption, chainId);
   usePullUp();

@@ -46,7 +46,7 @@ import TooltipExplanation from "shared/lib/components/Common/TooltipExplanation"
 import useWeb3Wallet from "shared/lib/hooks/useWeb3Wallet";
 import useVaultAccounts from "shared/lib/hooks/useVaultAccounts";
 import currency from "currency.js";
-import useEarnStrategyTime from "../../../../hooks/useEarnStrategyTime";
+import { useEarnStrategyTime } from "../../../../constants/constants";
 import { fadeIn } from "shared/lib/designSystem/keyframes";
 import useVaultPriceHistory from "shared/lib/hooks/useVaultPerformanceUpdate";
 import { VaultValidationErrors } from "../types";
@@ -401,7 +401,7 @@ const FormStep: React.FC<{
   const { vaultAccounts } = useVaultAccounts(vaultVersion);
   const vaultAccount = vaultAccounts[vaultOption];
   const { strategyStartTime, withdrawalDate, depositWithdrawalDate } =
-    useEarnStrategyTime();
+    useEarnStrategyTime(vaultOption);
   const assetDisplay = getAssetDisplay(asset);
   const [withdrawOption, setWithdrawOption] =
     useState<V2WithdrawOption>("standard");

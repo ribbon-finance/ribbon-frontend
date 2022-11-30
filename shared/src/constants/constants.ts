@@ -985,13 +985,13 @@ export const VaultFees: {
   rEARN: {
     earn: {
       managementFee: "0",
-      performanceFee: "20",
+      performanceFee: "15",
     },
   },
   "rEARN-stETH": {
     earn: {
       managementFee: "0",
-      performanceFee: "20",
+      performanceFee: "10",
     },
   },
 };

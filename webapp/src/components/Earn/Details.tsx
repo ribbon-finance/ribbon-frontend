@@ -13,7 +13,7 @@ import { useV2VaultData } from "shared/lib/hooks/web3DataContext";
 import { getDisplayAssets, VaultOptions } from "shared/lib/constants/constants";
 import { useVaultsSubgraphData } from "shared/lib/hooks/useVaultData";
 import { useMemo, useCallback } from "react";
-import { getAssetDecimals, getAssetDisplay } from "shared/lib/utils/asset";
+import { getAssetDisplay } from "shared/lib/utils/asset";
 
 const ExplainerTitle = styled.div<{ color: string; marginTop?: number }>`
   display: flex;
@@ -145,8 +145,9 @@ export const Strategy: React.FC<StrategyProps> = ({ setStep, vaultOption }) => {
               )}
             />{" "}
             strategy through which depositors can capitalise on the upside ETH
-            movements while also ensuring their capital is protected. The vault
-            earns a base APY and uses the remaining funding to purchase{" "}
+            movements while also ensuring their capital is protected up to 99.5%
+            per trade. The vault earns a base APY and uses the remaining funding
+            to purchase{" "}
             <TooltipExplanation
               title="weekly at-the-money knock-out barrier options"
               explanation={`The options bought are expiring every Friday, with a one week maturity and the strike price is set to 95% of the underlying asset price. The knock-out barrier is used to define when the payoff is inactive, i.e. if the price of the underlying asset at maturity is greater than the upper barrier, the option is worthless.`}
@@ -157,7 +158,7 @@ export const Strategy: React.FC<StrategyProps> = ({ setStep, vaultOption }) => {
                 </HighlightedText>
               )}
             />
-            . The funding here comes from Lido staking yield.
+            . The funding here comes from staking ETH, through Lido.
           </ParagraphText>
         );
     }
@@ -561,9 +562,9 @@ export const Analysis: React.FC<AnalysisProps> = ({ vaultOption }) => {
       </ExplainerTitle>
       <StyledTitle marginTop={4}> {optionsTraded}</StyledTitle>
       <ExplainerTitle color={colors.tertiaryText}>
-        <span>Absolute Performance when ITM</span>
+        <span>Average Option Payoff when ITM</span>
         <TooltipExplanation
-          title="ABSOLUTE PERFORMANCE WHEN ITM"
+          title="AVERAGE OPTION PAYOFF WHEN ITM"
           explanation="The average absolute percentage underlying move when options expire in-the-money."
           renderContent={({ ref, ...triggerHandler }) => (
             <HelpInfo containerRef={ref} {...triggerHandler}>

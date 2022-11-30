@@ -25,7 +25,7 @@ import HelpInfo from "shared/lib/components/Common/HelpInfo";
 import TooltipExplanation from "shared/lib/components/Common/TooltipExplanation";
 import useLoadingText from "shared/lib/hooks/useLoadingText";
 import useUSDC, { DepositSignature } from "../../../../hooks/useUSDC";
-import useEarnStrategyTime from "../../../../hooks/useEarnStrategyTime";
+import { useEarnStrategyTime } from "../../../../constants/constants";
 import { fadeIn } from "shared/lib/designSystem/keyframes";
 import colors from "shared/lib/designSystem/colors";
 import { useV2VaultData } from "shared/lib/hooks/web3DataContext";
@@ -195,7 +195,7 @@ const PreviewStep: React.FC<{
   const color = getVaultColor(vaultOption);
   const usdc = useUSDC();
   const { strategyStartTime, withdrawalDate, depositWithdrawalDate } =
-    useEarnStrategyTime();
+    useEarnStrategyTime(vaultOption);
   const loadingText = useLoadingText("permitting");
   const [depositSignature, setDepositSignature] = useState<DepositSignature>();
 

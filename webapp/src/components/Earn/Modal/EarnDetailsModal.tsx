@@ -176,7 +176,7 @@ const EarnDetailsModal: React.FC<EarnDetailsModalProps> = ({
           <FundingSource vaultOption={vaultOption} />
         );
       case "fees":
-        return <Fees />;
+        return <Fees vaultOption={vaultOption} />;
     }
   }, [step, vaultOption]);
 
