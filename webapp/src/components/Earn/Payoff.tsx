@@ -93,7 +93,6 @@ const Payoff: React.FC<PayoffSTETHProps> = ({ vaultOption }) => {
     loading,
   } = useAirtableEarnData(vaultOption);
 
-  console.log({ baseYield });
   const loadingText = useLoadingText();
 
   const [hoverPrice, setHoverPrice] = useState<number>();
@@ -105,13 +104,15 @@ const Payoff: React.FC<PayoffSTETHProps> = ({ vaultOption }) => {
       hoverPercentage,
       lowerBarrierPercentage,
       upperBarrierPercentage,
-      performance
+      performance,
+      vaultOption
     );
   }, [
     hoverPercentage,
     lowerBarrierPercentage,
     upperBarrierPercentage,
     performance,
+    vaultOption,
   ]);
 
   const optionMoneynessRange = useMemo(() => {

@@ -13,6 +13,7 @@ import { useV2VaultData } from "shared/lib/hooks/web3DataContext";
 import { getDisplayAssets, VaultOptions } from "shared/lib/constants/constants";
 import { useVaultsSubgraphData } from "shared/lib/hooks/useVaultData";
 import { useMemo, useCallback } from "react";
+import { getAssetDecimals, getAssetDisplay } from "shared/lib/utils/asset";
 
 const ExplainerTitle = styled.div<{ color: string; marginTop?: number }>`
   display: flex;
@@ -81,7 +82,7 @@ export const Strategy: React.FC<StrategyProps> = ({ setStep, vaultOption }) => {
 
   const {
     loading: vaultLoading,
-    data: { totalBalance },
+    data: { asset, totalBalance, decimals, allocationState },
   } = useV2VaultData(vaultOption);
 
   const loadingText = useLoadingText();
@@ -219,7 +220,14 @@ export const Strategy: React.FC<StrategyProps> = ({ setStep, vaultOption }) => {
           </>
         );
       case "rEARN-stETH":
-        return <></>;
+        return (
+          <>
+            <ExplainerTitle color={colors.tertiaryText}>
+              <span>Capital Protection</span>
+            </ExplainerTitle>
+            <StyledTitle marginTop={4}>99.5%</StyledTitle>
+          </>
+        );
     }
   }, [vaultOption]);
 
@@ -295,10 +303,10 @@ export const Strategy: React.FC<StrategyProps> = ({ setStep, vaultOption }) => {
         <span>Options Allocation</span>
       </ExplainerTitle>
       <StyledTitle marginTop={4}>
-        0.44%
-        {/* {v2DataLoading
+        {/* 0.44% */}
+        {vaultLoading
           ? loadingText
-          : `${(allocationState.optionAllocationPCT / 10000).toFixed(2)}%`} */}
+          : `${(allocationState.optionAllocationPCT / 10000).toFixed(3)}%`}
       </StyledTitle>
       <ExplainerTitle color={colors.tertiaryText}>
         <span>TVL</span>
@@ -306,7 +314,8 @@ export const Strategy: React.FC<StrategyProps> = ({ setStep, vaultOption }) => {
       <StyledTitle marginTop={4}>
         {vaultLoading
           ? loadingText
-          : parseFloat(formatUnits(totalBalance, "6")).toFixed(2)}
+          : parseFloat(formatUnits(totalBalance, decimals)).toFixed(2)}{" "}
+        {getAssetDisplay(asset)}
       </StyledTitle>
     </>
   );

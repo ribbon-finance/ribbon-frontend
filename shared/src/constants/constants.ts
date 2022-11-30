@@ -565,7 +565,7 @@ export const VaultNamesList = [
   "T-SOL-C",
   "T-APE-C",
   "R-EARN",
-  "R-EARN-stETH",
+  "R-stETH-EARN",
 ] as const;
 export type VaultName = typeof VaultNamesList[number];
 export const VaultNameOptionMap: { [name in VaultName]: VaultOptions } = {
@@ -586,7 +586,7 @@ export const VaultNameOptionMap: { [name in VaultName]: VaultOptions } = {
   "T-SOL-C": "rSOL-THETA",
   "T-APE-C": "rAPE-THETA",
   "R-EARN": "rEARN",
-  "R-EARN-stETH": "rEARN-stETH",
+  "R-stETH-EARN": "rEARN-stETH",
 };
 
 // Reverse lookup for VaultNameOptionMap

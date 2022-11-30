@@ -69,9 +69,10 @@ const DepositAssetSwitchContainerLogo = styled.div<{
   position: relative;
   align-items: center;
   justify-content: center;
-  height: 48px;
-  width: 48px;
+  height: 44px;
+  width: 44px;
   border-radius: 100px;
+  border: 1px solid ${(props) => props.color};
   background: ${colors.background.one};
 
   &:before {

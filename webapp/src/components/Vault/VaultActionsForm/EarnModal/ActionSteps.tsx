@@ -16,9 +16,9 @@ import { useV2VaultData } from "shared/lib/hooks/web3DataContext";
 import useVaultPriceHistory, {
   useVaultsPriceHistory,
 } from "shared/lib/hooks/useVaultPerformanceUpdate";
-import { getAssetColor, getAssetDecimals } from "shared/lib/utils/asset";
+import { getAssetDecimals } from "shared/lib/utils/asset";
 import { RibbonEarnVault } from "shared/lib/codegen";
-import DepositFormStep from "./FormStep";
+import FormStep from "./FormStep";
 import useVaultContract from "shared/lib/hooks/useVaultContract";
 import { DepositSignature } from "../../../../hooks/useUSDC";
 import { Assets } from "shared/lib/store/types";
@@ -26,6 +26,7 @@ import useLidoCurvePool from "shared/lib/hooks/useLidoCurvePool";
 import useSTETHDepositHelper from "shared/lib/hooks/useSTETHDepositHelper";
 import { formatUnits } from "ethers/lib/utils";
 import useLoadingText from "shared/lib/hooks/useLoadingText";
+import { getVaultColor } from "shared/lib/utils/vault";
 
 export interface ActionStepsProps {
   vault: {
@@ -75,6 +76,7 @@ const ActionSteps: React.FC<ActionStepsProps> = ({
       : depositAsset;
   }, [actionType, depositAsset, vaultOption]);
 
+  const color = getVaultColor(vaultOption);
   const firstStep = useMemo(() => {
     if (v2WithdrawOption === "complete") {
       return STEPS.previewStep;
@@ -298,17 +300,13 @@ const ActionSteps: React.FC<ActionStepsProps> = ({
 
   const stepComponents = {
     0: (
-      <DepositFormStep
+      <FormStep
         actionType={actionType}
         inputAmount={inputAmount}
         onClickUpdateInput={setInputAmount}
         onClickUpdateWithdrawOption={setWithdrawOption}
         onClickConfirmButton={handleClickNextButton}
-        asset={
-          vaultOption === "rEARN-stETH" && actionType === "withdraw"
-            ? "stETH"
-            : depositAsset
-        }
+        asset={asset}
         vaultOption={vaultOption}
         vaultVersion={vaultVersion}
         show={show}
@@ -327,11 +325,7 @@ const ActionSteps: React.FC<ActionStepsProps> = ({
         }
         positionAmount={vaultBalanceInAsset}
         onClickConfirmButton={handleClickConfirmButton}
-        asset={
-          vaultOption === "rEARN-stETH" && actionType === "withdraw"
-            ? "stETH"
-            : depositAsset
-        }
+        asset={asset}
         withdrawOption={withdrawOption}
         vaultOption={vaultOption}
         vaultVersion={vaultVersion}
@@ -339,8 +333,8 @@ const ActionSteps: React.FC<ActionStepsProps> = ({
         show={show}
       />
     ),
-    2: <TransactionStep color={getAssetColor(asset)} />,
-    3: <TransactionStep txhash={txhash} color={getAssetColor(asset)} />,
+    2: <TransactionStep color={color} />,
+    3: <TransactionStep txhash={txhash} color={color} />,
   };
 
   return <>{stepComponents[step]}</>;

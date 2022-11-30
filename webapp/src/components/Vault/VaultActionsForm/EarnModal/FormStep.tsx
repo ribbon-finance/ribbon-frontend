@@ -333,7 +333,7 @@ const DepositAssetsDropdownItem = styled.div<{
   }}
 `;
 
-const DepositFormStep: React.FC<{
+const FormStep: React.FC<{
   onClickUpdateInput: (amount: string) => void;
   inputAmount: string;
   actionType: ActionType;
@@ -1194,4 +1194,4 @@ const DepositFormStep: React.FC<{
   );
 };
 
-export default DepositFormStep;
+export default FormStep;

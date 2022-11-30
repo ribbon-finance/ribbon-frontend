@@ -93,12 +93,12 @@
       "subtitle": "APE Covered Call"
     },
     "rEARN": {
-      "title": "r-EARN",
+      "title": "R-EARN",
       "subtitle": "Ribbon Earn"
     },
     "rEARN-stETH": {
-      "title": "R-EARN-STETH",
-      "subtitle": "Ribbon Earn stETH"
+      "title": "R-stETH-EARN",
+      "subtitle": "Ribbon stETH Earn"
     }
   },
   "TooltipExplanations": {

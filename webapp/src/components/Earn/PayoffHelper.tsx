@@ -29,23 +29,26 @@ export const getOptionMoneyness = (
   hoverPercentage: number | undefined,
   lowerBarrierPercentage: number,
   upperBarrierPercentage: number,
-  performance: number
+  performance: number,
+  vaultOption: VaultOptions
 ) => {
-  return hoverPercentage
-    ? isPerformanceOutsideBarriers(
-        hoverPercentage / 100,
-        lowerBarrierPercentage,
-        upperBarrierPercentage
-      )
+  if (hoverPercentage) {
+    return isPerformanceOutsideBarriers(
+      hoverPercentage / 100,
+      lowerBarrierPercentage,
+      upperBarrierPercentage
+    )
       ? 0
-      : hoverPercentage / 100
-    : isPerformanceOutsideBarriers(
-        performance,
-        lowerBarrierPercentage,
-        upperBarrierPercentage
-      )
-    ? 0
-    : performance;
+      : hoverPercentage / 100;
+  } else {
+    return isPerformanceOutsideBarriers(
+      performance,
+      lowerBarrierPercentage,
+      upperBarrierPercentage
+    )
+      ? 0
+      : performance;
+  }
 };
 
 const getLeftBaseYieldPoints = (vaultOption: VaultOptions) => {

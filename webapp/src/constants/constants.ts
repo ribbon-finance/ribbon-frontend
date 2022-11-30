@@ -33,14 +33,14 @@ export const getVaultURI = (
           Object.values(VaultNameOptionMap).indexOf(vaultOption)
         ]
       }`;
-    case "earn":
-      return `/earn/${
+    case "v2":
+      return `/v2/theta-vault/${
         Object.keys(VaultNameOptionMap)[
           Object.values(VaultNameOptionMap).indexOf(vaultOption)
         ]
       }`;
-    case "v2":
-      return `/v2/theta-vault/${
+    case "earn":
+      return `/earn/${
         Object.keys(VaultNameOptionMap)[
           Object.values(VaultNameOptionMap).indexOf(vaultOption)
         ]
