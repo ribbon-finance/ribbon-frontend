@@ -40,10 +40,10 @@ export const defaultEarnUSDCData: EarnData = {
 export const defaultEarnSTETHData: EarnData = {
   loading: true,
   strikePrice: 0,
-  baseYield: 0.005,
+  baseYield: 0.0075,
   participationRate: 0.04,
-  lowerBarrierPercentage: -0.05,
-  upperBarrierPercentage: 0.15,
+  lowerBarrierPercentage: -0.1,
+  upperBarrierPercentage: 0.1,
   absolutePerformance: 0,
   performance: 0,
   expectedYield: 0,

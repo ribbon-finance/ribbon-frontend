@@ -53,7 +53,7 @@ const getLeftBaseYieldPoints = (vaultOption: VaultOptions) => {
     case "rEARN":
       return 2000;
     case "rEARN-stETH":
-      return 3000;
+      return 2000;
     default:
       return 0;
   }

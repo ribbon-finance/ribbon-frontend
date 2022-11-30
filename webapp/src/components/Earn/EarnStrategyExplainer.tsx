@@ -13,7 +13,10 @@ import SegmentPagination from "shared/lib/components/Common/SegmentPagination";
 
 import { useGlobalState } from "shared/lib/store/store";
 import { useAirtableEarnData } from "shared/lib/hooks/useAirtableEarnData";
-import { VaultOptions } from "shared/lib/constants/constants";
+import {
+  VaultOptions,
+  getEarnSkipStorage,
+} from "shared/lib/constants/constants";
 
 const ExplainerContainer = styled.div`
   display: flex;
@@ -90,16 +93,16 @@ export const EarnStrategyExplainer: React.FC<EarnStrategyExplainerProps> = ({
   const [, setShowEarnVault] = useGlobalState("showEarnVault");
   const { loading, maxYield } = useAirtableEarnData(vaultOption);
   const [step, setStep] = useState<ExplanationStep>(ExplanationStepList[0]);
-
+  const skipEarnExplanation = getEarnSkipStorage(vaultOption);
   const setShowOnboardingCallback = useCallback(() => {
     setShowEarnVault((prev) => ({ ...prev, show: true }));
-    localStorage.setItem("skipEARNExplanation", "true");
-  }, [setShowEarnVault]);
+    localStorage.setItem(skipEarnExplanation, "true");
+  }, [setShowEarnVault, skipEarnExplanation]);
 
   useEffect(() => {
-    const skip = Boolean(localStorage.getItem("skipEARNExplanation"));
+    const skip = Boolean(localStorage.getItem(skipEarnExplanation));
     if (skip) setShowOnboardingCallback();
-  }, [setShowOnboardingCallback]);
+  }, [setShowOnboardingCallback, skipEarnExplanation]);
 
   const renderTitle = useCallback((s: ExplanationStep) => {
     switch (s) {

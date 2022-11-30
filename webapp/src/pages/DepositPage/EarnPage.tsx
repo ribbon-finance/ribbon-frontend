@@ -61,7 +61,7 @@ const PendingOrLogoContainer = styled.div<{ delay?: number }>`
   ${delayedFade}
 `;
 
-const PendingDepositsContainer = styled.div<{ delay?: number }>`
+const PendingDepositsContainer = styled.div<{ delay?: number; color: string }>`
   display: flex;
   flex-direction: row;
   align-items: flex-start;
@@ -72,7 +72,7 @@ const PendingDepositsContainer = styled.div<{ delay?: number }>`
   width: 232px;
   border-radius: 100px;
   position: relative;
-  background: rgba(62, 115, 196, 0.08);
+  background: ${(props) => props.color}14;
   backdrop-filter: blur(16px);
 `;
 
@@ -486,7 +486,7 @@ const EarnPage = () => {
               <VaultContainer>
                 <PendingOrLogoContainer delay={0.1}>
                   {hasPendingDeposits ? (
-                    <PendingDepositsContainer>
+                    <PendingDepositsContainer color={color}>
                       <ProductAssetLogoContainer color={color}>
                         {logo}
                       </ProductAssetLogoContainer>

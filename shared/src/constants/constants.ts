@@ -799,6 +799,17 @@ export const VaultAllowedDepositAssets: { [vault in VaultOptions]: Assets[] } =
     "rEARN-stETH": ["WETH", "stETH"],
   };
 
+export const getEarnSkipStorage = (vault: VaultOptions): string => {
+  switch (vault) {
+    case "rEARN":
+      return "skipEARNExplanation";
+    case "rEARN-stETH":
+      return "skipEARNSTETHExplanation";
+    default:
+      return "";
+  }
+};
+
 export const VaultMaxDeposit: { [vault in VaultOptions]: BigNumber } = {
   "rUSDC-ETH-P-THETA": BigNumber.from(100000000).mul(
     BigNumber.from(10).pow(getAssetDecimals(getAssets("rUSDC-ETH-P-THETA")))
