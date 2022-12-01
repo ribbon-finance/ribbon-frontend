@@ -541,7 +541,7 @@ export const Backtest: React.FC<BacktestProps> = ({ vaultOption }) => {
           </ParagraphText>
           <PrimaryText className="d-block mt-3">
             <Link
-              href="https://www.research.ribbon.finance/blog/introducing-ribbon-earn"
+              href="www.research.ribbon.finance/blog/introducing-ribbon-earn-steth"
               target="_blank"
               rel="noreferrer noopener"
               className="d-flex"
