@@ -33,21 +33,47 @@ export const getOptionMoneyness = (
   vaultOption: VaultOptions
 ) => {
   if (hoverPercentage) {
-    return isPerformanceOutsideBarriers(
-      hoverPercentage / 100,
-      lowerBarrierPercentage,
-      upperBarrierPercentage
-    )
-      ? 0
-      : hoverPercentage / 100;
-  } else {
-    return isPerformanceOutsideBarriers(
-      performance,
-      lowerBarrierPercentage,
-      upperBarrierPercentage
-    )
-      ? 0
-      : performance;
+    console.log(hoverPercentage / 100 + 1 + lowerBarrierPercentage);
+  }
+  switch (vaultOption) {
+    case "rEARN":
+      if (hoverPercentage) {
+        return isPerformanceOutsideBarriers(
+          hoverPercentage / 100,
+          lowerBarrierPercentage,
+          upperBarrierPercentage
+        )
+          ? 0
+          : hoverPercentage / 100 + 1;
+      } else {
+        return isPerformanceOutsideBarriers(
+          performance,
+          lowerBarrierPercentage,
+          upperBarrierPercentage
+        )
+          ? 0
+          : (performance + 1) / 1;
+      }
+    case "rEARN-stETH":
+      if (hoverPercentage) {
+        return isPerformanceOutsideBarriers(
+          hoverPercentage / 100,
+          lowerBarrierPercentage,
+          upperBarrierPercentage
+        )
+          ? 0
+          : (hoverPercentage / 100 + 1) / (1 + lowerBarrierPercentage);
+      } else {
+        return isPerformanceOutsideBarriers(
+          performance,
+          lowerBarrierPercentage,
+          upperBarrierPercentage
+        )
+          ? 0
+          : (performance + 1) / (1 + lowerBarrierPercentage);
+      }
+    default:
+      return 0;
   }
 };
 

@@ -277,7 +277,7 @@ const Payoff: React.FC<PayoffSTETHProps> = ({ vaultOption }) => {
             >
               {loading
                 ? loadingText
-                : `${optionMoneyness <= 0 ? "" : "+"}${
+                : `${
                     optionMoneyness <= 0
                       ? (optionMoneyness * 100).toFixed(2)
                       : (optionMoneyness * 100).toFixed(2)
