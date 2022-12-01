@@ -43,43 +43,41 @@ const EarnSTETHChart: React.FC<ProfitChartProps> = ({
 }) => {
   const [hoveredIndex, setIndex] = useState<number>();
 
-  const optionMoneynessText = (
-    price: number,
-    lowerBarrierPercentage: number,
-    upperBarrierPercentage: number,
-    drawIndex: number
-  ) => {
-    const isBelowBarrier = isPerformanceBelowBarriers(
-      price / 100,
-      lowerBarrierPercentage
-    );
-    const isAboveBarrier = isPerformanceAboveBarriers(
-      price / 100,
-      upperBarrierPercentage
-    );
+  const optionMoneynessText = useCallback(
+    (price: number, drawIndex: number) => {
+      const isBelowBarrier = isPerformanceBelowBarriers(
+        price / 100,
+        lowerBarrierPercentage
+      );
+      const isAboveBarrier = isPerformanceAboveBarriers(
+        price / 100,
+        upperBarrierPercentage
+      );
 
-    const arrows = () => {
-      if (isBelowBarrier) {
-        return `<<<`;
-      } else if (isAboveBarrier) {
-        return `>>>`;
-      } else {
-        return ``;
-      }
-    };
+      const arrows = () => {
+        if (isBelowBarrier) {
+          return `<<<`;
+        } else if (isAboveBarrier) {
+          return `>>>`;
+        } else {
+          return ``;
+        }
+      };
 
-    const priceText = () => {
-      if (drawIndex === 0 || isBelowBarrier) {
-        return (lowerBarrierPercentage * 100).toFixed(2);
-      } else if (isAboveBarrier) {
-        return (upperBarrierPercentage * 100).toFixed(2);
-      } else {
-        return price.toFixed(2);
-      }
-    };
+      const priceText = () => {
+        if (drawIndex === 0 || isBelowBarrier) {
+          return (lowerBarrierPercentage * 100).toFixed(2);
+        } else if (isAboveBarrier) {
+          return (upperBarrierPercentage * 100).toFixed(2);
+        } else {
+          return price.toFixed(2);
+        }
+      };
 
-    return `${arrows()} ${priceText()}%`;
-  };
+      return `${arrows()} ${priceText()}%`;
+    },
+    [lowerBarrierPercentage, upperBarrierPercentage]
+  );
   const drawPricePoint = useCallback(
     (chart: any, price: number, drawIndex: number) => {
       const ctx: CanvasRenderingContext2D = chart.chart.ctx;
@@ -127,12 +125,7 @@ const EarnSTETHChart: React.FC<ProfitChartProps> = ({
       ctx.textBaseline = "middle";
       const padding = 8;
 
-      const text = optionMoneynessText(
-        price,
-        lowerBarrierPercentage,
-        upperBarrierPercentage,
-        drawIndex
-      );
+      const text = optionMoneynessText(price, drawIndex);
 
       const textLength = ctx.measureText(text).width;
 
@@ -150,7 +143,7 @@ const EarnSTETHChart: React.FC<ProfitChartProps> = ({
 
       ctx.globalCompositeOperation = "source-over";
     },
-    [lowerBarrierPercentage, upperBarrierPercentage]
+    [lowerBarrierPercentage, optionMoneynessText, upperBarrierPercentage]
   );
 
   const drawDefaultPricePoint = useCallback(
@@ -201,12 +194,7 @@ const EarnSTETHChart: React.FC<ProfitChartProps> = ({
       ctx.textBaseline = "middle";
       const padding = 8;
 
-      const text = optionMoneynessText(
-        price,
-        lowerBarrierPercentage,
-        upperBarrierPercentage,
-        drawIndex
-      );
+      const text = optionMoneynessText(price, drawIndex);
 
       const textLength = ctx.measureText(text).width;
 
@@ -222,7 +210,7 @@ const EarnSTETHChart: React.FC<ProfitChartProps> = ({
 
       ctx.fillText(text, xPosition, bottomY + 46);
     },
-    [lowerBarrierPercentage, upperBarrierPercentage]
+    [lowerBarrierPercentage, optionMoneynessText, upperBarrierPercentage]
   );
 
   const drawDefaultBarriers = useCallback(
