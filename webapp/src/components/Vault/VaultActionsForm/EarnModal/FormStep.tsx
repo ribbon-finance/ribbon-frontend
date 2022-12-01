@@ -28,6 +28,7 @@ import {
   VaultAllowedDepositAssets,
   VaultAddressMap,
   isNativeToken,
+  GAS_LIMITS,
 } from "shared/lib/constants/constants";
 import { getVaultColor } from "shared/lib/utils/vault";
 import {
@@ -54,6 +55,7 @@ import ButtonArrow from "shared/lib/components/Common/ButtonArrow";
 import useTokenAllowance from "shared/lib/hooks/useTokenAllowance";
 import { ERC20Token } from "shared/lib/models/eth";
 import VaultApprovalForm from "../common/VaultApprovalForm";
+import useGasPrice from "shared/lib/hooks/useGasPrice";
 
 const Logo = styled.div<{ delay?: number; show?: boolean }>`
   margin-top: -40px;
@@ -393,7 +395,7 @@ const FormStep: React.FC<{
 
     return false;
   }, [actionType, asset, decimals, tokenAllowance, vaultOption]);
-
+  const gasPrice = useGasPrice();
   const { balance: userAssetBalance } = useAssetBalance(asset);
   const vaultBalanceInAsset = depositBalanceInAsset.add(lockedBalanceInAsset);
   const { active } = useWeb3Wallet();
@@ -643,18 +645,25 @@ const FormStep: React.FC<{
         const amountBigNumber = parseUnits(inputAmount, decimals);
         switch (actionType) {
           case "deposit":
-            if (amountBigNumber.gt(userAssetBalance)) {
-              return "insufficientBalance";
+            if (isNativeToken(asset)) {
+              // check that user balance - estimate gas fee is gt deposit amount
+              const gasLimit = GAS_LIMITS[vaultOption].earn!.deposit;
+              const gasFee = BigNumber.from(gasLimit.toString()).mul(
+                BigNumber.from(gasPrice || "0")
+              );
+              if (amountBigNumber.gt(userAssetBalance.sub(gasFee))) {
+                return "insufficientBalance";
+              }
+            } else {
+              if (amountBigNumber.gt(userAssetBalance)) {
+                return "insufficientBalance";
+              }
             }
 
             if (
               amountBigNumber.gt(vaultMaxDepositAmount.sub(vaultBalanceInAsset))
             ) {
               return "maxExceeded";
-            }
-
-            if (amountBigNumber.gt(cap.sub(totalBalance))) {
-              return "capacityOverflow";
             }
 
             if (amountBigNumber.gt(cap.sub(totalBalance))) {
@@ -681,9 +690,11 @@ const FormStep: React.FC<{
   }, [
     actionType,
     active,
+    asset,
     cap,
     decimals,
     depositBalanceInAsset,
+    gasPrice,
     inputAmount,
     isInputNonZero,
     loading,
@@ -692,6 +703,7 @@ const FormStep: React.FC<{
     userAssetBalance,
     vaultBalanceInAsset,
     vaultMaxDepositAmount,
+    vaultOption,
     withdrawOption,
   ]);
 
@@ -888,23 +900,38 @@ const FormStep: React.FC<{
     [onClickUpdateInput]
   );
   const handleMaxClick = useCallback(() => {
-    if (actionType === "withdraw") {
-      const maxAmount =
-        withdrawOption === "standard"
-          ? lockedBalanceInAsset
-          : depositBalanceInAsset;
-      onClickUpdateInput(formatUnits(maxAmount, decimals));
-    } else {
-      onClickUpdateInput(formatUnits(userAssetBalance, decimals));
+    switch (actionType) {
+      case "withdraw":
+        const maxAmount =
+          withdrawOption === "standard"
+            ? lockedBalanceInAsset
+            : depositBalanceInAsset;
+        onClickUpdateInput(formatUnits(maxAmount, decimals));
+        break;
+      case "deposit":
+        if (isNativeToken(asset)) {
+          // account for eth gas fee if deposit token is eth
+          const gasLimit = GAS_LIMITS[vaultOption].earn!.deposit;
+          const gasFee = BigNumber.from(gasLimit.toString()).mul(
+            BigNumber.from(gasPrice || "0")
+          );
+          const maxAmount = userAssetBalance.sub(gasFee);
+          onClickUpdateInput(formatUnits(maxAmount, decimals));
+        } else {
+          onClickUpdateInput(formatUnits(userAssetBalance, decimals));
+        }
     }
   }, [
+    asset,
     actionType,
+    vaultOption,
+    gasPrice,
+    userAssetBalance,
+    onClickUpdateInput,
+    decimals,
     withdrawOption,
     lockedBalanceInAsset,
     depositBalanceInAsset,
-    onClickUpdateInput,
-    decimals,
-    userAssetBalance,
   ]);
 
   /**
