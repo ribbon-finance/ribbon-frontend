@@ -265,7 +265,7 @@ const EarnPerformanceSection: React.FC<EarnPerformanceSectionProps> = ({
         ) : step === "analysis" ? (
           <Analysis vaultOption={vaultOption} />
         ) : (
-          <Backtest />
+          <Backtest vaultOption={vaultOption} />
         )}
       </VaultPerformanceChartContainer>
       <div

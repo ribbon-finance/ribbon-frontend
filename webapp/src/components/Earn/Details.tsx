@@ -472,41 +472,89 @@ export const Risk: React.FC<RiskProps> = ({ vaultOption }) => {
   );
 };
 
-export const Backtest = () => {
-  return (
-    <>
-      <ParagraphText>
-        R-Earn was{" "}
-        <TooltipExplanation
-          explanation={
-            "Source: Ribbon Finance, as of 17 Aug 2022. Data from 01/01/2021 to 12/08/2022. Backtesting analysis for illustrative purposes only. Ribbon Finance provides no assurance or guarantee that the strategy will operate or would have operated in the past in a manner consistent with the above backtesting analysis. Backtest and/or past performance figures are not a reliable indicator of future results. All data backtested over the entire range. The backtest period is going back to Jan21 only due to lack of options data prior to this date."
-          }
-          maxWidth={350}
-          renderContent={({ ref, ...triggerHandler }) => (
-            <HighlightedText ref={ref} {...triggerHandler}>
-              backtested
-            </HighlightedText>
-          )}
-        />{" "}
-        since January 2021, and the cumulative yield over the period between
-        January 1st, 2021 and August 18th, 2022 generated 17.23%, corresponding
-        to a realized APY of 10.37%. The vault earned more than the base coupon
-        51.80% of the time, and the option payoff was 4.05% on average in these
-        cases, corresponding to 12% bonus APY in addition to the 4% base APY.
-      </ParagraphText>
-      <PrimaryText className="d-block mt-3">
-        <Link
-          href="https://www.research.ribbon.finance/blog/introducing-ribbon-earn"
-          target="_blank"
-          rel="noreferrer noopener"
-          className="d-flex"
-        >
-          <span className="mr-2">Read More</span>
-          <ExternalIcon color="white" />
-        </Link>
-      </PrimaryText>
-    </>
-  );
+interface BacktestProps {
+  vaultOption: VaultOptions;
+}
+
+export const Backtest: React.FC<BacktestProps> = ({ vaultOption }) => {
+  switch (vaultOption) {
+    case "rEARN":
+      return (
+        <>
+          <ParagraphText>
+            R-Earn was{" "}
+            <TooltipExplanation
+              explanation={
+                "Source: Ribbon Finance, as of 17 Aug 2022. Data from 01/01/2021 to 12/08/2022. Backtesting analysis for illustrative purposes only. Ribbon Finance provides no assurance or guarantee that the strategy will operate or would have operated in the past in a manner consistent with the above backtesting analysis. Backtest and/or past performance figures are not a reliable indicator of future results. All data backtested over the entire range. The backtest period is going back to Jan21 only due to lack of options data prior to this date."
+              }
+              maxWidth={350}
+              renderContent={({ ref, ...triggerHandler }) => (
+                <HighlightedText ref={ref} {...triggerHandler}>
+                  backtested
+                </HighlightedText>
+              )}
+            />{" "}
+            since January 2021, and the cumulative yield over the period between
+            January 1st, 2021 and August 18th, 2022 generated 17.23%,
+            corresponding to a realized APY of 10.37%. The vault earned more
+            than the base coupon 51.80% of the time, and the option payoff was
+            4.05% on average in these cases, corresponding to 12% bonus APY in
+            addition to the 4% base APY.
+          </ParagraphText>
+          <PrimaryText className="d-block mt-3">
+            <Link
+              href="https://www.research.ribbon.finance/blog/introducing-ribbon-earn"
+              target="_blank"
+              rel="noreferrer noopener"
+              className="d-flex"
+            >
+              <span className="mr-2">Read More</span>
+              <ExternalIcon color="white" />
+            </Link>
+          </PrimaryText>
+        </>
+      );
+    case "rEARN-stETH":
+      return (
+        <>
+          <ParagraphText>
+            R-stETH-Earn was{" "}
+            <TooltipExplanation
+              explanation={
+                "Source: Ribbon Finance, as of 30 Nov 2022. Data from 30/04/2021 to 25/11/2022. Backtesting analysis for illustrative purposes only. Ribbon Finance provides no assurance or guarantee that the strategy will operate or would have operated in the past in a manner consistent with the above backtesting analysis. Backtest and/or past performance figures are not a reliable indicator of future results. All data backtested over the entire range."
+              }
+              maxWidth={350}
+              renderContent={({ ref, ...triggerHandler }) => (
+                <HighlightedText ref={ref} {...triggerHandler}>
+                  backtested
+                </HighlightedText>
+              )}
+            />{" "}
+            since the 30th April 2021, which is the first date where the Lido
+            APR was available on Dune. Over the period spanning the 30th April
+            2021 to the 25th November 2022, the vault would have returned 11.3%
+            in stETH terms, while Lido returned 7.9% over the same period.
+          </ParagraphText>
+          <ParagraphText marginTop={8}>
+            The vault earned a positive option payout 63.4% of the time, and the
+            average payout in these cases was 9.5%.
+          </ParagraphText>
+          <PrimaryText className="d-block mt-3">
+            <Link
+              href="https://www.research.ribbon.finance/blog/introducing-ribbon-earn"
+              target="_blank"
+              rel="noreferrer noopener"
+              className="d-flex"
+            >
+              <span className="mr-2">Read More</span>
+              <ExternalIcon color="white" />
+            </Link>
+          </PrimaryText>
+        </>
+      );
+    default:
+      return <></>;
+  }
 };
 
 interface AnalysisProps {

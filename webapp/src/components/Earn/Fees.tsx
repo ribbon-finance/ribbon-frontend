@@ -21,7 +21,10 @@ const Fees: React.FC<FeesProps> = ({ vaultOption }) => {
     <>
       <ParagraphText>
         The vault fee structure consists of a {vaultFees}% flat fee on the yield
-        earned between epochs.
+        earned between epochs
+        {vaultOption === "rEARN-stETH" &&
+          `, conditional on the strategy returning at least the principal for this epoch`}
+        .
       </ParagraphText>
     </>
   );
