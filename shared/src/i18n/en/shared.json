@@ -88,6 +88,10 @@
       "title": "T-SPELL-C",
       "subtitle": "SPELL Covered Call"
     },
+    "rAIRDAO-TSRY": {
+      "title": "T-AIRDAO-C",
+      "subtitle": "AIRDAO Covered Call"
+    },
     "rAPE-THETA": {
       "title": "T-APE-C",
       "subtitle": "APE Covered Call"
