@@ -62,7 +62,7 @@ const colors = {
     BAL: "#FFFFFF",
     BADGER: "#F1A23F",
     SPELL: "#5552FD",
-    AIRDAO: "#457EFF",
+    sAMB: "#457EFF",
     RBN: "#fc0a54",
     veRBN: "#fc0a54",
     LDO: "#00A3FF",

@@ -15,7 +15,7 @@ import {
   RETHLogo,
   BADGERLogo,
   SPELLLogo,
-  AIRDAOLogo,
+  SAMBLogo,
 } from "../assets/icons/erc20Assets";
 import Logo from "../assets/icons/logo";
 import { SolanaLogo } from "../assets/icons/solAssets";
@@ -261,8 +261,8 @@ export const getAssetLogo: (asset: Assets) =>
       return BADGERLogo;
     case "SPELL":
       return SPELLLogo;
-    case "AIRDAO":
-      return AIRDAOLogo;
+    case "sAMB":
+      return SAMBLogo;
     case "SOL":
       return SolanaLogo;
     case "APE":

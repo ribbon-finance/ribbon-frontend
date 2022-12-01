@@ -7,7 +7,7 @@ import { YearnLogo } from "../defiApp";
 import { Badger } from "./Badger";
 import { SVGProps } from "./shared";
 import { Spell } from "./Spell";
-import { Airdao } from "./Airdao";
+import { Samb } from "./Samb";
 
 export const WBTCLogo: React.FC<SVGProps> = (props) => (
   <svg
@@ -422,7 +422,7 @@ export const BADGERLogo = Badger;
 
 export const SPELLLogo = Spell;
 
-export const AIRDAOLogo = Airdao;
+export const SAMBLogo = Samb;
 
 export const APELogo: React.FC<SVGProps> = ({ ...props }) => (
   <svg

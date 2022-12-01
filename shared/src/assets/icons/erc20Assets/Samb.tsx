@@ -1,6 +1,6 @@
 import { SVGProps } from "./shared";
 
-export const Airdao: React.FC<SVGProps> = ({ ...props }) => (
+export const Samb: React.FC<SVGProps> = ({ ...props }) => (
   <svg
     width="39"
     height="48"

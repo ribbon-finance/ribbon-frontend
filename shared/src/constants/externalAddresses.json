@@ -36,7 +36,7 @@
       "bal": "0xd0A1E359811322d97991E03f863a0C30C2cF029C",
       "badger": "0xd0A1E359811322d97991E03f863a0C30C2cF029C",
       "spell": "0xd0A1E359811322d97991E03f863a0C30C2cF029C",
-      "airdao": "0xd0A1E359811322d97991E03f863a0C30C2cF029C"
+      "samb": "0xd0A1E359811322d97991E03f863a0C30C2cF029C"
     },
     "secondary": {
       "comment": "There is 2 different USDC in Kovan. They are being used in different context. Different USDC are needed depending on contracts.",
@@ -100,7 +100,7 @@
       "bal": "0xba100000625a3754423978a60c9317c58a424e3D",
       "badger": "0x3472a5a71965499acd81997a54bba8d852c6e53d",
       "spell": "0x090185f2135308bad17527004364ebcc2d37e5f6",
-      "airdao": "0x4DC3643DbC642b72C158E7F3d2ff232df61cb6CE"
+      "samb": "0x278a8c33Ef2A7D7C682f458C85E9447ce3645188"
     },
     "yearnRegistry": "0x50c1a2eA0a861A967D9d0FFE2AE4012c2E053804",
     "airswapSwap": "0x4572f2554421Bd64Bef1c22c8a81840E8D496BeA",
