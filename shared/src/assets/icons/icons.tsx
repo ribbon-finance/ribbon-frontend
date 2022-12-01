@@ -1,6 +1,7 @@
 import React from "react";
 import styled from "styled-components";
 import theme from "../../designSystem/theme";
+import { getVaultColor } from "../../utils/vault";
 
 type SVGProps = React.SVGAttributes<SVGElement>;
 
@@ -445,20 +446,20 @@ export const WithdrawGlowIcon: React.FC<SVGPropsWithColor> = ({
         width="64"
         height="64"
         rx="32"
-        fill="#3E73C4"
+        fill={color || "white"}
         fillOpacity="0.12"
         shapeRendering="crispEdges"
       />
       <path
         d="M86 81.3333V62.6666"
-        stroke="#3E73C4"
+        stroke={color || "white"}
         strokeWidth="2"
         strokeLinecap="round"
         strokeLinejoin="round"
       />
       <path
         d="M76.6663 72L85.9997 62.6667L95.333 72"
-        stroke="#3E73C4"
+        stroke={color || "white"}
         strokeWidth="2"
         strokeLinecap="round"
         strokeLinejoin="round"
@@ -469,7 +470,7 @@ export const WithdrawGlowIcon: React.FC<SVGPropsWithColor> = ({
         width="62"
         height="62"
         rx="31"
-        stroke="#3E73C4"
+        stroke={color || "white"}
         strokeWidth="2"
         shapeRendering="crispEdges"
       />
@@ -658,7 +659,7 @@ export const BellIcon: React.FC<SVGPropsWithColor> = ({ color, ...props }) => (
   </svg>
 );
 
-export const EarnInnerRing: React.FC<EarnRingProps> = ({ type, ...props }) => (
+export const EarnInnerRing: React.FC<EarnRingProps> = ({ color, ...props }) => (
   <svg
     width="640"
     height="640"
@@ -672,13 +673,16 @@ export const EarnInnerRing: React.FC<EarnRingProps> = ({ type, ...props }) => (
       cx="320"
       cy="320"
       r="319.5"
-      stroke={type === "green" ? "#16CEB9" : "#3E73C4"}
+      stroke={color}
       strokeDasharray="4 4"
     />
   </svg>
 );
 
-export const EarnMiddleRing: React.FC<EarnRingProps> = ({ type, ...props }) => (
+export const EarnMiddleRing: React.FC<EarnRingProps> = ({
+  color,
+  ...props
+}) => (
   <svg
     width="800"
     height="800"
@@ -692,7 +696,7 @@ export const EarnMiddleRing: React.FC<EarnRingProps> = ({ type, ...props }) => (
       cx="400"
       cy="400"
       r="399.5"
-      stroke={type === "green" ? "#16CEB9" : "#3E73C4"}
+      stroke={color}
       strokeDasharray="4 4"
     />
   </svg>
@@ -716,7 +720,7 @@ export const EarnOuterRing: React.FC<EarnRingProps> = ({
         cx="527"
         cy="527"
         r="478"
-        stroke={type === "green" ? "#16CEB9" : "#3E73C4"}
+        stroke={color}
         strokeWidth="4"
         strokeDasharray="2 2"
         shapeRendering="crispEdges"
@@ -751,9 +755,11 @@ export const EarnOuterRing: React.FC<EarnRingProps> = ({
         <feColorMatrix
           type="matrix"
           values={
-            type === "green"
-              ? "0 0 0 0 0.0862745 0 0 0 0 0.807843 0 0 0 0 0.72549 0 0 0 0.25 0"
-              : "0 0 0 0 0.243137 0 0 0 0 0.45098 0 0 0 0 0.768627 0 0 0 0.25 0"
+            type === getVaultColor("rEARN")
+              ? "0 0 0 0 0.243137 0 0 0 0 0.45098 0 0 0 0 0.768627 0 0 0 0.25 0"
+              : type === getVaultColor("rEARN-stETH")
+              ? "0 0 0 0 0 0 0 0 0 0.639216 0 0 0 0 1 0 0 0 0.25 0"
+              : "0 0 0 0 0.0862745 0 0 0 0 0.807843 0 0 0 0 0.72549 0 0 0 0.25 0"
           }
         />
         <feBlend
@@ -772,7 +778,10 @@ export const EarnOuterRing: React.FC<EarnRingProps> = ({
   </svg>
 );
 
-export const EarnCardMiddleCircle: React.FC<SVGPropsWithColor> = (props) => (
+export const EarnCardMiddleCircle: React.FC<SVGPropsWithColor> = ({
+  color,
+  ...props
+}) => (
   <svg
     width="160"
     height="160"
@@ -786,13 +795,16 @@ export const EarnCardMiddleCircle: React.FC<SVGPropsWithColor> = (props) => (
       cx="80"
       cy="80"
       r="79.5"
-      stroke="#3E73C4"
+      stroke={color}
       strokeDasharray="4 4"
     />
   </svg>
 );
 
-export const EarnCardOuterCircle: React.FC<SVGPropsWithColor> = (props) => (
+export const EarnCardOuterCircle: React.FC<SVGPropsWithColor> = ({
+  color,
+  ...props
+}) => (
   <svg
     width="290"
     height="304"
@@ -806,7 +818,7 @@ export const EarnCardOuterCircle: React.FC<SVGPropsWithColor> = (props) => (
         cx="145"
         cy="150"
         r="118"
-        stroke="#3E73C4"
+        stroke={color}
         strokeWidth="4"
         strokeDasharray="2 2"
         shapeRendering="crispEdges"

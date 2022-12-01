@@ -84,6 +84,7 @@ export type VaultVersion = typeof VaultVersionList[number];
 export type VaultVersionExcludeV1 = Exclude<VaultVersion, "v1">;
 
 export const EVMVaultList = [
+  "rEARN-stETH",
   "rEARN",
   "rsAVAX-THETA",
   "rETH-THETA",
@@ -117,7 +118,7 @@ const AllVaultOptions = [
 
 export type VaultOptions = typeof AllVaultOptions[number];
 const ProdExcludeVault: VaultOptions[] = [];
-const EarnVault: VaultOptions[] = ["rEARN"];
+const EarnVault: VaultOptions[] = ["rEARN", "rEARN-stETH"];
 const PutThetaVault: VaultOptions[] = [
   "rUSDC-ETH-P-THETA",
   "ryvUSDC-ETH-P-THETA",
@@ -288,6 +289,13 @@ export const GAS_LIMITS: {
     },
   },
   rEARN: {
+    earn: {
+      deposit: 380000,
+      withdrawInstantly: 130000,
+      completeWithdraw: 300000,
+    },
+  },
+  "rEARN-stETH": {
     earn: {
       deposit: 380000,
       withdrawInstantly: 130000,
@@ -514,7 +522,11 @@ export const VaultAddressMap: {
     chainId: CHAINID.ETH_MAINNET,
   },
   rEARN: {
-    earn: v2deployment.mainnet.RibbonEarnUSDC, //default earn address
+    earn: v2deployment.mainnet.RibbonEarnUSDC,
+    chainId: CHAINID.ETH_MAINNET,
+  },
+  "rEARN-stETH": {
+    earn: v2deployment.mainnet.RibbonEarnSTETH,
     chainId: CHAINID.ETH_MAINNET,
   },
 };
@@ -549,6 +561,7 @@ export const VaultNamesList = [
   "T-SOL-C",
   "T-APE-C",
   "R-EARN",
+  "R-stETH-EARN",
 ] as const;
 export type VaultName = typeof VaultNamesList[number];
 export const VaultNameOptionMap: { [name in VaultName]: VaultOptions } = {
@@ -569,6 +582,7 @@ export const VaultNameOptionMap: { [name in VaultName]: VaultOptions } = {
   "T-SOL-C": "rSOL-THETA",
   "T-APE-C": "rAPE-THETA",
   "R-EARN": "rEARN",
+  "R-stETH-EARN": "rEARN-stETH",
 };
 
 // Reverse lookup for VaultNameOptionMap
@@ -650,6 +664,7 @@ export const getAssets = (vault: VaultOptions): Assets => {
     case "rETH-THETA":
       return "WETH";
     case "rstETH-THETA":
+    case "rEARN-stETH":
       return "stETH";
     case "rrETH-THETA":
       return "rETH";
@@ -729,6 +744,7 @@ export const getDisplayAssets = (vault: VaultOptions): Assets => {
     case "ryvUSDC-ETH-P-THETA":
       return "USDC";
     case "rstETH-THETA":
+    case "rEARN-stETH":
       return "stETH";
     case "rrETH-THETA":
       return "rETH";
@@ -776,7 +792,19 @@ export const VaultAllowedDepositAssets: { [vault in VaultOptions]: Assets[] } =
     "rSOL-THETA": ["SOL"],
     "rAPE-THETA": ["APE"],
     rEARN: ["USDC"],
+    "rEARN-stETH": ["WETH", "stETH"],
   };
+
+export const getEarnSkipStorage = (vault: VaultOptions): string => {
+  switch (vault) {
+    case "rEARN":
+      return "skipEARNExplanation";
+    case "rEARN-stETH":
+      return "skipEARNSTETHExplanation";
+    default:
+      return "";
+  }
+};
 
 export const VaultMaxDeposit: { [vault in VaultOptions]: BigNumber } = {
   "rUSDC-ETH-P-THETA": BigNumber.from(100000000).mul(
@@ -831,6 +859,9 @@ export const VaultMaxDeposit: { [vault in VaultOptions]: BigNumber } = {
   ),
   rEARN: BigNumber.from(100000000).mul(
     BigNumber.from(10).pow(getAssetDecimals(getAssets("rEARN")))
+  ),
+  "rEARN-stETH": BigNumber.from(50000).mul(
+    BigNumber.from(10).pow(getAssetDecimals(getAssets("rEARN-stETH")))
   ),
 };
 
@@ -950,7 +981,13 @@ export const VaultFees: {
   rEARN: {
     earn: {
       managementFee: "0",
-      performanceFee: "20",
+      performanceFee: "15",
+    },
+  },
+  "rEARN-stETH": {
+    earn: {
+      managementFee: "0",
+      performanceFee: "10",
     },
   },
 };
@@ -1005,6 +1042,10 @@ export const LidoOracleAddress = isDevelopment()
 export const STETHDepositHelperAddress = isDevelopment()
   ? ""
   : addresses.mainnet.stETHDepositHelper;
+
+export const EarnSTETHDepositHelperAddress = isDevelopment()
+  ? ""
+  : addresses.mainnet.earnStETHDepositHelper;
 
 export const CurveLidoPoolAddress = isDevelopment()
   ? ""

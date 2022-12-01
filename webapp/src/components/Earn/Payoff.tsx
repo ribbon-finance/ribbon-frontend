@@ -5,13 +5,19 @@ import {
   SecondaryText,
   Title,
 } from "shared/lib/designSystem";
-import EarnChart from "./EarnChart";
 import colors from "shared/lib/designSystem/colors";
 import EarnModalContentExtra from "shared/lib/components/Common/EarnModalContentExtra";
 import TooltipExplanation from "shared/lib/components/Common/TooltipExplanation";
 import HelpInfo from "shared/lib/components/Common/HelpInfo";
 import { useAirtableEarnData } from "shared/lib/hooks/useAirtableEarnData";
 import useLoadingText from "shared/lib/hooks/useLoadingText";
+import EarnSTETHChart from "./EarnChart";
+import { VaultOptions } from "shared/lib/constants/constants";
+import {
+  getOptionMoneyness,
+  getOptionMoneynessRange,
+  getYieldRange,
+} from "./PayoffHelper";
 
 const ChartContainer = styled.div`
   height: 264px;
@@ -70,18 +76,22 @@ const CalculationData = styled(Title)<{ variant?: "red" | "green" }>`
   }};
 `;
 
-interface ProfitCalculatorProps {}
+interface PayoffSTETHProps {
+  vaultOption: VaultOptions;
+}
 
-const Payoff: React.FC<ProfitCalculatorProps> = () => {
+// Calls user_checkpoint and shows a transaction loading screen
+const Payoff: React.FC<PayoffSTETHProps> = ({ vaultOption }) => {
   const {
+    baseYield,
     maxYield,
     expectedYield,
-    baseYield,
+    participationRate,
+    lowerBarrierPercentage,
+    upperBarrierPercentage,
     performance,
-    absolutePerformance,
-    barrierPercentage,
     loading,
-  } = useAirtableEarnData();
+  } = useAirtableEarnData(vaultOption);
 
   const loadingText = useLoadingText();
 
@@ -90,73 +100,80 @@ const Payoff: React.FC<ProfitCalculatorProps> = () => {
   const [, setChartHovering] = useState(false);
 
   const optionMoneyness = useMemo(() => {
-    return hoverPercentage
-      ? Math.abs(hoverPercentage) > barrierPercentage * 100
-        ? 0
-        : hoverPercentage / 100
-      : absolutePerformance > barrierPercentage
-      ? 0
-      : performance;
-  }, [absolutePerformance, performance, barrierPercentage, hoverPercentage]);
+    return getOptionMoneyness(
+      hoverPercentage,
+      lowerBarrierPercentage,
+      upperBarrierPercentage,
+      performance,
+      vaultOption
+    );
+  }, [
+    hoverPercentage,
+    lowerBarrierPercentage,
+    upperBarrierPercentage,
+    performance,
+    vaultOption,
+  ]);
 
-  // x axis
-  const moneynessRange = useMemo(() => {
-    let leftArray = [];
-    let array = [];
-    let rightArray = [];
-
-    for (let i = 0; i < 2000; i += 1) {
-      leftArray.push(-Math.round(barrierPercentage * 100) - (2000 - i));
-    }
-
-    for (
-      let i = -(Math.round(barrierPercentage * 100) * 100);
-      i <= Math.round(barrierPercentage * 100) * 100;
-      i += 1
-    ) {
-      array.push(i / 100);
-    }
-
-    for (let i = 0; i < 2000; i += 1) {
-      rightArray.push(Math.round(barrierPercentage * 100) + i + 1);
-    }
-
-    return [
-      ...leftArray,
-      -(barrierPercentage * 100) - 0.01,
-      ...array,
-      barrierPercentage * 100 + 0.01,
-      ...rightArray,
-    ];
-  }, [barrierPercentage]);
+  const optionMoneynessRange = useMemo(() => {
+    return getOptionMoneynessRange(
+      vaultOption,
+      lowerBarrierPercentage,
+      upperBarrierPercentage
+    );
+  }, [lowerBarrierPercentage, upperBarrierPercentage, vaultOption]);
 
   const yieldRange = useMemo(() => {
-    let leftArray = [];
-    let array = [];
-    let rightArray = [];
+    return getYieldRange(
+      vaultOption,
+      lowerBarrierPercentage,
+      upperBarrierPercentage,
+      maxYield,
+      baseYield,
+      participationRate
+    );
+  }, [
+    vaultOption,
+    lowerBarrierPercentage,
+    upperBarrierPercentage,
+    maxYield,
+    baseYield,
+    participationRate,
+  ]);
 
-    for (let i = 0; i < 2000; i += 1) {
-      leftArray.push(4);
+  const maxYieldText = useMemo(() => {
+    const commonText =
+      "The max yield is defined as the max payout if the price of the underlying asset is at the barrier at expiry. The formula used to compute the max yield is as follows: ";
+    switch (vaultOption) {
+      case "rEARN":
+        return (
+          commonText +
+          "BASE APY + (MAX PERF * 4 * PARTICIPATION RATE + 1)^(365 / 28) - 1"
+        );
+      case "rEARN-stETH":
+        return (
+          commonText +
+          "BASE APY + (MAX PERF * PARTICIPATION RATE + 1)^(365 / 7) - 1"
+        );
     }
+  }, [vaultOption]);
 
-    for (
-      let i = -Math.round(barrierPercentage * 100) * 100;
-      i <= Math.round(barrierPercentage * 100) * 100;
-      i += 1
-    ) {
-      array.push(
-        4 +
-          Math.abs(i / 100 / (barrierPercentage * 100)) *
-            (maxYield - baseYield) *
-            100
-      );
+  const expectedYieldText = useMemo(() => {
+    const commonText =
+      "The expected yield is computed using the current moneyness. The formula used to compute the expected yield is as follows: ";
+    switch (vaultOption) {
+      case "rEARN":
+        return (
+          commonText +
+          "BASE APY + (CURRENT PERF * 4 * PARTICIPATION RATE + 1)^(365 / 28) - 1"
+        );
+      case "rEARN-stETH":
+        return (
+          commonText +
+          "BASE APY + (CURRENT PERF * PARTICIPATION RATE + 1)^(365 / 7) - 1"
+        );
     }
-
-    for (let i = 0; i < 2000; i += 1) {
-      rightArray.push(4);
-    }
-    return [...leftArray, 4, ...array, 4, ...rightArray];
-  }, [barrierPercentage, baseYield, maxYield]);
+  }, [vaultOption]);
 
   return (
     <>
@@ -166,7 +183,7 @@ const Payoff: React.FC<ProfitCalculatorProps> = () => {
             <ParagraphText fontWeight={500}>Max Yield (APY) </ParagraphText>
             <TooltipExplanation
               title="MAX YIELD"
-              explanation="The max yield is defined as the max payout if the price of the underlying asset is at the barrier at expiry. The formula used to compute the max yield is as follows: BASE APY + (MAX PERF * 4 * PARTICIPATION RATE + 1)^(365 / 28) - 1"
+              explanation={maxYieldText}
               renderContent={({ ref, ...triggerHandler }) => (
                 <HelpInfo containerRef={ref} {...triggerHandler}>
                   i
@@ -185,14 +202,17 @@ const Payoff: React.FC<ProfitCalculatorProps> = () => {
             onMouseEnter={() => setChartHovering(true)}
             onMouseLeave={() => setChartHovering(false)}
           >
-            <EarnChart
+            <EarnSTETHChart
               onHoverPrice={setHoverPrice}
               onHoverPercentage={setHoverPercentage}
               performance={performance}
-              barrierPercentage={barrierPercentage}
+              baseYield={baseYield}
+              lowerBarrierPercentage={lowerBarrierPercentage}
+              upperBarrierPercentage={upperBarrierPercentage}
               maxYield={maxYield}
-              moneynessRange={moneynessRange}
+              moneynessRange={optionMoneynessRange}
               yieldRange={yieldRange}
+              vaultOption={vaultOption}
             />
           </ChartContainer>
         </RelativeContainer>
@@ -257,7 +277,7 @@ const Payoff: React.FC<ProfitCalculatorProps> = () => {
             >
               {loading
                 ? loadingText
-                : `${optionMoneyness <= 0 ? "" : "+"}${
+                : `${
                     optionMoneyness <= 0
                       ? (optionMoneyness * 100).toFixed(2)
                       : (optionMoneyness * 100).toFixed(2)
@@ -275,7 +295,7 @@ const Payoff: React.FC<ProfitCalculatorProps> = () => {
             <div className="mr-auto">
               <TooltipExplanation
                 title="EXPECTED YIELD"
-                explanation="The expected yield is computed using the current moneyness. The formula used to compute the expected yield is as follows: BASE APY + (CURRENT PERF * 4 * PARTICIPATION RATE + 1)^(365 / 28) - 1"
+                explanation={expectedYieldText}
                 renderContent={({ ref, ...triggerHandler }) => (
                   <HelpInfo containerRef={ref} {...triggerHandler}>
                     i

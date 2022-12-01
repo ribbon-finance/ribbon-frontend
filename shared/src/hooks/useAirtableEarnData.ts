@@ -1,12 +1,75 @@
 import Airtable from "airtable";
 import { useEffect, useMemo, useState } from "react";
+import { VaultOptions } from "../constants/constants";
 import useAssetPrice from "./useAssetPrice";
 
+export type EarnData = {
+  loading: boolean;
+  strikePrice: number;
+  baseYield: number;
+  participationRate: number;
+  lowerBarrierPercentage: number;
+  upperBarrierPercentage: number;
+  performance: number;
+  absolutePerformance: number;
+  expectedYield: number;
+  maxYield: number;
+  borrowRate: number;
+  lowerBarrierETHPrice: number;
+  upperBarrierETHPrice: number;
+  avgPerformance: number;
+};
+
+export const defaultEarnUSDCData: EarnData = {
+  loading: true,
+  strikePrice: 0,
+  baseYield: 0.04,
+  participationRate: 0.04,
+  lowerBarrierPercentage: -0.08,
+  upperBarrierPercentage: 0.08,
+  absolutePerformance: 0,
+  performance: 0,
+  expectedYield: 0,
+  maxYield: 0.1633,
+  borrowRate: 0.1,
+  lowerBarrierETHPrice: 0,
+  upperBarrierETHPrice: 0,
+  avgPerformance: 0,
+};
+
+export const defaultEarnSTETHData: EarnData = {
+  loading: true,
+  strikePrice: 0,
+  baseYield: 0.0075,
+  participationRate: 0.04,
+  lowerBarrierPercentage: -0.1,
+  upperBarrierPercentage: 0.1,
+  absolutePerformance: 0,
+  performance: 0,
+  expectedYield: 0,
+  maxYield: 0.1633,
+  borrowRate: 0.1,
+  lowerBarrierETHPrice: 0,
+  upperBarrierETHPrice: 0,
+  avgPerformance: 0,
+};
+
+export const defaultEarnData = (vaultOption: VaultOptions) => {
+  switch (vaultOption) {
+    case "rEARN":
+      return defaultEarnUSDCData;
+    case "rEARN-stETH":
+      return defaultEarnSTETHData;
+    default:
+      return defaultEarnUSDCData;
+  }
+};
 export interface AirtableValues {
   strikePrice: number;
   baseYield: number;
   participationRate: number;
-  barrierPercentage: number;
+  lowerBarrierPercentage: number;
+  upperBarrierPercentage: number;
   borrowRate: number;
 }
 
@@ -14,9 +77,28 @@ const airtableValueArray = [
   "strikePrice",
   "baseYield",
   "participationRate",
-  "barrierPercentage",
+  "lowerBarrierPercentage",
+  "upperBarrierPercentage",
   "borrowRate",
 ];
+
+Airtable.configure({
+  endpointUrl: "https://api.airtable.com",
+  apiKey: process.env.REACT_APP_AIRTABLE_API_KEY,
+});
+
+const baseName = (vault: VaultOptions) => {
+  switch (vault) {
+    case "rEARN":
+      return "Earn";
+    case "rEARN-stETH":
+      return "EarnSTETH";
+    default:
+      return "EarnTest";
+  }
+};
+
+const base = Airtable.base("appkUHzxJ1lehQTIt");
 
 const recordHasUndefined = (recordTemp: any): boolean => {
   for (const key in airtableValueArray) {
@@ -27,16 +109,84 @@ const recordHasUndefined = (recordTemp: any): boolean => {
   return false;
 };
 
-Airtable.configure({
-  endpointUrl: "https://api.airtable.com",
-  apiKey: process.env.REACT_APP_AIRTABLE_API_KEY,
-});
+const calculateMaxYield = (
+  vault: VaultOptions,
+  baseYield: number,
+  lowerBarrierPercentage: number,
+  upperBarrierPercentage: number,
+  participationRate: number
+) => {
+  switch (vault) {
+    case "rEARN":
+      return (
+        baseYield +
+        (upperBarrierPercentage * participationRate * 4 + 1) ** (365 / 28) -
+        1
+      );
+    case "rEARN-stETH":
+      return (
+        baseYield +
+        (((upperBarrierPercentage - lowerBarrierPercentage) /
+          (1 + upperBarrierPercentage)) *
+          participationRate +
+          1) **
+          (365 / 7) -
+        1
+      );
+    default:
+      return 0;
+  }
+};
+const calculateExpectedYield = (
+  vault: VaultOptions,
+  baseYield: number,
+  lowerBarrierPercentage: number,
+  upperBarrierPercentage: number,
+  participationRate: number,
+  performance: number,
+  absolutePerformance: number
+) => {
+  const performanceBetweenBarriers =
+    performance < lowerBarrierPercentage ||
+    performance > upperBarrierPercentage;
+  switch (vault) {
+    case "rEARN":
+      return performanceBetweenBarriers
+        ? baseYield
+        : baseYield +
+            (absolutePerformance * participationRate * 4 + 1) ** (365 / 28) -
+            1;
+    case "rEARN-stETH":
+      return performanceBetweenBarriers
+        ? baseYield
+        : baseYield +
+            (((performance - lowerBarrierPercentage) / (1 + performance)) *
+              participationRate +
+              1) **
+              (365 / 7) -
+            1;
+    default:
+      return 0;
+  }
+};
 
-const BASE_NAME = "Earn";
+export const calculateExpectedYieldSTETH = (
+  baseYield: number,
+  performance: number,
+  lowerBarrierPercentage: number,
+  participationRate: number
+) => {
+  return (
+    baseYield +
+    (((performance - lowerBarrierPercentage) / (1 + performance)) *
+      participationRate +
+      1) **
+      (365 / 7) -
+    1
+  );
+};
 
-const base = Airtable.base("appkUHzxJ1lehQTIt");
-
-export const useAirtableEarnData = () => {
+export const useAirtableEarnData = (vaultOption: VaultOptions) => {
   const [values, setValues] = useState<AirtableValues>();
   const [itmRecords, setItmRecords] = useState<any>([]);
   const [, setError] = useState<string>();
@@ -47,7 +197,7 @@ export const useAirtableEarnData = () => {
 
   useEffect(() => {
     // 1. When init load schedules
-    base(BASE_NAME)
+    base(baseName(vaultOption))
       .select({ view: "Grid view" })
       .all()
       .then((records) => {
@@ -70,105 +220,98 @@ export const useAirtableEarnData = () => {
       .catch((e) => {
         setError("ERROR FETCHING");
       });
-  }, [assetPriceLoading]);
+  }, [assetPriceLoading, vaultOption]);
+
   const loading = useMemo(() => {
     return assetPriceLoading || !values;
   }, [assetPriceLoading, values]);
 
-  //   Absolute perf = abs(spot - strike) / strike
-  // (Absolute perf * participation rate * 4 + 1)^(365/28) -1
   const [
     absolutePerformance,
     performance,
     expectedYield,
     maxYield,
-    ethLowerBarrier,
-    ethUpperBarrier,
-    itmPerformance,
+    lowerBarrierETHPrice,
+    upperBarrierETHPrice,
+    avgPerformance,
   ] = useMemo(() => {
     if (!values) {
-      return [0, 0, 0, 0, 0, 0, 0];
+      return [0, 0, 0, 0, 0, 0, 0, 0];
     }
     const rawPerformance = (ETHPrice - values.strikePrice) / values.strikePrice;
 
-    //performance reduced to 4dps
+    //performance and absolute performance reduced to 4dps
     const performance = Math.round(rawPerformance * 10000) / 10000;
 
     const absolutePerformance =
       Math.round(Math.abs(rawPerformance) * 10000) / 10000;
 
-    const calculateMaxYield =
-      values.baseYield +
-      (values.barrierPercentage * values.participationRate * 4 + 1) **
-        (365 / 28) -
-      1;
+    const maxYield = calculateMaxYield(
+      vaultOption,
+      values.baseYield,
+      values.lowerBarrierPercentage,
+      values.upperBarrierPercentage,
+      values.participationRate
+    );
 
-    const calculateExpectedYield =
-      absolutePerformance > values.barrierPercentage
-        ? values.baseYield
-        : values.baseYield +
-          (absolutePerformance * values.participationRate * 4 + 1) **
-            (365 / 28) -
-          1;
+    const expectedYield = calculateExpectedYield(
+      vaultOption,
+      values.baseYield,
+      values.lowerBarrierPercentage,
+      values.upperBarrierPercentage,
+      values.participationRate,
+      performance,
+      absolutePerformance
+    );
 
-    const ethPriceLower = values.strikePrice * (1 - values.barrierPercentage);
-    const ethPriceUpper = values.strikePrice * (1 + values.barrierPercentage);
+    const lowerBarrierETHPrice =
+      values.strikePrice * (1 + values.lowerBarrierPercentage);
+    const upperBarrierETHPrice =
+      values.strikePrice * (1 + values.upperBarrierPercentage);
 
-    let itmPerformanceArray: number[] = [];
+    // calculate the average weekly performance of vault
+    let avgPerformanceArray: number[] = [];
     itmRecords.forEach((record: any) => {
-      itmPerformanceArray.push(
+      avgPerformanceArray.push(
         Math.abs(
           (record.fields!.expiryPrice - record.fields!.strikePrice) /
             record.fields!.strikePrice
         )
       );
     });
-    const itmAvgPerformance =
-      itmPerformanceArray.reduce((partialSum, a) => partialSum + a, 0) /
-      itmPerformanceArray.length;
+    const avgPerformance =
+      avgPerformanceArray.reduce((partialSum, a) => partialSum + a, 0) /
+      avgPerformanceArray.length;
 
     return [
       absolutePerformance,
       performance,
-      calculateExpectedYield,
-      calculateMaxYield,
-      ethPriceLower,
-      ethPriceUpper,
-      itmAvgPerformance,
+      expectedYield,
+      maxYield,
+      lowerBarrierETHPrice,
+      upperBarrierETHPrice,
+      isNaN(avgPerformance) ? 0 : avgPerformance,
     ];
-  }, [values, ETHPrice, itmRecords]);
+  }, [values, ETHPrice, vaultOption, itmRecords]);
 
   if (loading || !values) {
     //placeholder values while values are loading
-    return {
-      loading,
-      strikePrice: ETHPrice,
-      baseYield: 0.04,
-      participationRate: 0.04,
-      barrierPercentage: 0.08,
-      absolutePerformance: 0.0,
-      performance: 0.0,
-      expectedYield: 0.0,
-      maxYield: 0.1633,
-      borrowRate: 0.1,
-      ethLowerBarrier: 0,
-      ethUpperBarrier: 0,
-      itmPerformance: 0.0,
-    };
+    return defaultEarnData(vaultOption);
   }
   return {
     loading,
     strikePrice: values.strikePrice,
     baseYield: values.baseYield,
     participationRate: values.participationRate,
-    barrierPercentage: values.barrierPercentage,
+    lowerBarrierPercentage: values.lowerBarrierPercentage,
+    upperBarrierPercentage: values.upperBarrierPercentage,
     absolutePerformance,
     performance,
     expectedYield,
     maxYield,
     borrowRate: values.borrowRate,
-    ethLowerBarrier,
-    ethUpperBarrier,
-    itmPerformance,
-  };
+    lowerBarrierETHPrice,
+    upperBarrierETHPrice,
+    avgPerformance,
+  } as EarnData;
 };

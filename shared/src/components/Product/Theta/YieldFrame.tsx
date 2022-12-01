@@ -259,7 +259,7 @@ const YieldFrame: React.FC<YieldFrameProps> = ({
                 " USDC"
               )}
             </EarnCapacityText>
-            <EarnCard color={color} height={429} />
+            <EarnCard asset={asset} color={color} height={429} />
           </ProductInfoEarn>
         </ProductCard>
       ) : (

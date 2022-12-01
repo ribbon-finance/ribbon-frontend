@@ -18,6 +18,7 @@ const useTokenAllowance = (token: ERC20Token | undefined, address?: string) => {
 
     return getERC20Token(library, token, chainId);
   }, [chainId, library, token]);
+
   const [allowance, setAllowance] = useState<BigNumber>();
 
   useEffect(() => {

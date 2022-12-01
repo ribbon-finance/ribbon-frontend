@@ -8,6 +8,7 @@ import {
   Grid,
 } from "../../assets/icons/icons";
 import { getAssetLogo } from "../../utils/asset";
+import { Assets } from "../../store/types";
 
 const ProductAssetLogoContainer = styled.div<{ color: string }>`
   display: flex;
@@ -160,10 +161,15 @@ const StyledGrid = styled(Grid)<{ height: number }>`
 interface AssetCircleContainerProps {
   color: string;
   height: number;
+  asset: Assets;
 }
 
-const EarnCard: React.FC<AssetCircleContainerProps> = ({ color, height }) => {
-  const Logo = getAssetLogo("USDC");
+const EarnCard: React.FC<AssetCircleContainerProps> = ({
+  asset,
+  color,
+  height,
+}) => {
+  const Logo = getAssetLogo(asset);
 
   let logo = <Logo height={"100%"} />;
 
@@ -198,8 +204,8 @@ const EarnCard: React.FC<AssetCircleContainerProps> = ({ color, height }) => {
           <StyledProductAssetLogoContainer color={color}>
             {logo}
           </StyledProductAssetLogoContainer>
-          <StyledEarnOuterCircle />
-          <StyledEarnMiddleCircle />
+          <StyledEarnOuterCircle color={color} />
+          <StyledEarnMiddleCircle color={color} />
         </CirclesContainer>
       </OuterContainer>
     </>

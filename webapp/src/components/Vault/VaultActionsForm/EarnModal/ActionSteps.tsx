@@ -5,6 +5,8 @@ import PreviewStep from "./PreviewStep";
 import TransactionStep from "./TransactionStep";
 import {
   getAssets,
+  isNativeToken,
+  VaultAllowedDepositAssets,
   VaultOptions,
   VaultVersion,
 } from "shared/lib/constants/constants";
@@ -14,11 +16,18 @@ import { useV2VaultData } from "shared/lib/hooks/web3DataContext";
 import useVaultPriceHistory, {
   useVaultsPriceHistory,
 } from "shared/lib/hooks/useVaultPerformanceUpdate";
-import { getAssetColor, getAssetDecimals } from "shared/lib/utils/asset";
+import { getAssetDecimals } from "shared/lib/utils/asset";
 import { RibbonEarnVault } from "shared/lib/codegen";
-import DepositFormStep from "./FormStep";
+import FormStep from "./FormStep";
 import useVaultContract from "shared/lib/hooks/useVaultContract";
 import { DepositSignature } from "../../../../hooks/useUSDC";
+import { Assets } from "shared/lib/store/types";
+import useLidoCurvePool from "shared/lib/hooks/useLidoCurvePool";
+import useSTETHDepositHelper from "shared/lib/hooks/useSTETHDepositHelper";
+import { formatUnits } from "ethers/lib/utils";
+import useLoadingText from "shared/lib/hooks/useLoadingText";
+import { getVaultColor } from "shared/lib/utils/vault";
+
 export interface ActionStepsProps {
   vault: {
     vaultOption: VaultOptions;
@@ -44,20 +53,14 @@ const ActionSteps: React.FC<ActionStepsProps> = ({
   actionType,
 }) => {
   const { data: priceHistories } = useVaultsPriceHistory();
-
-  const firstStep = useMemo(() => {
-    return v2WithdrawOption === "complete" ? STEPS.previewStep : STEPS.formStep;
-  }, [v2WithdrawOption]);
-
-  const [txhash, setTxhash] = useState("");
-
-  const earnVault = useVaultContract(vaultOption);
+  const [depositAsset, earnHandleDepositAssetChange] = useState<Assets>(
+    VaultAllowedDepositAssets[vaultOption][0]
+  );
 
   const { pendingTransactions, addPendingTransaction } =
     usePendingTransactions();
   const {
     data: {
-      asset,
       decimals,
       lockedBalanceInAsset,
       depositBalanceInAsset,
@@ -66,6 +69,32 @@ const ActionSteps: React.FC<ActionStepsProps> = ({
     },
   } = useV2VaultData(vaultOption);
   const { priceHistory } = useVaultPriceHistory(vaultOption, "earn");
+
+  const asset = useMemo(() => {
+    return vaultOption === "rEARN-stETH" && actionType === "withdraw"
+      ? "stETH"
+      : depositAsset;
+  }, [actionType, depositAsset, vaultOption]);
+
+  const color = getVaultColor(vaultOption);
+  const firstStep = useMemo(() => {
+    if (v2WithdrawOption === "complete") {
+      return STEPS.previewStep;
+    }
+    return STEPS.formStep;
+  }, [v2WithdrawOption]);
+
+  const [minSTETHAmount, setMinSTETHAmount] = useState<BigNumber | undefined>();
+
+  const stETHDepositHelper = useSTETHDepositHelper(vaultVersion);
+
+  const { contract, getMinSTETHAmount } = useLidoCurvePool();
+
+  const [txhash, setTxhash] = useState("");
+
+  const earnVault = useVaultContract(vaultOption);
+
+  const loadingText = useLoadingText();
 
   const vaultBalanceInAsset = useMemo(() => {
     const priceHistory = priceHistories.v2[vaultOption as VaultOptions].find(
@@ -90,12 +119,12 @@ const ActionSteps: React.FC<ActionStepsProps> = ({
   const [withdrawOption, setWithdrawOption] =
     useState<V2WithdrawOption>(v2WithdrawOption);
   const [signature, setSignature] = useState<DepositSignature | undefined>();
-  const amountStr = useMemo(() => {
+  const [amount, amountStr] = useMemo(() => {
     try {
       const amount = parseUnits(inputAmount, decimals);
-      return amount.toString();
+      return [amount, amount.toString()];
     } catch (err) {
-      return "0";
+      return [BigNumber.from(0), "0"];
     }
   }, [decimals, inputAmount]);
 
@@ -109,6 +138,20 @@ const ActionSteps: React.FC<ActionStepsProps> = ({
         .div(parseUnits("1", decimals)),
     [decimals, priceHistory, withdrawals.round, withdrawals.shares]
   );
+
+  useEffect(() => {
+    // Fetch stETH rate
+    if (vaultOption === "rEARN-stETH" && isNativeToken(depositAsset)) {
+      if (!amount.isZero()) {
+        setMinSTETHAmount(undefined);
+        getMinSTETHAmount(amount).then((amt) => {
+          setMinSTETHAmount(amt);
+        });
+        return;
+      }
+      setMinSTETHAmount(BigNumber.from(0));
+    }
+  }, [amount, asset, depositAsset, getMinSTETHAmount, vaultOption]);
 
   const cleanupEffects = useCallback(() => {
     setTxhash("");
@@ -151,6 +194,14 @@ const ActionSteps: React.FC<ActionStepsProps> = ({
     onChangeStep(STEPS.previewStep);
   };
 
+  const handleSwapCurveAndDepositSTETH = useCallback(async () => {
+    // Subtract 0.5% slippage from exchange rate to get min steth
+    const minSTETHAmount = await getMinSTETHAmount(amount);
+    if (contract && minSTETHAmount) {
+      return stETHDepositHelper?.deposit(minSTETHAmount, { value: amount });
+    }
+  }, [amount, contract, getMinSTETHAmount, stETHDepositHelper]);
+
   const handleClickConfirmButton = async () => {
     const vault = earnVault as RibbonEarnVault;
 
@@ -162,18 +213,28 @@ const ActionSteps: React.FC<ActionStepsProps> = ({
         let res: any;
         switch (actionType) {
           case "deposit":
-            if (!signature) {
-              return;
+            switch (vaultOption) {
+              case "rEARN-stETH":
+                if (isNativeToken(depositAsset)) {
+                  res = await handleSwapCurveAndDepositSTETH();
+                } else {
+                  res = await vault.deposit(amountStr);
+                }
+                break;
+              default:
+                if (!signature) {
+                  return;
+                }
+
+                res = await vault.depositWithPermit(
+                  amountStr,
+                  signature.deadline,
+                  signature.v,
+                  signature.r,
+                  signature.s
+                );
+                break;
             }
-
-            res = await vault.depositWithPermit(
-              amountStr,
-              signature.deadline,
-              signature.v,
-              signature.r,
-              signature.s
-            );
-
             addPendingTransaction({
               txhash: res.hash,
               type: "deposit",
@@ -239,7 +300,7 @@ const ActionSteps: React.FC<ActionStepsProps> = ({
 
   const stepComponents = {
     0: (
-      <DepositFormStep
+      <FormStep
         actionType={actionType}
         inputAmount={inputAmount}
         onClickUpdateInput={setInputAmount}
@@ -249,12 +310,19 @@ const ActionSteps: React.FC<ActionStepsProps> = ({
         vaultOption={vaultOption}
         vaultVersion={vaultVersion}
         show={show}
+        showSwapDepositAsset={VaultAllowedDepositAssets[vaultOption].length > 1}
+        earnHandleDepositAssetChange={earnHandleDepositAssetChange}
       />
     ),
     1: (
       <PreviewStep
         actionType={actionType}
         amount={BigNumber.from(amountStr)}
+        estimatedSTETHDepositAmount={
+          minSTETHAmount
+            ? `~${parseFloat(formatUnits(minSTETHAmount, 18)).toFixed(4)} stETH`
+            : loadingText
+        }
         positionAmount={vaultBalanceInAsset}
         onClickConfirmButton={handleClickConfirmButton}
         asset={asset}
@@ -265,8 +333,8 @@ const ActionSteps: React.FC<ActionStepsProps> = ({
         show={show}
       />
     ),
-    2: <TransactionStep color={getAssetColor(asset)} />,
-    3: <TransactionStep txhash={txhash} color={getAssetColor(asset)} />,
+    2: <TransactionStep color={color} />,
+    3: <TransactionStep txhash={txhash} color={color} />,
   };
 
   return <>{stepComponents[step]}</>;

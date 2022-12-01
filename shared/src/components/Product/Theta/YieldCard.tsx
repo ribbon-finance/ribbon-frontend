@@ -445,7 +445,7 @@ const YieldCard: React.FC<YieldCardProps> = ({
     useLiquidityGaugeV5PoolData(vault);
   const { prices } = useAssetsPrice();
   const loadingText = useLoadingText();
-  const { loading, maxYield } = useAirtableEarnData();
+  const { loading, maxYield } = useAirtableEarnData(vault);
   const baseAPY = useMemo(() => {
     if (!lg5Data) {
       return 0;
@@ -668,12 +668,15 @@ const YieldCard: React.FC<YieldCardProps> = ({
             <VaultFullText>Vault is currently full</VaultFullText>
           ) : (
             formatAmount(totalDepositStr) +
-            " USDC / " +
+            " " +
+            asset +
+            " / " +
             formatAmount(depositLimitStr) +
-            " USDC"
+            " " +
+            asset
           )}
         </EarnCapacityText>
-        <EarnCard color={color} height={!!account ? 447 : 504} />
+        <EarnCard color={color} height={!!account ? 447 : 504} asset={asset} />
         <ParagraphText>
           Earn up to{" "}
           <HighlightedText>
@@ -691,6 +694,7 @@ const YieldCard: React.FC<YieldCardProps> = ({
     isVaultMaxCapacity,
     loadingText,
     totalDepositStr,
+    asset,
     depositLimitStr,
     color,
     account,

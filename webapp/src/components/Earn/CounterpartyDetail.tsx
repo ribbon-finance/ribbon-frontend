@@ -42,7 +42,7 @@ const ParagraphText = styled(SecondaryText)`
   margin-bottom: 16px;
 `;
 
-const WalletContent = styled.div`
+const CounterpartyContent = styled.div`
   display: flex;
   flex-direction: column;
   align-items: left;
@@ -53,7 +53,7 @@ const WalletContent = styled.div`
   }
 `;
 
-const WalletContentText = styled(SecondaryText)<{
+const FundingSourceData = styled(SecondaryText)<{
   marginTop?: number;
 }>`
   color: ${colors.tertiaryText};
@@ -65,7 +65,7 @@ const WalletContentText = styled(SecondaryText)<{
 const StyledTitle = styled(Title)`
   text-align: left;
 `;
-const WalletButton = styled(BaseButton)`
+const OpenCounterpartyButton = styled(BaseButton)`
   position: relative;
   display: flex;
   justify-content: space-between;
@@ -82,7 +82,7 @@ const WalletButton = styled(BaseButton)`
   }
 `;
 
-const WalletContainer = styled.div`
+const CounterpartyContainer = styled.div`
   position: relative;
   display: flex;
   justify-content: space-between;
@@ -99,7 +99,7 @@ const Details = styled.div`
   width: 100%;
 `;
 
-const Part = styled.div`
+const Detail = styled.div`
   display: flex;
   flex-direction: column;
   width: 50%;
@@ -116,7 +116,7 @@ const CounterpartyDetail: React.FC<VaultStrategyExplainerProps> = ({
   vaultOption,
 }) => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const { borrowRate, loading } = useAirtableEarnData();
+  const { borrowRate, loading } = useAirtableEarnData(vaultOption);
   const { loading: credoraLoading, data } = useCredoraData();
   const { records } = useAirtableEarnLoanAllocation();
   const loadingText = useLoadingText();
@@ -132,6 +132,7 @@ const CounterpartyDetail: React.FC<VaultStrategyExplainerProps> = ({
     loading: vaultLoading,
     data: { totalBalance },
   } = useV2VaultData(vaultOption);
+
   const renderLogo = useCallback((s: Counterparty) => {
     switch (s) {
       case "R-EARN DIVERSIFIED":
@@ -230,44 +231,44 @@ const CounterpartyDetail: React.FC<VaultStrategyExplainerProps> = ({
 
   return (
     <>
-      <WalletContainer>
-        <WalletButton role="button" onClick={handleButtonClick}>
+      <CounterpartyContainer>
+        <OpenCounterpartyButton role="button" onClick={handleButtonClick}>
           {renderLogo(counterparty)}
-          <WalletContent>
+          <CounterpartyContent>
             <StyledTitle>{counterparty}</StyledTitle>
-            <WalletContentText>
+            <FundingSourceData>
               {renderBorrowRate(counterparty)} Borrow Rate (APR)
-            </WalletContentText>
-          </WalletContent>
+            </FundingSourceData>
+          </CounterpartyContent>
           <ButtonArrow isOpen={isMenuOpen} color="white"></ButtonArrow>
-        </WalletButton>
-      </WalletContainer>
+        </OpenCounterpartyButton>
+      </CounterpartyContainer>
       <div>
         <EarnFloatingMenu isOpen={isMenuOpen}>
           <ParagraphText>{renderDescription(counterparty)}</ParagraphText>
           <Details>
-            <Part>
-              <WalletContentText color={colors.tertiaryText} fontSize={12}>
+            <Detail>
+              <FundingSourceData color={colors.tertiaryText} fontSize={12}>
                 Principal Outstanding
-              </WalletContentText>
+              </FundingSourceData>
               <Title>{renderPrincipleOutstanding(counterparty)}</Title>
-              <WalletContentText
+              <FundingSourceData
                 color={colors.tertiaryText}
                 fontSize={12}
                 marginTop={16}
               >
                 Market Maker
-              </WalletContentText>
+              </FundingSourceData>
               {PoolList.map((pool) => {
                 return <Title>{pool}</Title>;
               })}
-            </Part>
-            <Part>
-              <WalletContentText color={colors.tertiaryText} fontSize={12}>
+            </Detail>
+            <Detail>
+              <FundingSourceData color={colors.tertiaryText} fontSize={12}>
                 Borrow Rate (APR)
-              </WalletContentText>
+              </FundingSourceData>
               <Title>{renderBorrowRate(counterparty)}</Title>
-              <WalletContentText
+              <FundingSourceData
                 color={colors.tertiaryText}
                 fontSize={12}
                 marginTop={16}
@@ -289,7 +290,7 @@ const CounterpartyDetail: React.FC<VaultStrategyExplainerProps> = ({
                     </BaseLink>
                   </div>
                 </div>
-              </WalletContentText>
+              </FundingSourceData>
               {PoolList.map((pool) => {
                 return (
                   <div className="d-flex align-items-center">
@@ -326,7 +327,7 @@ const CounterpartyDetail: React.FC<VaultStrategyExplainerProps> = ({
                   </div>
                 );
               })}
-            </Part>
+            </Detail>
           </Details>
         </EarnFloatingMenu>
       </div>

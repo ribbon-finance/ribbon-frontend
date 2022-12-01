@@ -95,6 +95,10 @@
     "rEARN": {
       "title": "R-EARN",
       "subtitle": "Ribbon Earn"
+    },
+    "rEARN-stETH": {
+      "title": "R-stETH-EARN",
+      "subtitle": "Ribbon stETH Earn"
     }
   },
   "TooltipExplanations": {

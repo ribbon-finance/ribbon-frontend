@@ -7,12 +7,17 @@ import React, {
 } from "react";
 import styled from "styled-components";
 import { AnimatePresence, motion } from "framer-motion";
-import colors from "shared/lib/designSystem/colors";
 import { SecondaryText, Title } from "shared/lib/designSystem";
 import SegmentPagination from "shared/lib/components/Common/SegmentPagination";
 
 import { useGlobalState } from "shared/lib/store/store";
 import { useAirtableEarnData } from "shared/lib/hooks/useAirtableEarnData";
+import {
+  VaultOptions,
+  getEarnSkipStorage,
+} from "shared/lib/constants/constants";
+import { t } from "i18next";
+import { getVaultColor } from "shared/lib/utils/vault";
 
 const ExplainerContainer = styled.div`
   display: flex;
@@ -53,17 +58,17 @@ const InfoDescription = styled(SecondaryText)`
   margin-bottom: 16px;
 `;
 
-const SkipButton = styled.div<{ isLast?: boolean }>`
+const SkipButton = styled.div<{ isLast?: boolean; color: string }>`
   display: flex;
   flex-direction: column;
   width: 120px;
   height: 40px;
   background: ${(props) =>
-    props.isLast ? `${colors.asset.USDC}14;` : `rgba(255, 255, 255, 0.08)`};
+    props.isLast ? `${props.color}14;` : `rgba(255, 255, 255, 0.08)`};
   border-radius: 100px;
   justify-content: center;
   text-align: center;
-  color: ${(props) => (props.isLast ? `${colors.asset.USDC}` : `#FFFFFF`)};
+  color: ${(props) => (props.isLast ? `${props.color}` : `#FFFFFF`)};
   border-radius: 100px;
   margin-right: auto;
   margin-left: auto;
@@ -78,30 +83,40 @@ const ExplanationStepList = ["step1", "step2", "step3"] as const;
 
 type ExplanationStep = typeof ExplanationStepList[number];
 
-const EarnStrategyExplainer: React.FC = () => {
-  const containerRef = useRef(null);
-  const [, setShowEarnVault] = useGlobalState("showEarnVault");
-  const { loading, maxYield } = useAirtableEarnData();
-  const [step, setStep] = useState<ExplanationStep>(ExplanationStepList[0]);
+interface EarnStrategyExplainerProps {
+  vaultOption: VaultOptions;
+}
 
+export const EarnStrategyExplainer: React.FC<EarnStrategyExplainerProps> = ({
+  vaultOption,
+}) => {
+  const containerRef = useRef(null);
+  const color = getVaultColor(vaultOption);
+  const [, setShowEarnVault] = useGlobalState("showEarnVault");
+  const { loading, baseYield, maxYield } = useAirtableEarnData(vaultOption);
+  const [step, setStep] = useState<ExplanationStep>(ExplanationStepList[0]);
+  const skipEarnExplanation = getEarnSkipStorage(vaultOption);
   const setShowOnboardingCallback = useCallback(() => {
     setShowEarnVault((prev) => ({ ...prev, show: true }));
-    localStorage.setItem("skipEARNExplanation", "true");
-  }, [setShowEarnVault]);
+    localStorage.setItem(skipEarnExplanation, "true");
+  }, [setShowEarnVault, skipEarnExplanation]);
 
   useEffect(() => {
-    const skip = Boolean(localStorage.getItem("skipEARNExplanation"));
+    const skip = Boolean(localStorage.getItem(skipEarnExplanation));
     if (skip) setShowOnboardingCallback();
-  }, [setShowOnboardingCallback]);
+  }, [setShowOnboardingCallback, skipEarnExplanation]);
 
-  const renderTitle = useCallback((s: ExplanationStep) => {
-    switch (s) {
-      case "step1":
-      case "step2":
-      case "step3":
-        return "R-EARN";
-    }
-  }, []);
+  const renderTitle = useCallback(
+    (s: ExplanationStep) => {
+      switch (s) {
+        case "step1":
+        case "step2":
+        case "step3":
+          return t(`shared:ProductCopies:${vaultOption}:title`);
+      }
+    },
+    [vaultOption]
+  );
 
   const renderDescription = useCallback(
     (s: ExplanationStep) => {
@@ -110,23 +125,35 @@ const EarnStrategyExplainer: React.FC = () => {
           return (
             <>
               Earn up to {loading ? "---" : (maxYield * 100).toFixed(2) + "%"}{" "}
-              yield with principal protection
+              yield with {vaultOption === "rEARN-stETH" && "a crypto native "}
+              principal protection
             </>
           );
+
         case "step2":
-          return (
-            <>Capitalise on intra-week ETH movements in either direction</>
-          );
+          switch (vaultOption) {
+            case "rEARN":
+              return (
+                <>Capitalise on intra-week ETH movements in either direction</>
+              );
+            case "rEARN-stETH":
+              return (
+                <>Monetize a bullish view on ETH, boosted by staking yield</>
+              );
+            default:
+              return <></>;
+          }
         case "step3":
           return (
             <>
-              Set it and forget it - deposit and start earning a base APY of 4%
-              with principal protection
+              Set it and forget it - deposit and start earning a base APY of{" "}
+              {loading ? "---" : `${(baseYield * 100).toFixed(2)}%`} with{" "}
+              {vaultOption === "rEARN-stETH" && "99.5%"} principal protection
             </>
           );
       }
     },
-    [loading, maxYield]
+    [baseYield, loading, maxYield, vaultOption]
   );
 
   const renderButton = useCallback(
@@ -137,6 +164,7 @@ const EarnStrategyExplainer: React.FC = () => {
           return (
             <SkipButton
               role="button"
+              color={color}
               onClick={() => setShowOnboardingCallback()}
             >
               Skip
@@ -146,6 +174,7 @@ const EarnStrategyExplainer: React.FC = () => {
           return (
             <SkipButton
               isLast={true}
+              color={color}
               role="button"
               onClick={() => setShowOnboardingCallback()}
             >
@@ -154,7 +183,7 @@ const EarnStrategyExplainer: React.FC = () => {
           );
       }
     },
-    [setShowOnboardingCallback]
+    [color, setShowOnboardingCallback]
   );
 
   const infoSection = useMemo(() => {

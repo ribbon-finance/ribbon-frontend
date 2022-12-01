@@ -5,10 +5,11 @@ import { BaseModalContentColumn, Title } from "shared/lib/designSystem";
 import BasicModal from "shared/lib/components/Common/BasicModal";
 import SegmentControl from "shared/lib/components/Common/SegmentControl";
 import { Strategy, Risk } from "../Details";
-import EarnPerformanceSection from "../../../pages/DepositPage/EarnPerformanceSection";
+import EarnPerformanceSection from "../EarnPerformanceSection";
 import EarnVaultActivity from "../../Vault/EarnVaultActivity";
 import Payoff from "../Payoff";
 import Counterparties from "../Counterparties";
+import FundingSource from "../FundingSource";
 import Fees from "../Fees";
 import { motion } from "framer-motion";
 import sizes from "shared/lib/designSystem/sizes";
@@ -112,7 +113,7 @@ export type Step =
   | "payoff"
   | "performance"
   | "risk"
-  | "counterparties"
+  | "funding source"
   | "activity"
   | "fees";
 
@@ -121,7 +122,7 @@ const StepList = [
   "payoff",
   "performance",
   "risk",
-  "counterparties",
+  "funding source",
   "activity",
   "fees",
 ] as const;
@@ -147,7 +148,7 @@ const EarnDetailsModal: React.FC<EarnDetailsModalProps> = ({
       case "strategy":
         return <Strategy setStep={setStep} vaultOption={vaultOption} />;
       case "payoff":
-        return <Payoff />;
+        return <Payoff vaultOption={vaultOption} />;
       case "risk":
         return <Risk vaultOption={vaultOption} />;
       case "performance":
@@ -168,10 +169,14 @@ const EarnDetailsModal: React.FC<EarnDetailsModalProps> = ({
             }}
           />
         );
-      case "counterparties":
-        return <Counterparties vaultOption={vaultOption} />;
+      case "funding source":
+        return vaultOption === "rEARN" ? (
+          <Counterparties vaultOption={vaultOption} />
+        ) : (
+          <FundingSource vaultOption={vaultOption} />
+        );
       case "fees":
-        return <Fees />;
+        return <Fees vaultOption={vaultOption} />;
     }
   }, [step, vaultOption]);
 
