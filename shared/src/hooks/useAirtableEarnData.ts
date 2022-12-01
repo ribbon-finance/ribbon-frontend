@@ -90,7 +90,7 @@ Airtable.configure({
 const baseName = (vault: VaultOptions) => {
   switch (vault) {
     case "rEARN":
-      return "EarnTest";
+      return "Earn";
     case "rEARN-stETH":
       return "EarnSTETH";
     default:

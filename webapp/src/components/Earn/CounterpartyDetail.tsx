@@ -258,13 +258,13 @@ const CounterpartyDetail: React.FC<VaultStrategyExplainerProps> = ({
                 marginTop={16}
               >
                 Market Maker
-              </WalletContentText>
+              </FundingSourceData>
               {PoolList.map((pool) => {
                 return <Title>{pool}</Title>;
               })}
-            </Part>
-            <Part>
-              <WalletContentText color={colors.tertiaryText} fontSize={12}>
+            </Detail>
+            <Detail>
+              <FundingSourceData color={colors.tertiaryText} fontSize={12}>
                 Borrow Rate (APR)
               </FundingSourceData>
               <Title>{renderBorrowRate(counterparty)}</Title>
@@ -290,7 +290,7 @@ const CounterpartyDetail: React.FC<VaultStrategyExplainerProps> = ({
                     </BaseLink>
                   </div>
                 </div>
-              </WalletContentText>
+              </FundingSourceData>
               {PoolList.map((pool) => {
                 return (
                   <div className="d-flex align-items-center">
@@ -327,7 +327,7 @@ const CounterpartyDetail: React.FC<VaultStrategyExplainerProps> = ({
                   </div>
                 );
               })}
-            </Part>
+            </Detail>
           </Details>
         </EarnFloatingMenu>
       </div>
