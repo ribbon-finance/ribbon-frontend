@@ -1,5 +1,5 @@
 import { BigNumber } from "ethers";
-import { PoolOptions } from "../constants/constants";
+import { PoolOptions } from "shared/lib/constants/lendConstants";
 
 export interface UnconnectedPoolData {
   deposits: BigNumber;

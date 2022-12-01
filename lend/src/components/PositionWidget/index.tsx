@@ -1,12 +1,12 @@
 import React, { useEffect, useMemo } from "react";
 import styled from "styled-components";
-import { PoolOptions, PoolVersion } from "../../constants/constants";
+import { PoolVersion, PoolOptions } from "shared/lib/constants/lendConstants";
 import { getPoolColor } from "../../utils/pool";
 import AssetCircleContainer from "shared/lib/components/Common/AssetCircleContainer";
 import { getAssetDecimals, getAssetLogo } from "../../utils/asset";
 import { Title } from "../../designSystem";
 import colors from "shared/lib/designSystem/colors";
-import { isPracticallyZero } from "../../utils/math";
+import { isPracticallyZero } from "shared/lib/utils/math";
 import sizes from "../../designSystem/sizes";
 import { usePoolsData } from "../../hooks/web3DataContext";
 import { components } from "../../designSystem/components";

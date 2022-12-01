@@ -79,10 +79,6 @@ export const NATIVE_TOKENS = ["WETH", "WAVAX", "SOL"];
 export const isNativeToken = (token: string): boolean =>
   NATIVE_TOKENS.includes(token);
 
-export const PoolList = [
-  "0x0Aea75705Be8281f4c24c3E954D1F8b1D0f8044C",
-  "0x3CD0ecf1552D135b8Da61c7f44cEFE93485c616d",
-];
 export const VaultVersionList = ["earn", "v2", "v1"] as const;
 export type VaultVersion = typeof VaultVersionList[number];
 export type VaultVersionExcludeV1 = Exclude<VaultVersion, "v1">;

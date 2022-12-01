@@ -6,9 +6,9 @@ import {
   Chains,
   getAssets,
   getExplorerURI,
-  PoolOptions,
   getPoolChain,
 } from "../../constants/constants";
+import { PoolOptions } from "shared/lib/constants/lendConstants";
 import { SecondaryText, Title } from "shared/lib/designSystem";
 import colors from "shared/lib/designSystem/colors";
 import { PoolActivity } from "../../models/pool";

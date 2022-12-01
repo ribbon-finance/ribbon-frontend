@@ -8,60 +8,36 @@ import addresses from "shared/lib/constants/externalAddresses.json";
 import wintermute from "../assets/icons/makers/wintermute.svg";
 import folkvang from "../assets/icons/makers/folkvang.svg";
 import ExternalLinkIcon from "../components/Common/ExternalLinkIcon";
+import {
+  PoolVersion,
+  PoolAddressMap,
+  PoolOptions,
+} from "shared/lib/constants/lendConstants";
+import { MAINNET_NAMES, NETWORKS } from "shared/lib/constants/constants";
 
 export const secondsPerYear = 31536000;
-
-export type NETWORK_NAMES = "mainnet";
-export type TESTNET_NAMES = "kovan";
-export type MAINNET_NAMES = Exclude<NETWORK_NAMES, TESTNET_NAMES>;
 
 export enum Chains {
   NotSelected,
   Ethereum,
 }
 
-export const NETWORKS: Record<number, NETWORK_NAMES> = {
-  [CHAINID.ETH_MAINNET]: "mainnet",
-};
-
-export const CHAINID_TO_NATIVE_TOKENS: Record<CHAINID, Assets> = {
-  [CHAINID.ETH_MAINNET]: "WETH",
-};
-export const READABLE_NETWORK_NAMES: Record<CHAINID, string> = {
-  [CHAINID.ETH_MAINNET]: "Ethereum",
-};
-
-export const isEthNetwork = (chainId: number): boolean =>
-  chainId === CHAINID.ETH_MAINNET;
-
-export const isEthPool = (pool: string) =>
-  isEthNetwork(PoolAddressMap[pool as PoolOptions].chainId);
-
 export const getPoolChain = (pool: string): Chains => {
-  if (isEthPool(pool)) return Chains.Ethereum;
-  else throw new Error(`Unknown network for ${pool}`);
+  return Chains.Ethereum;
 };
 
 export const getPoolNetwork = (pool: string): MAINNET_NAMES => {
-  if (isEthPool(pool)) return "mainnet";
-  else throw new Error(`Unknown network for ${pool}`);
+  return "mainnet";
 };
 
 export const NATIVE_TOKENS = ["WETH"];
 export const isNativeToken = (token: string): boolean =>
   NATIVE_TOKENS.includes(token);
 
-export const PoolVersionList = ["lend"] as const;
-export type PoolVersion = typeof PoolVersionList[number];
+const DepositDisabledPoolList: PoolOptions[] = ["folkvang"];
 
-export const EVMPoolList = ["wintermute", "folkvang"] as const;
-
-const AllPoolOptions = [...EVMPoolList];
-
-export type PoolOptions = typeof AllPoolOptions[number];
-
-// @ts-ignore
-export const PoolList: PoolOptions[] = EVMPoolList;
+export const isDepositDisabledPool = (pool: PoolOptions): boolean =>
+  DepositDisabledPoolList.includes(pool);
 
 export const GAS_LIMITS: {
   [pool in PoolOptions]: Partial<{
@@ -79,22 +55,6 @@ export const GAS_LIMITS: {
       deposit: 80000,
       withdraw: 100000,
     },
-  },
-};
-
-export const PoolAddressMap: {
-  [pool in PoolOptions]: {
-    lend: string;
-    chainId: number;
-  };
-} = {
-  wintermute: {
-    lend: deployment.mainnet.wintermute,
-    chainId: CHAINID.ETH_MAINNET,
-  },
-  folkvang: {
-    lend: deployment.mainnet.folkvang,
-    chainId: CHAINID.ETH_MAINNET,
   },
 };
 
@@ -117,8 +77,6 @@ export const EVM_BLOCKCHAIN_EXPLORER_NAME: Record<number, string> = {
 export const EVM_BLOCKCHAIN_EXPLORER_URI: Record<number, string> = {
   [CHAINID.ETH_MAINNET]: "https://etherscan.io",
 };
-
-export const AVAX_BRIDGE_URI = "https://bridge.avax.network";
 
 export const getExplorerName = (chain: Chains) => {
   return EVM_BLOCKCHAIN_EXPLORER_NAME[CHAINS_TO_ID[chain]];
@@ -214,12 +172,6 @@ interface PoolDetails {
   contract: string;
   twitter: string;
   website: string;
-
-  credit: {
-    rating: string;
-    borrowLimit: number;
-    content: string | JSX.Element;
-  };
 }
 
 export const PoolDetailsMap: Record<PoolOptions, PoolDetails> = {
@@ -266,55 +218,6 @@ export const PoolDetailsMap: Record<PoolOptions, PoolDetails> = {
     contract: "https://etherscan.io/address/" + deployment.mainnet.wintermute,
     twitter: "https://twitter.com/wintermute_t",
     website: "https://www.wintermute.com",
-    credit: {
-      rating: "A",
-      borrowLimit: 223000000,
-      content: (
-        <>
-          <p>
-            Credora provides real-time privacy preserving portfolio risk metrics
-            for lenders, and has built a Credit Evaluation Methodology for
-            digital asset firms.
-          </p>
-          <p>
-            The evaluation is split into three main parts, totaling{" "}
-            <strong>[1000]</strong> points in aggregate, which is then converted
-            to a letter rating:
-          </p>
-          <p>
-            <strong>Operations and Due Diligence [200]</strong>: Evaluation of a
-            borrower's corporate and operational risk
-          </p>
-          <p>
-            <strong>Financial Analysis [400]</strong>: Evaluation of a
-            borrower's reported financial data
-          </p>
-          <p>
-            <strong>Risk Monitoring [400]</strong>: Real-time evaluation of a
-            borrower's asset and liability visibility
-          </p>
-          <p>
-            Credora relies on these underlying factors, as they have high
-            correlation to a trading firm's creditworthiness. Through real-time
-            credit evaluation, Credora infrastructure supports data-driven
-            lending for any pool of capital. Credora infrastructure and credit
-            evaluations have successfully facilitated over $850M in credit and
-            currently monitors $3.85B in assets.
-          </p>
-          <p>
-            Read more{" "}
-            <a
-              href="https://credora.gitbook.io/credit-methodology/SbLmTxogePkrzsF4z9IK"
-              target="_blank"
-              rel="noreferrer noopener"
-            >
-              here
-              <ExternalLinkIcon />
-            </a>
-          </p>
-        </>
-      ),
-    },
   },
   folkvang: {
     name: "Folkvang",
@@ -349,54 +252,90 @@ export const PoolDetailsMap: Record<PoolOptions, PoolDetails> = {
     contract: "https://etherscan.io/address/" + deployment.mainnet.folkvang,
     twitter: "https://twitter.com/folkvangtrading",
     website: "https://folkvang.io",
-    credit: {
-      rating: "AA",
-      borrowLimit: 105000000,
-      content: (
-        <>
-          <p>
-            Credora provides real-time privacy preserving portfolio risk metrics
-            for lenders, and has built a Credit Evaluation Methodology for
-            digital asset firms.
-          </p>
-          <p>
-            The evaluation is split into three main parts, totaling{" "}
-            <strong>[1000]</strong> points in aggregate, which is then converted
-            to a letter rating:
-          </p>
-          <p>
-            <strong>Operations and Due Diligence [200]</strong>: Evaluation of a
-            borrower's corporate and operational risk
-          </p>
-          <p>
-            <strong>Financial Analysis [400]</strong>: Evaluation of a
-            borrower's reported financial data
-          </p>
-          <p>
-            <strong>Risk Monitoring [400]</strong>: Real-time evaluation of a
-            borrower's asset and liability visibility
-          </p>
-          <p>
-            Credora relies on these underlying factors, as they have high
-            correlation to a trading firm's creditworthiness. Through real-time
-            credit evaluation, Credora infrastructure supports data-driven
-            lending for any pool of capital. Credora infrastructure and credit
-            evaluations have successfully facilitated over $850M in credit and
-            currently monitors $3.85B in assets.
-          </p>
-          <p>
-            Read more{" "}
-            <a
-              href="https://credora.gitbook.io/credit-methodology/SbLmTxogePkrzsF4z9IK"
-              target="_blank"
-              rel="noreferrer noopener"
-            >
-              here
-              <ExternalLinkIcon />
-            </a>
-          </p>
-        </>
-      ),
-    },
   },
 };
+
+export const CreditRating: JSX.Element = (
+  <>
+    <p>
+      Credora provides real-time privacy preserving portfolio risk metrics for
+      lenders, and has built a Credit Evaluation Methodology for digital asset
+      firms.
+    </p>
+    <p>
+      The evaluation is split into three main parts, totaling{" "}
+      <strong>[1000]</strong> points in aggregate, which is then converted to a
+      letter rating:
+    </p>
+    <p>
+      <strong>Operations and Due Diligence [200]</strong>: Evaluation of a
+      borrower's corporate and operational risk
+    </p>
+    <p>
+      <strong>Financial Analysis [400]</strong>: Evaluation of a borrower's
+      reported financial data
+    </p>
+    <p>
+      <strong>Risk Monitoring [400]</strong>: Real-time evaluation of a
+      borrower's asset and liability visibility
+    </p>
+    <p>
+      Credora relies on these underlying factors, as they have high correlation
+      to a trading firm's creditworthiness. Through real-time credit evaluation,
+      Credora infrastructure supports data-driven lending for any pool of
+      capital. Credora infrastructure and credit evaluations have successfully
+      facilitated over $850M in credit and currently monitors $3.85B in assets.
+    </p>
+    <p>
+      Read more{" "}
+      <a
+        href="https://credora.gitbook.io/credit-methodology/SbLmTxogePkrzsF4z9IK"
+        target="_blank"
+        rel="noreferrer noopener"
+      >
+        here
+        <ExternalLinkIcon />
+      </a>
+    </p>
+  </>
+);
+
+export const Disclaimers: JSX.Element = (
+  <>
+    <p>
+      <strong>Deposit Risk</strong>: You are aware of and accept that the USDC
+      held in the Vault on your behalf is not subject to deposit insurance
+      protection, investor insurance protection, or any other relevant
+      protection in any jurisdiction.
+    </p>
+    <p>
+      <strong>USDC Risk</strong>: You are aware of and accept the risk of using
+      USDC in https://lend.ribbon.finance/app. We are not responsible for any
+      losses due to any actions performed by the USDC Issuer (Circle Internet
+      Financial, LLC.) At any point in time, the Issuer may, with or without
+      notice, at its sole discretion, "block" this Vault Smart Contract address,
+      associated addresses or your address. USDC may be permanently frozen,
+      resulting in a loss of funds.
+    </p>
+    <p>
+      <strong>Other Risks</strong>: You are aware of and accept the risks
+      further detailed in the{" "}
+      <a
+        href="https://www.ribbon.finance/terms"
+        target="_blank"
+        rel="noreferrer noopener"
+      >
+        Terms and Conditions
+      </a>{" "}
+      and the{" "}
+      <a
+        href="https://www.ribbon.finance/policy"
+        target="_blank"
+        rel="noreferrer noopener"
+      >
+        Privacy Policy
+      </a>
+      .
+    </p>
+  </>
+);

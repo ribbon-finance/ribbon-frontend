@@ -6,7 +6,7 @@ import { impersonateAddress } from "shared/lib/utils/development";
 import { Chains, isNativeToken } from "../constants/constants";
 import { ERC20Token } from "shared/lib/models/eth";
 import { getERC20Token } from "shared/lib/hooks/useERC20Token";
-import { isProduction } from "../utils/env";
+import { isProduction } from "shared/lib/utils/env";
 import { usePendingTransactions } from "shared/lib/hooks/pendingTransactionsContext";
 import useWeb3Wallet from "shared/lib/hooks/useWeb3Wallet";
 import { isEVMChain } from "../utils/chains";

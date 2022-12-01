@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
 import { usePoolsData } from "./web3DataContext";
-import { PoolList } from "../constants/constants";
+import { PoolList } from "shared/lib/constants/lendConstants";
 import { BigNumber } from "ethers";
 import useWeb3Wallet from "./useWeb3Wallet";
 

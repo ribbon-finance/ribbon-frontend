@@ -15,9 +15,14 @@ import { BoostIcon, ExternalIcon } from "shared/lib/assets/icons/icons";
 import { Counterparty } from "./Counterparties";
 import { formatUnits } from "ethers/lib/utils";
 import { useAirtableEarnData } from "shared/lib/hooks/useAirtableEarnData";
+import { useAirtableEarnLoanAllocation } from "shared/lib/hooks/useAirtableEarnLoanAllocation";
+import { useCredoraData } from "shared/lib/hooks/useCredoraData";
 import { useV2VaultData } from "shared/lib/hooks/web3DataContext";
 import { VaultOptions } from "shared/lib/constants/constants";
-
+import { PoolList } from "shared/lib/constants/lendConstants";
+import TooltipExplanation from "shared/lib/components/Common/TooltipExplanation";
+import HelpInfo from "shared/lib/components/Common/HelpInfo";
+import useLoadingText from "shared/lib/hooks/useLoadingText";
 const BoostLogoContainer = styled.div`
   display: flex;
   align-items: center;
@@ -112,6 +117,9 @@ const CounterpartyDetail: React.FC<VaultStrategyExplainerProps> = ({
 }) => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const { borrowRate, loading } = useAirtableEarnData(vaultOption);
+  const { loading: credoraLoading, data } = useCredoraData();
+  const { records } = useAirtableEarnLoanAllocation();
+  const loadingText = useLoadingText();
   const onToggleMenu = useCallback(() => {
     setIsMenuOpen((open) => !open);
   }, []);
@@ -139,51 +147,56 @@ const CounterpartyDetail: React.FC<VaultStrategyExplainerProps> = ({
     }
   }, []);
 
-  const renderDescription = useCallback((s: Counterparty) => {
-    switch (s) {
-      case "R-EARN DIVERSIFIED":
-        return (
-          <>
-            R-Earn diversified is a basket of leading accredited crypto market
-            makers whose credit assessment passed strict requirements set by{" "}
-            <BaseLink
-              color="white"
-              target="_blank"
-              rel="noreferrer noopener"
-              to="https://credora.io/"
-            >
-              <PrimaryText lineHeight={20} fontSize={14}>
-                Credora
-              </PrimaryText>
-            </BaseLink>
-            , the leading real-time credit underwriter in crypto. 50% of the
-            capital assigned to this pool is lent to{" "}
-            <BaseLink
-              color="white"
-              target="_blank"
-              rel="noreferrer noopener"
-              to="https://www.wintermute.com/"
-            >
-              <PrimaryText lineHeight={20} fontSize={14}>
-                Wintermute
-              </PrimaryText>
-            </BaseLink>{" "}
-            and 50% is lent to{" "}
-            <BaseLink
-              color="white"
-              target="_blank"
-              rel="noreferrer noopener"
-              to="https://folkvang.io/"
-            >
-              <PrimaryText lineHeight={20} fontSize={14}>
-                Folkvang
-              </PrimaryText>
-            </BaseLink>
-            .
-          </>
-        );
-    }
-  }, []);
+  const renderDescription = useCallback(
+    (s: Counterparty) => {
+      switch (s) {
+        case "R-EARN DIVERSIFIED":
+          return (
+            <>
+              R-Earn diversified is a basket of leading accredited crypto market
+              makers whose credit assessment passed strict requirements set by{" "}
+              <BaseLink
+                color="white"
+                target="_blank"
+                rel="noreferrer noopener"
+                to="https://credora.io/"
+              >
+                <PrimaryText lineHeight={20} fontSize={14}>
+                  Credora
+                </PrimaryText>
+              </BaseLink>
+              , the leading real-time credit underwriter in crypto.{" "}
+              {records.loading ? "---" : `${records.responses.wintermute}%`} of
+              the capital assigned to this pool is lent to{" "}
+              <BaseLink
+                color="white"
+                target="_blank"
+                rel="noreferrer noopener"
+                to="https://www.wintermute.com/"
+              >
+                <PrimaryText lineHeight={20} fontSize={14}>
+                  Wintermute
+                </PrimaryText>
+              </BaseLink>{" "}
+              and {records.loading ? "---" : `${records.responses.folkvang}%`}{" "}
+              is lent to{" "}
+              <BaseLink
+                color="white"
+                target="_blank"
+                rel="noreferrer noopener"
+                to="https://folkvang.io/"
+              >
+                <PrimaryText lineHeight={20} fontSize={14}>
+                  Folkvang
+                </PrimaryText>
+              </BaseLink>
+              .
+            </>
+          );
+      }
+    },
+    [records.loading, records.responses.folkvang, records.responses.wintermute]
+  );
 
   const renderPrincipleOutstanding = useCallback(
     (s: Counterparty) => {
@@ -245,12 +258,13 @@ const CounterpartyDetail: React.FC<VaultStrategyExplainerProps> = ({
                 marginTop={16}
               >
                 Market Maker
-              </FundingSourceData>
-              <Title>{"Wintermute"}</Title>
-              <Title>{"Folkvang"}</Title>
-            </Detail>
-            <Detail>
-              <FundingSourceData color={colors.tertiaryText} fontSize={12}>
+              </WalletContentText>
+              {PoolList.map((pool) => {
+                return <Title>{pool}</Title>;
+              })}
+            </Part>
+            <Part>
+              <WalletContentText color={colors.tertiaryText} fontSize={12}>
                 Borrow Rate (APR)
               </FundingSourceData>
               <Title>{renderBorrowRate(counterparty)}</Title>
@@ -276,11 +290,44 @@ const CounterpartyDetail: React.FC<VaultStrategyExplainerProps> = ({
                     </BaseLink>
                   </div>
                 </div>
-              </FundingSourceData>
-              {/* <Title>{renderCreditRating(counterparty)}</Title> */}
-              <Title>A</Title>
-              <Title>AA</Title>
-            </Detail>
+              </WalletContentText>
+              {PoolList.map((pool) => {
+                return (
+                  <div className="d-flex align-items-center">
+                    {credoraLoading ? (
+                      loadingText
+                    ) : (
+                      <>
+                        <Title>{data[pool].creditScoreRating}</Title>
+                        {data[pool].creditScoreRating === "UNRATED" &&
+                          pool === "folkvang" && (
+                            <TooltipExplanation
+                              explanation={
+                                <>
+                                  Lending to Folkvang has been temporarily
+                                  disabled. Loans to the Wintermute pool are
+                                  still open.
+                                </>
+                              }
+                              renderContent={({ ref, ...triggerHandler }) => (
+                                <HelpInfo
+                                  containerRef={ref}
+                                  {...triggerHandler}
+                                >
+                                  i
+                                </HelpInfo>
+                              )}
+                              learnMoreURL={
+                                "https://twitter.com/folkvangtrading/status/1591360107094626304"
+                              }
+                            />
+                          )}
+                      </>
+                    )}
+                  </div>
+                );
+              })}
+            </Part>
           </Details>
         </EarnFloatingMenu>
       </div>
