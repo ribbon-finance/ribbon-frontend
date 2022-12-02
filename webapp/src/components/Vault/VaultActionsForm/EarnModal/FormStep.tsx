@@ -335,8 +335,8 @@ const DepositAssetsDropdownItem = styled.div<{
 `;
 
 const FormStep: React.FC<{
-  onClickUpdateInput: (amount: string) => void;
-  inputAmount: string;
+  onClickUpdateInput: (amount: string | undefined) => void;
+  inputAmount: string | undefined;
   actionType: ActionType;
   onClickUpdateWithdrawOption: (withdrawOption: V2WithdrawOption) => void;
   onClickConfirmButton: () => Promise<void>;
@@ -475,7 +475,7 @@ const FormStep: React.FC<{
   }, [vaultAccount]);
 
   const isInputNonZero = useMemo((): boolean => {
-    return parseFloat(inputAmount) > 0;
+    return inputAmount ? parseFloat(inputAmount) > 0 : true;
   }, [inputAmount]);
 
   const renderWithdrawOptionExplanation = useCallback(
@@ -640,7 +640,7 @@ const FormStep: React.FC<{
   const error = useMemo((): VaultValidationErrors | undefined => {
     try {
       /** Check block with input requirement */
-      if (isInputNonZero && !loading && active) {
+      if (isInputNonZero && inputAmount && !loading && active) {
         const amountBigNumber = parseUnits(inputAmount, decimals);
         switch (actionType) {
           case "deposit":

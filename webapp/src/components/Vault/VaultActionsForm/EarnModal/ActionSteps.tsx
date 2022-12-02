@@ -85,12 +85,12 @@ const ActionSteps: React.FC<ActionStepsProps> = ({
   }, [v2WithdrawOption]);
 
   const [minSTETHAmount, setMinSTETHAmount] = useState<BigNumber | undefined>();
+  const [txhash, setTxhash] = useState<string | undefined>();
+  const [inputAmount, setInputAmount] = useState<string | undefined>();
 
   const stETHDepositHelper = useSTETHDepositHelper(vaultVersion);
 
   const { contract, getMinSTETHAmount } = useLidoCurvePool();
-
-  const [txhash, setTxhash] = useState("");
 
   const earnVault = useVaultContract(vaultOption);
 
@@ -114,14 +114,14 @@ const ActionSteps: React.FC<ActionStepsProps> = ({
     vaultOption,
     withdrawals,
   ]);
-
-  const [inputAmount, setInputAmount] = useState<string>("");
   const [withdrawOption, setWithdrawOption] =
     useState<V2WithdrawOption>(v2WithdrawOption);
   const [signature, setSignature] = useState<DepositSignature | undefined>();
   const [amount, amountStr] = useMemo(() => {
     try {
-      const amount = parseUnits(inputAmount, decimals);
+      const amount = inputAmount
+        ? parseUnits(inputAmount, decimals)
+        : BigNumber.from(0);
       return [amount, amount.toString()];
     } catch (err) {
       return [BigNumber.from(0), "0"];
@@ -154,7 +154,7 @@ const ActionSteps: React.FC<ActionStepsProps> = ({
   }, [amount, asset, depositAsset, getMinSTETHAmount, vaultOption]);
 
   const cleanupEffects = useCallback(() => {
-    setTxhash("");
+    setTxhash(undefined);
     setInputAmount("");
   }, []);
 
@@ -180,7 +180,7 @@ const ActionSteps: React.FC<ActionStepsProps> = ({
   useEffect(() => {
     // we check that the txhash and check if it had succeed
     // so we can dismiss the modal
-    if (step === STEPS.submittedStep && txhash !== "") {
+    if (step === STEPS.submittedStep && txhash) {
       const pendingTx = pendingTransactions.find((tx) => tx.txhash === txhash);
       if (pendingTx && pendingTx.status) {
         setTimeout(() => {
@@ -322,7 +322,7 @@ const ActionSteps: React.FC<ActionStepsProps> = ({
     1: (
       <PreviewStep
         actionType={actionType}
-        amount={BigNumber.from(amountStr)}
+        amount={amount}
         estimatedSTETHDepositAmount={
           minSTETHAmount
             ? `~${parseFloat(formatUnits(minSTETHAmount, 18)).toFixed(4)} stETH`
