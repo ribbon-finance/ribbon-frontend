@@ -16,7 +16,7 @@ import { ActionType, V2WithdrawOption, V2WithdrawOptionList } from "./types";
 import { formatBigNumber, isPracticallyZero } from "shared/lib/utils/math";
 import {
   getAssetColor,
-  getAssetDecimals,
+  getAssetDefaultSignificantDecimals,
   getAssetDisplay,
   getAssetLogo,
 } from "shared/lib/utils/asset";
@@ -129,7 +129,6 @@ const FormTitle = styled(Title)<{ delay?: number; show?: boolean }>`
 
 const StyledTitle = styled(Title)<{ color?: string }>`
   color: ${(props) => props.color};
-  text-transform: none;
 `;
 
 const WarningContainer = styled.div<{
@@ -373,7 +372,7 @@ const FormStep: React.FC<{
     },
     loading,
   } = useV2VaultData(vaultOption);
-
+  const decimalPlaces = getAssetDefaultSignificantDecimals(asset);
   const tokenAllowance = useTokenAllowance(
     isNativeToken(asset)
       ? undefined
@@ -716,13 +715,12 @@ const FormStep: React.FC<{
 
   const detailRows: ActionDetail[] = useMemo(() => {
     const actionDetails: ActionDetail[] = [];
-
-    const decimals = getAssetDecimals(asset);
     switch (actionType) {
       case "deposit":
         actionDetails.push({
           key: "Current Position",
           value: `${currency(formatUnits(investedInStrategy, decimals), {
+            precision: decimalPlaces,
             symbol: "",
           })} ${assetDisplay}`,
           tooltip: {
@@ -734,6 +732,7 @@ const FormStep: React.FC<{
         actionDetails.push({
           key: "Wallet Balance",
           value: `${currency(formatUnits(userAssetBalance, decimals), {
+            precision: decimalPlaces,
             symbol: "",
           }).format()} ${assetDisplay}`,
           tooltip: {
@@ -746,6 +745,7 @@ const FormStep: React.FC<{
         actionDetails.push({
           key: "Vault Capacity",
           value: `${currency(formatUnits(cap.sub(totalBalance), decimals), {
+            precision: decimalPlaces,
             symbol: "",
           }).format()} ${assetDisplay}`,
           error: "capacityOverflow",
@@ -794,7 +794,7 @@ const FormStep: React.FC<{
         }
         if (withdrawOption === "instant") {
           actionDetails.push({
-            key: "Instant Withdraw Limit",
+            key: "Withdraw Limit",
             value: `${formatBigNumber(
               depositBalanceInAsset,
               decimals
@@ -816,16 +816,17 @@ const FormStep: React.FC<{
     }
     return actionDetails;
   }, [
-    asset,
     actionType,
     investedInStrategy,
+    decimals,
+    decimalPlaces,
+    assetDisplay,
     userAssetBalance,
     cap,
     totalBalance,
     strategyStartTime,
     withdrawOption,
     lockedBalanceInAsset,
-    assetDisplay,
     withdrawalAmount,
     withdrawalDate,
     depositBalanceInAsset,
@@ -895,7 +896,7 @@ const FormStep: React.FC<{
   const handleInputChange = useCallback(
     (e: React.ChangeEvent<HTMLInputElement>) => {
       const rawInput = e.target.value;
-      onClickUpdateInput(rawInput);
+      onClickUpdateInput(rawInput && parseFloat(rawInput) < 0 ? "" : rawInput);
     },
     [onClickUpdateInput]
   );

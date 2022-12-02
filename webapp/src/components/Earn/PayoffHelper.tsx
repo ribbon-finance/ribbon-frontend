@@ -32,9 +32,6 @@ export const getOptionMoneyness = (
   performance: number,
   vaultOption: VaultOptions
 ) => {
-  if (hoverPercentage) {
-    console.log(hoverPercentage / 100 + 1 + lowerBarrierPercentage);
-  }
   switch (vaultOption) {
     case "rEARN":
       if (hoverPercentage) {

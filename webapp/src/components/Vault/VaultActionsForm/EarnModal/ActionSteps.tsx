@@ -194,6 +194,11 @@ const ActionSteps: React.FC<ActionStepsProps> = ({
     onChangeStep(STEPS.previewStep);
   };
 
+  const handleSetInputAmount = useCallback((inputAmount) => {
+    setInputAmount(
+      inputAmount && parseFloat(inputAmount) < 0 ? "" : inputAmount
+    );
+  }, []);
   const handleSwapCurveAndDepositSTETH = useCallback(async () => {
     // Subtract 0.5% slippage from exchange rate to get min steth
     const minSTETHAmount = await getMinSTETHAmount(amount);
@@ -303,7 +308,7 @@ const ActionSteps: React.FC<ActionStepsProps> = ({
       <FormStep
         actionType={actionType}
         inputAmount={inputAmount}
-        onClickUpdateInput={setInputAmount}
+        onClickUpdateInput={handleSetInputAmount}
         onClickUpdateWithdrawOption={setWithdrawOption}
         onClickConfirmButton={handleClickNextButton}
         asset={asset}
