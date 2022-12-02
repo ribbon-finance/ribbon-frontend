@@ -88,6 +88,10 @@
       "title": "T-SPELL-C",
       "subtitle": "SPELL Covered Call"
     },
+    "rsAMB-TSRY": {
+      "title": "T-sAMB-C",
+      "subtitle": "sAMB Covered Call"
+    },
     "rAPE-THETA": {
       "title": "T-APE-C",
       "subtitle": "APE Covered Call"
