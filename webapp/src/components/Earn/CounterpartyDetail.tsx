@@ -11,17 +11,18 @@ import colors from "shared/lib/designSystem/colors";
 import theme from "shared/lib/designSystem/theme";
 import EarnFloatingMenu from "./FloatingMenu";
 import ButtonArrow from "shared/lib/components/Common/ButtonArrow";
-import {
-  OrthogonalLogo,
-  AlamedaResearchLogo,
-  CitadelLogo,
-} from "shared/lib/assets/icons/logo";
 import { BoostIcon, ExternalIcon } from "shared/lib/assets/icons/icons";
 import { Counterparty } from "./Counterparties";
 import { formatUnits } from "ethers/lib/utils";
-import { useAirtable } from "shared/lib/hooks/useAirtable";
+import { useAirtableEarnData } from "shared/lib/hooks/useAirtableEarnData";
+import { useAirtableEarnLoanAllocation } from "shared/lib/hooks/useAirtableEarnLoanAllocation";
+import { useCredoraData } from "shared/lib/hooks/useCredoraData";
 import { useV2VaultData } from "shared/lib/hooks/web3DataContext";
-
+import { VaultOptions } from "shared/lib/constants/constants";
+import { PoolList } from "shared/lib/constants/lendConstants";
+import TooltipExplanation from "shared/lib/components/Common/TooltipExplanation";
+import HelpInfo from "shared/lib/components/Common/HelpInfo";
+import useLoadingText from "shared/lib/hooks/useLoadingText";
 const BoostLogoContainer = styled.div`
   display: flex;
   align-items: center;
@@ -41,7 +42,7 @@ const ParagraphText = styled(SecondaryText)`
   margin-bottom: 16px;
 `;
 
-const WalletContent = styled.div`
+const CounterpartyContent = styled.div`
   display: flex;
   flex-direction: column;
   align-items: left;
@@ -52,7 +53,7 @@ const WalletContent = styled.div`
   }
 `;
 
-const WalletContentText = styled(SecondaryText)<{
+const FundingSourceData = styled(SecondaryText)<{
   marginTop?: number;
 }>`
   color: ${colors.tertiaryText};
@@ -64,7 +65,7 @@ const WalletContentText = styled(SecondaryText)<{
 const StyledTitle = styled(Title)`
   text-align: left;
 `;
-const WalletButton = styled(BaseButton)`
+const OpenCounterpartyButton = styled(BaseButton)`
   position: relative;
   display: flex;
   justify-content: space-between;
@@ -81,7 +82,7 @@ const WalletButton = styled(BaseButton)`
   }
 `;
 
-const WalletContainer = styled.div`
+const CounterpartyContainer = styled.div`
   position: relative;
   display: flex;
   justify-content: space-between;
@@ -98,7 +99,7 @@ const Details = styled.div`
   width: 100%;
 `;
 
-const Part = styled.div`
+const Detail = styled.div`
   display: flex;
   flex-direction: column;
   width: 50%;
@@ -107,13 +108,18 @@ const Part = styled.div`
 
 interface VaultStrategyExplainerProps {
   counterparty: Counterparty;
+  vaultOption: VaultOptions;
 }
 
 const CounterpartyDetail: React.FC<VaultStrategyExplainerProps> = ({
   counterparty,
+  vaultOption,
 }) => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const { borrowRate, loading } = useAirtable();
+  const { borrowRate, loading } = useAirtableEarnData(vaultOption);
+  const { loading: credoraLoading, data } = useCredoraData();
+  const { records } = useAirtableEarnLoanAllocation();
+  const loadingText = useLoadingText();
   const onToggleMenu = useCallback(() => {
     setIsMenuOpen((open) => !open);
   }, []);
@@ -125,7 +131,8 @@ const CounterpartyDetail: React.FC<VaultStrategyExplainerProps> = ({
   const {
     loading: vaultLoading,
     data: { totalBalance },
-  } = useV2VaultData("rEARN");
+  } = useV2VaultData(vaultOption);
+
   const renderLogo = useCallback((s: Counterparty) => {
     switch (s) {
       case "R-EARN DIVERSIFIED":
@@ -137,112 +144,59 @@ const CounterpartyDetail: React.FC<VaultStrategyExplainerProps> = ({
             />
           </BoostLogoContainer>
         );
-      case "ORTHOGONAL":
-        return <OrthogonalLogo />;
-      case "ALAMEDA RESEARCH":
-        return <AlamedaResearchLogo />;
-      case "CITADEL":
-        return <CitadelLogo />;
     }
   }, []);
 
-  const renderAPR = useCallback((s: Counterparty) => {
-    switch (s) {
-      case "R-EARN DIVERSIFIED":
-        return <>---</>;
-      case "ORTHOGONAL":
-        return <>7.01</>;
-      case "ALAMEDA RESEARCH":
-        return <>7.02</>;
-      case "CITADEL":
-        return <>7.03</>;
-    }
-  }, []);
-
-  const renderDescription = useCallback((s: Counterparty) => {
-    switch (s) {
-      case "R-EARN DIVERSIFIED":
-        return (
-          <>
-            R-Earn diversified is a basket of leading accredited crypto market
-            makers whose credit assessment passed strict requirements set by{" "}
-            <BaseLink
-              color="white"
-              target="_blank"
-              rel="noreferrer noopener"
-              to="https://credora.io/"
-            >
-              <PrimaryText lineHeight={20} fontSize={14}>
-                Credora
-              </PrimaryText>
-            </BaseLink>
-            , the leading real-time credit underwriter in crypto. 50% of the
-            capital assigned to this pool is lent to{" "}
-            <BaseLink
-              color="white"
-              target="_blank"
-              rel="noreferrer noopener"
-              to="https://www.wintermute.com/"
-            >
-              <PrimaryText lineHeight={20} fontSize={14}>
-                Wintermute
-              </PrimaryText>
-            </BaseLink>{" "}
-            and 50% is lent to{" "}
-            <BaseLink
-              color="white"
-              target="_blank"
-              rel="noreferrer noopener"
-              to="https://folkvang.io/"
-            >
-              <PrimaryText lineHeight={20} fontSize={14}>
-                Folkvang
-              </PrimaryText>
-            </BaseLink>
-            .
-          </>
-        );
-      case "ORTHOGONAL":
-        return (
-          <>
-            {" "}
-            Orthogonal Trading is a multi-strategy cryptocurrency trading firm
-            focused solely on the digital asset markets. The team bring
-            experience in portfolio and risk management, auditing, quantitative
-            trading, and blockchain system development from Goldman Sachs,
-            Morgan Stanley, B2C2 and more.
-          </>
-        );
-      case "ALAMEDA RESEARCH":
-        return (
-          <>
-            {" "}
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Curabitur
-            ultrices ac tortor in convallis. Cras sed euismod enim. Vestibulum
-            semper viverra dolor, ut dignissim quam suscipit convallis. Vivamus
-            non pretium felis. Nam a tellus nisl. Lorem ipsum dolor sit amet,
-            consectetur adipiscing elit. Duis tincidunt gravida finibus. Nullam
-            neque tellus, dignissim ut mi pellentesque, facilisis aliquet
-            lectus. Nunc convallis elit ac nulla blandit, eu ultrices ipsum
-            accumsan.
-          </>
-        );
-      case "CITADEL":
-        return (
-          <>
-            {" "}
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Curabitur
-            ultrices ac tortor in convallis. Cras sed euismod enim. Vestibulum
-            semper viverra dolor, ut dignissim quam suscipit convallis. Vivamus
-            non pretium felis. Nam a tellus nisl. Lorem ipsum dolor sit amet,
-            consectetur adipiscing elit. Duis tincidunt gravida finibus. Nullam
-            neque tellus, dignissim ut mi pellentesque, facilisis aliquet
-            lectus. Nunc convallis elit ac nulla blandit, eu ultrices ipsum
-            accumsan.
-          </>
-        );
-    }
-  }, []);
+  const renderDescription = useCallback(
+    (s: Counterparty) => {
+      switch (s) {
+        case "R-EARN DIVERSIFIED":
+          return (
+            <>
+              R-Earn diversified is a basket of leading accredited crypto market
+              makers whose credit assessment passed strict requirements set by{" "}
+              <BaseLink
+                color="white"
+                target="_blank"
+                rel="noreferrer noopener"
+                to="https://credora.io/"
+              >
+                <PrimaryText lineHeight={20} fontSize={14}>
+                  Credora
+                </PrimaryText>
+              </BaseLink>
+              , the leading real-time credit underwriter in crypto.{" "}
+              {records.loading ? "---" : `${records.responses.wintermute}%`} of
+              the capital assigned to this pool is lent to{" "}
+              <BaseLink
+                color="white"
+                target="_blank"
+                rel="noreferrer noopener"
+                to="https://www.wintermute.com/"
+              >
+                <PrimaryText lineHeight={20} fontSize={14}>
+                  Wintermute
+                </PrimaryText>
+              </BaseLink>{" "}
+              and {records.loading ? "---" : `${records.responses.folkvang}%`}{" "}
+              is lent to{" "}
+              <BaseLink
+                color="white"
+                target="_blank"
+                rel="noreferrer noopener"
+                to="https://folkvang.io/"
+              >
+                <PrimaryText lineHeight={20} fontSize={14}>
+                  Folkvang
+                </PrimaryText>
+              </BaseLink>
+              .
+            </>
+          );
+      }
+    },
+    [records.loading, records.responses.folkvang, records.responses.wintermute]
+  );
 
   const renderPrincipleOutstanding = useCallback(
     (s: Counterparty) => {
@@ -257,12 +211,6 @@ const CounterpartyDetail: React.FC<VaultStrategyExplainerProps> = ({
                   )}
             </>
           );
-        case "ORTHOGONAL":
-          return <>$15.00M</>;
-        case "ALAMEDA RESEARCH":
-          return <>$15.00M</>;
-        case "CITADEL":
-          return <>$15.00M</>;
       }
     },
     [totalBalance, vaultLoading]
@@ -276,68 +224,51 @@ const CounterpartyDetail: React.FC<VaultStrategyExplainerProps> = ({
       switch (s) {
         case "R-EARN DIVERSIFIED":
           return <>{(borrowRate * 100).toFixed(2)}%</>;
-        case "ORTHOGONAL":
-          return <>7.00%</>;
-        case "ALAMEDA RESEARCH":
-          return <>7.00%</>;
-        case "CITADEL":
-          return <>7.00%</>;
       }
     },
     [borrowRate, loading]
   );
 
-  const renderCreditRating = useCallback((s: Counterparty) => {
-    switch (s) {
-      case "R-EARN DIVERSIFIED":
-        return <>---</>;
-      case "ORTHOGONAL":
-        return <>---</>;
-      case "ALAMEDA RESEARCH":
-        return <>---</>;
-      case "CITADEL":
-        return <>---</>;
-    }
-  }, []);
   return (
     <>
-      <WalletContainer>
-        <WalletButton role="button" onClick={handleButtonClick}>
+      <CounterpartyContainer>
+        <OpenCounterpartyButton role="button" onClick={handleButtonClick}>
           {renderLogo(counterparty)}
-          <WalletContent>
+          <CounterpartyContent>
             <StyledTitle>{counterparty}</StyledTitle>
-            <WalletContentText>
+            <FundingSourceData>
               {renderBorrowRate(counterparty)} Borrow Rate (APR)
-            </WalletContentText>
-          </WalletContent>
+            </FundingSourceData>
+          </CounterpartyContent>
           <ButtonArrow isOpen={isMenuOpen} color="white"></ButtonArrow>
-        </WalletButton>
-      </WalletContainer>
+        </OpenCounterpartyButton>
+      </CounterpartyContainer>
       <div>
         <EarnFloatingMenu isOpen={isMenuOpen}>
           <ParagraphText>{renderDescription(counterparty)}</ParagraphText>
           <Details>
-            <Part>
-              <WalletContentText color={colors.tertiaryText} fontSize={12}>
+            <Detail>
+              <FundingSourceData color={colors.tertiaryText} fontSize={12}>
                 Principal Outstanding
-              </WalletContentText>
+              </FundingSourceData>
               <Title>{renderPrincipleOutstanding(counterparty)}</Title>
-              <WalletContentText
+              <FundingSourceData
                 color={colors.tertiaryText}
                 fontSize={12}
                 marginTop={16}
               >
                 Market Maker
-              </WalletContentText>
-              <Title>{"Wintermute"}</Title>
-              <Title>{"Folkvang"}</Title>
-            </Part>
-            <Part>
-              <WalletContentText color={colors.tertiaryText} fontSize={12}>
+              </FundingSourceData>
+              {PoolList.map((pool) => {
+                return <Title>{pool}</Title>;
+              })}
+            </Detail>
+            <Detail>
+              <FundingSourceData color={colors.tertiaryText} fontSize={12}>
                 Borrow Rate (APR)
-              </WalletContentText>
+              </FundingSourceData>
               <Title>{renderBorrowRate(counterparty)}</Title>
-              <WalletContentText
+              <FundingSourceData
                 color={colors.tertiaryText}
                 fontSize={12}
                 marginTop={16}
@@ -359,11 +290,44 @@ const CounterpartyDetail: React.FC<VaultStrategyExplainerProps> = ({
                     </BaseLink>
                   </div>
                 </div>
-              </WalletContentText>
-              {/* <Title>{renderCreditRating(counterparty)}</Title> */}
-              <Title>A</Title>
-              <Title>AA</Title>
-            </Part>
+              </FundingSourceData>
+              {PoolList.map((pool) => {
+                return (
+                  <div className="d-flex align-items-center">
+                    {credoraLoading ? (
+                      loadingText
+                    ) : (
+                      <>
+                        <Title>{data[pool].creditScoreRating}</Title>
+                        {data[pool].creditScoreRating === "UNRATED" &&
+                          pool === "folkvang" && (
+                            <TooltipExplanation
+                              explanation={
+                                <>
+                                  Lending to Folkvang has been temporarily
+                                  disabled. Loans to the Wintermute pool are
+                                  still open.
+                                </>
+                              }
+                              renderContent={({ ref, ...triggerHandler }) => (
+                                <HelpInfo
+                                  containerRef={ref}
+                                  {...triggerHandler}
+                                >
+                                  i
+                                </HelpInfo>
+                              )}
+                              learnMoreURL={
+                                "https://twitter.com/folkvangtrading/status/1591360107094626304"
+                              }
+                            />
+                          )}
+                      </>
+                    )}
+                  </div>
+                );
+              })}
+            </Detail>
           </Details>
         </EarnFloatingMenu>
       </div>

@@ -1,11 +1,6 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useState } from "react";
 import styled from "styled-components";
-import { initOnRamp } from "@coinbase/cbpay-js";
-import {
-  CBPayInstanceType,
-  InitOnRampParams,
-  generateOnRampURL,
-} from "@coinbase/cbpay-js";
+import { generateOnRampURL } from "@coinbase/cbpay-js";
 import theme from "shared/lib/designSystem/theme";
 import colors from "shared/lib/designSystem/colors";
 import { useWeb3Wallet } from "shared/lib/hooks/useWeb3Wallet";

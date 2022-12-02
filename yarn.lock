@@ -14307,6 +14307,14 @@ slice-ansi@^5.0.0:
     ansi-styles "^6.0.0"
     is-fullwidth-code-point "^4.0.0"
 
+smart-request-balancer@^2.1.1:
+  version "2.1.1"
+  resolved "https://registry.yarnpkg.com/smart-request-balancer/-/smart-request-balancer-2.1.1.tgz#c6ed666a8dfed2bb0a338cd2cba9aff7526ffcb9"
+  integrity sha512-4AnMhV4amviBUGKeACOricuj4dhihf2P9Z/s3+cvZ3kjFxUwEV74JL9JTdK3/7Im84cC3J9ANeg+sUjSv0buxQ==
+  dependencies:
+    debug "^4.1.1"
+    uuid "^3.3.2"
+
 smoothscroll-polyfill@^0.4.4:
   version "0.4.4"
   resolved "https://registry.yarnpkg.com/smoothscroll-polyfill/-/smoothscroll-polyfill-0.4.4.tgz#3a259131dc6930e6ca80003e1cb03b603b69abf8"

@@ -5,18 +5,15 @@ import styled from "styled-components";
 import { components } from "../../designSystem/components";
 import { PrimaryText, Title } from "../../designSystem";
 import sizes from "../../designSystem/sizes";
-import {
-  getEtherscanURI,
-  VaultDetailsMap,
-  VaultOptions,
-} from "../../constants/constants";
-import { formatBigNumber } from "../../utils/math";
+import { getEtherscanURI, PoolDetailsMap } from "../../constants/constants";
+import { PoolOptions } from "shared/lib/constants/lendConstants";
+import { formatBigNumber } from "shared/lib/utils/math";
 import { getUtilizationDecimals } from "../../utils/asset";
-import { usePoolsAPR } from "../../hooks/usePoolsAPR";
+import { usePoolsApr } from "../../hooks/usePoolsApr";
 import { fadeIn } from "shared/lib/designSystem/keyframes";
 import { css } from "styled-components";
 import { BaseUnderlineLink } from "shared/lib/designSystem";
-import { useVaultsData } from "../../hooks/web3DataContext";
+import { usePoolsData } from "../../hooks/web3DataContext";
 import { useWeb3React } from "@web3-react/core";
 import ExternalLinkIcon from "../Common/ExternalLinkIcon";
 import UtilizationBar from "../Common/UtilizationBar";
@@ -114,20 +111,20 @@ export enum ActionModalEnum {
 }
 
 interface FooterProps {
-  pool: VaultOptions;
+  pool: PoolOptions;
   page: ActionModalEnum;
   show: boolean;
   txhash: string | undefined;
 }
 
 const Footer: React.FC<FooterProps> = ({ show, pool, page, txhash }) => {
-  const vaultDatas = useVaultsData();
-  const poolName = VaultDetailsMap[pool].name;
-  const { aprs } = usePoolsAPR();
+  const poolDatas = usePoolsData();
+  const poolName = PoolDetailsMap[pool].name;
+  const { aprs } = usePoolsApr();
   const { chainId } = useWeb3React();
   const apr = aprs[pool];
   const utilizationDecimals = getUtilizationDecimals();
-  const utilizationRate = vaultDatas.data[pool].utilizationRate;
+  const utilizationRate = poolDatas.data[pool].utilizationRate;
 
   return (
     <>

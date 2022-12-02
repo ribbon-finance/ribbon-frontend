@@ -30,6 +30,7 @@ import {
   isAvaxVault,
   isSolanaVault,
   isDisabledVault,
+  isEarnVault,
 } from "../../../constants/constants";
 import { BoostIcon } from "../../../assets/icons/icons";
 import { getAssetDisplay, getAssetLogo } from "../../../utils/asset";
@@ -53,7 +54,7 @@ import HelpInfo from "../../Common/HelpInfo";
 import { calculateBaseRewards } from "../../../utils/governanceMath";
 import { useAssetsPrice } from "../../../hooks/useAssetPrice";
 import EarnCard from "../../Common/EarnCard";
-import { useAirtable } from "../../../hooks/useAirtable";
+import { useAirtableEarnData } from "../../../hooks/useAirtableEarnData";
 import { usePausedPosition } from "../../../hooks/usePausedPosition";
 const { formatUnits } = ethers.utils;
 
@@ -430,7 +431,7 @@ const YieldCard: React.FC<YieldCardProps> = ({
     data: { totalBalance: v2Deposits, cap: v2VaultLimit, pricePerShare },
     loading: v2DataLoading,
   } = useV2VaultData(vault);
-  const { chainId } = useWeb3Wallet();
+  const { account, chainId } = useWeb3Wallet();
   const { t } = useTranslation();
   const isLoading = useMemo(() => status === "loading", [status]);
   const color = getVaultColor(vault);
@@ -443,9 +444,8 @@ const YieldCard: React.FC<YieldCardProps> = ({
   const { data: lg5Data, loading: lg5DataLoading } =
     useLiquidityGaugeV5PoolData(vault);
   const { prices } = useAssetsPrice();
-  const { account } = useWeb3Wallet();
   const loadingText = useLoadingText();
-  const { loading, maxYield } = useAirtable();
+  const { loading, maxYield } = useAirtableEarnData(vault);
   const baseAPY = useMemo(() => {
     if (!lg5Data) {
       return 0;
@@ -463,13 +463,29 @@ const YieldCard: React.FC<YieldCardProps> = ({
   }, [asset, decimals, lg5Data, pricePerShare, prices]);
 
   const isActiveVault = vaultVersion === "v2" && !isDisabledVault(vault);
+  const isEVMVault = (vault: VaultOptions) =>
+    isEthVault(vault) || isAvaxVault(vault);
 
-  const totalProjectedYield =
-    latestAPY.fetched && !lg5DataLoading
-      ? isActiveVault
+  const totalProjectedYield = useMemo(() => {
+    if (!isActiveVault) return "0%";
+
+    if (isEVMVault(vault)) {
+      return latestAPY.fetched && !lg5DataLoading
         ? `${(latestAPY.res + baseAPY).toFixed(2)}%`
-        : "0%"
-      : loadingText;
+        : loadingText;
+    } else {
+      return latestAPY.fetched ? `${latestAPY.res.toFixed(2)}%` : loadingText;
+    }
+  }, [
+    baseAPY,
+    isActiveVault,
+    latestAPY.fetched,
+    latestAPY.res,
+    lg5DataLoading,
+    loadingText,
+    vault,
+  ]);
+
   const vaultYield = latestAPY.fetched
     ? isActiveVault
       ? `${latestAPY.res.toFixed(2)}%`
@@ -482,7 +498,7 @@ const YieldCard: React.FC<YieldCardProps> = ({
     : loadingText;
 
   const isVaultMaxCapacity = useMemo(() => {
-    if (v2DataLoading || vault !== "rEARN") {
+    if (v2DataLoading || !isEarnVault(vault)) {
       return undefined;
     }
     return isPracticallyZero(v2VaultLimit.sub(v2Deposits), 6);
@@ -652,12 +668,15 @@ const YieldCard: React.FC<YieldCardProps> = ({
             <VaultFullText>Vault is currently full</VaultFullText>
           ) : (
             formatAmount(totalDepositStr) +
-            " USDC / " +
+            " " +
+            asset +
+            " / " +
             formatAmount(depositLimitStr) +
-            " USDC"
+            " " +
+            asset
           )}
         </EarnCapacityText>
-        <EarnCard color={color} height={!!account ? 447 : 504} />
+        <EarnCard color={color} height={!!account ? 447 : 504} asset={asset} />
         <ParagraphText>
           Earn up to{" "}
           <HighlightedText>
@@ -675,6 +694,7 @@ const YieldCard: React.FC<YieldCardProps> = ({
     isVaultMaxCapacity,
     loadingText,
     totalDepositStr,
+    asset,
     depositLimitStr,
     color,
     account,
@@ -717,10 +737,14 @@ const YieldCard: React.FC<YieldCardProps> = ({
                   <span>{t("shared:YieldCard:vaultYield")}</span>
                   <span>{vaultYield}</span>
                 </YieldExplainerStat>
-                <YieldExplainerStat>
-                  <span>{t("shared:YieldCard:baseStakingYield")}</span>
-                  <span>{baseStakingYield}</span>
-                </YieldExplainerStat>
+                {isEVMVault(vault) ? (
+                  <YieldExplainerStat>
+                    <span>{t("shared:YieldCard:baseStakingYield")}</span>
+                    <span>{baseStakingYield}</span>
+                  </YieldExplainerStat>
+                ) : (
+                  <></>
+                )}
                 <br />
                 <p>{t("shared:YieldCard:yieldExplainerDesc")}</p>
               </>
@@ -900,7 +924,7 @@ const YieldCard: React.FC<YieldCardProps> = ({
           color={color}
           vault={vault}
         >
-          {vault === "rEARN" ? (
+          {isEarnVault(vault) ? (
             <>
               <ProductInfoEarn
                 connected={

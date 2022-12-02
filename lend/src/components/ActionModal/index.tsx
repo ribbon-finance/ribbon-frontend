@@ -4,7 +4,7 @@ import colors from "shared/lib/designSystem/colors";
 import styled from "styled-components";
 import { components } from "../../designSystem/components";
 import sizes from "../../designSystem/sizes";
-import { VaultOptions } from "../../constants/constants";
+import { PoolOptions } from "shared/lib/constants/lendConstants";
 import { CloseIcon } from "shared/lib/assets/icons/icons";
 import { ActionType } from "./types";
 import Footer from "./Footer";
@@ -75,7 +75,7 @@ interface ActionModalProps {
   show: boolean;
   actionType: ActionType;
   onHide: () => void;
-  pool: VaultOptions;
+  pool: PoolOptions;
 }
 
 const ActionModal: React.FC<ActionModalProps> = ({

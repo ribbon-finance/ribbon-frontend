@@ -8,61 +8,39 @@ import addresses from "shared/lib/constants/externalAddresses.json";
 import wintermute from "../assets/icons/makers/wintermute.svg";
 import folkvang from "../assets/icons/makers/folkvang.svg";
 import ExternalLinkIcon from "../components/Common/ExternalLinkIcon";
+import {
+  PoolVersion,
+  PoolAddressMap,
+  PoolOptions,
+} from "shared/lib/constants/lendConstants";
+import { MAINNET_NAMES, NETWORKS } from "shared/lib/constants/constants";
 
-export type NETWORK_NAMES = "mainnet";
-export type TESTNET_NAMES = "kovan";
-export type MAINNET_NAMES = Exclude<NETWORK_NAMES, TESTNET_NAMES>;
+export const secondsPerYear = 31536000;
 
 export enum Chains {
   NotSelected,
   Ethereum,
 }
 
-export const NETWORKS: Record<number, NETWORK_NAMES> = {
-  [CHAINID.ETH_MAINNET]: "mainnet",
+export const getPoolChain = (pool: string): Chains => {
+  return Chains.Ethereum;
 };
 
-export const CHAINID_TO_NATIVE_TOKENS: Record<CHAINID, Assets> = {
-  [CHAINID.ETH_MAINNET]: "WETH",
-};
-export const READABLE_NETWORK_NAMES: Record<CHAINID, string> = {
-  [CHAINID.ETH_MAINNET]: "Ethereum",
-};
-
-export const isEthNetwork = (chainId: number): boolean =>
-  chainId === CHAINID.ETH_MAINNET;
-
-export const isEthVault = (vault: string) =>
-  isEthNetwork(VaultAddressMap[vault as VaultOptions].chainId);
-
-export const getVaultChain = (vault: string): Chains => {
-  if (isEthVault(vault)) return Chains.Ethereum;
-  else throw new Error(`Unknown network for ${vault}`);
-};
-
-export const getVaultNetwork = (vault: string): MAINNET_NAMES => {
-  if (isEthVault(vault)) return "mainnet";
-  else throw new Error(`Unknown network for ${vault}`);
+export const getPoolNetwork = (pool: string): MAINNET_NAMES => {
+  return "mainnet";
 };
 
 export const NATIVE_TOKENS = ["WETH"];
 export const isNativeToken = (token: string): boolean =>
   NATIVE_TOKENS.includes(token);
 
-export const VaultVersionList = ["lend"] as const;
-export type VaultVersion = typeof VaultVersionList[number];
+const DepositDisabledPoolList: PoolOptions[] = ["folkvang"];
 
-export const EVMVaultList = ["wintermute", "folkvang"] as const;
-
-const AllVaultOptions = [...EVMVaultList];
-
-export type VaultOptions = typeof AllVaultOptions[number];
-
-// @ts-ignore
-export const VaultList: VaultOptions[] = EVMVaultList;
+export const isDepositDisabledPool = (pool: PoolOptions): boolean =>
+  DepositDisabledPoolList.includes(pool);
 
 export const GAS_LIMITS: {
-  [vault in VaultOptions]: Partial<{
+  [pool in PoolOptions]: Partial<{
     lend: { deposit: number; withdraw: number };
   }>;
 } = {
@@ -80,32 +58,16 @@ export const GAS_LIMITS: {
   },
 };
 
-export const VaultAddressMap: {
-  [vault in VaultOptions]: {
-    lend: string;
-    chainId: number;
-  };
-} = {
-  wintermute: {
-    lend: deployment.mainnet.wintermute,
-    chainId: CHAINID.ETH_MAINNET,
-  },
-  folkvang: {
-    lend: deployment.mainnet.folkvang,
-    chainId: CHAINID.ETH_MAINNET,
-  },
-};
-
 /**
- * Used to check if vault of given version exists. Only used for v2 and above
- * @param vaultOption
+ * Used to check if pool of given version exists. Only used for v2 and above
+ * @param poolOption
  * @returns boolean
  */
-export const hasVaultVersion = (
-  vaultOption: VaultOptions,
-  version: VaultVersion
+export const hasPoolVersion = (
+  poolOption: PoolOptions,
+  version: PoolVersion
 ): boolean => {
-  return Boolean(VaultAddressMap[vaultOption][version]);
+  return Boolean(PoolAddressMap[poolOption][version]);
 };
 
 export const EVM_BLOCKCHAIN_EXPLORER_NAME: Record<number, string> = {
@@ -115,8 +77,6 @@ export const EVM_BLOCKCHAIN_EXPLORER_NAME: Record<number, string> = {
 export const EVM_BLOCKCHAIN_EXPLORER_URI: Record<number, string> = {
   [CHAINID.ETH_MAINNET]: "https://etherscan.io",
 };
-
-export const AVAX_BRIDGE_URI = "https://bridge.avax.network";
 
 export const getExplorerName = (chain: Chains) => {
   return EVM_BLOCKCHAIN_EXPLORER_NAME[CHAINS_TO_ID[chain]];
@@ -131,22 +91,22 @@ export const getExplorerURI = (chain: Chains) => {
 };
 
 export const getSubgraphURIForVersion = (
-  version: VaultVersion,
+  version: PoolVersion,
   chain: Chains
 ) => {
   return getSubgraphqlURI();
 };
 
-export const getAssets = (vault: VaultOptions): Assets => {
+export const getAssets = (pool: PoolOptions): Assets => {
   return "USDC";
 };
 
-export const getDisplayAssets = (vault: VaultOptions): Assets => {
+export const getDisplayAssets = (pool: PoolOptions): Assets => {
   return "USDC";
 };
 
-export const getMakerLogo = (vault: VaultOptions): string => {
-  switch (vault) {
+export const getMakerLogo = (pool: PoolOptions): string => {
+  switch (pool) {
     case "wintermute":
       return wintermute;
     case "folkvang":
@@ -154,17 +114,16 @@ export const getMakerLogo = (vault: VaultOptions): string => {
   }
 };
 
-export const VaultAllowedDepositAssets: { [vault in VaultOptions]: Assets[] } =
-  {
-    wintermute: ["USDC"],
-    folkvang: ["USDC"],
-  };
+export const PoolAllowedDepositAssets: { [pool in PoolOptions]: Assets[] } = {
+  wintermute: ["USDC"],
+  folkvang: ["USDC"],
+};
 
-export const VaultMaxDeposit: BigNumber = BigNumber.from(100000000).mul(
+export const PoolMaxDeposit: BigNumber = BigNumber.from(100000000).mul(
   BigNumber.from(10).pow(getAssetDecimals(getAssets("wintermute")))
 );
 
-export const VaultFees = {
+export const PoolFees = {
   managementFee: "2",
   performanceFee: "10",
 };
@@ -196,9 +155,9 @@ export const ID_TO_CHAINS: Record<number, number> = {
   [CHAINID.ETH_MAINNET]: Chains.Ethereum,
 };
 
-const WEBAPP_SUBGRAPHS: [VaultVersion, Chains][] = [["lend", Chains.Ethereum]];
+const WEBAPP_SUBGRAPHS: [PoolVersion, Chains][] = [["lend", Chains.Ethereum]];
 
-export const SUBGRAPHS_TO_QUERY: [VaultVersion, Chains][] = WEBAPP_SUBGRAPHS;
+export const SUBGRAPHS_TO_QUERY: [PoolVersion, Chains][] = WEBAPP_SUBGRAPHS;
 
 export const COINGECKO_BASE_URL = "https://api.coingecko.com/api/v3";
 export const COINGECKO_CURRENCIES: { [key in Assets]: string | undefined } = {
@@ -207,21 +166,15 @@ export const COINGECKO_CURRENCIES: { [key in Assets]: string | undefined } = {
   RBN: "ribbon-finance",
 };
 
-interface VaultDetails {
+interface PoolDetails {
   name: string;
   bio: string | JSX.Element;
   contract: string;
   twitter: string;
   website: string;
-
-  credit: {
-    rating: string;
-    borrowLimit: number;
-    content: string | JSX.Element;
-  };
 }
 
-export const VaultDetailsMap: Record<VaultOptions, VaultDetails> = {
+export const PoolDetailsMap: Record<PoolOptions, PoolDetails> = {
   wintermute: {
     name: "Wintermute",
     bio: (
@@ -265,55 +218,6 @@ export const VaultDetailsMap: Record<VaultOptions, VaultDetails> = {
     contract: "https://etherscan.io/address/" + deployment.mainnet.wintermute,
     twitter: "https://twitter.com/wintermute_t",
     website: "https://www.wintermute.com",
-    credit: {
-      rating: "A",
-      borrowLimit: 223000000,
-      content: (
-        <>
-          <p>
-            Credora provides real-time privacy preserving portfolio risk metrics
-            for lenders, and has built a Credit Evaluation Methodology for
-            digital asset firms.
-          </p>
-          <p>
-            The evaluation is split into three main parts, totaling{" "}
-            <strong>[1000]</strong> points in aggregate, which is then converted
-            to a letter rating:
-          </p>
-          <p>
-            <strong>Operations and Due Diligence [200]</strong>: Evaluation of a
-            borrower's corporate and operational risk
-          </p>
-          <p>
-            <strong>Financial Analysis [400]</strong>: Evaluation of a
-            borrower's reported financial data
-          </p>
-          <p>
-            <strong>Risk Monitoring [400]</strong>: Real-time evaluation of a
-            borrower's asset and liability visibility
-          </p>
-          <p>
-            Credora relies on these underlying factors, as they have high
-            correlation to a trading firm's creditworthiness. Through real-time
-            credit evaluation, Credora infrastructure supports data-driven
-            lending for any pool of capital. Credora infrastructure and credit
-            evaluations have successfully facilitated over $850M in credit and
-            currently monitors $3.85B in assets.
-          </p>
-          <p>
-            Read more{" "}
-            <a
-              href="https://credora.gitbook.io/credit-methodology/SbLmTxogePkrzsF4z9IK"
-              target="_blank"
-              rel="noreferrer noopener"
-            >
-              here
-              <ExternalLinkIcon />
-            </a>
-          </p>
-        </>
-      ),
-    },
   },
   folkvang: {
     name: "Folkvang",
@@ -348,54 +252,90 @@ export const VaultDetailsMap: Record<VaultOptions, VaultDetails> = {
     contract: "https://etherscan.io/address/" + deployment.mainnet.folkvang,
     twitter: "https://twitter.com/folkvangtrading",
     website: "https://folkvang.io",
-    credit: {
-      rating: "AA",
-      borrowLimit: 105000000,
-      content: (
-        <>
-          <p>
-            Credora provides real-time privacy preserving portfolio risk metrics
-            for lenders, and has built a Credit Evaluation Methodology for
-            digital asset firms.
-          </p>
-          <p>
-            The evaluation is split into three main parts, totaling{" "}
-            <strong>[1000]</strong> points in aggregate, which is then converted
-            to a letter rating:
-          </p>
-          <p>
-            <strong>Operations and Due Diligence [200]</strong>: Evaluation of a
-            borrower's corporate and operational risk
-          </p>
-          <p>
-            <strong>Financial Analysis [400]</strong>: Evaluation of a
-            borrower's reported financial data
-          </p>
-          <p>
-            <strong>Risk Monitoring [400]</strong>: Real-time evaluation of a
-            borrower's asset and liability visibility
-          </p>
-          <p>
-            Credora relies on these underlying factors, as they have high
-            correlation to a trading firm's creditworthiness. Through real-time
-            credit evaluation, Credora infrastructure supports data-driven
-            lending for any pool of capital. Credora infrastructure and credit
-            evaluations have successfully facilitated over $850M in credit and
-            currently monitors $3.85B in assets.
-          </p>
-          <p>
-            Read more{" "}
-            <a
-              href="https://credora.gitbook.io/credit-methodology/SbLmTxogePkrzsF4z9IK"
-              target="_blank"
-              rel="noreferrer noopener"
-            >
-              here
-              <ExternalLinkIcon />
-            </a>
-          </p>
-        </>
-      ),
-    },
   },
 };
+
+export const CreditRating: JSX.Element = (
+  <>
+    <p>
+      Credora provides real-time privacy preserving portfolio risk metrics for
+      lenders, and has built a Credit Evaluation Methodology for digital asset
+      firms.
+    </p>
+    <p>
+      The evaluation is split into three main parts, totaling{" "}
+      <strong>[1000]</strong> points in aggregate, which is then converted to a
+      letter rating:
+    </p>
+    <p>
+      <strong>Operations and Due Diligence [200]</strong>: Evaluation of a
+      borrower's corporate and operational risk
+    </p>
+    <p>
+      <strong>Financial Analysis [400]</strong>: Evaluation of a borrower's
+      reported financial data
+    </p>
+    <p>
+      <strong>Risk Monitoring [400]</strong>: Real-time evaluation of a
+      borrower's asset and liability visibility
+    </p>
+    <p>
+      Credora relies on these underlying factors, as they have high correlation
+      to a trading firm's creditworthiness. Through real-time credit evaluation,
+      Credora infrastructure supports data-driven lending for any pool of
+      capital. Credora infrastructure and credit evaluations have successfully
+      facilitated over $850M in credit and currently monitors $3.85B in assets.
+    </p>
+    <p>
+      Read more{" "}
+      <a
+        href="https://credora.gitbook.io/credit-methodology/SbLmTxogePkrzsF4z9IK"
+        target="_blank"
+        rel="noreferrer noopener"
+      >
+        here
+        <ExternalLinkIcon />
+      </a>
+    </p>
+  </>
+);
+
+export const Disclaimers: JSX.Element = (
+  <>
+    <p>
+      <strong>Deposit Risk</strong>: You are aware of and accept that the USDC
+      held in the Vault on your behalf is not subject to deposit insurance
+      protection, investor insurance protection, or any other relevant
+      protection in any jurisdiction.
+    </p>
+    <p>
+      <strong>USDC Risk</strong>: You are aware of and accept the risk of using
+      USDC in https://lend.ribbon.finance/app. We are not responsible for any
+      losses due to any actions performed by the USDC Issuer (Circle Internet
+      Financial, LLC.) At any point in time, the Issuer may, with or without
+      notice, at its sole discretion, "block" this Vault Smart Contract address,
+      associated addresses or your address. USDC may be permanently frozen,
+      resulting in a loss of funds.
+    </p>
+    <p>
+      <strong>Other Risks</strong>: You are aware of and accept the risks
+      further detailed in the{" "}
+      <a
+        href="https://www.ribbon.finance/terms"
+        target="_blank"
+        rel="noreferrer noopener"
+      >
+        Terms and Conditions
+      </a>{" "}
+      and the{" "}
+      <a
+        href="https://www.ribbon.finance/policy"
+        target="_blank"
+        rel="noreferrer noopener"
+      >
+        Privacy Policy
+      </a>
+      .
+    </p>
+  </>
+);

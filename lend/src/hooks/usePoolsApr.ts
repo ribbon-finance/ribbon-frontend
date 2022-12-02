@@ -1,79 +1,76 @@
 import { useEffect, useMemo, useState } from "react";
-import { VaultOptions } from "../constants/constants";
+import { secondsPerYear } from "../constants/constants";
+import { PoolOptions, PoolList } from "shared/lib/constants/lendConstants";
 import useAssetPrice from "./useAssetPrice";
-import { useVaultsData } from "./web3DataContext";
-import { VaultList } from "../constants/constants";
+import { usePoolsData } from "./web3DataContext";
 import { formatUnits } from "ethers/lib/utils";
 
-export type APRMap = {
-  [vault in VaultOptions]: number;
+export type AprMap = {
+  [pool in PoolOptions]: number;
 };
 
-export type useDefault = {
-  [vault in VaultOptions]: boolean;
+export type UseDefault = {
+  [pool in PoolOptions]: boolean;
 };
 
-const defaultAPR = 7;
-const secondsInYear = 31536000;
-export const usePoolsAPR = () => {
-  const [aprs, setAprs] = useState<APRMap>();
-  const [supplyAprs, setSupplyAprs] = useState<APRMap>();
-  const [rbnAprs, setRbnAprs] = useState<APRMap>();
-  const { loading, data: vaultDatas } = useVaultsData();
+const defaultApr = 7;
+
+export const usePoolsApr = () => {
+  const [aprs, setAprs] = useState<AprMap>();
+  const [supplyAprs, setSupplyAprs] = useState<AprMap>();
+  const [rbnAprs, setRbnAprs] = useState<AprMap>();
+  const { loading, data: poolDatas } = usePoolsData();
   const { price: RBNPrice, loading: assetPriceLoading } = useAssetPrice({
     asset: "RBN",
   });
 
   useEffect(() => {
     //if set to true, use default apr instead of calculated apr
-    let isDefault: useDefault = {
+    let isDefault: UseDefault = {
       wintermute: false,
       folkvang: false,
     };
 
     // 1. When init load schedules
-    let aprsTemp: APRMap = {
+    let aprsTemp: AprMap = {
       wintermute: 0,
       folkvang: 0,
     };
 
-    let supplyAprsTemp: APRMap = {
+    let supplyAprsTemp: AprMap = {
       wintermute: 0,
       folkvang: 0,
     };
 
-    let rbnAprsTemp: APRMap = {
+    let rbnAprsTemp: AprMap = {
       wintermute: 0,
       folkvang: 0,
     };
 
     if (!loading) {
-      VaultList.forEach((pool) => {
-        const poolData = vaultDatas[pool];
+      PoolList.forEach((pool) => {
+        const poolData = poolDatas[pool];
         const supplyRate = parseFloat(formatUnits(poolData.supplyRate, 18));
         const rewardPerSecond = parseFloat(
           formatUnits(poolData.rewardPerSecond, 18)
         );
         const poolSize = parseFloat(formatUnits(poolData.poolSize, 6));
-        const supplyRatePercentage = Math.min(supplyRate * secondsInYear, 0.07);
+        const supplyRatePercentage = supplyRate * secondsPerYear;
+        const rbnApr = (rewardPerSecond * RBNPrice * secondsPerYear) / poolSize;
         aprsTemp[pool] = isDefault[pool]
-          ? defaultAPR +
-            ((rewardPerSecond * RBNPrice * secondsInYear) / poolSize) * 100
-          : (supplyRatePercentage +
-              (rewardPerSecond * RBNPrice * secondsInYear) / poolSize) *
-            100;
+          ? defaultApr + rbnApr * 100
+          : (supplyRatePercentage + rbnApr) * 100;
         supplyAprsTemp[pool] = isDefault[pool]
-          ? defaultAPR
+          ? defaultApr
           : supplyRatePercentage * 100;
-        rbnAprsTemp[pool] =
-          ((rewardPerSecond * RBNPrice * secondsInYear) / poolSize) * 100;
+        rbnAprsTemp[pool] = rbnApr * 100;
         return;
       });
       setAprs(aprsTemp);
       setSupplyAprs(supplyAprsTemp);
       setRbnAprs(rbnAprsTemp);
     }
-  }, [loading, assetPriceLoading, RBNPrice, vaultDatas]);
+  }, [loading, assetPriceLoading, RBNPrice, poolDatas]);
 
   const isLoading = useMemo(() => {
     return loading || !aprs;
@@ -84,12 +81,12 @@ export const usePoolsAPR = () => {
     return {
       loading: isLoading,
       aprs: {
-        wintermute: defaultAPR,
-        folkvang: defaultAPR,
+        wintermute: defaultApr,
+        folkvang: defaultApr,
       },
       supplyAprs: {
-        wintermute: defaultAPR,
-        folkvang: defaultAPR,
+        wintermute: defaultApr,
+        folkvang: defaultApr,
       },
       rbnAprs: {
         wintermute: 0,
@@ -99,6 +96,7 @@ export const usePoolsAPR = () => {
   }
   return {
     loading: isLoading,
+    rbnAprLoading: !rbnAprs || assetPriceLoading,
     aprs: aprs,
     supplyAprs: supplyAprs,
     rbnAprs: rbnAprs,

@@ -2,11 +2,11 @@ import { getAssetLogo } from "shared/lib/utils/asset";
 import {
   getAssets,
   getMakerLogo,
-  VaultList,
-  VaultDetailsMap,
+  PoolDetailsMap,
 } from "../../constants/constants";
-import { useVaultsData } from "../../hooks/web3DataContext";
-import { formatBigNumber } from "../../utils/math";
+import { PoolList } from "shared/lib/constants/lendConstants";
+import { usePoolsData } from "../../hooks/web3DataContext";
+import { formatBigNumber } from "shared/lib/utils/math";
 import { getAssetDecimals, getUtilizationDecimals } from "../../utils/asset";
 import styled, { keyframes } from "styled-components";
 import { BaseButton, Subtitle, Title } from "../../designSystem";
@@ -14,17 +14,19 @@ import { fadeIn } from "shared/lib/designSystem/keyframes";
 import { motion } from "framer-motion";
 import { Row } from "react-bootstrap";
 import colors from "shared/lib/designSystem/colors";
-import { usePoolsAPR } from "../../hooks/usePoolsAPR";
+import { usePoolsApr } from "../../hooks/usePoolsApr";
 import { Link } from "react-router-dom";
-import { isPracticallyZero } from "../../utils/math";
-import useVaultAccounts from "../../hooks/useVaultAccounts";
+import { isPracticallyZero } from "shared/lib/utils/math";
+import usePoolAccounts from "../../hooks/usePoolAccounts";
 import { formatUnits } from "ethers/lib/utils";
 import sizes from "../../designSystem/sizes";
 import { delayedFade } from "../animations";
 import currency from "currency.js";
 import useWeb3Wallet from "../../hooks/useWeb3Wallet";
 import { useMemo } from "react";
-import { LoadingText } from "shared/lib/hooks/useLoadingText";
+import useLoadingText from "shared/lib/hooks/useLoadingText";
+import { useCredoraData } from "shared/lib/hooks/useCredoraData";
+
 const statSideContainer: number = 120;
 
 const ListRow = styled(Row)`
@@ -198,40 +200,41 @@ const StyledSubtitle = styled(Subtitle)<{ color?: string }>`
 `;
 
 export const Pools = () => {
-  const vaultDatas = useVaultsData();
+  const poolDatas = usePoolsData();
   const utilizationDecimals = getUtilizationDecimals();
-  const { loading, aprs } = usePoolsAPR();
+  const { loading, aprs } = usePoolsApr();
   const { account } = useWeb3Wallet();
   const AssetLogo = getAssetLogo("USDC");
-
+  const { data: credoraData, loading: credoraLoading } = useCredoraData();
+  const loadingText = useLoadingText();
   const [filteredList, isManager] = useMemo(() => {
     if (!account) {
-      return [VaultList, false];
+      return [PoolList, false];
     }
     let managers: string[] = [];
-    VaultList.forEach((p) => {
-      managers.push(vaultDatas.data[p].manager);
+    PoolList.forEach((p) => {
+      managers.push(poolDatas.data[p].manager);
     });
     if (!managers.includes(account)) {
-      return [VaultList, false];
+      return [PoolList, false];
     }
     return [
-      VaultList.filter((pool) => vaultDatas.data[pool].manager === account),
+      PoolList.filter((pool) => poolDatas.data[pool].manager === account),
       true,
     ];
-  }, [account, vaultDatas.data]);
+  }, [account, poolDatas.data]);
 
   return (
     <ListRow>
       {filteredList.map((pool, i) => {
-        const poolSize = vaultDatas.data[pool].poolSize;
-        const utilizationRate = vaultDatas.data[pool].utilizationRate;
-        const totalBorrowed = vaultDatas.data[pool].borrows;
-        const rating = VaultDetailsMap[pool].credit.rating;
+        const poolSize = poolDatas.data[pool].poolSize;
+        const utilizationRate = poolDatas.data[pool].utilizationRate;
+        const totalBorrowed = poolDatas.data[pool].borrows;
+        const rating = credoraData[pool].creditScoreRating;
         const poolLogo = getMakerLogo(pool);
         const asset = getAssets(pool);
         const decimals = getAssetDecimals(asset);
-        const apr = aprs[pool];
+        const apr = aprs[pool].toFixed(2);
         return (
           <motion.div
             key={i}
@@ -260,10 +263,12 @@ export const Pools = () => {
               </PoolLogo>
               <PoolStats>
                 <Stat>
-                  <StyledTitle>{VaultDetailsMap[pool].name}</StyledTitle>
+                  <StyledTitle>{PoolDetailsMap[pool].name}</StyledTitle>
                   <StyledSubtitle>
-                    Rating {rating} - Utilization{" "}
-                    {formatBigNumber(utilizationRate, utilizationDecimals)}%
+                    {credoraLoading
+                      ? loadingText
+                      : `Rating ${rating} - Utilization
+                    ${formatBigNumber(utilizationRate, utilizationDecimals)}%`}
                   </StyledSubtitle>
                 </Stat>
                 <Stat>
@@ -284,15 +289,17 @@ export const Pools = () => {
                     </StyledTitle>
                   </Value>
                   <StyledSubtitle
-                    color={loading ? colors.primaryText : colors.green}
+                    color={
+                      loading || parseFloat(apr) === 0
+                        ? colors.primaryText
+                        : colors.green
+                    }
                   >
-                    {loading ? (
-                      <LoadingText>LOADING</LoadingText>
-                    ) : (
-                      `${currency(apr.toFixed(2), {
-                        symbol: "",
-                      }).format()}% APR`
-                    )}
+                    {loading
+                      ? loadingText
+                      : `${currency(apr, {
+                          symbol: "",
+                        }).format()}% APR`}
                   </StyledSubtitle>
                 </Stat>
               </PoolStats>
@@ -327,62 +334,62 @@ const NoPositionLabel = styled.span<{ delay: number; duration: number }>`
 `;
 
 export const Positions = () => {
-  const vaultDatas = useVaultsData();
+  const poolDatas = usePoolsData();
   const usdcDecimals = getAssetDecimals("USDC");
   const { account, active } = useWeb3Wallet();
-  const { loading: vaultLoading, vaultAccounts } = useVaultAccounts("lend");
+  const { loading: poolLoading, poolAccounts } = usePoolAccounts("lend");
   const filteredList = useMemo(() => {
-    if (!vaultAccounts || vaultLoading || !account) {
+    if (!poolAccounts || poolLoading || !account) {
       return [];
     }
-    return VaultList.filter(
+    return PoolList.filter(
       (pool) =>
         !isPracticallyZero(
-          vaultDatas.data[pool].vaultBalanceInAsset,
+          poolDatas.data[pool].poolBalanceInAsset,
           usdcDecimals
         )
     );
-  }, [account, usdcDecimals, vaultAccounts, vaultDatas.data, vaultLoading]);
+  }, [account, usdcDecimals, poolAccounts, poolDatas.data, poolLoading]);
 
-  if (!vaultAccounts) {
+  if (!poolAccounts) {
     return <></>;
   }
 
   return filteredList.length > 0 ? (
     <ListRow>
       {filteredList.map((pool, i) => {
-        const balance = vaultDatas.data[pool].vaultBalanceInAsset;
-        const vaultAccount = vaultAccounts[pool];
+        const balance = poolDatas.data[pool].poolBalanceInAsset;
+        const poolAccount = poolAccounts[pool];
 
         const profit = () => {
           if (
-            !vaultAccount ||
-            vaultLoading ||
-            isPracticallyZero(vaultAccount.totalDeposits, usdcDecimals)
+            !poolAccount ||
+            poolLoading ||
+            isPracticallyZero(poolAccount.totalDeposits, usdcDecimals)
           ) {
             return 0;
           }
 
           return parseFloat(
-            formatUnits(balance.sub(vaultAccount.totalDeposits), usdcDecimals)
+            formatUnits(balance.sub(poolAccount.totalDeposits), usdcDecimals)
           );
         };
 
         const roi = () => {
           if (
-            !vaultAccount ||
-            vaultLoading ||
-            isPracticallyZero(vaultAccount.totalDeposits, usdcDecimals)
+            !poolAccount ||
+            poolLoading ||
+            isPracticallyZero(poolAccount.totalDeposits, usdcDecimals)
           ) {
             return 0;
           }
 
           return (
             (parseFloat(
-              formatUnits(balance.sub(vaultAccount.totalDeposits), usdcDecimals)
+              formatUnits(balance.sub(poolAccount.totalDeposits), usdcDecimals)
             ) /
               parseFloat(
-                formatUnits(vaultAccount.totalDeposits, usdcDecimals)
+                formatUnits(poolAccount.totalDeposits, usdcDecimals)
               )) *
             100
           );
@@ -443,7 +450,7 @@ export const Positions = () => {
                     </StyledTitle>
                   </Value>
                   <StyledSubtitle color={roiColor()}>
-                    {vaultLoading || !account
+                    {poolLoading || !account
                       ? "---"
                       : `${roi() > 0 ? "+" : ""}${currency(
                           profit().toFixed(2),

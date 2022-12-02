@@ -5,14 +5,14 @@ import colors from "shared/lib/designSystem/colors";
 import styled, { keyframes } from "styled-components";
 import ExternalLinkIcon from "../Common/ExternalLinkIcon";
 import { Button, PrimaryText, SecondaryText } from "../../designSystem";
-import { useVaultAccountBalances } from "../../hooks/useVaultAccountBalances";
-import { formatBigNumber } from "../../utils/math";
+import { usePoolAccountBalances } from "../../hooks/usePoolAccountBalances";
+import { formatBigNumber } from "shared/lib/utils/math";
 import TransactionStep from "./TransactionStep";
 import usePoolFactoryContract from "../../hooks/usePoolFactoryContract";
 import { PoolFactory } from "../../codegen";
 import { usePendingTransactions } from "../../hooks/pendingTransactionsContext";
 import { getAssetColor, getAssetDecimals } from "../../utils/asset";
-import { VaultAddressMap, VaultList } from "../../constants/constants";
+import { PoolAddressMap, PoolList } from "shared/lib/constants/lendConstants";
 import Logo from "shared/lib/assets/icons/logo";
 import useWeb3Wallet from "../../hooks/useWeb3Wallet";
 
@@ -203,7 +203,7 @@ export const ClaimRbnPage: React.FC<ClaimRbnPageProps> = ({ onHide }) => {
 
   const [txhash, setTxhash] = useState("");
   const { account } = useWeb3Wallet();
-  const { loading, accountBalances } = useVaultAccountBalances();
+  const { loading, accountBalances } = usePoolAccountBalances();
   const claimableRbn = accountBalances.rbnClaimable;
   const claimedRbn = accountBalances.rbnClaimed;
   const poolFactory = usePoolFactoryContract();
@@ -237,8 +237,8 @@ export const ClaimRbnPage: React.FC<ClaimRbnPageProps> = ({ onHide }) => {
     if (pool !== null) {
       setRbnClaimStep(ClaimRbnPageEnum.TRANSACTION_STEP);
       let addresses: string[] = [];
-      VaultList.forEach((pool) => {
-        addresses.push(VaultAddressMap[pool].lend);
+      PoolList.forEach((pool) => {
+        addresses.push(PoolAddressMap[pool].lend);
       });
       try {
         let res: any;

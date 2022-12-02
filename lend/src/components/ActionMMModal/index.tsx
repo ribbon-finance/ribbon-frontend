@@ -4,7 +4,7 @@ import colors from "shared/lib/designSystem/colors";
 import styled from "styled-components";
 import { components } from "../../designSystem/components";
 import sizes from "../../designSystem/sizes";
-import { VaultOptions } from "../../constants/constants";
+import { PoolOptions } from "shared/lib/constants/lendConstants";
 import { CloseIcon } from "shared/lib/assets/icons/icons";
 import Header from "./Header";
 import Footer from "./Footer";
@@ -73,7 +73,7 @@ export enum ActionModalEnum {
 interface ActionMMModalProps {
   show: boolean;
   onHide: () => void;
-  pool: VaultOptions;
+  pool: PoolOptions;
 }
 
 const ActionMMModal: React.FC<ActionMMModalProps> = ({

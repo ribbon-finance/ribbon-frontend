@@ -14,7 +14,11 @@ import {
   isPracticallyZero,
 } from "shared/lib/utils/math";
 import usePullUp from "../../hooks/usePullUp";
-import { VaultList, VaultOptions } from "shared/lib/constants/constants";
+import {
+  isEarnVault,
+  VaultList,
+  VaultOptions,
+} from "shared/lib/constants/constants";
 import { Subtitle } from "shared/lib/designSystem";
 import useVaultOption from "../../hooks/useVaultOption";
 import { getVaultColor } from "shared/lib/utils/vault";
@@ -34,7 +38,7 @@ import {
 } from "shared/lib/assets/icons/icons";
 import ActionModal from "../../components/Vault/VaultActionsForm/EarnModal/ActionModal";
 import { usePendingTransactions } from "shared/lib/hooks/pendingTransactionsContext";
-import useEarnStrategyTime from "../../hooks/useEarnStrategyTime";
+import { useEarnStrategyTime } from "../../constants/constants";
 import useLoadingText from "shared/lib/hooks/useLoadingText";
 import { ACTIONS } from "../../components/Vault/VaultActionsForm/EarnModal/types";
 import {
@@ -57,7 +61,7 @@ const PendingOrLogoContainer = styled.div<{ delay?: number }>`
   ${delayedFade}
 `;
 
-const PendingDepositsContainer = styled.div<{ delay?: number }>`
+const PendingDepositsContainer = styled.div<{ delay?: number; color: string }>`
   display: flex;
   flex-direction: row;
   align-items: flex-start;
@@ -68,7 +72,7 @@ const PendingDepositsContainer = styled.div<{ delay?: number }>`
   width: 232px;
   border-radius: 100px;
   position: relative;
-  background: rgba(62, 115, 196, 0.08);
+  background: ${(props) => props.color}14;
   backdrop-filter: blur(16px);
 `;
 
@@ -145,21 +149,24 @@ const FadeDiv = styled.div<{
   animation-delay: ${({ delaySeconds }) => `${delaySeconds || 0}s`};
 `;
 
-const StyledEarnInnerRing = styled(EarnInnerRing)`
+const StyledEarnInnerRing = styled(EarnInnerRing)<{ color: string }>`
+  color: ${(props) => props.color};
   animation: ${rotateClockwise} 60s linear infinite;
   @media (max-width: 700px) {
     display: none;
   }
 `;
 
-const StyledEarnMiddleRing = styled(EarnMiddleRing)`
+const StyledEarnMiddleRing = styled(EarnMiddleRing)<{ color: string }>`
+  color: ${(props) => props.color};
   animation: ${rotateAnticlockwise} 60s linear infinite;
   @media (max-width: 700px) {
     height: 500px;
   }
 `;
 
-const StyledEarnOuterRing = styled(EarnOuterRing)`
+const StyledEarnOuterRing = styled(EarnOuterRing)<{ color: string }>`
+  color: ${(props) => props.color};
   animation: ${rotateClockwise} 60s linear infinite;
   @media (max-width: 700px) {
     height: 650px;
@@ -274,7 +281,7 @@ const EarnPage = () => {
   const { vaultOption, vaultVersion } = useVaultOption();
   const { active, account, chainId } = useWeb3Wallet();
   const loadingText = useLoadingText();
-  const { strategyStartTime } = useEarnStrategyTime();
+  const { strategyStartTime } = useEarnStrategyTime(vaultOption ?? "rEARN");
 
   useRedirectOnWrongChain(vaultOption, chainId);
   usePullUp();
@@ -323,11 +330,10 @@ const EarnPage = () => {
   const { vaultAccounts } = useVaultAccounts(vaultVersion);
   const vaultAccount = vaultAccounts[vaultOption || VaultList[0]];
   const Logo = getAssetLogo(asset);
-
   const isLoading = status === "loading" || loading;
   useRedirectOnSwitchChain(getChainByVaultOption(vaultOption as VaultOptions));
 
-  let logo = <Logo height="100%" />;
+  const logo = <Logo height="100%" />;
 
   const color = useMemo(() => {
     if (vaultOption) {
@@ -344,7 +350,7 @@ const EarnPage = () => {
   }, [vaultAccount]);
 
   const isVaultMaxCapacity = useMemo(() => {
-    if (isLoading || vaultOption !== "rEARN") {
+    if (isLoading || (vaultOption && !isEarnVault(vaultOption))) {
       return undefined;
     }
     return isPracticallyZero(v2VaultLimit.sub(v2Deposits), 6);
@@ -439,22 +445,22 @@ const EarnPage = () => {
     <>
       <CirclesContainer offset={pageOffset}>
         <FadeDiv delaySeconds={0.3} show={!isDepositSuccess}>
-          <StyledEarnOuterRing type={"blue"} />
+          <StyledEarnOuterRing type={color} color={color} />
         </FadeDiv>
         <FadeDiv delaySeconds={0.3} show={isDepositSuccess}>
-          <StyledEarnOuterRing type={"green"} />
+          <StyledEarnOuterRing color={colors.green} />
         </FadeDiv>
         <FadeDiv delaySeconds={0.2} show={!isDepositSuccess}>
-          <StyledEarnMiddleRing type={"blue"} />
+          <StyledEarnMiddleRing type={color} color={color} />
         </FadeDiv>
         <FadeDiv delaySeconds={0.2} show={isDepositSuccess}>
-          <StyledEarnMiddleRing type={"green"} />
+          <StyledEarnMiddleRing color={colors.green} />
         </FadeDiv>
         <FadeDiv delaySeconds={0.1} show={!isDepositSuccess}>
-          <StyledEarnInnerRing type={"blue"} />
+          <StyledEarnInnerRing type={color} color={color} />
         </FadeDiv>
         <FadeDiv delaySeconds={0.1} show={isDepositSuccess}>
-          <StyledEarnInnerRing type={"green"} />
+          <StyledEarnInnerRing color={colors.green} />
         </FadeDiv>
       </CirclesContainer>
       <PageContainer offset={pageOffset}>
@@ -480,7 +486,7 @@ const EarnPage = () => {
               <VaultContainer>
                 <PendingOrLogoContainer delay={0.1}>
                   {hasPendingDeposits ? (
-                    <PendingDepositsContainer>
+                    <PendingDepositsContainer color={color}>
                       <ProductAssetLogoContainer color={color}>
                         {logo}
                       </ProductAssetLogoContainer>
@@ -499,12 +505,11 @@ const EarnPage = () => {
                     </ProductAssetLogoContainer>
                   )}
                 </PendingOrLogoContainer>
-                <BalanceTitle delay={0.2}>Your Balance</BalanceTitle>
+                <BalanceTitle delay={0.2}>Your Balance ({asset})</BalanceTitle>
                 <HeroText delay={0.3}>
                   {isLoading || !account
                     ? "---"
-                    : "$" +
-                      formatBigNumber(
+                    : formatBigNumber(
                         BigNumber.from(investedInStrategy),
                         decimals,
                         2
@@ -579,9 +584,12 @@ const EarnPage = () => {
                     <VaultFullText>Vault is currently full</VaultFullText>
                   ) : (
                     formatAmount(totalDepositStr) +
-                    " USDC / " +
+                    " " +
+                    asset +
+                    " / " +
                     formatAmount(depositLimitStr) +
-                    " USDC"
+                    " " +
+                    asset
                   )}
                 </EarnCapacityText>
               </VaultContainer>
@@ -604,7 +612,7 @@ const EarnPage = () => {
                 ease: "easeInOut",
               }}
             >
-              <EarnStrategyExplainer />
+              <EarnStrategyExplainer vaultOption={vaultOption} />
             </motion.div>
           )}
         </AnimatePresence>

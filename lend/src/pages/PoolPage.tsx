@@ -2,11 +2,14 @@ import { useState } from "react";
 import { Col } from "react-bootstrap";
 import { useParams } from "react-router-dom";
 import {
+  CreditRating,
+  Disclaimers,
   getAssets,
   getMakerLogo,
-  VaultDetailsMap,
-  VaultOptions,
+  isDepositDisabledPool,
+  PoolDetailsMap,
 } from "../constants/constants";
+import { PoolOptions } from "shared/lib/constants/lendConstants";
 import { BaseLink, Title } from "../designSystem";
 import NotFound from "./NotFound";
 import Marquee from "react-fast-marquee/dist";
@@ -32,14 +35,14 @@ import { truncateAddress } from "shared/lib/utils/address";
 import useWeb3Wallet from "../hooks/useWeb3Wallet";
 import LendModal, { ModalContentEnum } from "../components/Common/LendModal";
 import ActionModal from "../components/ActionModal";
-import { useVaultsData } from "../hooks/web3DataContext";
-import { usePoolsAPR } from "../hooks/usePoolsAPR";
+import { usePoolsData } from "../hooks/web3DataContext";
+import { usePoolsApr } from "../hooks/usePoolsApr";
 import {
   getAssetDecimals,
   getAssetLogo,
   getUtilizationDecimals,
 } from "../utils/asset";
-import { formatBigNumber } from "../utils/math";
+import { formatBigNumber } from "shared/lib/utils/math";
 import colors from "shared/lib/designSystem/colors";
 import ExternalLinkIcon from "../components/Common/ExternalLinkIcon";
 import currency from "currency.js";
@@ -53,8 +56,10 @@ import credora from "../assets/icons/credora.svg";
 import MobileHeader from "../components/MobileHeader";
 import PositionWidget from "../components/PositionWidget";
 import ActionMMModal from "../components/ActionMMModal";
-import { LoadingText } from "shared/lib/hooks/useLoadingText";
+import useLoadingText, { LoadingText } from "shared/lib/hooks/useLoadingText";
 import { formatUnits } from "ethers/lib/utils";
+import UtilizationCurve from "../components/Common/UtilizationCurve";
+import { useCredoraData } from "shared/lib/hooks/useCredoraData";
 
 const PoolContainer = styled.div`
   width: calc(100% - ${components.sidebar}px);
@@ -215,7 +220,7 @@ const DetailsStatWrapper = styled.div`
   }
 `;
 
-const CreditRating = styled.div`
+const CreditRatingContainer = styled.div`
   margin: 24px auto;
   color: ${colors.tertiaryText};
 
@@ -289,7 +294,7 @@ const YieldExplainerTitle = styled.div<{ color: string }>`
   display: flex;
   justify-content: space-between;
   margin-bottom: 8px;
-  min-width: 224px;
+  min-width: 240px;
 
   > span {
     &:last-child {
@@ -322,26 +327,39 @@ export const MobileHeaderCol = styled(Col)`
 `;
 
 const PoolPage = () => {
-  const { poolId }: { poolId: VaultOptions } = useParams();
+  const { poolId }: { poolId: PoolOptions } = useParams();
   const [activePage, setPage] = useState<PageEnum>();
   const [triggerWalletModal, setWalletModal] = useState<boolean>(false);
-  const { loading: vaultLoading, data: vaultDatas } = useVaultsData();
+  const [hoverUtilizationRate, setUtilizationRate] = useState<number>();
+  const [hoverLendingRate, setLendingRate] = useState<number>();
+  const [hoverBorrowRate, setBorrowRate] = useState<number>();
+  const { loading: poolLoading, data: poolDatas } = usePoolsData();
   const { account } = useWeb3Wallet();
-  const { loading, aprs: poolAPRs, supplyAprs, rbnAprs } = usePoolsAPR();
+  const {
+    loading,
+    rbnAprLoading,
+    aprs: poolAPRs,
+    supplyAprs,
+    rbnAprs,
+  } = usePoolsApr();
   const utilizationDecimals = getUtilizationDecimals();
   const usdcDecimals = getAssetDecimals("USDC");
   const { width } = useScreenSize();
+  const { data: credoraData } = useCredoraData();
+  const loadingText = useLoadingText();
+  const { loading: credoraDataLoading, data } = useCredoraData();
+
   if (!poolId) return <NotFound />;
 
   const logo = getMakerLogo(poolId);
-  const poolSize = formatUnits(vaultDatas[poolId].poolSize, usdcDecimals);
-  const manager = vaultDatas[poolId].manager;
+  const poolSize = formatUnits(poolDatas[poolId].poolSize, usdcDecimals);
+  const manager = poolDatas[poolId].manager;
   const apr = poolAPRs[poolId].toFixed(2);
   const supplyApr = supplyAprs[poolId].toFixed(2);
   const rbnApr = rbnAprs[poolId].toFixed(2);
-  const poolDetails = VaultDetailsMap[poolId];
+  const poolDetails = PoolDetailsMap[poolId];
   const utilizationRate = formatBigNumber(
-    vaultDatas[poolId].utilizationRate,
+    poolDatas[poolId].utilizationRate,
     utilizationDecimals
   );
 
@@ -412,7 +430,7 @@ const PoolPage = () => {
                     <Label>Pool size:</Label>
                     <Value>
                       <AssetLogo />{" "}
-                      {currency(vaultLoading ? "0" : poolSize, {
+                      {currency(poolLoading ? "0" : poolSize, {
                         symbol: "",
                       }).format()}
                     </Value>
@@ -421,6 +439,7 @@ const PoolPage = () => {
                     <div className="d-flex justify-content-center align-items-center">
                       <Label>APR:</Label>
                       <TooltipExplanation
+                        maxWidth={280}
                         explanation={
                           <>
                             <YieldExplainerTitle
@@ -456,7 +475,7 @@ const PoolPage = () => {
                             <YieldExplainerStat>
                               <span>RBN Rewards APR</span>
                               <span>
-                                {loading ? (
+                                {rbnAprLoading ? (
                                   <LoadingText>LOADING</LoadingText>
                                 ) : (
                                   `${currency(rbnApr, {
@@ -500,7 +519,7 @@ const PoolPage = () => {
                         color={colors.primaryText}
                         width={64}
                       />
-                      <Value>{vaultLoading ? "0" : utilizationRate}%</Value>
+                      <Value>{poolLoading ? "0" : utilizationRate}%</Value>
                     </div>
                   </Stat>
                 </StatsWrapper>
@@ -509,81 +528,150 @@ const PoolPage = () => {
           </StickyCol>
           <Col xs={12} md={6}>
             <PoolDetailsWrapper>
-              {account !== manager && !loading && (
+              {account !== manager && (
                 <>
                   <Details delay={0.25}>
                     <DetailsIndex>01</DetailsIndex>
                     <StyledTitle>{poolDetails.name}</StyledTitle>
                     <Paragraph>{poolDetails.bio}</Paragraph>
                   </Details>
-                  <Details delay={0.5}>
-                    <DetailsIndex>02</DetailsIndex>
-                    <StyledTitle>Credit Rating</StyledTitle>
-                    <Paragraph>{poolDetails.credit.content}</Paragraph>
-                    <DetailsStatWrapper>
-                      <Stat>
-                        <Label>Credit Rating:</Label>
-                        <StyledBaseLink
-                          to="https://credora.gitbook.io/credit-methodology/SbLmTxogePkrzsF4z9IK/credit-evaluation/credit-score"
-                          target="_blank"
-                          rel="noreferrer noopener"
-                        >
-                          <Value>{poolDetails.credit.rating}</Value>
-                        </StyledBaseLink>
-                      </Stat>
-                      <Stat>
-                        <div className="d-flex justify-content-center align-items-center">
-                          <Label>Borrow Limit: </Label>
-                          <TooltipExplanation
-                            explanation={
-                              <>
-                                Credora calculates a Borrow Capacity for each
-                                trading firm. The Borrow Capacity calculation
-                                uses the Credit Score to define a target
-                                Portfolio Leverage, and subsequently calculates
-                                a USD Borrow Capacity based on trading firm
-                                current Debt and Portfolio Equity.
-                              </>
-                            }
-                            renderContent={({ ref, ...triggerHandler }) => (
-                              <HelpInfo containerRef={ref} {...triggerHandler}>
-                                i
-                              </HelpInfo>
-                            )}
-                          />
-                        </div>
-                        <Value>
-                          <AssetLogo />{" "}
-                          {currency(poolDetails.credit.borrowLimit).format({
-                            symbol: "",
-                          })}
-                        </Value>
-                      </Stat>
-                    </DetailsStatWrapper>
-                    <CreditRating>
-                      Credit ratings provided by{" "}
-                      <BaseLink
-                        color={colors.primaryText}
-                        target="_blank"
-                        rel="noreferrer noopener"
-                        to="https://credora.io/"
-                      >
-                        <img src={credora} alt="credora" />
-                      </BaseLink>
-                    </CreditRating>
-                  </Details>
                 </>
               )}
-              <Details delay={account !== manager ? 0.75 : 0.25}>
-                <DetailsIndex>{account !== manager ? "03" : "01"}</DetailsIndex>
+              {account === manager && (
+                <Details delay={0.25}>
+                  <DetailsIndex>01</DetailsIndex>
+                  <StyledTitle>Utilization Curve</StyledTitle>
+                  <Paragraph>
+                    The relationship between interest rates and pool utilization
+                    rates follow curves based on prevailing CeFi lending rates
+                    to market makers.
+                  </Paragraph>
+                  <Paragraph>
+                    <a
+                      href="https://docs.ribbon.finance/ribbon-lend/introduction-to-ribbon-lend/no-lockups/pool-status#utilization-curve"
+                      target="_blank"
+                      rel="noreferrer noopener"
+                    >
+                      Learn more about the Utilization Curve
+                      <ExternalLinkIcon />
+                    </a>
+                  </Paragraph>
+                  <UtilizationCurve
+                    pool={poolId}
+                    setUtilizationRate={setUtilizationRate}
+                    setBorrowRate={setBorrowRate}
+                    setLendingRate={setLendingRate}
+                  />
+                  <Stat>
+                    <Label>Utilization</Label>
+                    <Value>
+                      {hoverUtilizationRate
+                        ? hoverUtilizationRate.toFixed(2)
+                        : utilizationRate}
+                      %
+                    </Value>
+                  </Stat>
+                  <Stat>
+                    <Label>Borrow APR</Label>
+                    <Value color={colors.green}>
+                      {hoverBorrowRate ? (
+                        `${hoverBorrowRate.toFixed(2)}%`
+                      ) : (
+                        <LoadingText>loading</LoadingText>
+                      )}
+                    </Value>
+                  </Stat>
+                  <Stat>
+                    <Label>Lending APR</Label>
+                    <Value color={"#3E73C4"}>
+                      {hoverLendingRate ? (
+                        `${hoverLendingRate.toFixed(2)}%`
+                      ) : (
+                        <LoadingText>loading</LoadingText>
+                      )}
+                    </Value>
+                  </Stat>
+                </Details>
+              )}
+              {account !== manager && (
+                <Details delay={0.75}>
+                  <DetailsIndex>02</DetailsIndex>
+                  <StyledTitle>Credit Rating</StyledTitle>
+                  <Paragraph>{CreditRating}</Paragraph>
+                  <DetailsStatWrapper>
+                    <Stat>
+                      <Label>Credit Rating:</Label>
+                      <StyledBaseLink
+                        to="https://credora.gitbook.io/credit-methodology/SbLmTxogePkrzsF4z9IK/credit-evaluation/credit-score"
+                        target="_blank"
+                        rel="noreferrer noopener"
+                      >
+                        <Value>
+                          {credoraDataLoading
+                            ? loadingText
+                            : data[poolId].creditScoreRating}
+                        </Value>
+                      </StyledBaseLink>
+                    </Stat>
+                    <Stat>
+                      <div className="d-flex justify-content-center align-items-center">
+                        <Label>Borrow Limit: </Label>
+                        <TooltipExplanation
+                          explanation={
+                            <>
+                              Credora calculates a Borrow Capacity for each
+                              trading firm. The Borrow Capacity calculation uses
+                              the Credit Score to define a target Portfolio
+                              Leverage, and subsequently calculates a USD Borrow
+                              Capacity based on trading firm current Debt and
+                              Portfolio Equity.
+                            </>
+                          }
+                          renderContent={({ ref, ...triggerHandler }) => (
+                            <HelpInfo containerRef={ref} {...triggerHandler}>
+                              i
+                            </HelpInfo>
+                          )}
+                        />
+                      </div>
+                      <Value>
+                        <AssetLogo />{" "}
+                        {currency(credoraData[poolId].borrowCapacity).format({
+                          symbol: "",
+                        })}
+                      </Value>
+                    </Stat>
+                  </DetailsStatWrapper>
+                  <CreditRatingContainer>
+                    Credit ratings provided by{" "}
+                    <BaseLink
+                      color={colors.primaryText}
+                      target="_blank"
+                      rel="noreferrer noopener"
+                      to="https://credora.io/"
+                    >
+                      <img src={credora} alt="credora" />
+                    </BaseLink>
+                  </CreditRatingContainer>
+                </Details>
+              )}
+              <Details delay={account !== manager ? 1 : 0.5}>
+                <DetailsIndex>{account !== manager ? "03" : "02"}</DetailsIndex>
                 <StyledTitle>Pool Activity</StyledTitle>
                 <PoolActivity
-                  vault={{
-                    vaultOption: poolId,
-                    vaultVersion: "lend",
+                  pool={{
+                    poolOption: poolId,
+                    poolVersion: "lend",
                   }}
                 />
               </Details>
+              {account !== manager && (
+                <Details delay={1.25}>
+                  <DetailsIndex>04</DetailsIndex>
+                  <StyledTitle>Disclaimers</StyledTitle>
+                  <Paragraph>{Disclaimers}</Paragraph>
+                </Details>
+              )}
             </PoolDetailsWrapper>
           </Col>
         </ScrollableContent>
@@ -592,11 +680,12 @@ const PoolPage = () => {
           setPage={setPage}
           setWalletModal={setWalletModal}
           manager={manager}
+          pool={poolId}
         />
         <PositionWidget
-          vault={{
-            vaultOption: poolId,
-            vaultVersion: "lend",
+          pool={{
+            poolOption: poolId,
+            poolVersion: "lend",
           }}
         />
       </PoolContainer>
@@ -605,7 +694,7 @@ const PoolPage = () => {
 };
 
 interface HeaderProps {
-  pool: VaultOptions;
+  pool: PoolOptions;
   setWalletModal: (trigger: boolean) => void;
 }
 
@@ -641,14 +730,10 @@ interface FooterProps {
   setPage: (page: PageEnum) => void;
   setWalletModal: (trigger: boolean) => void;
   manager: string;
+  pool: PoolOptions;
 }
 
-const Footer = ({
-  activePage,
-  setPage,
-  setWalletModal,
-  manager,
-}: FooterProps) => {
+const Footer = ({ setPage, setWalletModal, manager, pool }: FooterProps) => {
   const { account, active } = useWeb3Wallet();
 
   return (
@@ -663,10 +748,32 @@ const Footer = ({
           <>
             <FooterButton
               delay={0.2}
+              disabled={isDepositDisabledPool(pool)}
+              tooltip={isDepositDisabledPool(pool)}
               isActive={true}
               onClick={() => setPage(PageEnum.DEPOSIT)}
             >
-              Deposit
+              <div className="d-flex justify-content-center align-items-center">
+                Deposit{" "}
+                {isDepositDisabledPool(pool) && (
+                  <TooltipExplanation
+                    explanation={
+                      <>
+                        Lending to Folkvang has been temporarily disabled. Loans
+                        to the Wintermute pool are still open.
+                      </>
+                    }
+                    renderContent={({ ref, ...triggerHandler }) => (
+                      <HelpInfo containerRef={ref} {...triggerHandler}>
+                        i
+                      </HelpInfo>
+                    )}
+                    learnMoreURL={
+                      "https://twitter.com/folkvangtrading/status/1591360107094626304"
+                    }
+                  />
+                )}
+              </div>
             </FooterButton>
             <FooterButton
               delay={0.3}
@@ -724,12 +831,12 @@ const StyledMarquee = styled(Marquee)<{ delay: number }>`
   ${delayedFade}
 `;
 
-const PoolMarquee = ({ pool }: { pool: VaultOptions }) => {
+const PoolMarquee = ({ pool }: { pool: PoolOptions }) => {
   return (
     <StyledMarquee gradient={false} speed={50} delay={0.1} pauseOnHover>
       {new Array(10).fill("").map((v, i) => (
         <MarqueeItem key={i}>
-          <Title>{VaultDetailsMap[pool].name}</Title>
+          <Title>{PoolDetailsMap[pool].name}</Title>
           <img src={getMakerLogo(pool)} alt={pool} height={20} width={20} />
         </MarqueeItem>
       ))}

@@ -35,7 +35,8 @@
       "perp": "0xd0A1E359811322d97991E03f863a0C30C2cF029C",
       "bal": "0xd0A1E359811322d97991E03f863a0C30C2cF029C",
       "badger": "0xd0A1E359811322d97991E03f863a0C30C2cF029C",
-      "spell": "0xd0A1E359811322d97991E03f863a0C30C2cF029C"
+      "spell": "0xd0A1E359811322d97991E03f863a0C30C2cF029C",
+      "samb": "0xd0A1E359811322d97991E03f863a0C30C2cF029C"
     },
     "secondary": {
       "comment": "There is 2 different USDC in Kovan. They are being used in different context. Different USDC are needed depending on contracts.",
@@ -98,7 +99,8 @@
       "perp": "0xbc396689893d065f41bc2c6ecbee5e0085233447",
       "bal": "0xba100000625a3754423978a60c9317c58a424e3D",
       "badger": "0x3472a5a71965499acd81997a54bba8d852c6e53d",
-      "spell": "0x090185f2135308bad17527004364ebcc2d37e5f6"
+      "spell": "0x090185f2135308bad17527004364ebcc2d37e5f6",
+      "samb": "0x278a8c33Ef2A7D7C682f458C85E9447ce3645188"
     },
     "yearnRegistry": "0x50c1a2eA0a861A967D9d0FFE2AE4012c2E053804",
     "airswapSwap": "0x4572f2554421Bd64Bef1c22c8a81840E8D496BeA",
@@ -111,7 +113,8 @@
     "sushiswap": "0xd9e1ce17f2641f24ae83637ab66a2cca9c378b9f",
     "lidoCurvePool": "0xDC24316b9AE028F1497c275EB9192a3Ea0f67022",
     "lidoOracle": "0x442af784A788A5bd6F42A01Ebe9F287a871243fb",
-    "stETHDepositHelper": "0x07f36cf3c834e423536680f560b6bad0319f5411"
+    "stETHDepositHelper": "0x07f36cf3c834e423536680f560b6bad0319f5411",
+    "earnStETHDepositHelper": "0xedAe76E579A3aCf71Dc11250D70b1A4f80748Be1"
   },
   "mainnet-sim": {
     "assets": {

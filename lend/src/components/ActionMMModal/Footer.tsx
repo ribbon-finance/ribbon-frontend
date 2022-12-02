@@ -5,14 +5,15 @@ import styled from "styled-components";
 import { components } from "../../designSystem/components";
 import { PrimaryText, Title } from "../../designSystem";
 import sizes from "../../designSystem/sizes";
-import { getEtherscanURI, VaultOptions } from "../../constants/constants";
-import { formatBigNumber } from "../../utils/math";
+import { getEtherscanURI } from "../../constants/constants";
+import { PoolOptions } from "shared/lib/constants/lendConstants";
+import { formatBigNumber } from "shared/lib/utils/math";
 import { getUtilizationDecimals } from "../../utils/asset";
-import { usePoolsAPR } from "../../hooks/usePoolsAPR";
+import { usePoolsApr } from "../../hooks/usePoolsApr";
 import { fadeIn } from "shared/lib/designSystem/keyframes";
 import { css } from "styled-components";
 import { BaseUnderlineLink } from "shared/lib/designSystem";
-import { useVaultsData } from "../../hooks/web3DataContext";
+import { usePoolsData } from "../../hooks/web3DataContext";
 import { useWeb3React } from "@web3-react/core";
 import ExternalLinkIcon from "../Common/ExternalLinkIcon";
 import UtilizationBar from "../Common/UtilizationBar";
@@ -108,7 +109,7 @@ const UnderlineLink = styled(BaseUnderlineLink)`
 `;
 
 interface FooterProps {
-  pool: VaultOptions;
+  pool: PoolOptions;
   page: ActionModalEnum;
   show: boolean;
   txhash?: string | undefined;
@@ -124,13 +125,13 @@ const Footer: React.FC<FooterProps> = ({
   borrowAmount,
   isBorrow,
 }) => {
-  const vaultDatas = useVaultsData();
-  const { aprs } = usePoolsAPR();
+  const poolDatas = usePoolsData();
+  const { aprs } = usePoolsApr();
   const { chainId } = useWeb3React();
   const apr = aprs[pool];
   const utilizationDecimals = getUtilizationDecimals();
-  const utilizationRate = vaultDatas.data[pool].utilizationRate;
-  const poolSize = vaultDatas.data[pool].poolSize;
+  const utilizationRate = poolDatas.data[pool].utilizationRate;
+  const poolSize = poolDatas.data[pool].poolSize;
   const borrowAmountNum = parseInt(borrowAmount);
   const absoluteBorrowAmount = Math.abs(parseInt(borrowAmount));
 

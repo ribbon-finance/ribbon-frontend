@@ -1,19 +1,24 @@
 import { useContext } from "react";
 import { BigNumber } from "ethers";
 
-import { VaultTransaction } from "../models/vault";
-import { Chains, VaultVersion, VaultVersionList } from "../constants/constants";
+import { PoolTransaction } from "../models/pool";
+import { Chains } from "../constants/constants";
+
+import {
+  PoolVersion,
+  PoolVersionList,
+} from "shared/lib/constants/lendConstants";
 import { SubgraphDataContext } from "./subgraphDataContext";
 
 export const transactionsGraphql = (account: string, chain: Chains) => `
-  vaultTransactions(
+  poolTransactions(
     where:{address:"${account}"},
     orderBy: timestamp,
     orderDirection: desc
   ) {
     id
     type
-    vault {
+    pool {
       id
       symbol
     }
@@ -26,15 +31,15 @@ export const transactionsGraphql = (account: string, chain: Chains) => `
 `;
 
 export const resolveTransactionsSubgraphResponse = (responses: {
-  [version in VaultVersion]: any | undefined;
-}): VaultTransaction[] =>
-  VaultVersionList.flatMap((version) =>
-    responses[version] && responses[version].vaultTransactions
-      ? responses[version].vaultTransactions.map((transaction: any) => ({
+  [version in PoolVersion]: any | undefined;
+}): PoolTransaction[] =>
+  PoolVersionList.flatMap((version) =>
+    responses[version] && responses[version].poolTransactions
+      ? responses[version].poolTransactions.map((transaction: any) => ({
           ...transaction,
           amount: BigNumber.from(transaction.amount),
           underlyingAmount: BigNumber.from(transaction.underlyingAmount),
-          vaultVersion: version,
+          poolVersion: version,
         }))
       : []
   );
@@ -43,8 +48,8 @@ export const useTransactions = () => {
   const contextData = useContext(SubgraphDataContext);
 
   return {
-    transactions: contextData.vaultSubgraphData.transactions,
-    loading: contextData.vaultSubgraphData.loading,
+    transactions: contextData.poolSubgraphData.transactions,
+    loading: contextData.poolSubgraphData.loading,
   };
 };
 

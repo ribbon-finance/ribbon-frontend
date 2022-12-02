@@ -5,7 +5,7 @@ import { PendingTransaction } from "../../store/types";
 import { getAssetDecimals, getAssetDisplay } from "../../utils/asset";
 import { capitalize } from "shared/lib/utils/text";
 import Toast from ".//BaseToast";
-import { formatBigNumber } from "../../utils/math";
+import { formatBigNumber } from "shared/lib/utils/math";
 import { BigNumber } from "ethers";
 
 export const TxStatusToast = () => {
@@ -30,7 +30,7 @@ export const TxStatusToast = () => {
       case "withdraw":
         return formatBigNumber(
           BigNumber.from(_currentTx.amount),
-          getAssetDecimals(getAssets(_currentTx.vault))
+          getAssetDecimals(getAssets(_currentTx.pool))
         );
       default:
         return _currentTx.amount;
@@ -53,7 +53,7 @@ export const TxStatusToast = () => {
       switch (_currentTx.type) {
         case "withdraw":
           return `${amountFormatted} ${getAssetDisplay(
-            getAssets(_currentTx.vault)
+            getAssets(_currentTx.pool)
           )} withdrawn`;
         case "deposit":
           return `${amountFormatted} ${getAssetDisplay(

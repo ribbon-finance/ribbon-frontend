@@ -3,8 +3,11 @@ import colors from "shared/lib/designSystem/colors";
 import styled, { keyframes } from "styled-components";
 import { SecondaryText } from "../../designSystem";
 import useWeb3Wallet from "../../hooks/useWeb3Wallet";
-import { VaultAddressMap, VaultOptions } from "../../constants/constants";
-import { formatBigNumber, isPracticallyZero } from "../../utils/math";
+import {
+  PoolAddressMap,
+  PoolOptions,
+} from "shared/lib/constants/lendConstants";
+import { formatBigNumber, isPracticallyZero } from "shared/lib/utils/math";
 import { getAssetDecimals } from "../../utils/asset";
 import { ActionType } from "./types";
 import { fadeIn } from "shared/lib/designSystem/keyframes";
@@ -14,11 +17,11 @@ import { useMemo } from "react";
 import { formatUnits, parseUnits } from "ethers/lib/utils";
 import { BaseInput, BaseInputContainer } from "shared/lib/designSystem";
 import { BigNumber } from "ethers";
-import { useAssetBalance, useVaultData } from "../../hooks/web3DataContext";
+import { useAssetBalance, usePoolData } from "../../hooks/web3DataContext";
 import useUSDC, { DepositSignature } from "../../hooks/useUSDC";
 import useLoadingText from "shared/lib/hooks/useLoadingText";
 import useLendContract from "../../hooks/useLendContract";
-import { RibbonLendVault } from "../../codegen";
+import { RibbonLendPool } from "../../codegen";
 import { usePendingTransactions } from "../../hooks/pendingTransactionsContext";
 import HeroContent from "../HeroContent";
 import { PoolValidationErrors } from "./types";
@@ -285,7 +288,7 @@ const ConnectButton = styled(Button)`
 
 interface HeroProps {
   actionType: ActionType;
-  pool: VaultOptions;
+  pool: PoolOptions;
   page: ActionModalEnum;
   setPage: (page: ActionModalEnum) => void;
   setTxhashMain: (txhash: string) => void;
@@ -309,8 +312,8 @@ const Hero: React.FC<HeroProps> = ({
   const [waitingApproval, setWaitingApproval] = useState(false);
   const { active, account, connectedWallet } = useWeb3Wallet();
   const Logo = getAssetLogo("USDC");
-  const { vaultBalanceInAsset, currentExchangeRate, availableToWithdraw } =
-    useVaultData(pool);
+  const { poolBalanceInAsset, currentExchangeRate, availableToWithdraw } =
+    usePoolData(pool);
   const decimals = getAssetDecimals("USDC");
   const { balance: userAssetBalance } = useAssetBalance("USDC");
   const usdc = useUSDC();
@@ -318,11 +321,11 @@ const Hero: React.FC<HeroProps> = ({
   const loadingTextApprove = useLoadingText("approving");
   const [signature, setSignature] = useState<DepositSignature>();
   const [txhash, setTxhash] = useState("");
-  const lendPool = useLendContract(pool) as RibbonLendVault;
+  const lendPool = useLendContract(pool) as RibbonLendPool;
   const { pendingTransactions, addPendingTransaction } =
     usePendingTransactions();
   const [triggerWalletModal, setWalletModal] = useState<boolean>(false);
-  const tokenAllowance = useTokenAllowance("usdc", VaultAddressMap[pool].lend);
+  const tokenAllowance = useTokenAllowance("usdc", PoolAddressMap[pool].lend);
 
   // Check if approval needed
   const showTokenApproval = useMemo(() => {
@@ -385,7 +388,7 @@ const Hero: React.FC<HeroProps> = ({
             }
             break;
           case "withdraw":
-            if (amountBigNumber.gt(vaultBalanceInAsset)) {
+            if (amountBigNumber.gt(poolBalanceInAsset)) {
               return "withdrawLimitExceeded";
             }
             if (amountBigNumber.gt(availableToWithdraw)) {
@@ -406,7 +409,7 @@ const Hero: React.FC<HeroProps> = ({
     inputAmount,
     isInputNonZero,
     userAssetBalance,
-    vaultBalanceInAsset,
+    poolBalanceInAsset,
   ]);
 
   const renderErrorText = useCallback((_error: PoolValidationErrors) => {
@@ -438,7 +441,7 @@ const Hero: React.FC<HeroProps> = ({
     (percentage: number) => {
       let input: string = "";
       const maxAmount =
-        actionType === "deposit" ? userAssetBalance : vaultBalanceInAsset;
+        actionType === "deposit" ? userAssetBalance : poolBalanceInAsset;
       switch (percentage) {
         case 0.25:
           input = formatUnits(maxAmount.div(BigNumber.from(4)), decimals);
@@ -461,14 +464,14 @@ const Hero: React.FC<HeroProps> = ({
       setInputAmount(input);
       setSignature(undefined);
     },
-    [actionType, decimals, userAssetBalance, vaultBalanceInAsset]
+    [actionType, decimals, userAssetBalance, poolBalanceInAsset]
   );
 
   const handleApprove = useCallback(async () => {
     setWaitingApproval(true);
     try {
       if (showTokenApproval) {
-        const approveToAddress = VaultAddressMap[pool]["lend"];
+        const approveToAddress = PoolAddressMap[pool]["lend"];
         if (tokenContract && approveToAddress) {
           setWaitingApproval(true);
           const amount =
@@ -481,7 +484,7 @@ const Hero: React.FC<HeroProps> = ({
             txhash,
             type: "approval",
             amount: amount,
-            vault: pool,
+            pool: pool,
             asset: "USDC",
           });
           setTxhash(txhash);
@@ -497,7 +500,7 @@ const Hero: React.FC<HeroProps> = ({
   const handlePermit = useCallback(async () => {
     setWaitingPermit(true);
     try {
-      const approveToAddress = VaultAddressMap[pool]["lend"];
+      const approveToAddress = PoolAddressMap[pool]["lend"];
       if (!approveToAddress) {
         return;
       }
@@ -552,7 +555,7 @@ const Hero: React.FC<HeroProps> = ({
               txhash: res.hash,
               type: "deposit",
               amount: amountStr,
-              vault: pool,
+              pool: pool,
               asset: "USDC",
             });
 
@@ -570,7 +573,7 @@ const Hero: React.FC<HeroProps> = ({
               txhash: res.hash,
               type: "withdraw",
               amount: amountInShares,
-              vault: pool,
+              pool: pool,
             });
 
             setTxhash(res.hash);
@@ -765,7 +768,7 @@ const Hero: React.FC<HeroProps> = ({
                   ? "---"
                   : actionType === "deposit"
                   ? formatBigNumber(userAssetBalance, decimals, 2)
-                  : formatBigNumber(vaultBalanceInAsset, decimals, 2)}
+                  : formatBigNumber(poolBalanceInAsset, decimals, 2)}
               </BalanceValue>
             </BalanceContainer>
             {actionType === "withdraw" && (

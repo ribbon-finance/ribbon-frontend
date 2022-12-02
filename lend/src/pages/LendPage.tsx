@@ -12,9 +12,9 @@ import { Balance } from "../components/Balance";
 import { Pools, Positions } from "../components/Pools";
 import useWeb3Wallet from "shared/lib/hooks/useWeb3Wallet";
 import LendModal, { ModalContentEnum } from "../components/Common/LendModal";
-import { VaultList } from "../constants/constants";
-import { isPracticallyZero } from "../utils/math";
-import { useVaultsData } from "../hooks/web3DataContext";
+import { PoolList } from "shared/lib/constants/lendConstants";
+import { isPracticallyZero } from "shared/lib/utils/math";
+import { usePoolsData } from "../hooks/web3DataContext";
 import { getAssetDecimals } from "../utils/asset";
 import useScreenSize from "shared/lib/hooks/useScreenSize";
 import { delayedFade } from "../components/animations";
@@ -237,19 +237,19 @@ const LendPage: React.FC = () => {
   const [activePage, setPage] = useState<PageEnum>(PageEnum.POOLS);
   const [triggerWalletModal, setWalletModal] = useState<boolean>(false);
   const { width } = useScreenSize();
-  const { loading, data: vaultDatas } = useVaultsData();
+  const { loading, data: poolDatas } = usePoolsData();
   const { account } = useWeb3Wallet();
 
   const isManager = useMemo(() => {
     if (account && !loading) {
       let managers: string[] = [];
-      VaultList.forEach((pool) => {
-        managers.push(vaultDatas[pool].manager);
+      PoolList.forEach((pool) => {
+        managers.push(poolDatas[pool].manager);
       });
       return managers.includes(account);
     }
     return false;
-  }, [account, loading, vaultDatas]);
+  }, [account, loading, poolDatas]);
 
   return (
     <>
@@ -322,6 +322,7 @@ export const FooterButton = styled(Button)<{
   isActive?: boolean;
   delay: number;
   disabled?: boolean;
+  tooltip?: boolean;
   width?: string;
 }>`
   font-size: 14px;
@@ -338,12 +339,11 @@ export const FooterButton = styled(Button)<{
   }
   &:disabled {
     color: ${colors.tertiaryText};
-    pointer-events: none;
+    pointer-events: ${(props) => (props.tooltip ? "auto" : "none")};
   }
   &:not(:last-of-type) {
     border-right: 1px solid ${colors.border};
   }
-
   ${delayedFade}
 `;
 
@@ -354,14 +354,11 @@ const Footer = ({
   isManager,
 }: FooterProps) => {
   const { account, active } = useWeb3Wallet();
-  const vaultDatas = useVaultsData();
+  const poolDatas = usePoolsData();
   const usdcDecimals = getAssetDecimals("USDC");
-  const positionsCount = VaultList.filter(
+  const positionsCount = PoolList.filter(
     (pool) =>
-      !isPracticallyZero(
-        vaultDatas.data[pool].vaultBalanceInAsset,
-        usdcDecimals
-      )
+      !isPracticallyZero(poolDatas.data[pool].poolBalanceInAsset, usdcDecimals)
   ).length;
   return (
     <FooterRow>

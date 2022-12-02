@@ -6,19 +6,19 @@ import {
   Chains,
   getAssets,
   getExplorerURI,
-  VaultOptions,
-  getVaultChain,
+  getPoolChain,
 } from "../../constants/constants";
+import { PoolOptions } from "shared/lib/constants/lendConstants";
 import { SecondaryText, Title } from "shared/lib/designSystem";
 import colors from "shared/lib/designSystem/colors";
-import { VaultActivity } from "../../models/vault";
+import { PoolActivity } from "../../models/pool";
 import { getAssetDecimals } from "shared/lib/utils/asset";
 import PoolTableWithFixedHeader from "./PoolTableWithFixedHeaders";
 import { PrimaryText } from "../../designSystem";
 import { getAssetLogo } from "../../utils/asset";
 import currency from "currency.js";
 import { formatUnits } from "ethers/lib/utils";
-const VaultPrimaryText = styled(PrimaryText)`
+const PoolPrimaryText = styled(PrimaryText)`
   font-size: 16px;
   color: ${colors.primaryText};
 
@@ -27,7 +27,7 @@ const VaultPrimaryText = styled(PrimaryText)`
   }
 `;
 
-const VaultSecondaryText = styled(SecondaryText)<{
+const PoolSecondaryText = styled(SecondaryText)<{
   fontFamily?: string;
 }>`
   color: ${colors.tertiaryText};
@@ -36,7 +36,7 @@ const VaultSecondaryText = styled(SecondaryText)<{
     props.fontFamily ? `font-family: ${props.fontFamily}, sans-serif;` : ""}
 `;
 
-const VaultSecondaryTextContainer = styled.div`
+const PoolSecondaryTextContainer = styled.div`
   display: flex;
   align-items: center;
 `;
@@ -50,33 +50,33 @@ const LogoContainer = styled.div`
 `;
 
 const StyledTitle = styled(Title)``;
-interface DesktopVaultActivityListProps {
-  activities: VaultActivity[];
-  vaultOption: VaultOptions;
+interface DesktopPoolActivityListProps {
+  activities: PoolActivity[];
+  poolOption: PoolOptions;
   page: number;
   setPage: React.Dispatch<React.SetStateAction<number>>;
   perPage: number;
 }
 
-const PoolActivityList: React.FC<DesktopVaultActivityListProps> = ({
+const PoolActivityList: React.FC<DesktopPoolActivityListProps> = ({
   activities,
-  vaultOption,
+  poolOption,
   page,
   setPage,
   perPage,
 }) => {
   const { decimals } = useMemo(() => {
-    const asset = getAssets(vaultOption);
+    const asset = getAssets(poolOption);
     return {
       asset: asset,
       decimals: getAssetDecimals(asset),
     };
-  }, [vaultOption]);
-  const chain = getVaultChain(vaultOption);
+  }, [poolOption]);
+  const chain = getPoolChain(poolOption);
 
   const AssetLogo = getAssetLogo("USDC");
-  const getVaultActivityExternalURL = useCallback(
-    (activity: VaultActivity) => {
+  const getPoolActivityExternalURL = useCallback(
+    (activity: PoolActivity) => {
       switch (activity.type) {
         case "borrow":
           return `${getExplorerURI(chain || Chains.Ethereum)}/tx/${
@@ -91,18 +91,18 @@ const PoolActivityList: React.FC<DesktopVaultActivityListProps> = ({
     [chain]
   );
 
-  const getVaultActivityTableData = useCallback(
-    (activity: VaultActivity) => {
+  const getPoolActivityTableData = useCallback(
+    (activity: PoolActivity) => {
       switch (activity.type) {
         case "borrow":
           return [
             <>
-              <VaultPrimaryText>Borrowed</VaultPrimaryText>
-              <VaultSecondaryTextContainer>
-                <VaultSecondaryText>
+              <PoolPrimaryText>Borrowed</PoolPrimaryText>
+              <PoolSecondaryTextContainer>
+                <PoolSecondaryText>
                   {moment(activity.borrowedAt * 1000).fromNow()}
-                </VaultSecondaryText>
-              </VaultSecondaryTextContainer>
+                </PoolSecondaryText>
+              </PoolSecondaryTextContainer>
             </>,
             <div className="d-flex justify-content-end align-items-center mr-3">
               <LogoContainer>
@@ -120,12 +120,12 @@ const PoolActivityList: React.FC<DesktopVaultActivityListProps> = ({
         case "repay":
           return [
             <>
-              <VaultPrimaryText>Repaid</VaultPrimaryText>
-              <VaultSecondaryTextContainer>
-                <VaultSecondaryText>
+              <PoolPrimaryText>Repaid</PoolPrimaryText>
+              <PoolSecondaryTextContainer>
+                <PoolSecondaryText>
                   {moment(activity.repaidAt * 1000).fromNow()}
-                </VaultSecondaryText>
-              </VaultSecondaryTextContainer>
+                </PoolSecondaryText>
+              </PoolSecondaryTextContainer>
             </>,
             <div className="d-flex justify-content-end align-items-center mr-3">
               <LogoContainer>
@@ -150,9 +150,9 @@ const PoolActivityList: React.FC<DesktopVaultActivityListProps> = ({
       weights={[0.5, 0.5]}
       orientations={["left", "right"]}
       labels={["Action", "Yield"]}
-      data={activities.map((activity) => getVaultActivityTableData(activity))}
+      data={activities.map((activity) => getPoolActivityTableData(activity))}
       externalLinks={activities.map((activity) =>
-        getVaultActivityExternalURL(activity)
+        getPoolActivityExternalURL(activity)
       )}
       perPage={perPage}
       pageController={{

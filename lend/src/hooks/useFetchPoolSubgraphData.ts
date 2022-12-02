@@ -4,19 +4,22 @@ import axios from "axios";
 import {
   getSubgraphURIForVersion,
   SUBGRAPHS_TO_QUERY,
-  VaultVersion,
-  VaultVersionList,
 } from "../constants/constants";
+
 import {
-  defaultVaultSubgraphData,
-  VaultSubgraphDataContextType,
+  PoolVersion,
+  PoolVersionList,
+} from "shared/lib/constants/lendConstants";
+import {
+  defaultPoolSubgraphData,
+  PoolSubgraphDataContextType,
 } from "./subgraphDataContext";
 import { impersonateAddress } from "shared/lib/utils/development";
 import {
-  resolveVaultAccountsSubgraphResponse,
-  vaultAccountsGraphql,
-} from "./useVaultAccounts";
-import { isProduction } from "../utils/env";
+  resolvePoolAccountsSubgraphResponse,
+  poolAccountsGraphql,
+} from "./usePoolAccounts";
+import { isProduction } from "shared/lib/utils/env";
 import {
   resolveTransactionsSubgraphResponse,
   transactionsGraphql,
@@ -26,18 +29,18 @@ import {
   resolveBalancesSubgraphResponse,
 } from "./useBalances";
 import {
-  resolveVaultActivitiesSubgraphResponse,
-  vaultActivitiesGraphql,
-} from "./useVaultActivity";
+  resolvePoolActivitiesSubgraphResponse,
+  poolActivitiesGraphql,
+} from "./usePoolActivity";
 import { usePendingTransactions } from "./pendingTransactionsContext";
-import { resolveVaultsSubgraphResponse, vaultGraphql } from "./useVaultData";
+import { resolvePoolsSubgraphResponse, poolGraphql } from "./usePoolData";
 import useWeb3Wallet from "./useWeb3Wallet";
 
-const useFetchVaultSubgraphData = () => {
+const useFetchPoolSubgraphData = () => {
   const { account: acc } = useWeb3Wallet();
   const account = impersonateAddress || acc;
-  const [data, setData] = useState<VaultSubgraphDataContextType>(
-    defaultVaultSubgraphData
+  const [data, setData] = useState<PoolSubgraphDataContextType>(
+    defaultPoolSubgraphData
   );
   const { transactionsCounter } = usePendingTransactions();
   const [, setMulticallCounter] = useState(0);
@@ -68,14 +71,14 @@ const useFetchVaultSubgraphData = () => {
           query{${
             account
               ? `
-                  ${vaultAccountsGraphql(account, version)}
+                  ${poolAccountsGraphql(account, version)}
                   ${transactionsGraphql(account, chain)}
                   ${balancesGraphql(account, chain)}
                 `
               : ""
           }
-          ${vaultGraphql(version, chain)}
-          ${vaultActivitiesGraphql(version, chain)}
+          ${poolGraphql(version, chain)}
+          ${poolActivitiesGraphql(version, chain)}
         }`.replaceAll(" ", "");
 
         const response = await axios.post(
@@ -90,9 +93,9 @@ const useFetchVaultSubgraphData = () => {
 
     // Group all the responses of the same version together
     // Merge them without overriding the previous properties
-    const responsesAcrossVersions: Record<VaultVersion, any> =
+    const responsesAcrossVersions: Record<PoolVersion, any> =
       Object.fromEntries(
-        VaultVersionList.map((version: VaultVersion) => {
+        PoolVersionList.map((version: PoolVersion) => {
           const mergedResponse: any = {};
 
           const responsesForVersion = allSubgraphResponses
@@ -117,17 +120,17 @@ const useFetchVaultSubgraphData = () => {
           });
           return [version, mergedResponse];
         })
-      ) as Record<VaultVersion, any>;
+      ) as Record<PoolVersion, any>;
 
     setMulticallCounter((counter) => {
       if (counter === currentCounter) {
         setData((prev) => ({
           ...prev,
-          vaults: resolveVaultsSubgraphResponse(responsesAcrossVersions),
-          vaultAccounts: resolveVaultAccountsSubgraphResponse(
+          pools: resolvePoolsSubgraphResponse(responsesAcrossVersions),
+          poolAccounts: resolvePoolAccountsSubgraphResponse(
             responsesAcrossVersions
           ),
-          vaultActivities: resolveVaultActivitiesSubgraphResponse(
+          poolActivities: resolvePoolActivitiesSubgraphResponse(
             responsesAcrossVersions
           ),
           balances: resolveBalancesSubgraphResponse(responsesAcrossVersions),
@@ -153,4 +156,4 @@ const useFetchVaultSubgraphData = () => {
   return data;
 };
 
-export default useFetchVaultSubgraphData;
+export default useFetchPoolSubgraphData;

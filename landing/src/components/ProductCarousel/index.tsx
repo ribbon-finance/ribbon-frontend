@@ -39,7 +39,7 @@ const ProductCarousel = () => {
             version === "v1" ? "" : version
           }/theta-vault/${vaultName}`;
         case "earn":
-          return `${base}/${vaultName}`;
+          return `${base}/earn/${vaultName}`;
         default:
           break;
       }

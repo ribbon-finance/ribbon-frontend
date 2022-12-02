@@ -1,9 +1,9 @@
 import { BigNumber } from "ethers";
 import { createGlobalState } from "react-hooks-global-state";
-import { PendingTransaction, VaultDataResponse } from "./types";
+import { PendingTransaction, PoolDataResponse } from "./types";
 
 interface GlobalStore {
-  vaultData: VaultDataResponse;
+  poolData: PoolDataResponse;
   prices: {
     WETH: number;
   };
@@ -14,10 +14,10 @@ interface GlobalStore {
 }
 
 export const initialState: GlobalStore = {
-  vaultData: {
+  poolData: {
     status: "loading",
     deposits: BigNumber.from("0"),
-    vaultLimit: BigNumber.from("0"),
+    poolLimit: BigNumber.from("0"),
     error: null,
   },
   prices: {

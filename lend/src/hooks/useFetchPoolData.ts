@@ -4,18 +4,14 @@ import { useWeb3React } from "@web3-react/core";
 
 import { useWeb3Context } from "./web3Context";
 import { getLendContract } from "./useLendContract";
-import { VaultList } from "../constants/constants";
+import { PoolList } from "shared/lib/constants/lendConstants";
 import { impersonateAddress } from "shared/lib/utils/development";
-import {
-  defaultVaultData,
-  VaultData,
-  VaultDataResponses,
-} from "../models/vault";
-import { isProduction } from "../utils/env";
+import { defaultPoolData, PoolData, PoolDataResponses } from "../models/pool";
+import { isProduction } from "shared/lib/utils/env";
 import { usePendingTransactions } from "./pendingTransactionsContext";
-import { isVaultSupportedOnChain } from "../utils/vault";
+import { isPoolSupportedOnChain } from "../utils/pool";
 
-const useFetchVaultData = (): VaultData => {
+const useFetchPoolData = (): PoolData => {
   const {
     chainId,
     library,
@@ -27,12 +23,12 @@ const useFetchVaultData = (): VaultData => {
   const account = impersonateAddress ? impersonateAddress : web3Account;
   const { transactionsCounter } = usePendingTransactions();
 
-  const [data, setData] = useState<VaultData>(defaultVaultData);
+  const [data, setData] = useState<PoolData>(defaultPoolData);
   const [, setMulticallCounter] = useState(0);
 
   const doMulticall = useCallback(async () => {
     if (!isProduction()) {
-      console.time("V1 Vault Data Fetch"); // eslint-disable-line
+      console.time("V1 Pool Data Fetch"); // eslint-disable-line
     }
 
     /**
@@ -45,16 +41,16 @@ const useFetchVaultData = (): VaultData => {
     });
 
     const responses = await Promise.all(
-      VaultList.map(async (vault) => {
-        // If we don't support the vault on the chainId, we just return the inactive data state
+      PoolList.map(async (pool) => {
+        // If we don't support the pool on the chainId, we just return the inactive data state
         const active = Boolean(
-          web3Active && isVaultSupportedOnChain(vault, chainId || 1)
+          web3Active && isPoolSupportedOnChain(pool, chainId || 1)
         );
 
-        const contract = getLendContract(library || provider, vault, active);
+        const contract = getLendContract(library || provider, pool, active);
 
         if (!contract) {
-          return { vault };
+          return { pool };
         }
 
         /**
@@ -75,10 +71,11 @@ const useFetchVaultData = (): VaultData => {
           contract.rewardPerSecond(),
           contract.manager(),
           contract.borrows(),
+          contract.reserveFactor(),
         ];
 
         /**
-         * 1. Vault balance in asset
+         * 1. Pool balance in asset
          */
         const promises = unconnectedPromises.concat(
           active
@@ -101,7 +98,7 @@ const useFetchVaultData = (): VaultData => {
           poolSize,
           availableToWithdraw,
           utilizationRate,
-          vaultMaxWithdrawableShares,
+          poolMaxWithdrawableShares,
           availableToBorrow,
           currentExchangeRate,
           totalSupply,
@@ -109,7 +106,8 @@ const useFetchVaultData = (): VaultData => {
           rewardPerSecond,
           manager,
           borrows,
-          vaultBalance,
+          reserveFactor,
+          poolBalance,
           accumulativeReward,
           withdrawableReward,
           withdrawnReward,
@@ -118,11 +116,11 @@ const useFetchVaultData = (): VaultData => {
         );
 
         return {
-          vault,
+          pool,
           poolSize,
           availableToWithdraw,
           utilizationRate,
-          vaultMaxWithdrawableShares,
+          poolMaxWithdrawableShares,
           availableToBorrow,
           currentExchangeRate,
           totalSupply,
@@ -130,7 +128,8 @@ const useFetchVaultData = (): VaultData => {
           rewardPerSecond,
           manager,
           borrows,
-          vaultBalance,
+          reserveFactor,
+          poolBalance,
           accumulativeReward,
           withdrawableReward,
           withdrawnReward,
@@ -144,10 +143,10 @@ const useFetchVaultData = (): VaultData => {
           responses: Object.fromEntries(
             responses.map(
               ({
-                vault,
+                pool,
                 availableToWithdraw,
                 utilizationRate,
-                vaultMaxWithdrawableShares,
+                poolMaxWithdrawableShares,
                 availableToBorrow,
                 currentExchangeRate,
                 totalSupply,
@@ -155,14 +154,15 @@ const useFetchVaultData = (): VaultData => {
                 rewardPerSecond,
                 manager,
                 borrows,
+                reserveFactor,
                 accumulativeReward,
                 withdrawableReward,
                 withdrawnReward,
                 ...response
               }) => [
-                vault,
+                pool,
                 {
-                  ...prev.responses[vault],
+                  ...prev.responses[pool],
                   ...response,
                   availableToWithdraw: availableToWithdraw,
                   utilizationRate: utilizationRate,
@@ -170,30 +170,31 @@ const useFetchVaultData = (): VaultData => {
                   rewardPerSecond: rewardPerSecond,
                   manager: manager,
                   borrows: borrows,
+                  reserveFactor: reserveFactor,
                   availableToBorrow: availableToBorrow,
                   currentExchangeRate: currentExchangeRate,
                   accumulativeReward: accumulativeReward,
                   withdrawableReward: withdrawableReward,
                   withdrawnReward: withdrawnReward,
-                  vaultBalanceInAsset:
-                    response.vaultBalance && currentExchangeRate
+                  poolBalanceInAsset:
+                    response.poolBalance && currentExchangeRate
                       ? currentExchangeRate
-                          .mul(response.vaultBalance)
+                          .mul(response.poolBalance)
                           .div(BigNumber.from(10).pow(18))
                       : BigNumber.from(0),
-                  vaultMaxWithdrawAmount:
+                  poolMaxWithdrawAmount:
                     totalSupply &&
-                    vaultMaxWithdrawableShares &&
+                    poolMaxWithdrawableShares &&
                     response.poolSize &&
                     !totalSupply.isZero()
-                      ? vaultMaxWithdrawableShares
+                      ? poolMaxWithdrawableShares
                           .mul(response.poolSize)
                           .div(totalSupply)
                       : BigNumber.from(0),
                 },
               ]
             )
-          ) as VaultDataResponses,
+          ) as PoolDataResponses,
           loading: false,
         }));
       }
@@ -202,7 +203,7 @@ const useFetchVaultData = (): VaultData => {
     });
 
     if (!isProduction()) {
-      console.timeEnd("Vault Data Fetch"); // eslint-disable-line
+      console.timeEnd("Pool Data Fetch"); // eslint-disable-line
     }
   }, [account, web3Active, library, provider, chainId]);
 
@@ -213,4 +214,4 @@ const useFetchVaultData = (): VaultData => {
   return data;
 };
 
-export default useFetchVaultData;
+export default useFetchPoolData;
