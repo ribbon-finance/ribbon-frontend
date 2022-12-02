@@ -22,7 +22,11 @@ import {
 import { Subtitle } from "shared/lib/designSystem";
 import useVaultOption from "../../hooks/useVaultOption";
 import { getVaultColor } from "shared/lib/utils/vault";
-import { getAssetLogo, getChainByVaultOption } from "shared/lib/utils/asset";
+import {
+  getAssetDefaultSignificantDecimals,
+  getAssetLogo,
+  getChainByVaultOption,
+} from "shared/lib/utils/asset";
 import useRedirectOnSwitchChain from "../../hooks/useRedirectOnSwitchChain";
 import useRedirectOnWrongChain from "../../hooks/useRedirectOnWrongChain";
 import EarnStrategyExplainer from "../../components/Earn/EarnStrategyExplainer";
@@ -332,7 +336,7 @@ const EarnPage = () => {
   const Logo = getAssetLogo(asset);
   const isLoading = status === "loading" || loading;
   useRedirectOnSwitchChain(getChainByVaultOption(vaultOption as VaultOptions));
-
+  const decimalPlaces = getAssetDefaultSignificantDecimals(asset);
   const logo = <Logo height="100%" />;
 
   const color = useMemo(() => {
@@ -353,19 +357,22 @@ const EarnPage = () => {
     if (isLoading || (vaultOption && !isEarnVault(vaultOption))) {
       return undefined;
     }
-    return isPracticallyZero(v2VaultLimit.sub(v2Deposits), 6);
-  }, [isLoading, v2Deposits, v2VaultLimit, vaultOption]);
+    return isPracticallyZero(v2VaultLimit.sub(v2Deposits), decimals);
+  }, [decimals, isLoading, v2Deposits, v2VaultLimit, vaultOption]);
 
   const [totalDepositStr, depositLimitStr] = useMemo(() => {
     return [
       parseFloat(
-        formatSignificantDecimals(formatUnits(v2Deposits, decimals), 2)
+        formatSignificantDecimals(
+          formatUnits(v2Deposits, decimals),
+          decimalPlaces
+        )
       ),
       parseFloat(
         formatSignificantDecimals(formatUnits(v2VaultLimit, decimals))
       ),
     ];
-  }, [decimals, v2Deposits, v2VaultLimit]);
+  }, [decimalPlaces, decimals, v2Deposits, v2VaultLimit]);
 
   const [hasPendingDeposits, hasLockedBalanceInAsset] = useMemo(() => {
     if (!vaultAccount) {
@@ -405,14 +412,14 @@ const EarnPage = () => {
         formatBigNumber(
           vaultAccount.totalBalance.sub(vaultAccount.totalDeposits),
           decimals,
-          2
+          decimalPlaces
         )
       ) /
         parseFloat(formatUnits(vaultAccount.totalDeposits, decimals))) *
         100,
       roiColor,
     ];
-  }, [vaultAccount, decimals]);
+  }, [vaultAccount, decimals, decimalPlaces]);
 
   const showInitiateWithdraw = useMemo(() => {
     return (
@@ -512,7 +519,7 @@ const EarnPage = () => {
                     : formatBigNumber(
                         BigNumber.from(investedInStrategy),
                         decimals,
-                        2
+                        decimalPlaces
                       )}
                 </HeroText>
                 <HeroSubtitle color={yieldColor} delay={0.4}>

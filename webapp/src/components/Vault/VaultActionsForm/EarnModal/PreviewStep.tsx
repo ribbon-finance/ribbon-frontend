@@ -198,7 +198,7 @@ const PreviewStep: React.FC<{
     useEarnStrategyTime(vaultOption);
   const loadingText = useLoadingText("permitting");
   const [depositSignature, setDepositSignature] = useState<DepositSignature>();
-
+  const assetDisplay = getAssetDisplay(asset);
   const {
     data: { decimals, withdrawals },
   } = useV2VaultData(vaultOption);
@@ -540,7 +540,7 @@ const PreviewStep: React.FC<{
           {withdrawOption === "complete"
             ? formatBigNumber(withdrawalAmount, getAssetDecimals(asset))
             : formatBigNumber(amount, getAssetDecimals(asset))}{" "}
-          {getAssetDisplay(asset)}
+          {assetDisplay}
         </Title>
       </InfoPreview>
       {detailRows.map((detail, index) => (
