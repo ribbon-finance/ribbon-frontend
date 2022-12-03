@@ -253,10 +253,9 @@ const YieldFrame: React.FC<YieldFrameProps> = ({
               ) : isVaultMaxCapacity ? (
                 <VaultFullText>Vault is currently full</VaultFullText>
               ) : (
-                formatAmount(totalDepositStr) +
-                " USDC / " +
-                formatAmount(depositLimitStr) +
-                " USDC"
+                `${formatAmount(totalDepositStr)} ${asset} / ${formatAmount(
+                  depositLimitStr
+                )} ${asset}`
               )}
             </EarnCapacityText>
             <EarnCard asset={asset} color={color} height={429} />
