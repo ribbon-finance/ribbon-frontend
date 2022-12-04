@@ -5,10 +5,11 @@ import { BaseModalContentColumn, Title } from "shared/lib/designSystem";
 import BasicModal from "shared/lib/components/Common/BasicModal";
 import SegmentControl from "shared/lib/components/Common/SegmentControl";
 import { Strategy, Risk } from "../Details";
-import EarnPerformanceSection from "../../../pages/DepositPage/EarnPerformanceSection";
+import EarnPerformanceSection from "../EarnPerformanceSection";
 import EarnVaultActivity from "../../Vault/EarnVaultActivity";
 import Payoff from "../Payoff";
 import Counterparties from "../Counterparties";
+import FundingSource from "../FundingSource";
 import Fees from "../Fees";
 import { motion } from "framer-motion";
 import sizes from "shared/lib/designSystem/sizes";
@@ -112,7 +113,7 @@ export type Step =
   | "payoff"
   | "performance"
   | "risk"
-  | "counterparties"
+  | "funding source"
   | "activity"
   | "fees";
 
@@ -121,7 +122,7 @@ const StepList = [
   "payoff",
   "performance",
   "risk",
-  "counterparties",
+  "funding source",
   "activity",
   "fees",
 ] as const;
@@ -130,6 +131,7 @@ const StepList = [
 const EarnDetailsModal: React.FC<EarnDetailsModalProps> = ({
   show,
   onClose,
+  vaultOption,
 }) => {
   const { width } = useScreenSize();
 
@@ -144,16 +146,16 @@ const EarnDetailsModal: React.FC<EarnDetailsModalProps> = ({
   const modalContent = useMemo(() => {
     switch (step) {
       case "strategy":
-        return <Strategy setStep={setStep} />;
+        return <Strategy setStep={setStep} vaultOption={vaultOption} />;
       case "payoff":
-        return <Payoff />;
+        return <Payoff vaultOption={vaultOption} />;
       case "risk":
-        return <Risk />;
+        return <Risk vaultOption={vaultOption} />;
       case "performance":
         return (
           <EarnPerformanceSection
             vault={{
-              vaultOption: "rEARN",
+              vaultOption,
               vaultVersion: "earn",
             }}
           />
@@ -162,17 +164,21 @@ const EarnDetailsModal: React.FC<EarnDetailsModalProps> = ({
         return (
           <EarnVaultActivity
             vault={{
-              vaultOption: "rEARN",
+              vaultOption,
               vaultVersion: "earn",
             }}
           />
         );
-      case "counterparties":
-        return <Counterparties />;
+      case "funding source":
+        return vaultOption === "rEARN" ? (
+          <Counterparties vaultOption={vaultOption} />
+        ) : (
+          <FundingSource vaultOption={vaultOption} />
+        );
       case "fees":
-        return <Fees />;
+        return <Fees vaultOption={vaultOption} />;
     }
-  }, [step]);
+  }, [step, vaultOption]);
 
   return (
     <>

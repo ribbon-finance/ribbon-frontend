@@ -160,7 +160,7 @@ const EarnVaultActivityList: React.FC<DesktopVaultActivityListProps> = ({
               <VaultSecondaryTextContainer>
                 {" "}
                 <VaultSecondaryText>
-                  ${formatBigNumber(activity.loanAmount, decimals)}
+                  {formatBigNumber(activity.loanAmount, decimals)}
                 </VaultSecondaryText>
                 <Separator />
                 <VaultSecondaryText>
@@ -176,7 +176,7 @@ const EarnVaultActivityList: React.FC<DesktopVaultActivityListProps> = ({
               <VaultSecondaryTextContainer>
                 {" "}
                 <VaultSecondaryText>
-                  ${formatBigNumber(activity.paidAmount, decimals, 0)}
+                  {formatBigNumber(activity.paidAmount, decimals, 0)}
                 </VaultSecondaryText>
                 <Separator />
                 <VaultSecondaryText>
@@ -192,7 +192,7 @@ const EarnVaultActivityList: React.FC<DesktopVaultActivityListProps> = ({
               <VaultSecondaryTextContainer>
                 {" "}
                 <VaultSecondaryText>
-                  ${formatBigNumber(activity.premium, decimals)} Premium
+                  {formatBigNumber(activity.premium, decimals)} Premium
                 </VaultSecondaryText>
                 <Separator />
                 <VaultSecondaryText>
@@ -208,7 +208,7 @@ const EarnVaultActivityList: React.FC<DesktopVaultActivityListProps> = ({
               <VaultSecondaryTextContainer>
                 {" "}
                 <VaultSecondaryText>
-                  ${formatBigNumber(activity.netYield, decimals)}
+                  {formatBigNumber(activity.netYield, decimals)}
                 </VaultSecondaryText>
                 <Separator />
                 <VaultSecondaryText>

@@ -5,9 +5,9 @@ import colors from "shared/lib/designSystem/colors";
 import styled from "styled-components";
 import { useInterestRateModelData } from "../../hooks/useInterestRateModelData";
 import { usePoolData } from "../../hooks/web3DataContext";
-import { PoolOptions } from "../../constants/constants";
-import { borrowRate, formatBigNumber, lendingRate } from "../../utils/math";
-
+import { PoolOptions } from "shared/lib/constants/lendConstants";
+import { borrowRate, lendingRate } from "../../utils/math";
+import { formatBigNumber } from "shared/lib/utils/math";
 const ChartContainer = styled.div`
   height: 350px;
   margin: 0;
@@ -53,7 +53,7 @@ const UtilizationCurve: React.FC<UtilizationCurveProps> = ({
   );
 
   const [actualBorrowRate, actualLendingRate] = useMemo(() => {
-    const borrowRateTemp = getBorrowRate(utilRate);
+    const borrowRateTemp = getBorrowRate(utilRate / 100) * 100;
     const lendingRateTemp = lendingRate(
       utilRate,
       borrowRateTemp,
@@ -62,7 +62,7 @@ const UtilizationCurve: React.FC<UtilizationCurveProps> = ({
     if (!borrowRateTemp || !lendingRateTemp) {
       return [0, 0];
     }
-    return [borrowRateTemp * 100, lendingRateTemp * 100];
+    return [borrowRateTemp, lendingRateTemp];
   }, [getBorrowRate, reserveFactor, utilRate]);
 
   useEffect(() => {

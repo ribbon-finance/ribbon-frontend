@@ -1,10 +1,10 @@
 import { BigNumber } from "ethers";
 import { parseUnits } from "ethers/lib/utils";
+import { getDisplayAssets } from "../constants/constants";
 import {
-  getDisplayAssets,
   PoolAddressMap,
   PoolOptions,
-} from "../constants/constants";
+} from "shared/lib/constants/lendConstants";
 import { getAssetColor } from "./asset";
 
 export const isPoolFull = (

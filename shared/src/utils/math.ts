@@ -2,10 +2,10 @@ import { BigNumber, BigNumberish } from "@ethersproject/bignumber";
 import { ethers } from "ethers";
 import currency from "currency.js";
 import { isBigNumberish } from "@ethersproject/bignumber/lib/bignumber";
-
 import { getDefaultSignificantDecimalsFromAssetDecimals } from "./asset";
 import { isEVMChain } from "./chains";
 import { Chains } from "../constants/constants";
+import moment, { Moment } from "moment";
 
 const { formatUnits } = ethers.utils;
 
@@ -207,4 +207,24 @@ export const amountAfterSlippage = (
     .parseUnits("1", decimals)
     .sub(ethers.utils.parseUnits(slippage.toFixed(3), decimals));
   return num.mul(discountValue).div(BigNumber.from(10).pow(decimals));
+};
+
+export const getNextFridayTimestamp = () => {
+  const now = moment().utc();
+  let friday;
+
+  switch (now.isoWeekday()) {
+    case 1:
+    case 2:
+    case 3:
+      friday = moment().utc().day(5);
+      break;
+    case 4:
+    case 5:
+    case 6:
+    case 7:
+      friday = moment().utc().day(5).add(1, "week");
+      break;
+  }
+  return (friday as Moment).hours(8).minutes(0).seconds(0).unix();
 };

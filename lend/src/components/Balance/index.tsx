@@ -8,14 +8,14 @@ import {
   getAssetDecimals,
   getAssetLogo,
 } from "../../utils/asset";
-import { formatBigNumber, isPracticallyZero } from "../../utils/math";
+import { formatBigNumber, isPracticallyZero } from "shared/lib/utils/math";
 import { useEffect, useMemo, useState } from "react";
 import { usePoolTotalDeposits } from "../../hooks/usePoolTotalDeposits";
 import { formatUnits } from "ethers/lib/utils";
 import LendModal, { ModalContentEnum } from "../Common/LendModal";
 import { delayedFade } from "../animations";
 import { fadeIn } from "shared/lib/designSystem/keyframes";
-import { PoolList } from "../../constants/constants";
+import { PoolList } from "shared/lib/constants/lendConstants";
 import { usePoolsData } from "../../hooks/web3DataContext";
 import { BigNumber } from "ethers";
 import { usePoolsApr } from "../../hooks/usePoolsApr";

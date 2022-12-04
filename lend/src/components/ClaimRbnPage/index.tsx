@@ -6,13 +6,13 @@ import styled, { keyframes } from "styled-components";
 import ExternalLinkIcon from "../Common/ExternalLinkIcon";
 import { Button, PrimaryText, SecondaryText } from "../../designSystem";
 import { usePoolAccountBalances } from "../../hooks/usePoolAccountBalances";
-import { formatBigNumber } from "../../utils/math";
+import { formatBigNumber } from "shared/lib/utils/math";
 import TransactionStep from "./TransactionStep";
 import usePoolFactoryContract from "../../hooks/usePoolFactoryContract";
 import { PoolFactory } from "../../codegen";
 import { usePendingTransactions } from "../../hooks/pendingTransactionsContext";
 import { getAssetColor, getAssetDecimals } from "../../utils/asset";
-import { PoolAddressMap, PoolList } from "../../constants/constants";
+import { PoolAddressMap, PoolList } from "shared/lib/constants/lendConstants";
 import Logo from "shared/lib/assets/icons/logo";
 import useWeb3Wallet from "../../hooks/useWeb3Wallet";
 

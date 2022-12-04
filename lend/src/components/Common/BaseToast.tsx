@@ -2,10 +2,9 @@ import React, { useCallback, useState } from "react";
 import BootstrapToast, {
   ToastProps as BootstrapToastProps,
 } from "react-bootstrap/Toast";
-
 import styled from "styled-components";
 import { CloseIcon } from "shared/lib/assets/icons/icons";
-import { PoolOptions } from "../../constants/constants";
+import { PoolOptions } from "shared/lib/constants/lendConstants";
 import { SecondaryText, Title } from "shared/lib/designSystem";
 import colors from "shared/lib/designSystem/colors";
 import sizes from "../../designSystem/sizes";

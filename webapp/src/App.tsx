@@ -6,7 +6,6 @@ import {
   getSolflareWallet,
 } from "@solana/wallet-adapter-wallets";
 import { WalletProvider as SolanaWalletProvider } from "@solana/wallet-adapter-react";
-
 import RootApp from "./components/RootApp";
 import { Web3ContextProvider } from "shared/lib/hooks/web3Context";
 import { ConnectionProvider } from "@solana/wallet-adapter-react";
@@ -22,7 +21,7 @@ import TextPreview from "shared/lib/components/TextPreview/TextPreview";
 import Geoblocked from "shared/lib/components/Geoblocked/Geoblocked";
 import { LoadingText } from "shared/lib/hooks/useLoadingText";
 import "shared/lib/i18n/config";
-
+import { DeribitContextProvider } from "./hooks/deribitContext";
 const SOLANA_WALLETS = [getPhantomWallet(), getSolflareWallet()];
 
 function App() {
@@ -52,7 +51,9 @@ function App() {
                 <Web3DataContextProvider>
                   <SubgraphDataContextProvider>
                     <ExternalAPIDataContextProvider>
-                      <RootApp />
+                      <DeribitContextProvider>
+                        <RootApp />
+                      </DeribitContextProvider>
                     </ExternalAPIDataContextProvider>
                   </SubgraphDataContextProvider>
                 </Web3DataContextProvider>

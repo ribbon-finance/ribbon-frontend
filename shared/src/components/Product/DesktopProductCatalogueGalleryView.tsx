@@ -9,6 +9,7 @@ import {
   VaultVersion,
   getAssets,
   isPutVault,
+  isEarnVault,
 } from "../../constants/constants";
 import { SecondaryText, Title } from "../../designSystem";
 import colors from "../../designSystem/colors";
@@ -37,7 +38,7 @@ import {
 import YourPosition from "../Vault/YourPosition";
 import { useWeb3React } from "@web3-react/core";
 import { useChain } from "../../hooks/chainContext";
-import { useAirtable } from "../../hooks/useAirtable";
+import { useAirtableEarnData } from "../../hooks/useAirtableEarnData";
 
 const FullscreenContainer = styled(Container)<{ height: number }>`
   padding-top: 24px;
@@ -135,7 +136,7 @@ const DesktopProductCatalogueGalleryView: React.FC<
   const [currentVault, setCurrentVault] = useState<VaultOptions | undefined>(
     filteredProducts[page - 1]
   );
-  const { loading, maxYield } = useAirtable();
+  const { loading, maxYield } = useAirtableEarnData(currentVault ?? "rEARN");
   // Prevent page overflow
   useEffect(() => {
     if (filteredProducts.length <= 0) {
@@ -152,7 +153,7 @@ const DesktopProductCatalogueGalleryView: React.FC<
   }, [page, filteredProducts]);
 
   const renderDescription = useCallback(() => {
-    if (currentVault === "rEARN") {
+    if (currentVault && isEarnVault(currentVault)) {
       return (
         "Earn up to " +
         (loading ? "---" : (maxYield * 100).toFixed(2) + "%") +
@@ -192,7 +193,7 @@ const DesktopProductCatalogueGalleryView: React.FC<
           <SecondaryText className="mt-3">{renderDescription()}</SecondaryText>
 
           {active &&
-            (currentVault === "rEARN" ? (
+            (currentVault && isEarnVault(currentVault) ? (
               <div className="mt-4">
                 <YourPosition
                   vault={{

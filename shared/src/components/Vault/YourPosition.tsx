@@ -3,6 +3,7 @@ import styled from "styled-components";
 import { formatUnits } from "@ethersproject/units";
 import {
   getDisplayAssets,
+  isEarnVault,
   VaultOptions,
   VaultVersion,
 } from "../../constants/constants";
@@ -250,7 +251,7 @@ const YourPosition: React.FC<YourPositionProps> = ({
   }, [decimals, onShowHook, vaultAccount]);
 
   const setShowPositionModal = useCallback(() => {
-    if (vaultOption !== "rEARN") {
+    if (!isEarnVault(vaultOption)) {
       setVaultPositionModal({
         show: true,
         vaultOption,
@@ -353,7 +354,7 @@ const YourPosition: React.FC<YourPositionProps> = ({
                           </div>
                         </div>
                       </PositionContainer>
-                      {vaultOption !== "rEARN" ? (
+                      {!isEarnVault(vaultOption) ? (
                         canPause ? (
                           <ActionButton
                             color={color}
@@ -456,7 +457,7 @@ const YourPosition: React.FC<YourPositionProps> = ({
                           </div>
                         </div>
                       </PositionContainer>
-                      {canPause && vaultOption !== "rEARN" ? (
+                      {canPause && !isEarnVault(vaultOption) ? (
                         <ActionButton
                           color={color}
                           show={true}

@@ -12,6 +12,7 @@ import {
   VaultOptions,
   VaultVersion,
   VaultAddressMap,
+  isNativeToken,
 } from "shared/lib/constants/constants";
 import { getVaultColor } from "shared/lib/utils/vault";
 import { capitalize } from "shared/lib/utils/text";
@@ -24,12 +25,13 @@ import HelpInfo from "shared/lib/components/Common/HelpInfo";
 import TooltipExplanation from "shared/lib/components/Common/TooltipExplanation";
 import useLoadingText from "shared/lib/hooks/useLoadingText";
 import useUSDC, { DepositSignature } from "../../../../hooks/useUSDC";
-import useEarnStrategyTime from "../../../../hooks/useEarnStrategyTime";
+import { useEarnStrategyTime } from "../../../../constants/constants";
 import { fadeIn } from "shared/lib/designSystem/keyframes";
 import colors from "shared/lib/designSystem/colors";
 import { useV2VaultData } from "shared/lib/hooks/web3DataContext";
 import useVaultPriceHistory from "shared/lib/hooks/useVaultPerformanceUpdate";
 import { parseUnits } from "ethers/lib/utils";
+import { t } from "i18next";
 
 const Logo = styled.div<{ delay?: number; show?: boolean }>`
   margin-top: -40px;
@@ -170,6 +172,7 @@ const FormButton = styled(ActionButton)<{ delay?: number; show?: boolean }>`
 const PreviewStep: React.FC<{
   actionType: ActionType;
   amount: BigNumber;
+  estimatedSTETHDepositAmount?: string | JSX.Element;
   positionAmount: BigNumber;
   withdrawOption: V2WithdrawOption;
   onClickConfirmButton: () => Promise<void>;
@@ -181,6 +184,7 @@ const PreviewStep: React.FC<{
 }> = ({
   actionType,
   amount,
+  estimatedSTETHDepositAmount,
   withdrawOption,
   onClickConfirmButton,
   asset,
@@ -191,10 +195,10 @@ const PreviewStep: React.FC<{
   const color = getVaultColor(vaultOption);
   const usdc = useUSDC();
   const { strategyStartTime, withdrawalDate, depositWithdrawalDate } =
-    useEarnStrategyTime();
+    useEarnStrategyTime(vaultOption);
   const loadingText = useLoadingText("permitting");
   const [depositSignature, setDepositSignature] = useState<DepositSignature>();
-
+  const assetDisplay = getAssetDisplay(asset);
   const {
     data: { decimals, withdrawals },
   } = useV2VaultData(vaultOption);
@@ -229,6 +233,39 @@ const PreviewStep: React.FC<{
 
     switch (actionType) {
       case "deposit":
+        switch (vaultOption) {
+          case "rEARN":
+            actionDetails.push({
+              key: "Counterparty",
+              value: "Ribbon Diversified",
+              tooltip: {
+                title: "Counterparty",
+                explanation:
+                  "The counterparty selected will be the one to which the funds will be lent during the epoch.",
+              },
+            });
+            break;
+          case "rEARN-stETH":
+            if (
+              isNativeToken(asset) &&
+              typeof estimatedSTETHDepositAmount === "string"
+            ) {
+              actionDetails.push({
+                key: t("webapp:TooltipExplanations:stETHExchangeRate:title"),
+                value: estimatedSTETHDepositAmount,
+                tooltip: {
+                  title: t(
+                    "webapp:TooltipExplanations:stETHExchangeRate:title"
+                  ),
+                  explanation: t(
+                    "webapp:TooltipExplanations:stETHExchangeRate:description"
+                  ),
+                },
+              });
+            }
+            break;
+          default:
+        }
         actionDetails.push({
           key: "Strategy Start Time",
           value: `${strategyStartTime}`,
@@ -236,16 +273,6 @@ const PreviewStep: React.FC<{
             title: "Strategy Start Time",
             explanation:
               "Time until the next epoch is started and funds are deployed.",
-          },
-        });
-
-        actionDetails.push({
-          key: "Counterparty",
-          value: "Ribbon Diversified",
-          tooltip: {
-            title: "Counterparty",
-            explanation:
-              "The counterparty selected will be the one to which the funds will be lent during the epoch.",
           },
         });
         break;
@@ -278,7 +305,15 @@ const PreviewStep: React.FC<{
     }
 
     return actionDetails;
-  }, [actionType, strategyStartTime, withdrawOption, withdrawalDate]);
+  }, [
+    actionType,
+    asset,
+    estimatedSTETHDepositAmount,
+    strategyStartTime,
+    vaultOption,
+    withdrawOption,
+    withdrawalDate,
+  ]);
 
   const renderTitle = useCallback(() => {
     switch (actionType) {
@@ -393,6 +428,44 @@ const PreviewStep: React.FC<{
     }
   }, [amount, onSignatureMade, usdc, vaultOption]);
 
+  const renderPermitButton = useCallback(() => {
+    if (vaultOption === "rEARN") {
+      return depositSignature !== undefined ? (
+        <FormButton
+          delay={0.2 + detailRows.length * 0.1}
+          show={show}
+          className="btn py-3 mt-4"
+          color={color}
+          variant={"earn"}
+        >
+          {asset} READY TO DEPOSIT
+        </FormButton>
+      ) : (
+        <FormButton
+          delay={0.2 + detailRows.length * 0.1}
+          show={show}
+          onClick={handleApprove}
+          className="btn py-3 mt-4"
+          color={color}
+          variant={"primary"}
+        >
+          {waitingApproval ? loadingText : `PERMIT VAULT TO USE YOUR USDC`}
+        </FormButton>
+      );
+    }
+    return <></>;
+  }, [
+    asset,
+    color,
+    depositSignature,
+    detailRows.length,
+    handleApprove,
+    loadingText,
+    show,
+    vaultOption,
+    waitingApproval,
+  ]);
+
   const actionWord = capitalize(actionType);
 
   let warning = <></>;
@@ -410,7 +483,9 @@ const PreviewStep: React.FC<{
     case "deposit":
       warning = (
         <WarningContainer
-          delay={0.6 + detailRows.length * 0.1}
+          delay={
+            (vaultOption === "rEARN" ? 0.6 : 0.5) + detailRows.length * 0.1
+          }
           show={show}
           className="mb-4 w-100 text-center"
           color={color}
@@ -465,10 +540,9 @@ const PreviewStep: React.FC<{
           {withdrawOption === "complete"
             ? formatBigNumber(withdrawalAmount, getAssetDecimals(asset))
             : formatBigNumber(amount, getAssetDecimals(asset))}{" "}
-          {getAssetDisplay(asset)}
+          {assetDisplay}
         </Title>
       </InfoPreview>
-
       {detailRows.map((detail, index) => (
         <DetailRow
           className="d-flex w-100 flex-row align-items-center justify-content-between mt-4"
@@ -499,38 +573,18 @@ const PreviewStep: React.FC<{
       ))}
       {actionType === "deposit" ? (
         <div>
-          {depositSignature !== undefined ? (
-            <FormButton
-              delay={0.4 + detailRows.length * 0.1}
-              show={show}
-              className="btn py-3 mt-4 mb-3"
-              color={color}
-              variant={"earn"}
-            >
-              USDC READY TO DEPOSIT
-            </FormButton>
-          ) : (
-            <FormButton
-              delay={0.4 + detailRows.length * 0.1}
-              show={show}
-              onClick={handleApprove}
-              className="btn py-3 mt-4 mb-3"
-              color={color}
-              variant={"primary"}
-            >
-              {waitingApproval ? loadingText : `PERMIT VAULT TO USE YOUR USDC`}
-            </FormButton>
-          )}
-
+          {renderPermitButton()}
           <FormButton
-            delay={0.5 + detailRows.length * 0.1}
+            delay={0.3 + detailRows.length * 0.1}
             show={show}
             onClick={onClickConfirmButton}
-            disabled={depositSignature === undefined}
-            className="btn py-3 mb-3"
+            disabled={depositSignature === undefined && vaultOption === "rEARN"}
+            className="btn py-3 mt-3 mb-3"
             color={color}
             variant={
-              depositSignature === undefined ? "earnDisabled" : "primary"
+              depositSignature === undefined && vaultOption === "rEARN"
+                ? "earnDisabled"
+                : "primary"
             }
           >
             {actionWord} Now

@@ -1,8 +1,8 @@
 import { useEffect, useMemo, useState } from "react";
-import { PoolOptions, secondsPerYear } from "../constants/constants";
+import { secondsPerYear } from "../constants/constants";
+import { PoolOptions, PoolList } from "shared/lib/constants/lendConstants";
 import useAssetPrice from "./useAssetPrice";
 import { usePoolsData } from "./web3DataContext";
-import { PoolList } from "../constants/constants";
 import { formatUnits } from "ethers/lib/utils";
 
 export type AprMap = {
@@ -19,14 +19,12 @@ const defaultAprValues: AprMap = {
   wintermute: defaultApr,
   folkvang: defaultApr,
   amber: defaultApr,
-  auros: defaultApr,
 };
 
 const zeroAprValues: AprMap = {
   wintermute: 0,
   folkvang: 0,
   amber: 0,
-  auros: 0,
 };
 
 export const usePoolsApr = () => {
@@ -44,7 +42,6 @@ export const usePoolsApr = () => {
       wintermute: false,
       folkvang: false,
       amber: true,
-      auros: true,
     };
 
     let aprsTemp = { ...zeroAprValues };
@@ -59,11 +56,8 @@ export const usePoolsApr = () => {
           formatUnits(poolData.rewardPerSecond, 18)
         );
         const poolSize = parseFloat(formatUnits(poolData.poolSize, 6));
-        const supplyRatePercentage =
-          Math.min(supplyRate * secondsPerYear, 0.07) * 100;
-        const rbnApr =
-          ((rewardPerSecond * RBNPrice * secondsPerYear) / poolSize) * 100;
-
+        const supplyRatePercentage = supplyRate * secondsPerYear;
+        const rbnApr = (rewardPerSecond * RBNPrice * secondsPerYear) / poolSize;
         aprsTemp[pool] = isDefault[pool]
           ? defaultApr + rbnApr
           : supplyRatePercentage + rbnApr;

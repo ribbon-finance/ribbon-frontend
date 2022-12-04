@@ -15,6 +15,7 @@ import {
   RETHLogo,
   BADGERLogo,
   SPELLLogo,
+  SAMBLogo,
 } from "../assets/icons/erc20Assets";
 import Logo from "../assets/icons/logo";
 import { SolanaLogo } from "../assets/icons/solAssets";
@@ -101,8 +102,8 @@ export const getChainByVaultOption = (vault: VaultOptions): Chains => {
     case "rAAVE-THETA":
     case "rAPE-THETA":
     case "rEARN":
+    case "rEARN-stETH":
       return Chains.Ethereum;
-
     case "rAVAX-THETA":
     case "rsAVAX-THETA":
     case "rUSDC-AVAX-P-THETA":
@@ -260,6 +261,8 @@ export const getAssetLogo: (asset: Assets) =>
       return BADGERLogo;
     case "SPELL":
       return SPELLLogo;
+    case "sAMB":
+      return SAMBLogo;
     case "SOL":
       return SolanaLogo;
     case "APE":
