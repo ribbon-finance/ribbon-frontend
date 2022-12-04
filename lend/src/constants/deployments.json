@@ -1,11 +1,5 @@
 {
   "mainnet": {
-    "wintermute": "0x0Aea75705Be8281f4c24c3E954D1F8b1D0f8044C",
-    "folkvang": "0x3CD0ecf1552D135b8Da61c7f44cEFE93485c616d",
-    "amber": "0x66a693D0Fa5bfe1B5a9eB3932Ca87C7Ce42CBBDd",
-    "auros": "0x559548340350d4211E637b242DA25549337A61DF",
-    "ribbontoken": "0x6123B0049F904d730dB3C36a31167D9d4121fA6B",
-    "usdctoken": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
     "poolfactory": "0x312853485a41f76f20a14f927cd0ea676588936c",
     "cosinemodel": "0x600Eee67d5ffDbb897055C03E3CCDD0ac9706C8e"
   }

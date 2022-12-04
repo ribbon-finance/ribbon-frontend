@@ -3,21 +3,21 @@ import { useEffect, useState } from "react";
 import { ERC20Balance } from "../codegen";
 import { ERC20Balance__factory } from "../codegen/factories/ERC20Balance__factory";
 import { useWeb3Context } from "shared/lib/hooks/web3Context";
-import deployment from "../constants/deployments.json";
-
+import { RibbonTokenAddress } from "shared/lib/constants/constants";
+import externalAddresses from "shared/lib/constants/externalAddresses.json";
 export const getRibbonContract = (library: any, useSigner: boolean = true) => {
   const provider = useSigner ? library.getSigner() : library;
 
-  return ERC20Balance__factory.connect(
-    deployment.mainnet.ribbontoken,
-    provider
-  );
+  return ERC20Balance__factory.connect(RibbonTokenAddress, provider);
 };
 
 export const getUSDCContract = (library: any, useSigner: boolean = true) => {
   const provider = useSigner ? library.getSigner() : library;
 
-  return ERC20Balance__factory.connect(deployment.mainnet.usdctoken, provider);
+  return ERC20Balance__factory.connect(
+    externalAddresses.mainnet.assets.usdc,
+    provider
+  );
 };
 
 const useERC20Contracts = () => {

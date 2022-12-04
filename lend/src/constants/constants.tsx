@@ -3,7 +3,6 @@ import { ERC20Token } from "shared/lib/models/eth";
 import { Assets } from "../store/types";
 import { getAssetDecimals } from "../utils/asset";
 import { CHAINID, getSubgraphqlURI } from "../utils/env";
-import deployment from "./deployments.json";
 import lendDeployment from "shared/lib/constants/lendDeployments.json";
 import addresses from "shared/lib/constants/externalAddresses.json";
 import wintermute from "../assets/icons/makers/wintermute.svg";
@@ -138,8 +137,6 @@ export const PoolFees = {
   managementFee: "2",
   performanceFee: "10",
 };
-
-export const RibbonTokenAddress = deployment.mainnet.ribbontoken;
 
 export const getERC20TokenAddress = (token: ERC20Token, chainId: number) => {
   const network = NETWORKS[chainId];
