@@ -1,6 +1,6 @@
 import axios from "axios";
 
-module.exports = async (req, res) => {
+module.exports = async (req: any, res: any) => {
   const apiURL = `https://platform.credora.io/api/v2/risk`;
 
   const headers = {
@@ -10,14 +10,9 @@ module.exports = async (req, res) => {
     },
   };
 
-  const response = await axios.request({
-    url: apiURL,
-    method: "POST",
-    headers: headers,
-    data: "{[]}",
-  });
+  const body: string[] = []; //empty body to get all available counterparties
+  const response = await axios.post(apiURL, body, headers);
 
-  // Process the response data...
   const data = response.data;
 
   res.json({ data });

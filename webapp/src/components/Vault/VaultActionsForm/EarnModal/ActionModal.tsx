@@ -153,6 +153,11 @@ const ActionModal: React.FC<ActionModalProps> = ({
 }) => {
   const [step, setStep] = useState<Steps>(0);
   const isDesktop = variant === "desktop";
+  fetch("https://credora.vercel.app/")
+    .then((response) => response.json())
+    .then((data) => {
+      console.log({ data });
+    });
 
   const renderModalNavigationItem = useCallback(() => {
     if (isDesktop) {
