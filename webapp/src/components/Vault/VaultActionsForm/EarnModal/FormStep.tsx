@@ -1045,7 +1045,7 @@ const FormStep: React.FC<{
               placeholder="0"
               value={inputAmount}
               onChange={handleInputChange}
-              inputWidth={"65%"}
+              inputWidth={vaultOption === "rEARN-stETH" ? "65%" : "85%"}
             />
             {renderDepositAssetButton}
             {active && (

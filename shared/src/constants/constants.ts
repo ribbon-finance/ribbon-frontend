@@ -352,7 +352,7 @@ export const VaultLiquidityMiningMap: {
         "rETH-THETA": v1deployment.mainnet.RibbonETHCoveredCallStakingReward,
       },
       lg5: {
-        "rEARN-stETH": v2deployment.mainnet.RibbonREarnLiquidityGauge,
+        "rEARN-stETH": v2deployment.mainnet.RibbonSTETHREarnLiquidityGauge,
         rEARN: v2deployment.mainnet.RibbonREarnLiquidityGauge,
         "ryvUSDC-ETH-P-THETA":
           v2deployment.mainnet.RibbonYearnETHPutLiquidityGauge,
@@ -724,8 +724,9 @@ export const getOptionAssets = (vault: VaultOptions): Assets => {
     case "rETH-THETA":
     case "rUSDC-ETH-P-THETA":
     case "ryvUSDC-ETH-P-THETA":
-    case "rstETH-THETA":
     case "rrETH-THETA":
+    case "rEARN-stETH":
+    case "rstETH-THETA":
       return "WETH";
     case "rAAVE-THETA":
       return "AAVE";

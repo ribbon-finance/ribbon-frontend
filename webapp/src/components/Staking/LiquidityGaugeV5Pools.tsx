@@ -293,7 +293,7 @@ const LiquidityGaugeV5Pool: React.FC<LiquidityGaugeV5PoolProps> = ({
       decimals,
       assetPrice: prices[asset].price,
       rbnPrice: prices["RBN"].price,
-      lendAPY: poolsAvgAPY,
+      lendAPY: vaultOption === "rEARN" ? poolsAvgAPY : 0,
     });
 
     return rewards;
