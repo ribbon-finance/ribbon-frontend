@@ -68,6 +68,8 @@ const colors = {
     LDO: "#00A3FF",
     SOL: "#14F195",
     APE: "#0054F9",
+    USDT: "#16CEB9",
+    DAI: "#FAAF1B",
   },
   wallets: {
     Metamask: "#F89D35",

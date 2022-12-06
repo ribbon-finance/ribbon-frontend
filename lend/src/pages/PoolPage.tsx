@@ -60,7 +60,7 @@ import useLoadingText, { LoadingText } from "shared/lib/hooks/useLoadingText";
 import { formatUnits } from "ethers/lib/utils";
 import UtilizationCurve from "../components/Common/UtilizationCurve";
 import { useCredoraData } from "shared/lib/hooks/useCredoraData";
-
+import AssetArray from "../components/Common/AssetArray";
 const PoolContainer = styled.div`
   width: calc(100% - ${components.sidebar}px);
   @media (max-width: ${sizes.lg}px) {
@@ -120,16 +120,6 @@ const Value = styled.span<{ color?: string }>`
   display: flex;
   font-family: VCR;
   color: ${({ color }) => (color ? color : colors.primaryText)};
-
-  > * {
-    margin: auto 0;
-  }
-
-  svg {
-    width: 20px;
-    height: 20px;
-    margin-right: 8px;
-  }
 `;
 
 const PillButton = styled.a<{ delay: number }>`
@@ -269,8 +259,8 @@ const SocialsWrapper = styled.div`
   }
 `;
 
-const StyledTitle = styled(Title)`
-  font-size: 22px;
+const StyledTitle = styled(Title)<{ fontSize?: number }>`
+  font-size: ${(props) => props.fontSize ?? 22}px;
 `;
 
 const StyledBaseLink = styled(BaseLink)`
@@ -326,6 +316,41 @@ export const MobileHeaderCol = styled(Col)`
   height: ${components.header}px;
 `;
 
+const LogosContainer = styled.div<{ delay?: number }>`
+  display: flex;
+`;
+
+const AssetContainer = styled.div<{ marginLeft?: number; zIndex: number }>`
+  display: flex;
+  position: relative;
+  align-items: center;
+  justify-content: center;
+  height: 22px;
+  width: 22px;
+  border-radius: 100px;
+  border: 1px solid black;
+  margin-left: ${(props) => props.marginLeft ?? `0`}px;
+  z-index: ${(props) => props.zIndex};
+  &:before {
+    position: absolute;
+    content: " ";
+    width: 100%;
+    height: 100%;
+    background: ${(props) => `${props.color}`};
+    border-radius: 100px;
+  }
+`;
+
+const PlusSevenCircle = styled.div`
+  height: 20px;
+  width: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 100px;
+  background: ${colors.background.two};
+`;
+
 const PoolPage = () => {
   const { poolId }: { poolId: PoolOptions } = useParams();
   const [activePage, setPage] = useState<PageEnum>();
@@ -364,7 +389,8 @@ const PoolPage = () => {
   );
 
   const AssetLogo = getAssetLogo(getAssets(poolId));
-
+  const USDTLogo = getAssetLogo("USDT");
+  const DAILogo = getAssetLogo("DAI");
   return (
     <>
       <LendModal
@@ -429,7 +455,7 @@ const PoolPage = () => {
                   <Stat delay={0.5}>
                     <Label>Pool size:</Label>
                     <Value>
-                      <AssetLogo />{" "}
+                      <AssetArray />
                       {currency(poolLoading ? "0" : poolSize, {
                         symbol: "",
                       }).format()}

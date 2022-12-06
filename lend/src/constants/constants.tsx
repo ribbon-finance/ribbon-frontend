@@ -164,6 +164,8 @@ export const COINGECKO_CURRENCIES: { [key in Assets]: string | undefined } = {
   WETH: "ethereum",
   USDC: "usd-coin",
   RBN: "ribbon-finance",
+  USDT: "tether",
+  DAI: "dai",
 };
 
 interface PoolDetails {

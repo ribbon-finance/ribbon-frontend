@@ -28,7 +28,6 @@ const ExplanationTitle = styled(Title)`
 `;
 
 const Explanation = styled(SecondaryText)<{ maxWidth: number }>`
-  margin-top: 8px;
   max-width: ${(props) => (props.maxWidth ? `${props.maxWidth}px` : `240px`)};
 `;
 

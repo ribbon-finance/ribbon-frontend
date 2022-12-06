@@ -1,6 +1,11 @@
 import React from "react";
 import styled, { StyledComponent } from "styled-components";
-import { USDCLogo, WETHLogo } from "shared/lib/assets/icons/erc20Assets";
+import {
+  USDCLogo,
+  WETHLogo,
+  USDTLogo,
+  DAILogo,
+} from "shared/lib/assets/icons/erc20Assets";
 import Logo from "shared/lib/assets/icons/logo";
 import { Chains } from "../constants/constants";
 import { PoolOptions } from "shared/lib/constants/lendConstants";
@@ -103,6 +108,10 @@ export const getAssetLogo: (asset: Assets) =>
       return ColoredUSDCLogo;
     case "WETH":
       return WETHLogo;
+    case "USDT":
+      return USDTLogo;
+    case "DAI":
+      return DAILogo;
     default:
       return Logo;
   }

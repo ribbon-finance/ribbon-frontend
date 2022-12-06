@@ -1,4 +1,4 @@
-import { getAssetLogo } from "shared/lib/utils/asset";
+import { getAssetLogo } from "../../utils/asset";
 import {
   getAssets,
   getMakerLogo,
@@ -26,6 +26,7 @@ import useWeb3Wallet from "../../hooks/useWeb3Wallet";
 import { useMemo } from "react";
 import useLoadingText from "shared/lib/hooks/useLoadingText";
 import { useCredoraData } from "shared/lib/hooks/useCredoraData";
+import AssetArray from "../Common/AssetArray";
 
 const statSideContainer: number = 120;
 
@@ -168,16 +169,6 @@ const Value = styled.span`
   display: flex;
   font-family: VCR;
   color: ${colors.primaryText};
-
-  > * {
-    margin: auto 0;
-  }
-
-  svg {
-    width: 20px;
-    height: 20px;
-    margin-right: 8px;
-  }
 `;
 
 const StyledTitle = styled(Title)`
@@ -273,7 +264,7 @@ export const Pools = () => {
                 </Stat>
                 <Stat>
                   <Value>
-                    <AssetLogo />
+                    <AssetArray />
                     <StyledTitle>
                       <span>
                         {currency(
