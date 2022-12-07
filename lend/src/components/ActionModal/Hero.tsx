@@ -30,6 +30,8 @@ import LendModal, { ModalContentEnum } from "../Common/LendModal";
 import useTokenAllowance from "shared/lib/hooks/useTokenAllowance";
 import useERC20Token from "shared/lib/hooks/useERC20Token";
 import { EthereumWallet } from "shared/lib/models/wallets";
+import useApproveTermsAndConditions from "../../hooks/useApproveTermsAndConditions";
+import { saveTermsAndConditionsSignature } from "../../utils/termsAndConditions";
 
 const livelyAnimation = (position: "top" | "bottom") => keyframes`
   0% {
@@ -326,6 +328,7 @@ const Hero: React.FC<HeroProps> = ({
     usePendingTransactions();
   const [triggerWalletModal, setWalletModal] = useState<boolean>(false);
   const tokenAllowance = useTokenAllowance("usdc", PoolAddressMap[pool].lend);
+  const termsAndConditions = useApproveTermsAndConditions();
 
   // Check if approval needed
   const showTokenApproval = useMemo(() => {
@@ -539,6 +542,10 @@ const Hero: React.FC<HeroProps> = ({
               if (!signature) {
                 return;
               }
+              const signedTermsAndConditions =
+                await termsAndConditions.showApproveTermsAndConditionsSignature(
+                  pool
+                );
               res = await lendPool.provideWithPermit(
                 amountStr,
                 account,
@@ -547,8 +554,20 @@ const Hero: React.FC<HeroProps> = ({
                 signature.r,
                 signature.s
               );
+              // signedTermsAndConditions would be undefined for WM and FOL temporarily
+              if (signedTermsAndConditions) {
+                saveTermsAndConditionsSignature(signedTermsAndConditions, pool);
+              }
             } else {
+              const signedTermsAndConditions =
+                await termsAndConditions.showApproveTermsAndConditionsSignature(
+                  pool
+                );
               res = await lendPool.provide(amountStr, account);
+              // signedTermsAndConditions would be undefined for WM and FOL temporarily
+              if (signedTermsAndConditions) {
+                saveTermsAndConditionsSignature(signedTermsAndConditions, pool);
+              }
             }
 
             addPendingTransaction({

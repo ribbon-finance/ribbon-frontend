@@ -166,6 +166,8 @@ export const COINGECKO_CURRENCIES: { [key in Assets]: string | undefined } = {
   RBN: "ribbon-finance",
 };
 
+export const TERMS_AND_CONDITIONS_BASE_URL = "https://api-ribbon.vercel.app/api";
+
 interface PoolDetails {
   name: string;
   bio: string | JSX.Element;
