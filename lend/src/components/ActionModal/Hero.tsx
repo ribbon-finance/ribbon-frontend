@@ -32,6 +32,7 @@ import useERC20Token from "shared/lib/hooks/useERC20Token";
 import { EthereumWallet } from "shared/lib/models/wallets";
 import useApproveTermsAndConditions from "../../hooks/useApproveTermsAndConditions";
 import { saveTermsAndConditionsSignature } from "../../utils/termsAndConditions";
+import { getPoolTermsAndConditions } from "../../constants/termsAndConditions";
 
 const livelyAnimation = (position: "top" | "bottom") => keyframes`
   0% {
@@ -556,7 +557,11 @@ const Hero: React.FC<HeroProps> = ({
               );
               // signedTermsAndConditions would be undefined for WM and FOL temporarily
               if (signedTermsAndConditions) {
-                saveTermsAndConditionsSignature(signedTermsAndConditions, pool);
+                saveTermsAndConditionsSignature(
+                  signedTermsAndConditions,
+                  pool,
+                  getPoolTermsAndConditions(pool)
+                );
               }
             } else {
               const signedTermsAndConditions =
@@ -566,7 +571,11 @@ const Hero: React.FC<HeroProps> = ({
               res = await lendPool.provide(amountStr, account);
               // signedTermsAndConditions would be undefined for WM and FOL temporarily
               if (signedTermsAndConditions) {
-                saveTermsAndConditionsSignature(signedTermsAndConditions, pool);
+                saveTermsAndConditionsSignature(
+                  signedTermsAndConditions,
+                  pool,
+                  getPoolTermsAndConditions(pool)
+                );
               }
             }
 
