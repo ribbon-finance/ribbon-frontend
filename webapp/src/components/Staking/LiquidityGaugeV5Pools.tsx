@@ -297,7 +297,16 @@ const LiquidityGaugeV5Pool: React.FC<LiquidityGaugeV5PoolProps> = ({
     });
 
     return rewards;
-  }, [asset, decimals, lg5Data, loading, poolsAvgAPY, pricePerShare, prices]);
+  }, [
+    asset,
+    decimals,
+    lg5Data,
+    loading,
+    poolsAvgAPY,
+    pricePerShare,
+    prices,
+    vaultOption,
+  ]);
 
   // Calculated boosted multiplier
   const calculateBoostedMultipler = useCallback(
