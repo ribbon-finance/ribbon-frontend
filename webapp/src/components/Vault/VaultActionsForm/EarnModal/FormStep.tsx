@@ -16,7 +16,7 @@ import { ActionType, V2WithdrawOption, V2WithdrawOptionList } from "./types";
 import { formatBigNumber, isPracticallyZero } from "shared/lib/utils/math";
 import {
   getAssetColor,
-  getAssetDecimals,
+  getAssetDefaultSignificantDecimals,
   getAssetDisplay,
   getAssetLogo,
 } from "shared/lib/utils/asset";
@@ -28,6 +28,7 @@ import {
   VaultAllowedDepositAssets,
   VaultAddressMap,
   isNativeToken,
+  GAS_LIMITS,
 } from "shared/lib/constants/constants";
 import { getVaultColor } from "shared/lib/utils/vault";
 import {
@@ -54,6 +55,7 @@ import ButtonArrow from "shared/lib/components/Common/ButtonArrow";
 import useTokenAllowance from "shared/lib/hooks/useTokenAllowance";
 import { ERC20Token } from "shared/lib/models/eth";
 import VaultApprovalForm from "../common/VaultApprovalForm";
+import useGasPrice from "shared/lib/hooks/useGasPrice";
 
 const Logo = styled.div<{ delay?: number; show?: boolean }>`
   margin-top: -40px;
@@ -127,7 +129,6 @@ const FormTitle = styled(Title)<{ delay?: number; show?: boolean }>`
 
 const StyledTitle = styled(Title)<{ color?: string }>`
   color: ${(props) => props.color};
-  text-transform: none;
 `;
 
 const WarningContainer = styled.div<{
@@ -334,8 +335,8 @@ const DepositAssetsDropdownItem = styled.div<{
 `;
 
 const FormStep: React.FC<{
-  onClickUpdateInput: (amount: string) => void;
-  inputAmount: string;
+  onClickUpdateInput: (amount: string | undefined) => void;
+  inputAmount: string | undefined;
   actionType: ActionType;
   onClickUpdateWithdrawOption: (withdrawOption: V2WithdrawOption) => void;
   onClickConfirmButton: () => Promise<void>;
@@ -371,7 +372,7 @@ const FormStep: React.FC<{
     },
     loading,
   } = useV2VaultData(vaultOption);
-
+  const decimalPlaces = getAssetDefaultSignificantDecimals(asset);
   const tokenAllowance = useTokenAllowance(
     isNativeToken(asset)
       ? undefined
@@ -393,7 +394,7 @@ const FormStep: React.FC<{
 
     return false;
   }, [actionType, asset, decimals, tokenAllowance, vaultOption]);
-
+  const gasPrice = useGasPrice();
   const { balance: userAssetBalance } = useAssetBalance(asset);
   const vaultBalanceInAsset = depositBalanceInAsset.add(lockedBalanceInAsset);
   const { active } = useWeb3Wallet();
@@ -474,7 +475,7 @@ const FormStep: React.FC<{
   }, [vaultAccount]);
 
   const isInputNonZero = useMemo((): boolean => {
-    return parseFloat(inputAmount) > 0;
+    return inputAmount ? parseFloat(inputAmount) > 0 : true;
   }, [inputAmount]);
 
   const renderWithdrawOptionExplanation = useCallback(
@@ -639,22 +640,29 @@ const FormStep: React.FC<{
   const error = useMemo((): VaultValidationErrors | undefined => {
     try {
       /** Check block with input requirement */
-      if (isInputNonZero && !loading && active) {
+      if (isInputNonZero && inputAmount && !loading && active) {
         const amountBigNumber = parseUnits(inputAmount, decimals);
         switch (actionType) {
           case "deposit":
-            if (amountBigNumber.gt(userAssetBalance)) {
-              return "insufficientBalance";
+            if (isNativeToken(asset)) {
+              // check that user balance - estimate gas fee is gt deposit amount
+              const gasLimit = GAS_LIMITS[vaultOption].earn!.deposit;
+              const gasFee = BigNumber.from(gasLimit.toString()).mul(
+                BigNumber.from(gasPrice || "0")
+              );
+              if (amountBigNumber.gt(userAssetBalance.sub(gasFee))) {
+                return "insufficientBalance";
+              }
+            } else {
+              if (amountBigNumber.gt(userAssetBalance)) {
+                return "insufficientBalance";
+              }
             }
 
             if (
               amountBigNumber.gt(vaultMaxDepositAmount.sub(vaultBalanceInAsset))
             ) {
               return "maxExceeded";
-            }
-
-            if (amountBigNumber.gt(cap.sub(totalBalance))) {
-              return "capacityOverflow";
             }
 
             if (amountBigNumber.gt(cap.sub(totalBalance))) {
@@ -681,9 +689,11 @@ const FormStep: React.FC<{
   }, [
     actionType,
     active,
+    asset,
     cap,
     decimals,
     depositBalanceInAsset,
+    gasPrice,
     inputAmount,
     isInputNonZero,
     loading,
@@ -692,6 +702,7 @@ const FormStep: React.FC<{
     userAssetBalance,
     vaultBalanceInAsset,
     vaultMaxDepositAmount,
+    vaultOption,
     withdrawOption,
   ]);
 
@@ -704,13 +715,12 @@ const FormStep: React.FC<{
 
   const detailRows: ActionDetail[] = useMemo(() => {
     const actionDetails: ActionDetail[] = [];
-
-    const decimals = getAssetDecimals(asset);
     switch (actionType) {
       case "deposit":
         actionDetails.push({
           key: "Current Position",
           value: `${currency(formatUnits(investedInStrategy, decimals), {
+            precision: decimalPlaces,
             symbol: "",
           })} ${assetDisplay}`,
           tooltip: {
@@ -722,6 +732,7 @@ const FormStep: React.FC<{
         actionDetails.push({
           key: "Wallet Balance",
           value: `${currency(formatUnits(userAssetBalance, decimals), {
+            precision: decimalPlaces,
             symbol: "",
           }).format()} ${assetDisplay}`,
           tooltip: {
@@ -734,6 +745,7 @@ const FormStep: React.FC<{
         actionDetails.push({
           key: "Vault Capacity",
           value: `${currency(formatUnits(cap.sub(totalBalance), decimals), {
+            precision: decimalPlaces,
             symbol: "",
           }).format()} ${assetDisplay}`,
           error: "capacityOverflow",
@@ -782,7 +794,7 @@ const FormStep: React.FC<{
         }
         if (withdrawOption === "instant") {
           actionDetails.push({
-            key: "Instant Withdraw Limit",
+            key: "Withdraw Limit",
             value: `${formatBigNumber(
               depositBalanceInAsset,
               decimals
@@ -804,16 +816,17 @@ const FormStep: React.FC<{
     }
     return actionDetails;
   }, [
-    asset,
     actionType,
     investedInStrategy,
+    decimals,
+    decimalPlaces,
+    assetDisplay,
     userAssetBalance,
     cap,
     totalBalance,
     strategyStartTime,
     withdrawOption,
     lockedBalanceInAsset,
-    assetDisplay,
     withdrawalAmount,
     withdrawalDate,
     depositBalanceInAsset,
@@ -883,28 +896,43 @@ const FormStep: React.FC<{
   const handleInputChange = useCallback(
     (e: React.ChangeEvent<HTMLInputElement>) => {
       const rawInput = e.target.value;
-      onClickUpdateInput(rawInput);
+      onClickUpdateInput(rawInput && parseFloat(rawInput) < 0 ? "" : rawInput);
     },
     [onClickUpdateInput]
   );
   const handleMaxClick = useCallback(() => {
-    if (actionType === "withdraw") {
-      const maxAmount =
-        withdrawOption === "standard"
-          ? lockedBalanceInAsset
-          : depositBalanceInAsset;
-      onClickUpdateInput(formatUnits(maxAmount, decimals));
-    } else {
-      onClickUpdateInput(formatUnits(userAssetBalance, decimals));
+    switch (actionType) {
+      case "withdraw":
+        const maxAmount =
+          withdrawOption === "standard"
+            ? lockedBalanceInAsset
+            : depositBalanceInAsset;
+        onClickUpdateInput(formatUnits(maxAmount, decimals));
+        break;
+      case "deposit":
+        if (isNativeToken(asset)) {
+          // account for eth gas fee if deposit token is eth
+          const gasLimit = GAS_LIMITS[vaultOption].earn!.deposit;
+          const gasFee = BigNumber.from(gasLimit.toString()).mul(
+            BigNumber.from(gasPrice || "0")
+          );
+          const maxAmount = userAssetBalance.sub(gasFee);
+          onClickUpdateInput(formatUnits(maxAmount, decimals));
+        } else {
+          onClickUpdateInput(formatUnits(userAssetBalance, decimals));
+        }
     }
   }, [
+    asset,
     actionType,
+    vaultOption,
+    gasPrice,
+    userAssetBalance,
+    onClickUpdateInput,
+    decimals,
     withdrawOption,
     lockedBalanceInAsset,
     depositBalanceInAsset,
-    onClickUpdateInput,
-    decimals,
-    userAssetBalance,
   ]);
 
   /**
@@ -1017,7 +1045,7 @@ const FormStep: React.FC<{
               placeholder="0"
               value={inputAmount}
               onChange={handleInputChange}
-              inputWidth={"65%"}
+              inputWidth={vaultOption === "rEARN-stETH" ? "65%" : "85%"}
             />
             {renderDepositAssetButton}
             {active && (

@@ -13,7 +13,10 @@ import { useV2VaultData } from "shared/lib/hooks/web3DataContext";
 import { getDisplayAssets, VaultOptions } from "shared/lib/constants/constants";
 import { useVaultsSubgraphData } from "shared/lib/hooks/useVaultData";
 import { useMemo, useCallback } from "react";
-import { getAssetDisplay } from "shared/lib/utils/asset";
+import {
+  getAssetDefaultSignificantDecimals,
+  getAssetDisplay,
+} from "shared/lib/utils/asset";
 
 const ExplainerTitle = styled.div<{ color: string; marginTop?: number }>`
   display: flex;
@@ -85,6 +88,7 @@ export const Strategy: React.FC<StrategyProps> = ({ setStep, vaultOption }) => {
     data: { asset, totalBalance, decimals, allocationState },
   } = useV2VaultData(vaultOption);
 
+  const decimalPlaces = getAssetDefaultSignificantDecimals(asset);
   const loadingText = useLoadingText();
 
   const lowerBarrier = ((1 + lowerBarrierPercentage) * 100).toFixed(0);
@@ -315,7 +319,9 @@ export const Strategy: React.FC<StrategyProps> = ({ setStep, vaultOption }) => {
       <StyledTitle marginTop={4}>
         {vaultLoading
           ? loadingText
-          : parseFloat(formatUnits(totalBalance, decimals)).toFixed(2)}{" "}
+          : parseFloat(formatUnits(totalBalance, decimals)).toFixed(
+              decimalPlaces
+            )}{" "}
         {getAssetDisplay(asset)}
       </StyledTitle>
     </>
@@ -541,7 +547,7 @@ export const Backtest: React.FC<BacktestProps> = ({ vaultOption }) => {
           </ParagraphText>
           <PrimaryText className="d-block mt-3">
             <Link
-              href="www.research.ribbon.finance/blog/introducing-ribbon-earn-steth"
+              href="https://www.research.ribbon.finance/blog/introducing-ribbon-earn-steth"
               target="_blank"
               rel="noreferrer noopener"
               className="d-flex"

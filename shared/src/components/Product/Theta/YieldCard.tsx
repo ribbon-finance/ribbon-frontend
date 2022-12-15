@@ -667,13 +667,9 @@ const YieldCard: React.FC<YieldCardProps> = ({
           ) : isVaultMaxCapacity === true ? (
             <VaultFullText>Vault is currently full</VaultFullText>
           ) : (
-            formatAmount(totalDepositStr) +
-            " " +
-            asset +
-            " / " +
-            formatAmount(depositLimitStr) +
-            " " +
-            asset
+            `${formatAmount(totalDepositStr)} ${asset} / ${formatAmount(
+              depositLimitStr
+            )} ${asset}`
           )}
         </EarnCapacityText>
         <EarnCard color={color} height={!!account ? 447 : 504} asset={asset} />

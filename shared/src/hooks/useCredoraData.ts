@@ -33,29 +33,17 @@ export const useCredoraData = () => {
       return;
     }
 
-    const apiURL = `https://platform.credora.io/api/v2/risk`;
-
-    const headers = {
-      headers: {
-        clientId: process.env.REACT_APP_CREDORA_CLIENT_ID,
-        clientSecret: process.env.REACT_APP_CREDORA_CLIENT_SECRET,
-      },
-    };
-
-    const body = PoolList.map((pool) => {
-      return getCredoraName(pool);
-    });
+    const apiURL = `https://api-ribbon.vercel.app/api/credora`;
 
     try {
       setLoading(true);
-      const response = await axios.post(apiURL, body, headers);
+      const response = await axios.get(apiURL);
       const { data } = response;
       const credoraData = Object.fromEntries(
         PoolList.map((pool) => {
-          const fetchedData = data.find(
+          const fetchedData = data.data.find(
             (object: any) => object.cpUsername === getCredoraName(pool)
           );
-
           if (!fetchedData) {
             return [pool, defaultPoolCredoraData];
           }
