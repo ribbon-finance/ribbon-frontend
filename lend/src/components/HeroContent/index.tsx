@@ -137,7 +137,13 @@ const HeroHeaderMobile: React.FC = ({ children }) => {
 };
 
 interface HeroContentInterface {
-  word: "depositing" | "withdrawing" | "ribbon lend" | "borrowing" | "repaying";
+  word:
+    | "depositing"
+    | "withdrawing"
+    | "migrating"
+    | "ribbon lend"
+    | "borrowing"
+    | "repaying";
 }
 const HeroContent: React.FC<HeroContentInterface> = ({ word }) => {
   const marginLeft = useCallback((word) => {

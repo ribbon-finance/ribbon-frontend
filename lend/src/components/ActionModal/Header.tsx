@@ -47,7 +47,9 @@ const Header: React.FC<HeaderProps> = ({ page, actionType, children }) => {
         {actionType === "deposit" &&
           (page === ActionModalEnum.PREVIEW ? "Deposit" : "Depositing")}
         {actionType === "withdraw" &&
-          (page === ActionModalEnum.PREVIEW ? "Withdraw" : "Withdrawing")}{" "}
+          (page === ActionModalEnum.PREVIEW ? "Withdraw" : "Withdrawing")}
+        {actionType === "migrate" &&
+          (page === ActionModalEnum.PREVIEW ? "Migrate" : "Migrating")}{" "}
         USDC
       </HeaderText>
       {children}

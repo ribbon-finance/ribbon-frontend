@@ -329,7 +329,7 @@ export const FooterButton = styled(Button)<{
   border: none;
   border-radius: 0;
   height: ${components.footer}px;
-  width: ${({ width }) => (width ? width : "50%")};
+  width: ${({ width }) => (width ? width : `50%`)};
   color: ${({ isActive }) =>
     isActive ? colors.primaryText : colors.tertiaryText};
 

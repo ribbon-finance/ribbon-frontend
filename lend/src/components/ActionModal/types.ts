@@ -1,8 +1,9 @@
-export type ActionType = "deposit" | "withdraw" | "rebalance";
+export type ActionType = "deposit" | "withdraw" | "migrate" | "rebalance";
 
 export const PoolValidationErrorList = [
   "insufficientBalance",
   "withdrawLimitExceeded",
+  "migrateLimitExceeded",
   "insufficientPoolLiquidity",
 ] as const;
 

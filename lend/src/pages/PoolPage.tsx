@@ -6,6 +6,7 @@ import {
   Disclaimers,
   getAssets,
   getMakerLogo,
+  getMigratePoolOptions,
   isDepositDisabledPool,
   PoolDetailsMap,
 } from "../constants/constants";
@@ -60,6 +61,7 @@ import useLoadingText, { LoadingText } from "shared/lib/hooks/useLoadingText";
 import { formatUnits } from "ethers/lib/utils";
 import UtilizationCurve from "../components/Common/UtilizationCurve";
 import { useCredoraData } from "shared/lib/hooks/useCredoraData";
+import { ActionType } from "../components/ActionModal/types";
 
 const PoolContainer = styled.div`
   width: calc(100% - ${components.sidebar}px);
@@ -75,9 +77,10 @@ const PoolContainer = styled.div`
 `;
 
 enum PageEnum {
-  DEPOSIT,
-  WITHDRAW,
-  REBALANCE,
+  DEPOSIT = "deposit",
+  WITHDRAW = "withdraw",
+  MIGRATE = "migrate",
+  REBALANCE = "rebalance",
 }
 
 const MakerLogo = styled.div<{ delay: number }>`
@@ -364,7 +367,6 @@ const PoolPage = () => {
   );
 
   const AssetLogo = getAssetLogo(getAssets(poolId));
-
   return (
     <>
       <LendModal
@@ -373,10 +375,8 @@ const PoolPage = () => {
         content={ModalContentEnum.WALLET}
       />
       <ActionModal
-        show={
-          activePage === PageEnum.DEPOSIT || activePage === PageEnum.WITHDRAW
-        }
-        actionType={activePage === PageEnum.DEPOSIT ? "deposit" : "withdraw"}
+        show={activePage !== undefined && activePage !== PageEnum.REBALANCE}
+        actionType={(activePage as ActionType) ?? PageEnum.DEPOSIT}
         onHide={() => setPage(undefined)}
         pool={poolId}
       />
@@ -751,6 +751,7 @@ const Footer = ({ setPage, setWalletModal, manager, pool }: FooterProps) => {
               disabled={isDepositDisabledPool(pool)}
               tooltip={isDepositDisabledPool(pool)}
               isActive={true}
+              width={`calc(100% / 3)`}
               onClick={() => setPage(PageEnum.DEPOSIT)}
             >
               <div className="d-flex justify-content-center align-items-center">
@@ -778,9 +779,19 @@ const Footer = ({ setPage, setWalletModal, manager, pool }: FooterProps) => {
             <FooterButton
               delay={0.3}
               isActive={true}
+              width={`calc(100% / 3)`}
               onClick={() => setPage(PageEnum.WITHDRAW)}
             >
               Withdraw
+            </FooterButton>
+            <FooterButton
+              delay={0.3}
+              disabled={getMigratePoolOptions(pool).length === 0}
+              isActive={true}
+              width={`calc(100% / 3)`}
+              onClick={() => setPage(PageEnum.MIGRATE)}
+            >
+              Migrate
             </FooterButton>
           </>
         ) : (

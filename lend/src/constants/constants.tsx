@@ -12,6 +12,7 @@ import {
   PoolVersion,
   PoolAddressMap,
   PoolOptions,
+  PoolList,
 } from "shared/lib/constants/lendConstants";
 import { MAINNET_NAMES, NETWORKS } from "shared/lib/constants/constants";
 
@@ -112,6 +113,13 @@ export const getMakerLogo = (pool: PoolOptions): string => {
     case "folkvang":
       return folkvang;
   }
+};
+
+// gets the pools that user can migrate their funds to from a pool
+export const getMigratePoolOptions = (pool: PoolOptions): PoolOptions[] => {
+  return PoolList.filter(
+    (poolOption) => poolOption !== pool && !isDepositDisabledPool(poolOption)
+  );
 };
 
 export const PoolAllowedDepositAssets: { [pool in PoolOptions]: Assets[] } = {
