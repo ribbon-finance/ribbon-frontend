@@ -6,8 +6,6 @@ import {
   BaseInputContainer,
   BaseInputLabel,
 } from "../../designSystem";
-import HelpInfo from "../Common/HelpInfo";
-import TooltipExplanation from "../Common/TooltipExplanation";
 
 const Container = styled.div.attrs({
   className: "d-flex flex-column flex-grow-1",
