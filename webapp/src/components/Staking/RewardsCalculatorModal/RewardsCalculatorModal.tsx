@@ -44,13 +44,21 @@ import APYTable from "../APYTable";
 
 const ModalContainer = styled(BasicModal)``;
 
-const ModalColumn = styled.div<{ marginTop?: number | "auto" }>`
+const ModalColumn = styled.div<{
+  marginTop?: number | "auto";
+}>`
   display: flex;
   justify-content: center;
   margin-top: ${(props) =>
     props.marginTop === "auto"
       ? props.marginTop
       : `${props.marginTop === undefined ? 24 : props.marginTop}px`};
+`;
+
+const ModalContent = styled.div`
+  margin-top: 40px;
+  height: 100%;
+  overflow: auto;
 `;
 
 const StakingPoolContainer = styled.div`
@@ -315,155 +323,159 @@ const RewardsCalculatorModal: React.FC<RewardsCalculatorModalProps> = ({
   }, [lg5Data, decimals]);
 
   return (
-    <ModalContainer show={show} headerBackground height={532} onClose={onClose}>
+    <ModalContainer show={show} headerBackground height={536} onClose={onClose}>
       <>
-        <ModalColumn marginTop={8}>
+        <ModalColumn marginTop={8} className="overflow-hidden">
           <Title style={{ zIndex: 1 }}>REWARDS CALCULATOR</Title>
         </ModalColumn>
-        <ModalColumn marginTop={40} className="justify-content-start">
-          <StakingPoolContainer>
-            <BaseInputLabel>STAKING POOL</BaseInputLabel>
-            <StakingPoolDropdown
-              selectedValue={currentGauge}
-              options={stakingPoolDropdownOptions}
-              onSelectOption={(option: string) =>
-                setCurrentGauge(option as VaultOptions)
-              }
+        <ModalContent>
+          <ModalColumn marginTop={0} className="justify-content-start">
+            <StakingPoolContainer>
+              <BaseInputLabel>STAKING POOL</BaseInputLabel>
+              <StakingPoolDropdown
+                selectedValue={currentGauge}
+                options={stakingPoolDropdownOptions}
+                onSelectOption={(option: string) =>
+                  setCurrentGauge(option as VaultOptions)
+                }
+              />
+            </StakingPoolContainer>
+          </ModalColumn>
+          <ModalColumn marginTop={16}>
+            <BasicInput
+              size="xs"
+              rightButtonProps={{
+                text: "MAX",
+                onClick: onMaxStake,
+              }}
+              inputProps={{
+                min: "0",
+                placeholder: "0",
+                value: stakeInput,
+                onChange: (e) => setStakeInput(parseInput(e.target.value)),
+              }}
+              labelProps={{
+                text: "YOUR STAKE",
+              }}
             />
-          </StakingPoolContainer>
-        </ModalColumn>
-        <ModalColumn marginTop={16}>
-          <BasicInput
-            size="xs"
-            rightButtonProps={{
-              text: "MAX",
-              onClick: onMaxStake,
-            }}
-            inputProps={{
-              min: "0",
-              placeholder: "0",
-              value: stakeInput,
-              onChange: (e) => setStakeInput(parseInput(e.target.value)),
-            }}
-            labelProps={{
-              text: "YOUR STAKE",
-            }}
-          />
-          <div className="mr-2" />
-          <BasicInput
-            size="xs"
-            rightButtonProps={{
-              text: "MAX",
-              onClick: onMaxStake,
-            }}
-            inputProps={{
-              min: "0",
-              placeholder: lg5Data
-                ? formatUnits(lg5Data.poolSize, decimals)
-                : "0",
-              value: poolSizeInput,
-              onChange: (e) => setPoolSizeInput(parseInput(e.target.value)),
-            }}
-            labelProps={{
-              text: "TOTAL STAKED",
-            }}
-          />
-        </ModalColumn>
-        {stakeInputHasError && (
-          <SecondaryText
-            fontSize={12}
-            lineHeight={16}
-            color={colors.red}
-            className="mt-2"
-          >
-            Your stake must be smaller than the total pool size
-          </SecondaryText>
-        )}
-        <ModalColumn marginTop={16}>
-          <div className="d-flex flex-column w-100">
-            <BaseInputLabel>RBN LOCKED</BaseInputLabel>
-            <SmallerInputContainer>
-              <SmallerInput
-                type="number"
-                min="0"
-                className="form-control"
-                placeholder="0"
-                contentEditable={false}
-                value={rbnLockedInput}
-                onChange={(e) => setRBNLockedInput(parseInput(e.target.value))}
-              />
-              <DurationDropdown
-                options={lockupDurationOptions}
-                value={lockupPeriodDisplay(lockupPeriod as LockupPeriodKey)}
-                onSelect={(option: string) => {
-                  setLockupPeriod(option);
-                }}
-                buttonConfig={{
-                  background: colors.background.four,
-                  activeBackground: colors.background.four,
-                  paddingHorizontal: 8,
-                  paddingVertical: 8,
-                  color: colors.primaryText,
-                }}
-                dropdownMenuConfig={{
-                  horizontalOrientation: "right",
-                  topBuffer: 8,
-                  backgroundColor: colors.background.three,
-                }}
-                menuItemConfig={{
-                  firstItemPaddingTop: "8px",
-                  lastItemPaddingBottom: "8px",
-                }}
-                menuItemTextConfig={{
-                  fontSize: 12,
-                  lineHeight: 16,
-                }}
-                className="flex-grow-1"
-              />
-            </SmallerInputContainer>
-          </div>
-        </ModalColumn>
-        <ModalColumn marginTop={32}>
-          <APYTable
-            color={colors.asset[getDisplayAssets(currentGauge)]}
-            overallAPY={{
-              title: "APY",
-              value: displayRewards.totalAPY,
-            }}
-            baseAPY={{
-              title: t("webapp:TooltipExplanations:baseRewards:title"),
-              value: displayRewards.baseRewards,
-              tooltip: {
+            <div className="mr-2" />
+            <BasicInput
+              size="xs"
+              rightButtonProps={{
+                text: "MAX",
+                onClick: onMaxStake,
+              }}
+              inputProps={{
+                min: "0",
+                placeholder: lg5Data
+                  ? formatUnits(lg5Data.poolSize, decimals)
+                  : "0",
+                value: poolSizeInput,
+                onChange: (e) => setPoolSizeInput(parseInput(e.target.value)),
+              }}
+              labelProps={{
+                text: "TOTAL STAKED",
+              }}
+            />
+          </ModalColumn>
+          {stakeInputHasError && (
+            <SecondaryText
+              fontSize={12}
+              lineHeight={16}
+              color={colors.red}
+              className="mt-2"
+            >
+              Your stake must be smaller than the total pool size
+            </SecondaryText>
+          )}
+          <ModalColumn marginTop={16}>
+            <div className="d-flex flex-column w-100">
+              <BaseInputLabel>RBN LOCKED</BaseInputLabel>
+              <SmallerInputContainer>
+                <SmallerInput
+                  type="number"
+                  min="0"
+                  className="form-control"
+                  placeholder="0"
+                  contentEditable={false}
+                  value={rbnLockedInput}
+                  onChange={(e) =>
+                    setRBNLockedInput(parseInput(e.target.value))
+                  }
+                />
+                <DurationDropdown
+                  options={lockupDurationOptions}
+                  value={lockupPeriodDisplay(lockupPeriod as LockupPeriodKey)}
+                  onSelect={(option: string) => {
+                    setLockupPeriod(option);
+                  }}
+                  buttonConfig={{
+                    background: colors.background.four,
+                    activeBackground: colors.background.four,
+                    paddingHorizontal: 8,
+                    paddingVertical: 8,
+                    color: colors.primaryText,
+                  }}
+                  dropdownMenuConfig={{
+                    horizontalOrientation: "right",
+                    topBuffer: 8,
+                    backgroundColor: colors.background.three,
+                  }}
+                  menuItemConfig={{
+                    firstItemPaddingTop: "8px",
+                    lastItemPaddingBottom: "8px",
+                  }}
+                  menuItemTextConfig={{
+                    fontSize: 12,
+                    lineHeight: 16,
+                  }}
+                  className="flex-grow-1"
+                />
+              </SmallerInputContainer>
+            </div>
+          </ModalColumn>
+          <ModalColumn marginTop={32}>
+            <APYTable
+              color={colors.asset[getDisplayAssets(currentGauge)]}
+              overallAPY={{
+                title: "APY",
+                value: displayRewards.totalAPY,
+              }}
+              baseAPY={{
                 title: t("webapp:TooltipExplanations:baseRewards:title"),
-                explanation: t(
-                  "webapp:TooltipExplanations:baseRewards:description"
-                ),
-              },
-            }}
-            boostedAPY={{
-              title: t("webapp:TooltipExplanations:boostedRewards:title"),
-              value: displayRewards.boostedRewards,
-              tooltip: {
-                title: t("webapp:TooltipExplanations:boostedRewards:title"),
-                explanation: t(
-                  "webapp:TooltipExplanations:boostedRewards:description"
-                ),
-              },
-            }}
-            extras={[
-              {
-                title: t("webapp:TooltipExplanations:rewardsBooster:title"),
-                value: displayRewards.rewardsBooster,
+                value: displayRewards.baseRewards,
                 tooltip: {
-                  title: t("webapp:TooltipExplanations:rewardsBooster:title"),
+                  title: t("webapp:TooltipExplanations:baseRewards:title"),
                   explanation: t(
-                    "webapp:TooltipExplanations:rewardsBooster:description"
+                    "webapp:TooltipExplanations:baseRewards:description"
                   ),
                 },
-              },
-            ]}
-          />
-        </ModalColumn>
+              }}
+              boostedAPY={{
+                title: t("webapp:TooltipExplanations:boostedRewards:title"),
+                value: displayRewards.boostedRewards,
+                tooltip: {
+                  title: t("webapp:TooltipExplanations:boostedRewards:title"),
+                  explanation: t(
+                    "webapp:TooltipExplanations:boostedRewards:description"
+                  ),
+                },
+              }}
+              extras={[
+                {
+                  title: t("webapp:TooltipExplanations:rewardsBooster:title"),
+                  value: displayRewards.rewardsBooster,
+                  tooltip: {
+                    title: t("webapp:TooltipExplanations:rewardsBooster:title"),
+                    explanation: t(
+                      "webapp:TooltipExplanations:rewardsBooster:description"
+                    ),
+                  },
+                },
+              ]}
+            />
+          </ModalColumn>
+        </ModalContent>
       </>
     </ModalContainer>
   );
