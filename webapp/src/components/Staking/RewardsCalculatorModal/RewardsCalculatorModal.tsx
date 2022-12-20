@@ -57,6 +57,7 @@ const ModalColumn = styled.div<{
 
 const ModalContent = styled.div`
   margin-top: 40px;
+  margin-bottom: -16px;
   height: 100%;
   overflow: auto;
 `;
@@ -323,9 +324,9 @@ const RewardsCalculatorModal: React.FC<RewardsCalculatorModalProps> = ({
   }, [lg5Data, decimals]);
 
   return (
-    <ModalContainer show={show} headerBackground height={536} onClose={onClose}>
+    <ModalContainer show={show} headerBackground height={532} onClose={onClose}>
       <>
-        <ModalColumn marginTop={8} className="overflow-hidden">
+        <ModalColumn marginTop={8}>
           <Title style={{ zIndex: 1 }}>REWARDS CALCULATOR</Title>
         </ModalColumn>
         <ModalContent>
