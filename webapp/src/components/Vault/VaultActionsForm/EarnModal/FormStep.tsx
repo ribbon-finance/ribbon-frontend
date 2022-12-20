@@ -39,7 +39,6 @@ import colors from "shared/lib/designSystem/colors";
 import theme from "shared/lib/designSystem/theme";
 import {
   useAssetBalance,
-  useLiquidityGaugeV5PoolData,
   useV2VaultData,
 } from "shared/lib/hooks/web3DataContext";
 import { formatUnits, parseUnits } from "ethers/lib/utils";
