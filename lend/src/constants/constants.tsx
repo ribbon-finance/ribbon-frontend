@@ -15,6 +15,7 @@ import {
   PoolList,
 } from "shared/lib/constants/lendConstants";
 import { MAINNET_NAMES, NETWORKS } from "shared/lib/constants/constants";
+import colors from "../designSystem/colors";
 
 export const secondsPerYear = 31536000;
 
@@ -106,13 +107,17 @@ export const getDisplayAssets = (pool: PoolOptions): Assets => {
   return "USDC";
 };
 
-export const getMakerLogo = (pool: PoolOptions): string => {
+export const getPoolLogo = (pool: PoolOptions): string => {
   switch (pool) {
     case "wintermute":
       return wintermute;
     case "folkvang":
       return folkvang;
   }
+};
+
+export const getPoolColor = (pool: PoolOptions): string => {
+  return colors.pool[pool];
 };
 
 // gets the pools that user can migrate their funds to from a pool

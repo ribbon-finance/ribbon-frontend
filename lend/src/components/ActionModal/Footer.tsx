@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useMemo } from "react";
 import { Col, Row } from "react-bootstrap";
 import colors from "shared/lib/designSystem/colors";
 import styled from "styled-components";
@@ -18,6 +18,7 @@ import { useWeb3React } from "@web3-react/core";
 import ExternalLinkIcon from "../Common/ExternalLinkIcon";
 import UtilizationBar from "../Common/UtilizationBar";
 import currency from "currency.js";
+import { ActionType } from "./types";
 
 const FooterRow = styled(Row)`
   min-height: ${components.footer}px;
@@ -105,6 +106,11 @@ const UnderlineLink = styled(BaseUnderlineLink)`
   width: 100%;
 `;
 
+interface FooterDetail {
+  title: string;
+  description: string | JSX.Element;
+}
+
 export enum ActionModalEnum {
   PREVIEW,
   TRANSACTION_STEP,
@@ -115,75 +121,174 @@ interface FooterProps {
   page: ActionModalEnum;
   show: boolean;
   txhash: string | undefined;
+  actionType: ActionType;
+  migratePool: PoolOptions;
 }
 
-const Footer: React.FC<FooterProps> = ({ show, pool, page, txhash }) => {
+const Footer: React.FC<FooterProps> = ({
+  show,
+  pool,
+  page,
+  txhash,
+  actionType,
+  migratePool,
+}) => {
   const poolDatas = usePoolsData();
   const poolName = PoolDetailsMap[pool].name;
+  const migratePoolName = PoolDetailsMap[migratePool].name;
   const { aprs } = usePoolsApr();
   const { chainId } = useWeb3React();
   const apr = aprs[pool];
   const utilizationDecimals = getUtilizationDecimals();
-  const utilizationRate = poolDatas.data[pool].utilizationRate;
+
+  const utilizationRate = useMemo(() => {
+    return poolDatas.data[pool].utilizationRate;
+  }, [pool, poolDatas.data]);
+
+  const migratePoolUtilizationRate = useMemo(() => {
+    return poolDatas.data[migratePool].utilizationRate;
+  }, [migratePool, poolDatas.data]);
+
+  const footerColumns: FooterDetail[] = useMemo(() => {
+    const footerDetails: FooterDetail[] = [];
+    switch (actionType) {
+      case "deposit":
+      case "withdraw":
+        footerDetails.push({
+          title: "Pool",
+          description: poolName,
+        });
+        footerDetails.push({
+          title: "Deposit Asset",
+          description: "USDC",
+        });
+        footerDetails.push({
+          title: "Lending APR",
+          description: `${currency(apr.toFixed(2), { symbol: "" }).format()}%`,
+        });
+        footerDetails.push({
+          title: "Pool Utilization",
+          description: (
+            <div className="d-flex">
+              <UtilizationBar
+                percent={parseFloat(
+                  formatBigNumber(utilizationRate, utilizationDecimals)
+                )}
+                width={40}
+                color={colors.primaryText}
+              />
+              <DetailText>
+                {formatBigNumber(utilizationRate, utilizationDecimals)}%
+              </DetailText>
+            </div>
+          ),
+        });
+        break;
+      case "migrate":
+        footerDetails.push({
+          title: "From",
+          description: pool,
+        });
+        footerDetails.push({
+          title: "To",
+          description: migratePool,
+        });
+        footerDetails.push({
+          title: "Deposit Asset",
+          description: "USDC",
+        });
+        footerDetails.push({
+          title: `${migratePoolName} Pool Utilization`,
+          description: (
+            <div className="d-flex">
+              <UtilizationBar
+                percent={parseFloat(
+                  formatBigNumber(
+                    migratePoolUtilizationRate,
+                    utilizationDecimals
+                  )
+                )}
+                width={40}
+                color={colors.primaryText}
+              />
+              <DetailText>
+                {formatBigNumber(
+                  migratePoolUtilizationRate,
+                  utilizationDecimals
+                )}
+                %
+              </DetailText>
+            </div>
+          ),
+        });
+    }
+    return footerDetails;
+  }, [
+    actionType,
+    poolName,
+    apr,
+    utilizationRate,
+    utilizationDecimals,
+    pool,
+    migratePool,
+    migratePoolName,
+    migratePoolUtilizationRate,
+  ]);
+
+  const mobileFooterColumns: FooterDetail[] = useMemo(() => {
+    const footerDetails: FooterDetail[] = [];
+    switch (actionType) {
+      case "deposit":
+      case "withdraw":
+        footerDetails.push({
+          title: "Pool",
+          description: poolName,
+        });
+        footerDetails.push({
+          title: "Lending APR",
+          description: `${currency(apr.toFixed(2), { symbol: "" }).format()}%`,
+        });
+        break;
+      case "migrate":
+        footerDetails.push({
+          title: "From",
+          description: pool,
+        });
+        footerDetails.push({
+          title: "To",
+          description: migratePool,
+        });
+    }
+    return footerDetails;
+  }, [actionType, poolName, apr, pool, migratePool]);
 
   return (
     <>
       {page === ActionModalEnum.PREVIEW ? (
         <FooterRow>
           <DesktopOnly>
-            <Col xs={3}>
-              <DetailContainer show={show} delay={0.1}>
-                <DetailTitle>Pool</DetailTitle>
-                <DetailText>{poolName}</DetailText>
-              </DetailContainer>
-            </Col>
-            <Col xs={3}>
-              <DetailContainer show={show} delay={0.2}>
-                <DetailTitle>Deposit Asset</DetailTitle>
-                <DetailText>USDC</DetailText>
-              </DetailContainer>
-            </Col>
-            <Col xs={3}>
-              <DetailContainer show={show} delay={0.3}>
-                <DetailTitle>Lending APR</DetailTitle>
-                <DetailText>
-                  {currency(apr.toFixed(2), { symbol: "" }).format()}%
-                </DetailText>
-              </DetailContainer>
-            </Col>
-            <Col xs={3}>
-              <DetailContainer show={show} delay={0.4}>
-                <DetailTitle>Pool Utilization</DetailTitle>
-                <div className="d-flex">
-                  <UtilizationBar
-                    percent={parseFloat(
-                      formatBigNumber(utilizationRate, utilizationDecimals)
-                    )}
-                    width={40}
-                    color={colors.primaryText}
-                  />
-                  <DetailText>
-                    {formatBigNumber(utilizationRate, utilizationDecimals)}%
-                  </DetailText>
-                </div>
-              </DetailContainer>
-            </Col>
+            {footerColumns.map((detail, index) => {
+              return (
+                <Col xs={3}>
+                  <DetailContainer show={show} delay={0.1 * (index + 1)}>
+                    <DetailTitle>{detail.title}</DetailTitle>
+                    <DetailText>{detail.description}</DetailText>
+                  </DetailContainer>
+                </Col>
+              );
+            })}
           </DesktopOnly>
           <MobileOnly>
-            <Col xs={6}>
-              <DetailContainer show={show} delay={0.1}>
-                <DetailTitle>Pool</DetailTitle>
-                <DetailText>{poolName}</DetailText>
-              </DetailContainer>
-            </Col>
-            <Col xs={6}>
-              <DetailContainer show={show} delay={0.2}>
-                <DetailTitle>Lending APR</DetailTitle>
-                <DetailText>
-                  {currency(apr.toFixed(2), { symbol: "" }).format()}%
-                </DetailText>
-              </DetailContainer>
-            </Col>
+            {mobileFooterColumns.map((detail, index) => {
+              return (
+                <Col xs={6}>
+                  <DetailContainer show={show} delay={0.1 * (index + 1)}>
+                    <DetailTitle>{detail.title}</DetailTitle>
+                    <DetailText>{detail.description}</DetailText>
+                  </DetailContainer>
+                </Col>
+              );
+            })}
           </MobileOnly>
         </FooterRow>
       ) : (

@@ -5,7 +5,6 @@ import { SecondaryText, Title } from "../../designSystem";
 import useWeb3Wallet from "../../hooks/useWeb3Wallet";
 import {
   PoolAddressMap,
-  PoolList,
   PoolOptions,
 } from "shared/lib/constants/lendConstants";
 import { formatBigNumber, isPracticallyZero } from "shared/lib/utils/math";
@@ -33,7 +32,11 @@ import useERC20Token from "shared/lib/hooks/useERC20Token";
 import { EthereumWallet } from "shared/lib/models/wallets";
 import { AnimatePresence, motion } from "framer";
 import theme from "../../designSystem/theme";
-import { getMakerLogo, getMigratePoolOptions } from "../../constants/constants";
+import {
+  getPoolLogo,
+  getMigratePoolOptions,
+  getPoolColor,
+} from "../../constants/constants";
 import ButtonArrow from "shared/lib/components/Common/ButtonArrow";
 
 const livelyAnimation = (position: "top" | "bottom") => keyframes`
@@ -291,21 +294,24 @@ const ConnectButton = styled(Button)`
   }
 `;
 
-const DepositAssetSwitchContainer = styled.div<{ delay?: number }>`
+const DepositAssetSwitchContainer = styled.div<{
+  delay?: number;
+  color: string;
+}>`
   display: flex;
   position: relative;
   align-items: center;
   justify-content: center;
-  background: ${colors.background.three};
+  background: ${colors.background.two};
   border-radius: 100px;
+  border: 1px solid ${(props) => props.color};
   padding: 8px;
+  margin-top: 24px;
   z-index: 2;
   ${delayedFade}
 `;
 
-const DepositAssetSwitchContainerLogo = styled.div<{
-  color: string;
-}>`
+const DepositAssetSwitchContainerLogo = styled.div`
   display: flex;
   position: relative;
   align-items: center;
@@ -318,7 +324,6 @@ const DepositAssetSwitchContainerLogo = styled.div<{
     content: " ";
     width: 100%;
     height: 100%;
-    background: ${(props) => `${props.color}14`};
     border-radius: 100px;
   }
 `;
@@ -334,7 +339,7 @@ const DepositAssetsSwitchDropdown = styled(motion.div)<{
           padding: 8px;
 
           width: fit-content;
-          background-color: ${colors.background.three};
+          background-color: ${colors.background.two};
           border-radius: ${theme.border.radius};
           top: 72px;
         `
@@ -365,7 +370,9 @@ const DepositAssetsSwitchDropdownItem = styled.div<{
     if (props.active) {
       return `
         opacity: 1;
-        border: ${theme.border.width} ${theme.border.style} ${props.color};
+        background: ${colors.background.two};
+        border-radius: 100px;
+        border: 1px solid ${props.color};
       `;
     }
     return `
@@ -390,6 +397,8 @@ interface HeroProps {
   onHide: () => void;
   show: boolean;
   triggerAnimation: boolean;
+  migratePool: PoolOptions;
+  changeMigratePool: (pool: PoolOptions) => void;
 }
 
 const Hero: React.FC<HeroProps> = ({
@@ -401,12 +410,13 @@ const Hero: React.FC<HeroProps> = ({
   onHide,
   show,
   triggerAnimation,
+  migratePool,
+  changeMigratePool,
 }) => {
   const [inputAmount, setInputAmount] = useState<string>("");
   const [waitingPermit, setWaitingPermit] = useState(false);
   const [waitingApproval, setWaitingApproval] = useState(false);
-  const [migratePool, changeMigratePool] = useState(PoolList[0]);
-  const poolLogo = getMakerLogo(migratePool);
+  const poolLogo = getPoolLogo(migratePool);
   const [depositAssetMenuOpen, setDepositAssetMenuOpen] = useState(false);
   const { active, account, connectedWallet } = useWeb3Wallet();
   const Logo = getAssetLogo("USDC");
@@ -470,6 +480,10 @@ const Hero: React.FC<HeroProps> = ({
       return "0";
     }
   }, [decimals, inputAmount]);
+
+  const poolColor = useMemo(() => {
+    return getPoolColor(migratePool);
+  }, [migratePool]);
 
   const actionWord = useMemo(() => {
     switch (actionType) {
@@ -799,23 +813,27 @@ const Hero: React.FC<HeroProps> = ({
       <ModalContainer>
         {page === ActionModalEnum.PREVIEW ? (
           <>
-            <ProductAssetLogoContainer color={"white"} delay={0.1}>
-              <Logo height="100%" />
-            </ProductAssetLogoContainer>
+            {actionType === "migrate" ? (
+              <BalanceTitle delay={0.1}>Migrate to</BalanceTitle>
+            ) : (
+              <ProductAssetLogoContainer delay={0.1}>
+                <Logo height="100%" />
+              </ProductAssetLogoContainer>
+            )}
             {actionType === "migrate" && (
               <DepositAssetSwitchContainer
                 role="button"
-                className="mt-2"
+                color={poolColor}
                 delay={0.1}
                 onClick={() => setDepositAssetMenuOpen((show) => !show)}
               >
-                <DepositAssetSwitchContainerLogo color="black">
+                <DepositAssetSwitchContainerLogo>
                   <img src={poolLogo} alt={pool} />
                 </DepositAssetSwitchContainerLogo>
-                <StyledTitle className="mx-2">{migratePool}</StyledTitle>
+                <StyledTitle className="ml-2">{migratePool}</StyledTitle>
                 <ButtonArrow
                   isOpen={depositAssetMenuOpen}
-                  className="mr-2"
+                  className="ml-3 mr-2"
                   color={colors.primaryText}
                 />
                 <AnimatePresence>
@@ -840,11 +858,12 @@ const Hero: React.FC<HeroProps> = ({
                     }}
                   >
                     {getMigratePoolOptions(pool).map((pool) => {
-                      const poolLogo = getMakerLogo(pool);
+                      const poolLogo = getPoolLogo(pool);
+                      const selectPoolColor = getPoolColor(pool);
                       return (
                         <DepositAssetsSwitchDropdownItem
                           // color={getAssetColor(assetOption)}
-                          color="black"
+                          color={selectPoolColor}
                           active={migratePool === pool}
                           onClick={() => {
                             changeMigratePool(pool);
@@ -874,7 +893,6 @@ const Hero: React.FC<HeroProps> = ({
                 placeholder="0"
                 value={inputAmount}
                 onChange={handleInputChange}
-                step={"0.000001"}
               />
             </InputContainer>
             {error && <ErrorText>{renderErrorText(error)}</ErrorText>}

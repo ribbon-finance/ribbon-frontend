@@ -5,7 +5,7 @@ import {
   CreditRating,
   Disclaimers,
   getAssets,
-  getMakerLogo,
+  getPoolLogo,
   getMigratePoolOptions,
   isDepositDisabledPool,
   PoolDetailsMap,
@@ -354,7 +354,7 @@ const PoolPage = () => {
 
   if (!poolId) return <NotFound />;
 
-  const logo = getMakerLogo(poolId);
+  const logo = getPoolLogo(poolId);
   const poolSize = formatUnits(poolDatas[poolId].poolSize, usdcDecimals);
   const manager = poolDatas[poolId].manager;
   const apr = poolAPRs[poolId].toFixed(2);
@@ -848,7 +848,7 @@ const PoolMarquee = ({ pool }: { pool: PoolOptions }) => {
       {new Array(10).fill("").map((v, i) => (
         <MarqueeItem key={i}>
           <Title>{PoolDetailsMap[pool].name}</Title>
-          <img src={getMakerLogo(pool)} alt={pool} height={20} width={20} />
+          <img src={getPoolLogo(pool)} alt={pool} height={20} width={20} />
         </MarqueeItem>
       ))}
     </StyledMarquee>

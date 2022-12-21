@@ -1,7 +1,7 @@
 import { getAssetLogo } from "shared/lib/utils/asset";
 import {
   getAssets,
-  getMakerLogo,
+  getPoolLogo,
   PoolDetailsMap,
 } from "../../constants/constants";
 import { PoolList } from "shared/lib/constants/lendConstants";
@@ -231,7 +231,7 @@ export const Pools = () => {
         const utilizationRate = poolDatas.data[pool].utilizationRate;
         const totalBorrowed = poolDatas.data[pool].borrows;
         const rating = credoraData[pool].creditScoreRating;
-        const poolLogo = getMakerLogo(pool);
+        const poolLogo = getPoolLogo(pool);
         const asset = getAssets(pool);
         const decimals = getAssetDecimals(asset);
         const apr = aprs[pool].toFixed(2);
@@ -403,7 +403,7 @@ export const Positions = () => {
             : colors.red;
         };
 
-        const poolLogo = getMakerLogo(pool);
+        const poolLogo = getPoolLogo(pool);
         const asset = getAssets(pool);
         const decimals = getAssetDecimals(asset);
         const AssetLogo = getAssetLogo(asset);

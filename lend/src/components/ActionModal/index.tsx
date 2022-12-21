@@ -4,7 +4,7 @@ import colors from "shared/lib/designSystem/colors";
 import styled from "styled-components";
 import { components } from "../../designSystem/components";
 import sizes from "../../designSystem/sizes";
-import { PoolOptions } from "shared/lib/constants/lendConstants";
+import { PoolList, PoolOptions } from "shared/lib/constants/lendConstants";
 import { CloseIcon } from "shared/lib/assets/icons/icons";
 import { ActionType } from "./types";
 import Footer from "./Footer";
@@ -85,6 +85,7 @@ const ActionModal: React.FC<ActionModalProps> = ({
   pool,
 }) => {
   const [page, setPage] = useState<ActionModalEnum>(ActionModalEnum.PREVIEW);
+  const [migratePool, changeMigratePool] = useState(PoolList[0]);
   const [triggerAnimation, setTriggerAnimation] = useState<boolean>(true);
 
   // stop trigger animation on rerenders
@@ -108,7 +109,7 @@ const ActionModal: React.FC<ActionModalProps> = ({
   return show ? (
     <FixedContainer>
       <HeroContainer>
-        <Header page={page} actionType={actionType}>
+        <Header page={page} actionType={actionType} pool={pool}>
           <CloseButton onClick={() => onHide()}>
             <CloseIcon />
           </CloseButton>
@@ -123,9 +124,18 @@ const ActionModal: React.FC<ActionModalProps> = ({
             onHide={() => onHide()}
             show={show}
             triggerAnimation={triggerAnimation}
+            migratePool={migratePool}
+            changeMigratePool={changeMigratePool}
           />
         </Content>
-        <Footer pool={pool} page={page} txhash={txhash} show={show} />
+        <Footer
+          pool={pool}
+          page={page}
+          txhash={txhash}
+          show={show}
+          actionType={actionType}
+          migratePool={migratePool}
+        />
       </HeroContainer>
     </FixedContainer>
   ) : (

@@ -4,6 +4,7 @@ import styled from "styled-components";
 import { components } from "../../designSystem/components";
 import { Title } from "../../designSystem";
 import { ActionType } from "./types";
+import { PoolOptions } from "shared/lib/constants/lendConstants";
 
 const HeaderContainer = styled.div`
   display: flex;
@@ -38,19 +39,26 @@ export enum ActionModalEnum {
 interface HeaderProps {
   actionType: ActionType;
   page: ActionModalEnum;
+  pool: PoolOptions;
 }
 
-const Header: React.FC<HeaderProps> = ({ page, actionType, children }) => {
+const Header: React.FC<HeaderProps> = ({
+  page,
+  actionType,
+  pool,
+  children,
+}) => {
   return (
     <HeaderContainer>
       <HeaderText>
         {actionType === "deposit" &&
-          (page === ActionModalEnum.PREVIEW ? "Deposit" : "Depositing")}
+          (page === ActionModalEnum.PREVIEW ? "Deposit USDC" : "Depositing")}
         {actionType === "withdraw" &&
-          (page === ActionModalEnum.PREVIEW ? "Withdraw" : "Withdrawing")}
+          (page === ActionModalEnum.PREVIEW ? "Withdraw USDC" : "Withdrawing")}
         {actionType === "migrate" &&
-          (page === ActionModalEnum.PREVIEW ? "Migrate" : "Migrating")}{" "}
-        USDC
+          (page === ActionModalEnum.PREVIEW
+            ? `Migrate from ${pool}`
+            : "Migrating")}
       </HeaderText>
       {children}
     </HeaderContainer>
