@@ -25,6 +25,7 @@ const Tooltip = styled.div`
 const ExplanationTitle = styled(Title)`
   text-transform: uppercase;
   max-width: 240px;
+  margin-bottom: 8px;
 `;
 
 const Explanation = styled(SecondaryText)<{ maxWidth: number }>`

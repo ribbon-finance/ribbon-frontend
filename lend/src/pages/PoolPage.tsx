@@ -389,8 +389,6 @@ const PoolPage = () => {
   );
 
   const AssetLogo = getAssetLogo(getAssets(poolId));
-  const USDTLogo = getAssetLogo("USDT");
-  const DAILogo = getAssetLogo("DAI");
   return (
     <>
       <LendModal

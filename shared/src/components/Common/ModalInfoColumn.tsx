@@ -1,10 +1,8 @@
 import styled from "styled-components";
 import {
-  BaseUnderlineLink,
   BaseModalContentColumn,
   SecondaryText,
   Title,
-  PrimaryText,
 } from "../../designSystem";
 
 const InfoColumn = styled(BaseModalContentColumn).attrs({

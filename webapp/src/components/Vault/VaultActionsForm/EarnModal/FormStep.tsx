@@ -440,6 +440,13 @@ const FormStep: React.FC<{
     );
   }, [decimals, vaultAccount]);
 
+  const stakedBalance = useMemo(() => {
+    if (!vaultAccount) {
+      return BigNumber.from("0");
+    }
+    return vaultAccount.totalStakedBalance;
+  }, [vaultAccount]);
+
   useEffect(() => {
     let currentRef = withdrawOptionRefs[withdrawOption]?.current;
 
@@ -475,7 +482,7 @@ const FormStep: React.FC<{
   }, [vaultAccount]);
 
   const isInputNonZero = useMemo((): boolean => {
-    return inputAmount ? parseFloat(inputAmount) > 0 : true;
+    return inputAmount ? parseFloat(inputAmount) > 0 : false;
   }, [inputAmount]);
 
   const renderWithdrawOptionExplanation = useCallback(
@@ -791,6 +798,17 @@ const FormStep: React.FC<{
               explanation: `This is the total amount of ${assetDisplay} you’ve requested to withdraw from the vault’s pool of investable capital. At 12pm UTC on ${withdrawalDate}, the vault will close it’s monthly position and remove the amount of ${assetDisplay} you requested from its pool of investable capital.`,
             },
           });
+          actionDetails.push({
+            key: "Staked Balance",
+            value: `${formatBigNumber(
+              stakedBalance,
+              decimals
+            )} ${assetDisplay}`,
+            tooltip: {
+              title: "STAKED BALANCE",
+              explanation: `This is the total amount of ${assetDisplay} you’ve staked. You will need to unstake before you can initiate a withdrawal of this balance`,
+            },
+          });
         }
         if (withdrawOption === "instant") {
           actionDetails.push({
@@ -807,6 +825,10 @@ const FormStep: React.FC<{
             },
           });
           // tofix: placeholder to handle animation issues
+          actionDetails.push({
+            key: "",
+            value: "",
+          });
           actionDetails.push({
             key: "",
             value: "",
@@ -829,6 +851,7 @@ const FormStep: React.FC<{
     lockedBalanceInAsset,
     withdrawalAmount,
     withdrawalDate,
+    stakedBalance,
     depositBalanceInAsset,
   ]);
 
@@ -1045,7 +1068,7 @@ const FormStep: React.FC<{
               placeholder="0"
               value={inputAmount}
               onChange={handleInputChange}
-              inputWidth={"65%"}
+              inputWidth={vaultOption === "rEARN-stETH" ? "65%" : "85%"}
             />
             {renderDepositAssetButton}
             {active && (

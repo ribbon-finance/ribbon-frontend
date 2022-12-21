@@ -431,7 +431,7 @@ export const Positions = () => {
                 </Stat>
                 <Stat>
                   <Value>
-                    <AssetLogo />
+                    <AssetArray />
                     <StyledTitle>
                       <span>
                         {currency(formatUnits(balance, decimals), {

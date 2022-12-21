@@ -1,5 +1,5 @@
 import { useMemo } from "react";
-import { PoolAddressMap, PoolList } from "../constants/lendConstants";
+import { PoolList } from "../constants/lendConstants";
 import useAssetPrice from "./useAssetPrice";
 import { formatUnits } from "ethers/lib/utils";
 import { useFetchPoolData } from "./useFetchPoolData";

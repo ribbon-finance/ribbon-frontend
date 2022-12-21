@@ -190,7 +190,6 @@ const FilterDropdown: React.FC<FilterDropdownProps> = ({
   const [open, setOpen] = useState(false);
   const { height, width } = useScreenSize();
   const dropdownBoundingRect = useBoundingclientrect(ref);
-  const staking = useRouteMatch({ path: "/staking", exact: true });
 
   useOutsideAlerter(ref, () => {
     setOpen(false);
