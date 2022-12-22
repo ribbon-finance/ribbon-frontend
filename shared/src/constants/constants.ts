@@ -1184,6 +1184,8 @@ export const COINGECKO_CURRENCIES: { [key in Assets]: string | undefined } = {
   USDC: "usd-coin",
   "USDC.e": "usd-coin",
   yvUSDC: undefined,
+  DAI: undefined,
+  USDT: undefined,
   stETH: "staked-ether",
   rETH: "rocket-pool-eth",
   wstETH: "wrapped-steth",

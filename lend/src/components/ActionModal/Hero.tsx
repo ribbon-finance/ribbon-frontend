@@ -1,14 +1,18 @@
 import React, { useCallback, useEffect, useState } from "react";
 import colors from "shared/lib/designSystem/colors";
 import styled, { keyframes } from "styled-components";
-import { SecondaryText } from "../../designSystem";
+import { SecondaryText, Title } from "../../designSystem";
 import useWeb3Wallet from "../../hooks/useWeb3Wallet";
 import {
   PoolAddressMap,
   PoolOptions,
 } from "shared/lib/constants/lendConstants";
 import { formatBigNumber, isPracticallyZero } from "shared/lib/utils/math";
-import { getAssetDecimals } from "../../utils/asset";
+import {
+  getAssetColor,
+  getAssetDecimals,
+  getAssetDisplay,
+} from "../../utils/asset";
 import { ActionType } from "./types";
 import { fadeIn } from "shared/lib/designSystem/keyframes";
 import { css } from "styled-components";
@@ -18,7 +22,7 @@ import { formatUnits, parseUnits } from "ethers/lib/utils";
 import { BaseInput, BaseInputContainer } from "shared/lib/designSystem";
 import { BigNumber } from "ethers";
 import { useAssetBalance, usePoolData } from "../../hooks/web3DataContext";
-import useUSDC, { DepositSignature } from "../../hooks/useUSDC";
+import usePermit, { DepositSignature } from "../../hooks/usePermit";
 import useLoadingText from "shared/lib/hooks/useLoadingText";
 import useLendContract from "../../hooks/useLendContract";
 import { RibbonLendPool } from "../../codegen";
@@ -30,6 +34,11 @@ import LendModal, { ModalContentEnum } from "../Common/LendModal";
 import useTokenAllowance from "shared/lib/hooks/useTokenAllowance";
 import useERC20Token from "shared/lib/hooks/useERC20Token";
 import { EthereumWallet } from "shared/lib/models/wallets";
+import { Assets } from "../../store/types";
+import theme from "../../designSystem/theme";
+import { AnimatePresence, motion } from "framer";
+import { depositAssets } from "../../constants/constants";
+import ButtonArrow from "../Common/ButtonArrow";
 
 const livelyAnimation = (position: "top" | "bottom") => keyframes`
   0% {
@@ -286,6 +295,95 @@ const ConnectButton = styled(Button)`
   }
 `;
 
+const DepositAssetSwitchContainer = styled.div<{
+  delay?: number;
+  color: string;
+}>`
+  display: flex;
+  position: relative;
+  align-items: center;
+  justify-content: center;
+  background: ${colors.background.two};
+  border-radius: 100px;
+  border: 1px solid ${(props) => props.color};
+  margin-top: 24px;
+  z-index: 2;
+  ${delayedFade}
+`;
+
+const DepositAssetSwitchContainerLogo = styled.div`
+  display: flex;
+  position: relative;
+  align-items: center;
+  justify-content: center;
+  height: 44px;
+  width: 44px;
+  &:before {
+    position: absolute;
+    content: " ";
+    width: 100%;
+    height: 100%;
+    border-radius: 100px;
+  }
+`;
+
+const DepositAssetsSwitchDropdown = styled(motion.div)<{
+  isOpen: boolean;
+}>`
+  ${(props) =>
+    props.isOpen
+      ? `
+          position: absolute;
+          z-index: 2000;
+          padding: 8px;
+          width: fit-content;
+          background-color: ${colors.background.two};
+          border-radius: ${theme.border.radius};
+          top: 72px;
+        `
+      : `
+          display: none;
+        `}
+`;
+
+const DepositAssetsSwitchDropdownItem = styled.div<{
+  color: string;
+  active: boolean;
+}>`
+  display: flex;
+  align-items: center;
+  padding: 8px;
+  opacity: 0.48;
+  border-radius: 100px;
+  background: ${(props) => `${props.color}14`};
+  margin-bottom: 8px;
+  border: ${theme.border.width} ${theme.border.style} transparent;
+  transition: border 150ms;
+  &:last-child {
+    margin-bottom: 0px;
+  }
+  ${(props) => {
+    if (props.active) {
+      return `
+        opacity: 1;
+        background: ${colors.background.two};
+        border-radius: 100px;
+        border: 1px solid ${props.color};
+      `;
+    }
+    return `
+      &:hover {
+        opacity: 1;
+      }
+    `;
+  }}
+`;
+
+const StyledTitle = styled(Title)`
+  font-size: 16px;
+  line-height: 20px;
+`;
+
 interface HeroProps {
   actionType: ActionType;
   pool: PoolOptions;
@@ -310,13 +408,15 @@ const Hero: React.FC<HeroProps> = ({
   const [inputAmount, setInputAmount] = useState<string>("");
   const [waitingPermit, setWaitingPermit] = useState(false);
   const [waitingApproval, setWaitingApproval] = useState(false);
+  const [depositAsset, setDepositAsset] = useState<Assets>("USDC");
+  const [depositAssetMenuOpen, setDepositAssetMenuOpen] = useState(false);
   const { active, account, connectedWallet } = useWeb3Wallet();
   const Logo = getAssetLogo("USDC");
   const { poolBalanceInAsset, currentExchangeRate, availableToWithdraw } =
     usePoolData(pool);
   const decimals = getAssetDecimals("USDC");
   const { balance: userAssetBalance } = useAssetBalance("USDC");
-  const usdc = useUSDC();
+  const permit = usePermit(depositAsset);
   const loadingTextPermit = useLoadingText("permitting");
   const loadingTextApprove = useLoadingText("approving");
   const [signature, setSignature] = useState<DepositSignature>();
@@ -501,11 +601,11 @@ const Hero: React.FC<HeroProps> = ({
     setWaitingPermit(true);
     try {
       const approveToAddress = PoolAddressMap[pool]["lend"];
-      if (!approveToAddress) {
+      if (!approveToAddress || !permit) {
         return;
       }
       const deadline = Math.round(Date.now() / 1000 + 60 * 60);
-      const signature = await usdc.showApproveAssetSignature(
+      const signature = await permit.showApproveAssetSignature(
         approveToAddress,
         amountStr,
         deadline
@@ -524,7 +624,7 @@ const Hero: React.FC<HeroProps> = ({
       setWaitingPermit(false);
       console.log(error);
     }
-  }, [amountStr, pool, usdc]);
+  }, [amountStr, permit, pool]);
 
   const handleConfirm = async () => {
     if (lendPool !== null) {
@@ -668,9 +768,73 @@ const Hero: React.FC<HeroProps> = ({
       <ModalContainer>
         {page === ActionModalEnum.PREVIEW ? (
           <>
-            <ProductAssetLogoContainer color={"white"} delay={0.1}>
+            <ButtonArrow
+              isOpen={depositAssetMenuOpen}
+              className="ml-3 mr-2"
+              color={colors.primaryText}
+            />
+            {/* <ProductAssetLogoContainer color={"white"} delay={0.1}>
               <Logo height="100%" />
-            </ProductAssetLogoContainer>
+            </ProductAssetLogoContainer> */}
+            <DepositAssetSwitchContainer
+              role="button"
+              color={getAssetColor(depositAsset)}
+              delay={0.1}
+              onClick={() => setDepositAssetMenuOpen((show) => !show)}
+            >
+              <DepositAssetSwitchContainerLogo>
+                <Logo height={40} width={40} />
+              </DepositAssetSwitchContainerLogo>
+              <ButtonArrow
+                isOpen={depositAssetMenuOpen}
+                className="ml-3 mr-2"
+                color={"white"}
+              />
+              <AnimatePresence>
+                <DepositAssetsSwitchDropdown
+                  key={depositAssetMenuOpen.toString()}
+                  isOpen={depositAssetMenuOpen}
+                  initial={{
+                    opacity: 0,
+                    y: 20,
+                  }}
+                  animate={{
+                    opacity: 1,
+                    y: 0,
+                  }}
+                  exit={{
+                    opacity: 0,
+                    y: 20,
+                  }}
+                  transition={{
+                    type: "keyframes",
+                    duration: 0.2,
+                  }}
+                >
+                  {depositAssets.map((assetOption) => {
+                    const Logo = getAssetLogo(assetOption);
+                    return (
+                      <DepositAssetsSwitchDropdownItem
+                        color={getAssetColor(assetOption)}
+                        active={assetOption === depositAsset}
+                        onClick={() => {
+                          setDepositAsset(assetOption);
+                        }}
+                      >
+                        <DepositAssetSwitchContainerLogo
+                          color={getAssetColor(assetOption)}
+                        >
+                          <Logo height={40} width={40} />
+                        </DepositAssetSwitchContainerLogo>
+                        <StyledTitle className="ml-2 mr-4">
+                          {getAssetDisplay(assetOption)}
+                        </StyledTitle>
+                      </DepositAssetsSwitchDropdownItem>
+                    );
+                  })}
+                </DepositAssetsSwitchDropdown>
+              </AnimatePresence>
+            </DepositAssetSwitchContainer>
             <BalanceTitle delay={0.1}>Enter {actionType} Amount</BalanceTitle>
             <InputContainer delay={0.2} className="mt-3 mb-2">
               <StyledBaseInput

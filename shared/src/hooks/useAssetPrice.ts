@@ -17,7 +17,7 @@ import {
 const getHistoricalAssetPricesInUSD = async (
   currencyName: string
 ): Promise<{ price: number; timestamp: number }[]> => {
-  const apiURL = `${COINGECKO_BASE_URL}/coins/${currencyName}/market_chart?vs_currency=usd&days=max&interval=daily`;
+  const apiURL = `${COINGECKO_BASE_URL}/coins/${currencyName}/market_chart?vs_currency=usd&days=365&interval=daily`;
 
   const response = await axios.get(apiURL);
   const { data } = response;

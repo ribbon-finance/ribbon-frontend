@@ -10,6 +10,8 @@ export const AssetsList = [
   "WETH",
   "USDC",
   "USDC.e",
+  "USDT",
+  "DAI",
   "WBTC",
   "stETH",
   "rETH",
@@ -26,8 +28,6 @@ export const AssetsList = [
   "BADGER",
   "SPELL",
   "sAMB",
-  "USDT",
-  "DAI",
 ] as const;
 export type Assets = typeof AssetsList[number];
 

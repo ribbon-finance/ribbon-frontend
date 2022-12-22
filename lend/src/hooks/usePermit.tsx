@@ -6,6 +6,8 @@ import { useWeb3Wallet } from "./useWeb3Wallet";
 import { getERC20Token } from "shared/lib/hooks/useERC20Token";
 import { ERC20Token } from "shared/lib/models/eth";
 import { splitSignature } from "shared/lib/utils/signing";
+import { Assets } from "../store/types";
+import { permitAssets } from "../constants/constants";
 
 export interface DepositSignature {
   deadline: number;
@@ -22,9 +24,7 @@ const EIP2612_TYPE = [
   { name: "deadline", type: "uint256" },
 ];
 
-const useUSDC = () => {
-  const depositAsset = "USDC";
-
+const usePermit = (asset: Assets) => {
   const { chainId, ethereumProvider, account } = useWeb3Wallet();
 
   const tokenContract = useMemo(() => {
@@ -34,10 +34,14 @@ const useUSDC = () => {
 
     return getERC20Token(
       ethereumProvider,
-      depositAsset.toLowerCase() as ERC20Token,
+      asset.toLowerCase() as ERC20Token,
       chainId
     );
-  }, [chainId, depositAsset, ethereumProvider]);
+  }, [chainId, asset, ethereumProvider]);
+
+  const domainName = useMemo(() => {
+    return asset === "USDC" ? "USD Coin" : "Dai Stablecoin";
+  }, [asset]);
 
   const showApproveUSDCSignature = useCallback(
     async (
@@ -51,7 +55,7 @@ const useUSDC = () => {
       }
 
       const domain = {
-        name: "USD Coin",
+        name: domainName,
         version: "2",
         verifyingContract: tokenContract.address,
         chainId,
@@ -75,12 +79,16 @@ const useUSDC = () => {
       }
       return undefined;
     },
-    [account, chainId, tokenContract, ethereumProvider]
+    [account, tokenContract, ethereumProvider, domainName, chainId]
   );
+
+  if (!permitAssets.includes(asset)) {
+    return;
+  }
 
   return {
     showApproveAssetSignature: showApproveUSDCSignature,
   };
 };
 
-export default useUSDC;
+export default usePermit;
