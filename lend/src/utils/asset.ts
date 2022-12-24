@@ -40,6 +40,8 @@ export const getAssetDisplay = (asset: Assets): string => {
 
 export const getAssetDecimals = (asset: Assets): number => {
   switch (asset) {
+    case "GUSD":
+      return 2;
     case "USDC":
     case "USDT":
       return 6;
