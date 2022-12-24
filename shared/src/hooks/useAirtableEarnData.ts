@@ -120,7 +120,7 @@ const calculateMaxYield = (
     case "rEARN":
       return (
         baseYield +
-        (upperBarrierPercentage * participationRate * 4 + 1) ** (365 / 28) -
+        (upperBarrierPercentage * participationRate + 1) ** (365 / 7) -
         1
       );
     case "rEARN-stETH":
@@ -137,6 +137,20 @@ const calculateMaxYield = (
       return 0;
   }
 };
+
+const calculateAverageYieldSTETH = (
+  baseYield: number,
+  participationRate: number,
+  averagePayout: number,
+  averageHitRatio: number
+) => {
+  return (
+    baseYield +
+    (averagePayout * participationRate * averageHitRatio + 1) ** (365 / 7) -
+    1
+  );
+};
+
 const calculateExpectedYield = (
   vault: VaultOptions,
   baseYield: number,
@@ -154,7 +168,7 @@ const calculateExpectedYield = (
       return performanceBetweenBarriers
         ? baseYield
         : baseYield +
-            (absolutePerformance * participationRate * 4 + 1) ** (365 / 28) -
+            (absolutePerformance * participationRate + 1) ** (365 / 7) -
             1;
     case "rEARN-stETH":
       return performanceBetweenBarriers
