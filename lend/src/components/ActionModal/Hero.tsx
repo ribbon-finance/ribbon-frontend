@@ -1,7 +1,8 @@
 import React, { useCallback, useEffect, useState } from "react";
 import colors from "shared/lib/designSystem/colors";
 import styled, { keyframes } from "styled-components";
-import { SecondaryText, Title } from "../../designSystem";
+import { Title } from "../../designSystem";
+import { SecondaryText } from "shared/lib/designSystem";
 import useWeb3Wallet from "../../hooks/useWeb3Wallet";
 import {
   PoolAddressMap,
@@ -19,12 +20,17 @@ import { css } from "styled-components";
 import { getAssetLogo } from "../../utils/asset";
 import { useMemo } from "react";
 import { formatUnits, parseUnits } from "ethers/lib/utils";
-import { BaseInput, BaseInputContainer } from "shared/lib/designSystem";
-import { BigNumber } from "ethers";
+import {
+  BaseInput,
+  BaseInputContainer,
+  BaseLink,
+  PrimaryText,
+} from "shared/lib/designSystem";
 import { useAssetBalance, usePoolData } from "../../hooks/web3DataContext";
 import usePermit, { DepositSignature } from "../../hooks/usePermit";
 import useLoadingText from "shared/lib/hooks/useLoadingText";
 import useLendContract from "../../hooks/useLendContract";
+import useLendPoolHelperContract from "../../hooks/useLendPoolHelperContract";
 import { RibbonLendPool } from "../../codegen";
 import { usePendingTransactions } from "../../hooks/pendingTransactionsContext";
 import HeroContent from "../HeroContent";
@@ -37,8 +43,22 @@ import { EthereumWallet } from "shared/lib/models/wallets";
 import { Assets } from "../../store/types";
 import theme from "../../designSystem/theme";
 import { AnimatePresence, motion } from "framer";
-import { depositAssets } from "../../constants/constants";
-import ButtonArrow from "../Common/ButtonArrow";
+import {
+  convertToUSDCAssets,
+  depositAssets,
+  getERC20TokenAddress,
+  permitAssets,
+} from "../../constants/constants";
+import ButtonArrow from "shared/lib/components/Common/ButtonArrow";
+import { ERC20Token } from "shared/lib/models/eth";
+import { BigNumber } from "ethers/lib/ethers";
+import deployment from "../../constants/deployments.json";
+import useCurvePool from "../../hooks/useCurvePool";
+import { URLS } from "shared/lib/constants/constants";
+
+const assetPillWidth = 120;
+const padding = 8;
+const dropdownMenuWidth = assetPillWidth * 2 + padding * 3;
 
 const livelyAnimation = (position: "top" | "bottom") => keyframes`
   0% {
@@ -234,7 +254,7 @@ const FormButton = styled(Button)`
   }
 `;
 
-const ActionButton = styled(Button)`
+const ActionButton = styled(Button)<{ delay?: number }>`
   background-color: ${colors.primaryText};
   color: #000000;
   height: 64px;
@@ -248,6 +268,7 @@ const ActionButton = styled(Button)`
     border: 2px solid ${colors.tertiaryText};
     pointer-events: none;
   }
+  ${delayedFade}
 `;
 
 const FormButtonFade = styled.div<{
@@ -255,22 +276,7 @@ const FormButtonFade = styled.div<{
   delay?: number;
   triggerAnimation: boolean;
 }>`
-  ${({ show, delay, triggerAnimation }) => {
-    return (
-      show &&
-      triggerAnimation &&
-      css`
-        opacity: 0;
-
-        &:disabled {
-          opacity: 0;
-        }
-
-        animation: ${fadeIn} 1s ease-in-out forwards;
-        animation-delay: ${delay || 0}s;
-      `
-    );
-  }}
+  ${delayedFade}
   display: flex;
 `;
 
@@ -306,7 +312,7 @@ const DepositAssetSwitchContainer = styled.div<{
   background: ${colors.background.two};
   border-radius: 100px;
   border: 1px solid ${(props) => props.color};
-  margin-top: 24px;
+  padding: 8px;
   z-index: 2;
   ${delayedFade}
 `;
@@ -333,10 +339,16 @@ const DepositAssetsSwitchDropdown = styled(motion.div)<{
   ${(props) =>
     props.isOpen
       ? `
+          display: flex;
+          flex-direction: row;
+          width: ${dropdownMenuWidth}px;
+          flex-wrap: wrap;
+          align-items: left;
+          justify-content: center;
           position: absolute;
           z-index: 2000;
           padding: 8px;
-          width: fit-content;
+          padding-bottom: 0px;
           background-color: ${colors.background.two};
           border-radius: ${theme.border.radius};
           top: 72px;
@@ -349,6 +361,7 @@ const DepositAssetsSwitchDropdown = styled(motion.div)<{
 const DepositAssetsSwitchDropdownItem = styled.div<{
   color: string;
   active: boolean;
+  evenIndex: boolean;
 }>`
   display: flex;
   align-items: center;
@@ -357,11 +370,10 @@ const DepositAssetsSwitchDropdownItem = styled.div<{
   border-radius: 100px;
   background: ${(props) => `${props.color}14`};
   margin-bottom: 8px;
+  margin-right: ${(props) => (props.evenIndex ? `8` : `0`)}px;
+  width: ${assetPillWidth}px;
   border: ${theme.border.width} ${theme.border.style} transparent;
   transition: border 150ms;
-  &:last-child {
-    margin-bottom: 0px;
-  }
   ${(props) => {
     if (props.active) {
       return `
@@ -384,6 +396,30 @@ const StyledTitle = styled(Title)`
   line-height: 20px;
 `;
 
+const ApprovalDescription = styled(PrimaryText)<{ delay?: number }>`
+  display: block;
+  width: 332px;
+  text-align: center;
+  margin-top: 48px;
+  ${delayedFade}
+`;
+
+const ApprovalHelp = styled(BaseLink)<{ delay?: number }>`
+  display: flex;
+  justify-content: center;
+  margin-top: 16px;
+  margin-bottom: 40px;
+  ${delayedFade}
+`;
+
+const StyledSecondaryText = styled(SecondaryText)`
+  text-decoration: underline ${colors.text};
+  &:hover {
+    text-decoration: underline ${colors.text}A3;
+    color: ${colors.text}A3;
+  }
+`;
+
 interface HeroProps {
   actionType: ActionType;
   pool: PoolOptions;
@@ -393,6 +429,7 @@ interface HeroProps {
   onHide: () => void;
   show: boolean;
   triggerAnimation: boolean;
+  setGlobalDepositAsset: (asset: Assets) => void;
 }
 
 const Hero: React.FC<HeroProps> = ({
@@ -404,34 +441,89 @@ const Hero: React.FC<HeroProps> = ({
   onHide,
   show,
   triggerAnimation,
+  setGlobalDepositAsset,
 }) => {
   const [inputAmount, setInputAmount] = useState<string>("");
   const [waitingPermit, setWaitingPermit] = useState(false);
   const [waitingApproval, setWaitingApproval] = useState(false);
+  const [triggerWalletModal, setWalletModal] = useState<boolean>(false);
   const [depositAsset, setDepositAsset] = useState<Assets>("USDC");
   const [depositAssetMenuOpen, setDepositAssetMenuOpen] = useState(false);
+
   const { active, account, connectedWallet } = useWeb3Wallet();
-  const Logo = getAssetLogo("USDC");
+  const Logo = getAssetLogo(depositAsset);
   const { poolBalanceInAsset, currentExchangeRate, availableToWithdraw } =
     usePoolData(pool);
-  const decimals = getAssetDecimals("USDC");
-  const { balance: userAssetBalance } = useAssetBalance("USDC");
+  const decimals = getAssetDecimals(depositAsset);
+  const { balance: userAssetBalance } = useAssetBalance(depositAsset);
   const permit = usePermit(depositAsset);
   const loadingTextPermit = useLoadingText("permitting");
   const loadingTextApprove = useLoadingText("approving");
   const [signature, setSignature] = useState<DepositSignature>();
-  const [txhash, setTxhash] = useState("");
+  const [txhash, setTxhash] = useState<string>();
   const lendPool = useLendContract(pool) as RibbonLendPool;
+  const lendPoolHelper = useLendPoolHelperContract();
+  const lendPoolHelperAddress = deployment.mainnet.lendpoolhelper;
+  const poolAddress = PoolAddressMap[pool].lend;
   const { pendingTransactions, addPendingTransaction } =
     usePendingTransactions();
-  const [triggerWalletModal, setWalletModal] = useState<boolean>(false);
-  const tokenAllowance = useTokenAllowance("usdc", PoolAddressMap[pool].lend);
-
+  const { getMinUSDCAmount } = useCurvePool(depositAsset);
+  const [minUSDCAmount, setMinUSDCAmount] = useState<BigNumber | undefined>();
+  const assetColor = getAssetColor(depositAsset);
+  const tokenAllowance = useTokenAllowance(
+    depositAsset.toLowerCase() as ERC20Token,
+    PoolAddressMap[pool].lend
+  );
   // Check if approval needed
   const showTokenApproval = useMemo(() => {
+    if (
+      permitAssets.includes(depositAsset) &&
+      connectedWallet !== EthereumWallet.WalletConnect
+    ) {
+      return false;
+    }
+
     return tokenAllowance && isPracticallyZero(tokenAllowance, decimals);
-  }, [decimals, tokenAllowance]);
-  const tokenContract = useERC20Token("usdc");
+  }, [connectedWallet, decimals, depositAsset, tokenAllowance]);
+
+  const tokenContract = useERC20Token(depositAsset.toLowerCase() as ERC20Token);
+  const [amount, amountStr] = useMemo(() => {
+    try {
+      const amount = parseUnits(inputAmount, decimals);
+      return [amount, amount.toString()];
+    } catch (err) {
+      return [BigNumber.from("0"), "0"];
+    }
+  }, [decimals, inputAmount]);
+
+  const isInputNonZero = useMemo((): boolean => {
+    return parseFloat(inputAmount) > 0;
+  }, [inputAmount]);
+
+  const cleanupEffects = useCallback(() => {
+    setTxhash(undefined);
+    setInputAmount("");
+    setDepositAsset("USDC");
+  }, []);
+
+  const handleClose = useCallback(() => {
+    cleanupEffects();
+    onHide();
+  }, [cleanupEffects, onHide]);
+
+  useEffect(() => {
+    // Fetch USDC rate
+    if (depositAsset !== "USDC") {
+      if (isInputNonZero) {
+        setMinUSDCAmount(undefined);
+        getMinUSDCAmount(amount).then((amt) => {
+          setMinUSDCAmount(amt);
+        });
+        return;
+      }
+      setMinUSDCAmount(BigNumber.from(0));
+    }
+  }, [amount, depositAsset, getMinUSDCAmount, inputAmount, isInputNonZero]);
 
   useEffect(() => {
     // we check that the txhash and check if it had succeed
@@ -440,12 +532,12 @@ const Hero: React.FC<HeroProps> = ({
       const pendingTx = pendingTransactions.find((tx) => tx.txhash === txhash);
       if (pendingTx && pendingTx.status) {
         setTimeout(() => {
-          onHide();
+          handleClose();
           setPage(ActionModalEnum.PREVIEW);
         }, 1500);
       }
     }
-  }, [pendingTransactions, txhash, onHide, page, setPage]);
+  }, [pendingTransactions, txhash, onHide, page, setPage, handleClose]);
 
   useEffect(() => {
     // check for approve transaction to finish
@@ -457,30 +549,11 @@ const Hero: React.FC<HeroProps> = ({
     }
   }, [pendingTransactions, txhash]);
 
-  const isInputNonZero = useMemo((): boolean => {
-    return parseFloat(inputAmount) > 0;
-  }, [inputAmount]);
-
-  const amountStr = useMemo(() => {
-    try {
-      const amount = parseUnits(
-        parseFloat(inputAmount).toFixed(decimals),
-        decimals
-      );
-      return amount.toString();
-    } catch (err) {
-      return "0";
-    }
-  }, [decimals, inputAmount]);
-
   const error = useMemo((): PoolValidationErrors | undefined => {
     try {
       /** Check block with input requirement */
       if (isInputNonZero && active) {
-        const amountBigNumber = parseUnits(
-          parseFloat(inputAmount).toFixed(decimals),
-          decimals
-        );
+        const amountBigNumber = parseUnits(inputAmount, decimals);
         switch (actionType) {
           case "deposit":
             if (amountBigNumber.gt(userAssetBalance)) {
@@ -585,7 +658,7 @@ const Hero: React.FC<HeroProps> = ({
             type: "approval",
             amount: amount,
             pool: pool,
-            asset: "USDC",
+            asset: depositAsset,
           });
           setTxhash(txhash);
           setWaitingApproval(true);
@@ -595,12 +668,21 @@ const Hero: React.FC<HeroProps> = ({
       setWaitingApproval(false);
       console.log(error);
     }
-  }, [addPendingTransaction, pool, showTokenApproval, tokenContract]);
+  }, [
+    addPendingTransaction,
+    depositAsset,
+    pool,
+    showTokenApproval,
+    tokenContract,
+  ]);
 
   const handlePermit = useCallback(async () => {
     setWaitingPermit(true);
     try {
-      const approveToAddress = PoolAddressMap[pool]["lend"];
+      const approveToAddress =
+        depositAsset === "USDC"
+          ? PoolAddressMap[pool]["lend"]
+          : lendPoolHelperAddress;
       if (!approveToAddress || !permit) {
         return;
       }
@@ -613,9 +695,10 @@ const Hero: React.FC<HeroProps> = ({
       if (signature) {
         const depositSignature = {
           deadline: deadline,
-          v: signature.v,
-          r: signature.r,
-          s: signature.s,
+          nonce: signature.nonce,
+          v: signature.splitted.v,
+          r: signature.splitted.r,
+          s: signature.splitted.s,
         };
         setWaitingPermit(false);
         setSignature(depositSignature);
@@ -624,7 +707,7 @@ const Hero: React.FC<HeroProps> = ({
       setWaitingPermit(false);
       console.log(error);
     }
-  }, [amountStr, permit, pool]);
+  }, [amountStr, depositAsset, lendPoolHelperAddress, permit, pool]);
 
   const handleConfirm = async () => {
     if (lendPool !== null) {
@@ -635,17 +718,56 @@ const Hero: React.FC<HeroProps> = ({
             if (!account) {
               return;
             }
-            if (connectedWallet !== EthereumWallet.WalletConnect) {
+            // cases:
+            // 1) if the asset allows permit deposits and not using wallet connect
+            // 2) if deposit asset is not usdc and using wallet connect
+            // 3) if usdc and using wallet connect
+            if (
+              permitAssets.includes(depositAsset) &&
+              connectedWallet !== EthereumWallet.WalletConnect
+            ) {
               if (!signature) {
                 return;
               }
-              res = await lendPool.provideWithPermit(
+              if (depositAsset === "USDC") {
+                res = await lendPool.provideWithPermit(
+                  amountStr,
+                  account,
+                  signature.deadline,
+                  signature.v,
+                  signature.r,
+                  signature.s
+                );
+              } else {
+                if (!lendPoolHelper || !minUSDCAmount) {
+                  return;
+                }
+
+                res = await lendPoolHelper.depositDAIWithPermit(
+                  amountStr,
+                  minUSDCAmount,
+                  poolAddress,
+                  signature.nonce,
+                  signature.deadline,
+                  true,
+                  signature.v,
+                  signature.r,
+                  signature.s
+                );
+              }
+            } else if (convertToUSDCAssets.includes(depositAsset)) {
+              if (!lendPoolHelper || !minUSDCAmount) {
+                return;
+              }
+              const depositAssetAddress = getERC20TokenAddress(
+                depositAsset.toLowerCase() as ERC20Token,
+                1
+              );
+              res = await lendPoolHelper.deposit(
                 amountStr,
-                account,
-                signature.deadline,
-                signature.v,
-                signature.r,
-                signature.s
+                depositAssetAddress,
+                minUSDCAmount,
+                poolAddress
               );
             } else {
               res = await lendPool.provide(amountStr, account);
@@ -656,7 +778,7 @@ const Hero: React.FC<HeroProps> = ({
               type: "deposit",
               amount: amountStr,
               pool: pool,
-              asset: "USDC",
+              asset: depositAsset,
             });
 
             setTxhash(res.hash);
@@ -683,14 +805,17 @@ const Hero: React.FC<HeroProps> = ({
         }
       } catch (e) {
         console.error(e);
-        onHide();
+        handleClose();
       }
     }
   };
 
   const renderApproveButton = useCallback(() => {
-    return connectedWallet !== EthereumWallet.WalletConnect ? (
-      signature !== undefined ? (
+    if (
+      connectedWallet !== EthereumWallet.WalletConnect &&
+      permitAssets.includes(depositAsset)
+    ) {
+      return signature !== undefined ? (
         <FormButtonFade
           show={show}
           triggerAnimation={triggerAnimation}
@@ -698,7 +823,7 @@ const Hero: React.FC<HeroProps> = ({
           className="mt-4 mb-3"
         >
           <ApprovedButton className="btn py-3">
-            USDC READY TO DEPOSIT
+            {depositAsset} READY TO DEPOSIT
           </ApprovedButton>
         </FormButtonFade>
       ) : (
@@ -713,48 +838,33 @@ const Hero: React.FC<HeroProps> = ({
             disabled={Boolean(error) || !isInputNonZero}
             className="btn py-3"
           >
-            {waitingPermit ? loadingTextPermit : `PERMIT USDC`}
+            {waitingPermit ? loadingTextPermit : `PERMIT ${depositAsset}`}
           </FormButton>
         </FormButtonFade>
-      )
-    ) : !waitingApproval && !showTokenApproval ? (
+      );
+    }
+    return (
       <FormButtonFade
         show={show}
         triggerAnimation={triggerAnimation}
         delay={0.4}
         className="mt-4 mb-3"
       >
-        <ApprovedButton className="btn py-3">USDC APPROVED</ApprovedButton>
-      </FormButtonFade>
-    ) : (
-      <FormButtonFade
-        show={show}
-        triggerAnimation={triggerAnimation}
-        delay={0.4}
-        className="mt-4 mb-3"
-      >
-        <FormButton
-          onClick={handleApprove}
-          disabled={Boolean(error)}
-          className="btn py-3"
-        >
-          {waitingApproval ? loadingTextApprove : `APPROVE USDC`}
-        </FormButton>
+        <ApprovedButton className="btn py-3">
+          {depositAsset} APPROVED
+        </ApprovedButton>
       </FormButtonFade>
     );
   }, [
     connectedWallet,
+    depositAsset,
     error,
-    handleApprove,
     handlePermit,
     isInputNonZero,
-    loadingTextApprove,
     loadingTextPermit,
     show,
-    showTokenApproval,
     signature,
     triggerAnimation,
-    waitingApproval,
     waitingPermit,
   ]);
 
@@ -768,191 +878,228 @@ const Hero: React.FC<HeroProps> = ({
       <ModalContainer>
         {page === ActionModalEnum.PREVIEW ? (
           <>
-            <ButtonArrow
-              isOpen={depositAssetMenuOpen}
-              className="ml-3 mr-2"
-              color={colors.primaryText}
-            />
-            {/* <ProductAssetLogoContainer color={"white"} delay={0.1}>
-              <Logo height="100%" />
-            </ProductAssetLogoContainer> */}
-            <DepositAssetSwitchContainer
-              role="button"
-              color={getAssetColor(depositAsset)}
-              delay={0.1}
-              onClick={() => setDepositAssetMenuOpen((show) => !show)}
-            >
-              <DepositAssetSwitchContainerLogo>
-                <Logo height={40} width={40} />
-              </DepositAssetSwitchContainerLogo>
-              <ButtonArrow
-                isOpen={depositAssetMenuOpen}
-                className="ml-3 mr-2"
-                color={"white"}
-              />
-              <AnimatePresence>
-                <DepositAssetsSwitchDropdown
-                  key={depositAssetMenuOpen.toString()}
+            {actionType !== "deposit" && (
+              <ProductAssetLogoContainer color="white" delay={0.1}>
+                <Logo height="100%" />
+              </ProductAssetLogoContainer>
+            )}
+            {actionType === "deposit" && (
+              <DepositAssetSwitchContainer
+                role="button"
+                color={assetColor}
+                delay={0.1}
+                onClick={() => setDepositAssetMenuOpen((show) => !show)}
+              >
+                <DepositAssetSwitchContainerLogo>
+                  <Logo height={40} width={40} />
+                </DepositAssetSwitchContainerLogo>
+                <StyledTitle className="ml-1">{depositAsset}</StyledTitle>
+                <ButtonArrow
                   isOpen={depositAssetMenuOpen}
-                  initial={{
-                    opacity: 0,
-                    y: 20,
-                  }}
-                  animate={{
-                    opacity: 1,
-                    y: 0,
-                  }}
-                  exit={{
-                    opacity: 0,
-                    y: 20,
-                  }}
-                  transition={{
-                    type: "keyframes",
-                    duration: 0.2,
-                  }}
-                >
-                  {depositAssets.map((assetOption) => {
-                    const Logo = getAssetLogo(assetOption);
-                    return (
-                      <DepositAssetsSwitchDropdownItem
-                        color={getAssetColor(assetOption)}
-                        active={assetOption === depositAsset}
-                        onClick={() => {
-                          setDepositAsset(assetOption);
-                        }}
-                      >
-                        <DepositAssetSwitchContainerLogo
-                          color={getAssetColor(assetOption)}
-                        >
-                          <Logo height={40} width={40} />
-                        </DepositAssetSwitchContainerLogo>
-                        <StyledTitle className="ml-2 mr-4">
-                          {getAssetDisplay(assetOption)}
-                        </StyledTitle>
-                      </DepositAssetsSwitchDropdownItem>
-                    );
-                  })}
-                </DepositAssetsSwitchDropdown>
-              </AnimatePresence>
-            </DepositAssetSwitchContainer>
-            <BalanceTitle delay={0.1}>Enter {actionType} Amount</BalanceTitle>
-            <InputContainer delay={0.2} className="mt-3 mb-2">
-              <StyledBaseInput
-                type="number"
-                className="form-control"
-                placeholder="0"
-                value={inputAmount}
-                onChange={handleInputChange}
-                step={"0.000001"}
-              />
-            </InputContainer>
-            {error && <ErrorText>{renderErrorText(error)}</ErrorText>}
-            <PercentagesContainer delay={0.3}>
-              <BaseInputButton onClick={() => handlePercentageClick(0.25)}>
-                25%
-              </BaseInputButton>
-              <BaseInputButton onClick={() => handlePercentageClick(0.5)}>
-                50%
-              </BaseInputButton>
-              <BaseInputButton onClick={() => handlePercentageClick(0.75)}>
-                75%
-              </BaseInputButton>
-              <BaseInputButton onClick={() => handlePercentageClick(1)}>
-                MAX
-              </BaseInputButton>
-            </PercentagesContainer>
-            {account &&
-              (actionType === "deposit" ? (
-                <div className="justify-content-center">
-                  {renderApproveButton()}
-                  <FormButtonFade
-                    show={show}
-                    triggerAnimation={triggerAnimation}
-                    delay={0.5}
-                    className="mt-4 mb-3"
+                  className="ml-3 mr-2"
+                  color="white"
+                />
+                <AnimatePresence>
+                  <DepositAssetsSwitchDropdown
+                    key={depositAssetMenuOpen.toString()}
+                    isOpen={depositAssetMenuOpen}
+                    initial={{
+                      opacity: 0,
+                      y: 20,
+                    }}
+                    animate={{
+                      opacity: 1,
+                      y: 0,
+                    }}
+                    exit={{
+                      opacity: 0,
+                      y: 20,
+                    }}
+                    transition={{
+                      type: "keyframes",
+                      duration: 0.2,
+                    }}
                   >
-                    <ActionButton
-                      onClick={handleConfirm}
-                      disabled={
-                        Boolean(error) ||
-                        !isInputNonZero ||
-                        (connectedWallet !== EthereumWallet.WalletConnect
-                          ? signature === undefined
-                          : showTokenApproval || waitingApproval)
-                      }
-                      className="btn py-3"
-                    >
-                      {actionType}
-                    </ActionButton>
-                  </FormButtonFade>
-                </div>
-              ) : (
-                <>
+                    {depositAssets.map((assetOption, index) => {
+                      const Logo = getAssetLogo(assetOption);
+                      return (
+                        <DepositAssetsSwitchDropdownItem
+                          color={getAssetColor(assetOption)}
+                          active={assetOption === depositAsset}
+                          evenIndex={index % 2 === 0}
+                          onClick={() => {
+                            setDepositAsset(assetOption);
+                            setGlobalDepositAsset(assetOption);
+                            setInputAmount("");
+                            setSignature(undefined);
+                          }}
+                        >
+                          <DepositAssetSwitchContainerLogo
+                            color={getAssetColor(assetOption)}
+                          >
+                            <Logo height={40} width={40} />
+                          </DepositAssetSwitchContainerLogo>
+                          <StyledTitle className="ml-2 mr-4">
+                            {getAssetDisplay(assetOption)}
+                          </StyledTitle>
+                        </DepositAssetsSwitchDropdownItem>
+                      );
+                    })}
+                  </DepositAssetsSwitchDropdown>
+                </AnimatePresence>
+              </DepositAssetSwitchContainer>
+            )}
+            {showTokenApproval ? (
+              <>
+                <ApprovalDescription delay={0.1}>
+                  Before you deposit, the vault needs your permission to invest
+                  your {getAssetDisplay(depositAsset)} in the vault’s strategy.
+                </ApprovalDescription>
+                <ApprovalHelp
+                  delay={0.2}
+                  to={URLS.docsFaq}
+                  target="__blank"
+                  rel="noreferrer noopener"
+                >
+                  <StyledSecondaryText>
+                    Why do I have to do this?
+                  </StyledSecondaryText>
+                </ApprovalHelp>
+                <ActionButton
+                  delay={0.3}
+                  onClick={handleApprove}
+                  className="py-3 mb-4"
+                  color="white"
+                >
+                  {waitingApproval
+                    ? loadingTextApprove
+                    : `Approve ${getAssetDisplay(depositAsset)}`}
+                </ActionButton>
+              </>
+            ) : (
+              <>
+                <BalanceTitle delay={0.1}>
+                  Enter {actionType} Amount
+                </BalanceTitle>
+                <InputContainer delay={0.2} className="mt-3 mb-2">
+                  <StyledBaseInput
+                    type="number"
+                    className="form-control"
+                    placeholder="0"
+                    value={inputAmount}
+                    onChange={handleInputChange}
+                  />
+                </InputContainer>
+                {error && <ErrorText>{renderErrorText(error)}</ErrorText>}
+                <PercentagesContainer delay={0.3}>
+                  <BaseInputButton onClick={() => handlePercentageClick(0.25)}>
+                    25%
+                  </BaseInputButton>
+                  <BaseInputButton onClick={() => handlePercentageClick(0.5)}>
+                    50%
+                  </BaseInputButton>
+                  <BaseInputButton onClick={() => handlePercentageClick(0.75)}>
+                    75%
+                  </BaseInputButton>
+                  <BaseInputButton onClick={() => handlePercentageClick(1)}>
+                    MAX
+                  </BaseInputButton>
+                </PercentagesContainer>
+                {account &&
+                  (actionType === "deposit" ? (
+                    <div className="justify-content-center">
+                      {renderApproveButton()}
+                      <FormButtonFade
+                        show={show}
+                        triggerAnimation={triggerAnimation}
+                        delay={0.5}
+                        className="mt-4 mb-3"
+                      >
+                        <ActionButton
+                          onClick={handleConfirm}
+                          disabled={
+                            Boolean(error) ||
+                            !isInputNonZero ||
+                            (connectedWallet !== EthereumWallet.WalletConnect &&
+                            permitAssets.includes(depositAsset)
+                              ? signature === undefined
+                              : showTokenApproval || waitingApproval)
+                          }
+                          className="btn py-3"
+                        >
+                          {actionType}
+                        </ActionButton>
+                      </FormButtonFade>
+                    </div>
+                  ) : (
+                    <>
+                      <FormButtonFade
+                        show={show}
+                        triggerAnimation={triggerAnimation}
+                        delay={0.4}
+                        className="mt-4 mb-3"
+                      >
+                        <FormButton
+                          onClick={handleConfirm}
+                          disabled={!isInputNonZero}
+                          className="btn py-3"
+                        >
+                          {actionType}
+                        </FormButton>
+                      </FormButtonFade>
+                    </>
+                  ))}
+                {!account && (
                   <FormButtonFade
                     show={show}
                     triggerAnimation={triggerAnimation}
                     delay={0.4}
                     className="mt-4 mb-3"
                   >
-                    <FormButton
-                      onClick={handleConfirm}
-                      disabled={!isInputNonZero}
-                      className="btn py-3"
-                    >
-                      {actionType}
-                    </FormButton>
+                    <ConnectButton onClick={() => setWalletModal(true)}>
+                      CONNECT WALLET
+                    </ConnectButton>
                   </FormButtonFade>
-                </>
-              ))}
-            {!account && (
-              <FormButtonFade
-                show={show}
-                triggerAnimation={triggerAnimation}
-                delay={0.4}
-                className="mt-4 mb-3"
-              >
-                <ConnectButton onClick={() => setWalletModal(true)}>
-                  CONNECT WALLET
-                </ConnectButton>
-              </FormButtonFade>
-            )}
-            <BalanceContainer delay={actionType === "deposit" ? 0.6 : 0.5}>
-              <BalanceLabel>
-                {actionType === "deposit"
-                  ? "USDC Wallet Balance:"
-                  : "Your Pool Balance:"}{" "}
-              </BalanceLabel>
-              <BalanceValue
-                error={Boolean(
-                  error === "insufficientBalance" ||
-                    error === "withdrawLimitExceeded"
                 )}
-              >
-                {!account
-                  ? "---"
-                  : actionType === "deposit"
-                  ? formatBigNumber(userAssetBalance, decimals, 2)
-                  : formatBigNumber(poolBalanceInAsset, decimals, 2)}
-              </BalanceValue>
-            </BalanceContainer>
-            {actionType === "withdraw" && (
-              <BalanceContainer delay={0.6}>
-                <BalanceLabel>Pool Max Withdraw Amount</BalanceLabel>
-                <BalanceValue
-                  error={Boolean(error === "insufficientPoolLiquidity")}
-                >
-                  {formatBigNumber(availableToWithdraw, decimals, 2)}
-                </BalanceValue>
-              </BalanceContainer>
+                <BalanceContainer delay={actionType === "deposit" ? 0.6 : 0.5}>
+                  <BalanceLabel>
+                    {actionType === "deposit"
+                      ? `${depositAsset} Wallet Balance:`
+                      : "Your Pool Balance:"}{" "}
+                  </BalanceLabel>
+                  <BalanceValue
+                    error={Boolean(
+                      error === "insufficientBalance" ||
+                        error === "withdrawLimitExceeded"
+                    )}
+                  >
+                    {!account
+                      ? "---"
+                      : actionType === "deposit"
+                      ? formatBigNumber(userAssetBalance, decimals, 2)
+                      : formatBigNumber(poolBalanceInAsset, decimals, 2)}
+                  </BalanceValue>
+                </BalanceContainer>
+                {actionType === "withdraw" && (
+                  <BalanceContainer delay={0.6}>
+                    <BalanceLabel>Pool Max Withdraw Amount</BalanceLabel>
+                    <BalanceValue
+                      error={Boolean(error === "insufficientPoolLiquidity")}
+                    >
+                      {formatBigNumber(availableToWithdraw, decimals, 2)}
+                    </BalanceValue>
+                  </BalanceContainer>
+                )}
+              </>
             )}
           </>
         ) : (
           <>
-            <FrameBar color={colors.asset.USDC} position="top" height={4} />
+            <FrameBar color={assetColor} position="top" height={4} />
             <HeroContent
               word={actionType === "deposit" ? "depositing" : "withdrawing"}
             ></HeroContent>
-            <FrameBar color={colors.asset.USDC} position="bottom" height={4} />
+            <FrameBar color={assetColor} position="bottom" height={4} />
           </>
         )}
       </ModalContainer>

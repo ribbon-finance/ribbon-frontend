@@ -4,12 +4,14 @@ import styled from "styled-components";
 import { components } from "../../designSystem/components";
 import { Title } from "../../designSystem";
 import { ActionType } from "./types";
+import { Assets } from "../../store/types";
 
 const HeaderContainer = styled.div`
   display: flex;
   margin: auto;
   width: 100%;
   justify-content: center;
+  align-items: center;
   border-radius: 0;
   min-height: ${components.header}px;
   border-bottom: 1px solid ${colors.border};
@@ -18,10 +20,6 @@ const HeaderContainer = styled.div`
 
   > * {
     margin: auto 0;
-
-    &:not(:last-child) {
-      margin-right: 8px;
-    }
   }
 `;
 
@@ -38,9 +36,15 @@ export enum ActionModalEnum {
 interface HeaderProps {
   actionType: ActionType;
   page: ActionModalEnum;
+  depositAsset: Assets;
 }
 
-const Header: React.FC<HeaderProps> = ({ page, actionType, children }) => {
+const Header: React.FC<HeaderProps> = ({
+  page,
+  actionType,
+  depositAsset,
+  children,
+}) => {
   return (
     <HeaderContainer>
       <HeaderText>
@@ -48,7 +52,7 @@ const Header: React.FC<HeaderProps> = ({ page, actionType, children }) => {
           (page === ActionModalEnum.PREVIEW ? "Deposit" : "Depositing")}
         {actionType === "withdraw" &&
           (page === ActionModalEnum.PREVIEW ? "Withdraw" : "Withdrawing")}{" "}
-        USDC
+        {depositAsset}
       </HeaderText>
       {children}
     </HeaderContainer>

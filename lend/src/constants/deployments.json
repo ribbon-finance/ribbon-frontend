@@ -5,6 +5,7 @@
     "ribbontoken": "0x6123B0049F904d730dB3C36a31167D9d4121fA6B",
     "usdctoken": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
     "poolfactory": "0x312853485a41f76f20a14f927cd0ea676588936c",
-    "cosinemodel": "0x600Eee67d5ffDbb897055C03E3CCDD0ac9706C8e"
+    "cosinemodel": "0x600Eee67d5ffDbb897055C03E3CCDD0ac9706C8e",
+    "lendpoolhelper": "0x3abD446d0D90726286554821A903b42af7cD8e2E"
   }
 }

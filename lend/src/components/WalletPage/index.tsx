@@ -18,8 +18,7 @@ import {
   WALLET_TITLES,
 } from "shared/lib/models/wallets";
 import useWeb3Wallet from "../../hooks/useWeb3Wallet";
-import { Chains } from "../../constants/constants";
-import { AssetsList } from "../../store/types";
+import { Chains, walletDisplayAssets } from "../../constants/constants";
 import { getAssetDisplay, getAssetLogo } from "../../utils/asset";
 import currency from "currency.js";
 import { useAssetsBalance } from "../../hooks/web3DataContext";
@@ -388,7 +387,7 @@ export const WalletPage = ({ onHide }: WalletPageProps) => {
       return (
         <>
           <AssetRowWrapper>
-            {AssetsList.map((asset) => {
+            {walletDisplayAssets.map((asset) => {
               const Logo = getAssetLogo(asset);
               const name = getAssetDisplay(asset);
               const decimals = getAssetDecimals(asset);

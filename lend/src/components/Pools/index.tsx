@@ -1,4 +1,3 @@
-import { getAssetLogo } from "../../utils/asset";
 import {
   getAssets,
   getMakerLogo,
@@ -195,7 +194,6 @@ export const Pools = () => {
   const utilizationDecimals = getUtilizationDecimals();
   const { loading, aprs } = usePoolsApr();
   const { account } = useWeb3Wallet();
-  const AssetLogo = getAssetLogo("USDC");
   const { data: credoraData, loading: credoraLoading } = useCredoraData();
   const loadingText = useLoadingText();
   const [filteredList, isManager] = useMemo(() => {
@@ -397,7 +395,6 @@ export const Positions = () => {
         const poolLogo = getMakerLogo(pool);
         const asset = getAssets(pool);
         const decimals = getAssetDecimals(asset);
-        const AssetLogo = getAssetLogo(asset);
 
         return (
           <motion.div

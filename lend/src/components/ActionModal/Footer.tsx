@@ -18,6 +18,7 @@ import { useWeb3React } from "@web3-react/core";
 import ExternalLinkIcon from "../Common/ExternalLinkIcon";
 import UtilizationBar from "../Common/UtilizationBar";
 import currency from "currency.js";
+import { Assets } from "../../store/types";
 
 const FooterRow = styled(Row)`
   min-height: ${components.footer}px;
@@ -115,9 +116,16 @@ interface FooterProps {
   page: ActionModalEnum;
   show: boolean;
   txhash: string | undefined;
+  depositAsset: Assets;
 }
 
-const Footer: React.FC<FooterProps> = ({ show, pool, page, txhash }) => {
+const Footer: React.FC<FooterProps> = ({
+  show,
+  pool,
+  page,
+  txhash,
+  depositAsset,
+}) => {
   const poolDatas = usePoolsData();
   const poolName = PoolDetailsMap[pool].name;
   const { aprs } = usePoolsApr();
@@ -140,7 +148,7 @@ const Footer: React.FC<FooterProps> = ({ show, pool, page, txhash }) => {
             <Col xs={3}>
               <DetailContainer show={show} delay={0.2}>
                 <DetailTitle>Deposit Asset</DetailTitle>
-                <DetailText>USDC</DetailText>
+                <DetailText>{depositAsset}</DetailText>
               </DetailContainer>
             </Col>
             <Col xs={3}>

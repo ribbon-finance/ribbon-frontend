@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { Row } from "react-bootstrap";
 import colors from "shared/lib/designSystem/colors";
 import styled from "styled-components";
@@ -10,6 +10,7 @@ import { ActionType } from "./types";
 import Footer from "./Footer";
 import Header from "./Header";
 import Hero from "./Hero";
+import { Assets } from "../../store/types";
 
 const borderStyle = `1px solid ${colors.primaryText}1F`;
 
@@ -86,6 +87,12 @@ const ActionModal: React.FC<ActionModalProps> = ({
 }) => {
   const [page, setPage] = useState<ActionModalEnum>(ActionModalEnum.PREVIEW);
   const [triggerAnimation, setTriggerAnimation] = useState<boolean>(true);
+  const [depositAsset, setGlobalDepositAsset] = useState<Assets>("USDC");
+
+  const handleClose = useCallback(() => {
+    setGlobalDepositAsset("USDC");
+    onHide();
+  }, [onHide]);
 
   // stop trigger animation on rerenders
   useEffect(() => {
@@ -105,11 +112,16 @@ const ActionModal: React.FC<ActionModalProps> = ({
   }, [show]);
 
   const [txhash, setTxhashMain] = useState<string>();
+
   return show ? (
     <FixedContainer>
       <HeroContainer>
-        <Header page={page} actionType={actionType}>
-          <CloseButton onClick={() => onHide()}>
+        <Header page={page} actionType={actionType} depositAsset={depositAsset}>
+          <CloseButton
+            onClick={() => {
+              handleClose();
+            }}
+          >
             <CloseIcon />
           </CloseButton>
         </Header>
@@ -123,9 +135,16 @@ const ActionModal: React.FC<ActionModalProps> = ({
             onHide={() => onHide()}
             show={show}
             triggerAnimation={triggerAnimation}
+            setGlobalDepositAsset={setGlobalDepositAsset}
           />
         </Content>
-        <Footer pool={pool} page={page} txhash={txhash} show={show} />
+        <Footer
+          pool={pool}
+          page={page}
+          txhash={txhash}
+          show={show}
+          depositAsset={depositAsset}
+        />
       </HeroContainer>
     </FixedContainer>
   ) : (

@@ -316,41 +316,6 @@ export const MobileHeaderCol = styled(Col)`
   height: ${components.header}px;
 `;
 
-const LogosContainer = styled.div<{ delay?: number }>`
-  display: flex;
-`;
-
-const AssetContainer = styled.div<{ marginLeft?: number; zIndex: number }>`
-  display: flex;
-  position: relative;
-  align-items: center;
-  justify-content: center;
-  height: 22px;
-  width: 22px;
-  border-radius: 100px;
-  border: 1px solid black;
-  margin-left: ${(props) => props.marginLeft ?? `0`}px;
-  z-index: ${(props) => props.zIndex};
-  &:before {
-    position: absolute;
-    content: " ";
-    width: 100%;
-    height: 100%;
-    background: ${(props) => `${props.color}`};
-    border-radius: 100px;
-  }
-`;
-
-const PlusSevenCircle = styled.div`
-  height: 20px;
-  width: 20px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border-radius: 100px;
-  background: ${colors.background.two};
-`;
-
 const PoolPage = () => {
   const { poolId }: { poolId: PoolOptions } = useParams();
   const [activePage, setPage] = useState<PageEnum>();

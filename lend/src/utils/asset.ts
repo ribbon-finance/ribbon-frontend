@@ -5,6 +5,13 @@ import {
   WETHLogo,
   USDTLogo,
   DAILogo,
+  ALUSDLogo,
+  BUSDLogo,
+  FRAXLogo,
+  GUSDLogo,
+  LUSDLogo,
+  MIMLogo,
+  SUSDLogo,
 } from "shared/lib/assets/icons/erc20Assets";
 import Logo from "shared/lib/assets/icons/logo";
 import { Chains } from "../constants/constants";
@@ -34,6 +41,7 @@ export const getAssetDisplay = (asset: Assets): string => {
 export const getAssetDecimals = (asset: Assets): number => {
   switch (asset) {
     case "USDC":
+    case "USDT":
       return 6;
     default:
       return 18;
@@ -112,6 +120,21 @@ export const getAssetLogo: (asset: Assets) =>
       return USDTLogo;
     case "DAI":
       return DAILogo;
+    case "ALUSD":
+      return ALUSDLogo;
+    case "BUSD":
+      return BUSDLogo;
+    case "FRAX":
+      return FRAXLogo;
+    case "GUSD":
+      return GUSDLogo;
+    case "LUSD":
+      return LUSDLogo;
+    case "MIM":
+      return MIMLogo;
+    case "SUSD":
+      return SUSDLogo;
+
     default:
       return Logo;
   }

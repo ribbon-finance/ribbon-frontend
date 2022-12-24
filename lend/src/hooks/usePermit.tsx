@@ -11,6 +11,7 @@ import { permitAssets } from "../constants/constants";
 
 export interface DepositSignature {
   deadline: number;
+  nonce: number;
   v: number;
   r: string;
   s: string;
@@ -24,8 +25,18 @@ const EIP2612_TYPE = [
   { name: "deadline", type: "uint256" },
 ];
 
+const PERMIT_ALLOWED_TYPE = [
+  { name: "holder", type: "address" },
+  { name: "spender", type: "address" },
+  { name: "nonce", type: "uint256" },
+  { name: "expiry", type: "uint256" },
+  { name: "allowed", type: "bool" },
+];
+
 const usePermit = (asset: Assets) => {
   const { chainId, ethereumProvider, account } = useWeb3Wallet();
+
+  const isUSDC = asset === "USDC";
 
   const tokenContract = useMemo(() => {
     if (!chainId) {
@@ -40,10 +51,10 @@ const usePermit = (asset: Assets) => {
   }, [chainId, asset, ethereumProvider]);
 
   const domainName = useMemo(() => {
-    return asset === "USDC" ? "USD Coin" : "Dai Stablecoin";
-  }, [asset]);
+    return isUSDC ? "USD Coin" : "Dai Stablecoin";
+  }, [isUSDC]);
 
-  const showApproveUSDCSignature = useCallback(
+  const showapproveAssetSignature = useCallback(
     async (
       spender: string,
       // Amount of USDC
@@ -54,32 +65,48 @@ const usePermit = (asset: Assets) => {
         return undefined;
       }
 
+      const nonce = (await tokenContract.nonces(account)).toNumber();
+
+      const version = isUSDC ? "2" : "1";
+
       const domain = {
         name: domainName,
-        version: "2",
+        version,
         verifyingContract: tokenContract.address,
         chainId,
       };
 
-      const approveMessage = {
-        owner: account,
-        spender,
-        value: BigNumber.from(amountUSDC),
-        nonce: (await tokenContract.nonces(account)).toNumber(),
-        deadline,
-      };
+      const approveMessage = isUSDC
+        ? {
+            owner: account,
+            spender,
+            value: BigNumber.from(amountUSDC),
+            nonce,
+            deadline,
+          }
+        : {
+            holder: account,
+            spender,
+            nonce,
+            expiry: deadline,
+            allowed: true,
+          };
 
-      const approveUSDCSignature = await ethereumProvider
+      const approveAssetSignature = await ethereumProvider
         .getSigner()
-        ._signTypedData(domain, { Permit: EIP2612_TYPE }, approveMessage);
+        ._signTypedData(
+          domain,
+          { Permit: isUSDC ? EIP2612_TYPE : PERMIT_ALLOWED_TYPE },
+          approveMessage
+        );
 
-      if (approveUSDCSignature) {
-        const splitted = splitSignature(approveUSDCSignature);
-        return splitted;
+      if (approveAssetSignature) {
+        const splitted = splitSignature(approveAssetSignature);
+        return { splitted, nonce };
       }
       return undefined;
     },
-    [account, tokenContract, ethereumProvider, domainName, chainId]
+    [account, tokenContract, ethereumProvider, isUSDC, domainName, chainId]
   );
 
   if (!permitAssets.includes(asset)) {
@@ -87,7 +114,7 @@ const usePermit = (asset: Assets) => {
   }
 
   return {
-    showApproveAssetSignature: showApproveUSDCSignature,
+    showApproveAssetSignature: showapproveAssetSignature,
   };
 };
 

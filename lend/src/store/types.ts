@@ -15,7 +15,21 @@ export type PoolDataResponse = {
   error: PoolDataErrors | null;
 } & UnconnectedPoolData;
 
-export const AssetsList = ["RBN", "WETH", "USDC", "USDT", "DAI"] as const;
+export const AssetsList = [
+  "RBN",
+  "WETH",
+  "USDC",
+  "USDT",
+  "DAI",
+  "ALUSD",
+  "BUSD",
+  "DAI",
+  "FRAX",
+  "GUSD",
+  "LUSD",
+  "MIM",
+  "SUSD",
+] as const;
 export type Assets = typeof AssetsList[number];
 
 export const WalletsList = ["Metamask", "WalletConnect", "WalletLink"] as const;

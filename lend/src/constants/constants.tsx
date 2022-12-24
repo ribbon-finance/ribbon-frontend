@@ -159,9 +159,37 @@ const WEBAPP_SUBGRAPHS: [PoolVersion, Chains][] = [["lend", Chains.Ethereum]];
 
 export const SUBGRAPHS_TO_QUERY: [PoolVersion, Chains][] = WEBAPP_SUBGRAPHS;
 
-export const depositAssets: Assets[] = ["USDC", "DAI", "USDT"];
+export const depositAssets: Assets[] = [
+  "USDC",
+  "DAI",
+  "USDT",
+  "ALUSD",
+  "BUSD",
+  "FRAX",
+  "GUSD",
+  "LUSD",
+  "MIM",
+  "SUSD",
+];
 export const permitAssets: Assets[] = ["USDC", "DAI"];
-
+export const convertToUSDCAssets: Assets[] = [
+  "USDT",
+  "DAI",
+  "ALUSD",
+  "BUSD",
+  "FRAX",
+  "GUSD",
+  "LUSD",
+  "MIM",
+  "SUSD",
+];
+export const walletDisplayAssets: Assets[] = [
+  "RBN",
+  "WETH",
+  "USDC",
+  "USDT",
+  "DAI",
+];
 export const COINGECKO_BASE_URL = "https://api.coingecko.com/api/v3";
 export const COINGECKO_CURRENCIES: { [key in Assets]: string | undefined } = {
   WETH: "ethereum",
@@ -169,6 +197,13 @@ export const COINGECKO_CURRENCIES: { [key in Assets]: string | undefined } = {
   RBN: "ribbon-finance",
   USDT: "tether",
   DAI: "dai",
+  ALUSD: undefined,
+  BUSD: undefined,
+  FRAX: undefined,
+  GUSD: undefined,
+  LUSD: undefined,
+  MIM: undefined,
+  SUSD: undefined,
 };
 
 interface PoolDetails {
