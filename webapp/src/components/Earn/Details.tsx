@@ -245,11 +245,51 @@ export const Strategy: React.FC<StrategyProps> = ({ setStep, vaultOption }) => {
               <span>Loan Allocation</span>
             </ExplainerTitle>
             {/* querying loanAllocationPCT seems to give the wrong value so we use constant here*/}
-            <StyledTitle marginTop={4}>99.56%</StyledTitle>
+            <StyledTitle marginTop={4}>100%</StyledTitle>
           </>
         );
       case "rEARN-stETH":
         return <></>;
+    }
+  }, [vaultOption]);
+
+  const renderDownsideBarrierTitle = useCallback(() => {
+    switch (vaultOption) {
+      case "rEARN":
+        return (
+          <>
+            <ExplainerTitle color={colors.tertiaryText}>
+              <span>Downside Barrier</span>
+            </ExplainerTitle>
+          </>
+        );
+      case "rEARN-stETH":
+        return (
+          <>
+            <ExplainerTitle color={colors.tertiaryText}>
+              <span>Strike Price</span>
+            </ExplainerTitle>
+          </>
+        );
+    }
+  }, [vaultOption]);
+
+  const renderStrikePriceTitle = useCallback(() => {
+    switch (vaultOption) {
+      case "rEARN":
+        return (
+          <>
+            <ExplainerTitle color={colors.tertiaryText}>
+              <span>Strike Price</span>
+            </ExplainerTitle>
+          </>
+        );
+      case "rEARN-stETH":
+        return (
+          <ExplainerTitle color={colors.tertiaryText}>
+            <span>Spot Price Fixing</span>
+          </ExplainerTitle>
+        );
     }
   }, [vaultOption]);
 
@@ -272,17 +312,13 @@ export const Strategy: React.FC<StrategyProps> = ({ setStep, vaultOption }) => {
           ? loadingText
           : `${upperBarrier}% (${currency(upperBarrierETHPrice).format()})`}
       </StyledTitle>
-      <ExplainerTitle color={colors.tertiaryText}>
-        <span>Downside Barrier</span>
-      </ExplainerTitle>
+      {renderDownsideBarrierTitle()}
       <StyledTitle marginTop={4}>
         {loading
           ? loadingText
           : `${lowerBarrier}% (${currency(lowerBarrierETHPrice).format()})`}
       </StyledTitle>
-      <ExplainerTitle color={colors.tertiaryText}>
-        <span>Strike</span>
-      </ExplainerTitle>
+      {renderStrikePriceTitle()}
       <StyledTitle marginTop={4}>
         {loading ? loadingText : `100% (${currency(strikePrice).format()})`}
       </StyledTitle>
