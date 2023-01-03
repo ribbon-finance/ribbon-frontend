@@ -69,6 +69,11 @@ export const FooterRow = styled(Row)`
       border-right: 1px solid ${colors.border};
     }
   }
+  @media (max-width: ${sizes.lg}px) {
+    height: ${components.header + components.footer}px;
+    position: sticky;
+    bottom: 0;
+  }
 `;
 
 export const WalletButton = styled.div<{ delay: number }>`
@@ -166,7 +171,6 @@ export const StickyCol = styled(Col)`
     background: transparent;
   }
   @media (max-width: ${sizes.lg}px) {
-    position: relative;
     height: calc(100vh - ${components.header * 2 + components.footer * 2}px);
   }
   @media (max-width: ${sizes.md}px) {
