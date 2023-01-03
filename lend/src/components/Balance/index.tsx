@@ -22,7 +22,6 @@ import { usePoolsApr } from "../../hooks/usePoolsApr";
 import currency from "currency.js";
 import { BaseIndicator } from "shared/lib/designSystem";
 const BalanceWrapper = styled.div`
-  height: 100%;
   display: flex;
 `;
 

@@ -50,13 +50,6 @@ export const HeaderRow = styled(Row)<{ mobile?: boolean }>`
   margin-left: 0px;
   background: black;
   ${(props) => props.mobile === true && `display: none;`}
-  > * {
-    padding: 0;
-
-    &:not(:last-child) {
-      border-right: 1px solid ${colors.border};
-    }
-  }
 
   @media (max-width: ${sizes.lg}px) {
     ${(props) => props.mobile === true && `display: flex;`}
@@ -75,12 +68,6 @@ export const FooterRow = styled(Row)`
     &:not(:last-child) {
       border-right: 1px solid ${colors.border};
     }
-  }
-
-  @media (max-width: ${sizes.lg}px) {
-    height: ${components.header + components.footer}px;
-    position: sticky;
-    bottom: 0;
   }
 `;
 
@@ -143,12 +130,18 @@ export const DisclaimerWrapper = styled.div<{ delay: number }>`
 const Content = styled(Row)`
   height: calc(100% - ${components.header}px - ${components.footer}px);
 
+  @media (min-width: ${sizes.md}px) {
+    > *:not(:last-child) {
+      border-right: 1px solid ${colors.border};
+    }
+  }
+
   @media (max-width: ${sizes.lg}px) {
     height: 100%;
   }
 
-  > *:not(:last-child) {
-    border-right: 1px solid ${colors.border};
+  @media (max-width: ${sizes.md}px) {
+    border-right: none;
   }
 `;
 
@@ -173,7 +166,12 @@ export const StickyCol = styled(Col)`
     background: transparent;
   }
   @media (max-width: ${sizes.lg}px) {
+    position: relative;
     height: calc(100vh - ${components.header * 2 + components.footer * 2}px);
+  }
+  @media (max-width: ${sizes.md}px) {
+    position: relative;
+    height: fit-content;
   }
 `;
 
@@ -184,6 +182,10 @@ export const MobileHeaderCol = styled(Col)`
 
 export const MarqueeCol = styled(Col)`
   height: ${components.header}px;
+  border-right: 1px solid ${colors.border};
+  @media (max-width: ${sizes.lg}px) {
+    border-right: none;
+  }
 `;
 
 export const WalletCol = styled(Col)`
@@ -360,53 +362,57 @@ const Footer = ({
       !isPracticallyZero(poolDatas.data[pool].poolBalanceInAsset, usdcDecimals)
   ).length;
   return (
-    <FooterRow>
-      <Col md={0} lg={6}>
-        <DisclaimerWrapper delay={0.1}>
-          <ProductDisclaimer />
-        </DisclaimerWrapper>
-      </Col>
-      {!isManager ? (
-        <Col md={12} lg={6}>
-          <FooterButton
-            disabled={false}
-            isActive={activePage === PageEnum.POOLS}
-            onClick={() => setPage(PageEnum.POOLS)}
-            delay={0.2}
-          >
-            Pools
-          </FooterButton>
-          <FooterButton
-            disabled={false}
-            delay={0.3}
-            isActive={activePage === PageEnum.POSITIONS}
-            onClick={() => setPage(PageEnum.POSITIONS)}
-          >
-            Positions{account && `(${positionsCount})`}
-          </FooterButton>
+    <>
+      <FooterRow>
+        <Col md={0} lg={6}>
+          <DisclaimerWrapper delay={0.1}>
+            <ProductDisclaimer />
+          </DisclaimerWrapper>
         </Col>
-      ) : (
-        <Col md={12} lg={6}>
-          <FooterButton
-            disabled={false}
-            isActive={activePage === PageEnum.POOLS}
-            onClick={() => setPage(PageEnum.POOLS)}
-            delay={0.2}
-            width={"100%"}
-          >
-            Pools
-          </FooterButton>
-        </Col>
-      )}
-      <FooterWalletCol md={0} lg={6}>
-        <WalletButton delay={0.4} onClick={() => setWalletModal(true)}>
-          {active && <Indicator connected={active} />}
-          <WalletButtonText connected={active}>
-            {account ? truncateAddress(account) : "Connect Wallet"}
-          </WalletButtonText>
-        </WalletButton>
-      </FooterWalletCol>
-    </FooterRow>
+        {!isManager ? (
+          <Col md={12} lg={6}>
+            <FooterButton
+              disabled={false}
+              isActive={activePage === PageEnum.POOLS}
+              onClick={() => setPage(PageEnum.POOLS)}
+              delay={0.2}
+            >
+              Pools
+            </FooterButton>
+            <FooterButton
+              disabled={false}
+              delay={0.3}
+              isActive={activePage === PageEnum.POSITIONS}
+              onClick={() => setPage(PageEnum.POSITIONS)}
+            >
+              Positions{account && `(${positionsCount})`}
+            </FooterButton>
+          </Col>
+        ) : (
+          <Col md={12} lg={6}>
+            <FooterButton
+              disabled={false}
+              isActive={activePage === PageEnum.POOLS}
+              onClick={() => setPage(PageEnum.POOLS)}
+              delay={0.2}
+              width={"100%"}
+            >
+              Pools
+            </FooterButton>
+          </Col>
+        )}
+      </FooterRow>
+      <FooterRow className="d-block d-lg-none">
+        <FooterWalletCol md={12} lg={12}>
+          <WalletButton delay={0.4} onClick={() => setWalletModal(true)}>
+            {active && <Indicator connected={active} />}
+            <WalletButtonText connected={active}>
+              {account ? truncateAddress(account) : "Connect Wallet"}
+            </WalletButtonText>
+          </WalletButton>
+        </FooterWalletCol>
+      </FooterRow>
+    </>
   );
 };
 
