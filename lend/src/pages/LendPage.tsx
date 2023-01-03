@@ -172,9 +172,8 @@ export const StickyCol = styled(Col)`
     width: 0;
     background: transparent;
   }
-  @media (max-width: ${sizes.md}px) {
-    position: relative;
-    height: fit-content;
+  @media (max-width: ${sizes.lg}px) {
+    height: calc(100vh - ${components.header * 2 + components.footer * 2}px);
   }
 `;
 

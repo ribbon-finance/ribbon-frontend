@@ -475,6 +475,7 @@ const Hero: React.FC<HeroProps> = ({
     PoolAddressMap[pool].lend
   );
   // Check if approval needed
+  // Do not need approval if asset uses permit and user is not using wallet connect
   const showTokenApproval = useMemo(() => {
     if (
       permitAssets.includes(depositAsset) &&

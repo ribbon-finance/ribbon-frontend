@@ -5,12 +5,12 @@ import colors from "shared/lib/designSystem/colors";
 import styled from "styled-components";
 import { getAssetLogo } from "../../utils/asset";
 
-const OuterContainer = styled.div`
+const OuterContainer = styled.div<{ marginRight?: number }>`
   display: flex;
   flex-direction: row;
   align-items: center;
   justify-content: center;
-  margin-right: 48px;
+  margin-right: ${(props) => props.marginRight ?? 48}px;
 `;
 
 const InnerContainer = styled.div`
@@ -56,12 +56,17 @@ const PlusSevenCircle = styled.div`
 const StyledSpan = styled.span`
   color: ${colors.primaryText};
 `;
-const AssetArray: React.FC = () => {
+
+interface AssetArrayProps {
+  marginRight?: number;
+}
+
+const AssetArray: React.FC<AssetArrayProps> = ({ marginRight }) => {
   const USDCLogo = getAssetLogo("USDC");
   const USDTLogo = getAssetLogo("USDT");
   const DAILogo = getAssetLogo("DAI");
   return (
-    <OuterContainer>
+    <OuterContainer marginRight={marginRight}>
       <TooltipExplanation
         explanation={
           <span>

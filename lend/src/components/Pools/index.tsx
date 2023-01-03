@@ -28,6 +28,7 @@ import { useCredoraData } from "shared/lib/hooks/useCredoraData";
 import AssetArray from "../Common/AssetArray";
 
 const statSideContainer: number = 120;
+const assetRowMaxWidth: number = 1100;
 
 const ListRow = styled(Row)`
   display: block;
@@ -138,9 +139,13 @@ const PoolWrapper = styled(Link)`
 const Stat = styled.div`
   margin: auto 0;
   height: fit-content;
-
+  min-width: 100px;
   > * {
     display: flex;
+  }
+
+  @media (max-width: ${sizes.md}px) {
+    max-width: 400px;
   }
 `;
 
@@ -187,6 +192,45 @@ const StyledSubtitle = styled(Subtitle)<{ color?: string }>`
   line-height: 16px;
   text-transform: uppercase;
   color: ${({ color }) => color ?? colors.tertiaryText};
+  @media (max-width: ${sizes.xxl}px) {
+    max-width: 180px;
+  }
+  @media (max-width: ${sizes.md}px) {
+    max-width: none;
+  }
+  @media (max-width: ${sizes.sm}px) {
+    max-width: 180px;
+  }
+`;
+
+const DesktopAssetArrayContainer = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  @media (max-width: ${assetRowMaxWidth}px) {
+    display: none !important;
+  }
+  @media (max-width: ${sizes.md}px) {
+    display: flex !important;
+  }
+  @media (max-width: ${sizes.sm}px) {
+    display: none !important;
+  }
+`;
+
+const MobileAssetArrayContainer = styled.div`
+  display: none !important;
+  justify-content: center;
+  align-items: center;
+  @media (max-width: ${assetRowMaxWidth}px) {
+    display: flex !important;
+  }
+  @media (max-width: ${sizes.md}px) {
+    display: none !important;
+  }
+  @media (max-width: ${sizes.sm}px) {
+    display: flex !important;
+  }
 `;
 
 export const Pools = () => {
@@ -261,8 +305,13 @@ export const Pools = () => {
                   </StyledSubtitle>
                 </Stat>
                 <Stat>
+                  <MobileAssetArrayContainer>
+                    <AssetArray marginRight={36} />
+                  </MobileAssetArrayContainer>
                   <Value>
-                    <AssetArray />
+                    <DesktopAssetArrayContainer>
+                      <AssetArray />
+                    </DesktopAssetArrayContainer>
                     <StyledTitle>
                       <span>
                         {currency(
@@ -427,8 +476,13 @@ export const Positions = () => {
                   <StyledTitle>{pool}</StyledTitle>
                 </Stat>
                 <Stat>
+                  <MobileAssetArrayContainer>
+                    <AssetArray marginRight={36} />
+                  </MobileAssetArrayContainer>
                   <Value>
-                    <AssetArray />
+                    <DesktopAssetArrayContainer>
+                      <AssetArray />
+                    </DesktopAssetArrayContainer>
                     <StyledTitle>
                       <span>
                         {currency(formatUnits(balance, decimals), {
