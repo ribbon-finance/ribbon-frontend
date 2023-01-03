@@ -15,8 +15,7 @@ import currency from "currency.js";
 import { formatUnits } from "ethers/lib/utils";
 
 const DesktopContainer = styled.div<{ color: string }>`
-  display: flex;
-  position: sticky;
+  position: absolute;
   margin-left: auto;
   bottom: calc(${components.footer}px + 26px);
   right: 26px;

@@ -66,12 +66,13 @@ const PoolContainer = styled.div`
   @media (max-width: ${sizes.lg}px) {
     width: 100%;
   }
-
   > .row {
     margin-left: 0 !important;
     width: 100%;
     border-right: 1px solid ${colors.border};
   }
+  display: flex;
+  flex-direction: column;
 `;
 
 enum PageEnum {
@@ -375,6 +376,12 @@ const PoolPage = () => {
         pool={poolId}
       />
       <PoolContainer>
+        <PositionWidget
+          pool={{
+            poolOption: poolId,
+            poolVersion: "lend",
+          }}
+        />
         <Header setWalletModal={setWalletModal} pool={poolId} />
         <ScrollableContent>
           <StickyCol xs={12} md={6}>
@@ -671,12 +678,6 @@ const PoolPage = () => {
           manager={manager}
           pool={poolId}
         />
-        <PositionWidget
-          pool={{
-            poolOption: poolId,
-            poolVersion: "lend",
-          }}
-        />
       </PoolContainer>
     </>
   );
@@ -726,74 +727,78 @@ const Footer = ({ setPage, setWalletModal, manager, pool }: FooterProps) => {
   const { account, active } = useWeb3Wallet();
 
   return (
-    <FooterRow>
-      <Col md={0} lg={6}>
-        <DisclaimerWrapper delay={0.1}>
-          <ProductDisclaimer />
-        </DisclaimerWrapper>
-      </Col>
-      <Col md={12} lg={6}>
-        {account !== manager ? (
-          <>
-            <FooterButton
-              delay={0.2}
-              disabled={isDepositDisabledPool(pool)}
-              tooltip={isDepositDisabledPool(pool)}
-              isActive={true}
-              onClick={() => setPage(PageEnum.DEPOSIT)}
-            >
-              <div className="d-flex justify-content-center align-items-center">
-                Deposit{" "}
-                {isDepositDisabledPool(pool) && (
-                  <TooltipExplanation
-                    explanation={
-                      <>
-                        Lending to Folkvang has been temporarily disabled. Loans
-                        to the Wintermute pool are still open.
-                      </>
-                    }
-                    renderContent={({ ref, ...triggerHandler }) => (
-                      <HelpInfo containerRef={ref} {...triggerHandler}>
-                        i
-                      </HelpInfo>
-                    )}
-                    learnMoreURL={
-                      "https://twitter.com/folkvangtrading/status/1591360107094626304"
-                    }
-                  />
-                )}
-              </div>
-            </FooterButton>
-            <FooterButton
-              delay={0.3}
-              isActive={true}
-              onClick={() => setPage(PageEnum.WITHDRAW)}
-            >
-              Withdraw
-            </FooterButton>
-          </>
-        ) : (
-          <>
-            <FooterButton
-              delay={0.3}
-              isActive={true}
-              onClick={() => setPage(PageEnum.REBALANCE)}
-              width={"100%"}
-            >
-              Rebalance Utilization
-            </FooterButton>
-          </>
-        )}
-      </Col>
-      <FooterWalletCol md={0} lg={0}>
-        <WalletButton delay={0.4} onClick={() => setWalletModal(true)}>
-          {active && <Indicator connected={active} />}
-          <WalletButtonText connected={active}>
-            {account ? truncateAddress(account) : "Connect Wallet"}
-          </WalletButtonText>
-        </WalletButton>
-      </FooterWalletCol>
-    </FooterRow>
+    <>
+      <FooterRow>
+        <Col md={0} lg={6}>
+          <DisclaimerWrapper delay={0.1}>
+            <ProductDisclaimer />
+          </DisclaimerWrapper>
+        </Col>
+        <Col md={12} lg={6}>
+          {account !== manager ? (
+            <>
+              <FooterButton
+                delay={0.2}
+                disabled={isDepositDisabledPool(pool)}
+                tooltip={isDepositDisabledPool(pool)}
+                isActive={true}
+                onClick={() => setPage(PageEnum.DEPOSIT)}
+              >
+                <div className="d-flex justify-content-center align-items-center">
+                  Deposit{" "}
+                  {isDepositDisabledPool(pool) && (
+                    <TooltipExplanation
+                      explanation={
+                        <>
+                          Lending to Folkvang has been temporarily disabled.
+                          Loans to the Wintermute pool are still open.
+                        </>
+                      }
+                      renderContent={({ ref, ...triggerHandler }) => (
+                        <HelpInfo containerRef={ref} {...triggerHandler}>
+                          i
+                        </HelpInfo>
+                      )}
+                      learnMoreURL={
+                        "https://twitter.com/folkvangtrading/status/1591360107094626304"
+                      }
+                    />
+                  )}
+                </div>
+              </FooterButton>
+              <FooterButton
+                delay={0.3}
+                isActive={true}
+                onClick={() => setPage(PageEnum.WITHDRAW)}
+              >
+                Withdraw
+              </FooterButton>
+            </>
+          ) : (
+            <>
+              <FooterButton
+                delay={0.3}
+                isActive={true}
+                onClick={() => setPage(PageEnum.REBALANCE)}
+                width={"100%"}
+              >
+                Rebalance Utilization
+              </FooterButton>
+            </>
+          )}
+        </Col>
+      </FooterRow>
+      <FooterRow className="d-block d-lg-none">
+        <FooterWalletCol md={12} lg={0}>
+          <WalletButton delay={0.4} onClick={() => setWalletModal(true)}>
+            {active && <Indicator connected={active} />}
+            <WalletButtonText connected={active}>
+              {account ? truncateAddress(account) : "Connect Wallet"}
+            </WalletButtonText>
+          </WalletButton>
+        </FooterWalletCol>
+      </FooterRow>
+    </>
   );
 };
 

@@ -70,7 +70,7 @@ export const FooterRow = styled(Row)`
     }
   }
   @media (max-width: ${sizes.lg}px) {
-    height: ${components.header + components.footer}px;
+    height: ${components.footer}px;
     position: sticky;
     bottom: 0;
   }
