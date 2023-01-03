@@ -79,7 +79,12 @@ const AssetArray: React.FC<AssetArrayProps> = ({ marginRight }) => {
           </span>
         }
         renderContent={({ ref, ...triggerHandler }) => (
-          <HelpInfo containerRef={ref} {...triggerHandler}>
+          <HelpInfo
+            containerRef={ref}
+            color={colors.primaryText}
+            hideIcon={true}
+            {...triggerHandler}
+          >
             <InnerContainer>
               <AssetContainer zIndex={1}>
                 <USDTLogo height={26} width={26} />
