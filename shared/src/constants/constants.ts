@@ -108,7 +108,7 @@ export const TreasuryVaultList = [
   "rBAL-TSRY",
   "rBADGER-TSRY",
   "rSPELL-TSRY",
-  "rsAMB-TSRY",
+  "rSAMB-TSRY",
 ] as const;
 
 const AllVaultOptions = [
@@ -275,7 +275,7 @@ export const GAS_LIMITS: {
       completeWithdraw: 300000,
     },
   },
-  "rsAMB-TSRY": {
+  "rSAMB-TSRY": {
     v2: {
       deposit: 380000,
       withdrawInstantly: 130000,
@@ -521,7 +521,7 @@ export const VaultAddressMap: {
         v2: v2deployment.mainnet.RibbonTreasuryVaultSPELL,
         chainId: CHAINID.ETH_MAINNET,
       },
-  "rsAMB-TSRY": isDevelopment()
+  "rSAMB-TSRY": isDevelopment()
     ? {
         v2: v2deployment.kovan.RibbonTreasuryVaultSAMB,
         chainId: CHAINID.ETH_KOVAN,
@@ -576,7 +576,7 @@ export const VaultNamesList = [
   "T-BAL-C",
   "T-BADGER-C",
   "T-SPELL-C",
-  "T-sAMB-C",
+  "T-SAMB-C",
   "T-SOL-C",
   "T-APE-C",
   "R-EARN",
@@ -598,7 +598,7 @@ export const VaultNameOptionMap: { [name in VaultName]: VaultOptions } = {
   "T-BAL-C": "rBAL-TSRY",
   "T-BADGER-C": "rBADGER-TSRY",
   "T-SPELL-C": "rSPELL-TSRY",
-  "T-sAMB-C": "rsAMB-TSRY",
+  "T-SAMB-C": "rSAMB-TSRY",
   "T-SOL-C": "rSOL-THETA",
   "T-APE-C": "rAPE-THETA",
   "R-EARN": "rEARN",
@@ -704,8 +704,8 @@ export const getAssets = (vault: VaultOptions): Assets => {
       return "BADGER";
     case "rSPELL-TSRY":
       return "SPELL";
-    case "rsAMB-TSRY":
-      return "sAMB";
+    case "rSAMB-TSRY":
+      return "SAMB";
     case "rSOL-THETA":
       return "SOL";
     case "rAPE-THETA":
@@ -743,8 +743,8 @@ export const getOptionAssets = (vault: VaultOptions): Assets => {
       return "BADGER";
     case "rSPELL-TSRY":
       return "SPELL";
-    case "rsAMB-TSRY":
-      return "sAMB";
+    case "rSAMB-TSRY":
+      return "SAMB";
     case "rSOL-THETA":
       return "SOL";
     case "rAPE-THETA":
@@ -787,8 +787,8 @@ export const getDisplayAssets = (vault: VaultOptions): Assets => {
       return "BADGER";
     case "rSPELL-TSRY":
       return "SPELL";
-    case "rsAMB-TSRY":
-      return "sAMB";
+    case "rSAMB-TSRY":
+      return "SAMB";
     case "rSOL-THETA":
       return "SOL";
     case "rAPE-THETA":
@@ -816,7 +816,7 @@ export const VaultAllowedDepositAssets: { [vault in VaultOptions]: Assets[] } =
     "rBAL-TSRY": ["BAL"],
     "rBADGER-TSRY": ["BADGER"],
     "rSPELL-TSRY": ["SPELL"],
-    "rsAMB-TSRY": ["sAMB"],
+    "rSAMB-TSRY": ["SAMB"],
     "rSOL-THETA": ["SOL"],
     "rAPE-THETA": ["APE"],
     rEARN: ["USDC"],
@@ -878,8 +878,8 @@ export const VaultMaxDeposit: { [vault in VaultOptions]: BigNumber } = {
   "rSPELL-TSRY": BigNumber.from(1000000000).mul(
     BigNumber.from(10).pow(getAssetDecimals(getAssets("rSPELL-TSRY")))
   ),
-  "rsAMB-TSRY": BigNumber.from(1000000000).mul(
-    BigNumber.from(10).pow(getAssetDecimals(getAssets("rsAMB-TSRY")))
+  "rSAMB-TSRY": BigNumber.from(1000000000).mul(
+    BigNumber.from(10).pow(getAssetDecimals(getAssets("rSAMB-TSRY")))
   ),
   // FIXME: change with real numbers
   "rSOL-THETA": BigNumber.from(100000000).mul(
@@ -996,7 +996,7 @@ export const VaultFees: {
       performanceFee: "10",
     },
   },
-  "rsAMB-TSRY": {
+  "rSAMB-TSRY": {
     v2: {
       managementFee: "2",
       performanceFee: "10",
@@ -1195,7 +1195,7 @@ export const COINGECKO_CURRENCIES: { [key in Assets]: string | undefined } = {
   BAL: "balancer",
   BADGER: "badger-dao",
   SPELL: "spell-token",
-  sAMB: "amber",
+  SAMB: "amber",
   RBN: "ribbon-finance",
   veRBN: undefined,
   SOL: "solana",
