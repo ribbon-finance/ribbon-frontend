@@ -20,11 +20,7 @@ import {
   V2WithdrawOptionList,
 } from "webapp/lib/components/Vault/VaultActionsForm/Modal/types";
 import useVaultActionForm from "webapp/lib/hooks/useVaultActionForm";
-import {
-  getAssets,
-  isAvaxVault,
-  VaultOptions,
-} from "shared/lib/constants/constants";
+import { getAssets, VaultOptions } from "shared/lib/constants/constants";
 import {
   ActionButton,
   ConnectWalletButton,

@@ -261,7 +261,7 @@ export const getAssetLogo: (asset: Assets) =>
       return BADGERLogo;
     case "SPELL":
       return SPELLLogo;
-    case "sAMB":
+    case "SAMB":
       return SAMBLogo;
     case "SOL":
       return SolanaLogo;
