@@ -56,12 +56,12 @@ export const ParadigmLogo: React.FC<SVGProps> = (props) => (
     <path
       d="M52 27.5754C52 40.2015 41.7332 50.4264 29.0584 50.4264C16.3837 50.4264 6.11687 40.2015 6.11687 27.5754C6.11687 14.9492 16.3837 4.72437 29.0584 4.72437C41.7332 4.72437 52 14.9492 52 27.5754Z"
       fill="url(#paint0_radial_801_59)"
-      fill-opacity="0.5"
+      fillOpacity="0.5"
     />
     <path
       d="M51.9735 21.7386C51.9735 31.5503 43.8236 39.4771 33.7949 39.4771C23.7398 39.4771 15.6163 31.5245 15.6163 21.7386C15.6163 11.9268 23.7663 4 33.7949 4C43.8501 4 51.9735 11.9527 51.9735 21.7386Z"
       fill={props.color}
-      fill-opacity="0.64"
+      fillOpacity="0.64"
     />
     <defs>
       <radialGradient
@@ -72,8 +72,8 @@ export const ParadigmLogo: React.FC<SVGProps> = (props) => (
         gradientUnits="userSpaceOnUse"
         gradientTransform="translate(29.0545 27.5841) rotate(90) scale(22.8583 23.4253)"
       >
-        <stop stop-color="#051323" />
-        <stop offset="1" stop-color="#051323" stop-opacity="0" />
+        <stop stopColor="#051323" />
+        <stop offset="1" stopColor="#051323" stopOpacity="0" />
       </radialGradient>
     </defs>
   </svg>
