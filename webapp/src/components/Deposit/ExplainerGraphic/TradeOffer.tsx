@@ -9,7 +9,7 @@ import { Assets } from "shared/lib/store/types";
 import { getAssetLogo } from "shared/lib/utils/asset";
 import { MoneyLogo } from "../../../assets/icons/vaultExplainer/tradeOffer";
 import sizes from "shared/lib/designSystem/sizes";
-import { GnosisLogo, FlexLogo } from "shared/lib/assets/icons/defiApp";
+import { ParadigmLogo, FlexLogo } from "shared/lib/assets/icons/defiApp";
 import { WETHLogo } from "shared/lib/assets/icons/erc20Assets";
 
 const TargetContainer = styled.div`
@@ -43,7 +43,7 @@ const ColoredLogo = styled(Logo)<{ color: string }>`
   }
 `;
 
-const ColoredGnosisLogo = styled(GnosisLogo)<{ color: string }>`
+const ColoredParadigmLogo = styled(ParadigmLogo)<{ color: string }>`
   g {
     fill: ${(props) => props.color};
   }
@@ -323,9 +323,9 @@ const TradeOffer: React.FC<TradeOfferProps> = ({
     }
 
     switch (party?.toLocaleLowerCase()) {
-      case "gnosis":
+      case "paradigm":
         return (
-          <ColoredGnosisLogo
+          <ColoredParadigmLogo
             width={`${height * 0.75 * 0.3}px`}
             height={`${height * 0.75 * 0.3}px`}
             color={color}

@@ -1,0 +1,3646 @@
+{
+  "v": "4.8.0",
+  "meta": {
+    "g": "LottieFiles AE 3.1.1",
+    "a": "",
+    "k": "",
+    "d": "",
+    "tc": "none"
+  },
+  "fr": 60,
+  "ip": 0,
+  "op": 300,
+  "w": 1377,
+  "h": 480,
+  "nm": "Gnosis Auction",
+  "ddd": 0,
+  "assets": [
+    {
+      "id": "image_0",
+      "w": 96,
+      "h": 96,
+      "u": "",
+      "p": "data:image/png;base64,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",
+      "e": 1
+    },
+    {
+      "id": "comp_0",
+      "layers": [
+        {
+          "ddd": 0,
+          "ind": 1,
+          "ty": 4,
+          "nm": "Ellipse 4",
+          "sr": 1,
+          "ks": {
+            "o": { "a": 0, "k": 100, "ix": 11 },
+            "r": { "a": 0, "k": 0, "ix": 10 },
+            "p": { "a": 0, "k": [30, 30, 0], "ix": 2 },
+            "a": { "a": 0, "k": [0, 0, 0], "ix": 1 },
+            "s": { "a": 0, "k": [100, 100, 100], "ix": 6 }
+          },
+          "ao": 0,
+          "shapes": [
+            {
+              "ty": "gr",
+              "it": [
+                {
+                  "d": 1,
+                  "ty": "el",
+                  "s": { "a": 0, "k": [12, 12], "ix": 2 },
+                  "p": { "a": 0, "k": [0, 0], "ix": 3 },
+                  "nm": "Ellipse Path 1",
+                  "mn": "ADBE Vector Shape - Ellipse",
+                  "hd": false
+                },
+                {
+                  "ty": "st",
+                  "c": {
+                    "a": 0,
+                    "k": [0.890196084976, 0.588235318661, 0.321568638086, 1],
+                    "ix": 3
+                  },
+                  "o": { "a": 0, "k": 100, "ix": 4 },
+                  "w": { "a": 0, "k": 1, "ix": 5 },
+                  "lc": 1,
+                  "lj": 1,
+                  "ml": 4,
+                  "bm": 0,
+                  "nm": "Stroke 1",
+                  "mn": "ADBE Vector Graphic - Stroke",
+                  "hd": false
+                },
+                {
+                  "ty": "tr",
+                  "p": { "a": 0, "k": [0, 0], "ix": 2 },
+                  "a": { "a": 0, "k": [0, 0], "ix": 1 },
+                  "s": { "a": 0, "k": [300, 300], "ix": 3 },
+                  "r": { "a": 0, "k": 0, "ix": 6 },
+                  "o": { "a": 0, "k": 100, "ix": 7 },
+                  "sk": { "a": 0, "k": 0, "ix": 4 },
+                  "sa": { "a": 0, "k": 0, "ix": 5 },
+                  "nm": "Transform"
+                }
+              ],
+              "nm": "Ellipse 4",
+              "np": 2,
+              "cix": 2,
+              "bm": 0,
+              "ix": 1,
+              "mn": "ADBE Vector Group",
+              "hd": false
+            }
+          ],
+          "ip": 0,
+          "op": 300,
+          "st": 0,
+          "bm": 0
+        },
+        {
+          "ddd": 0,
+          "ind": 2,
+          "ty": 4,
+          "nm": "oToken D",
+          "sr": 1,
+          "ks": {
+            "o": { "a": 0, "k": 100, "ix": 11 },
+            "r": { "a": 0, "k": 0, "ix": 10 },
+            "p": { "a": 0, "k": [30, 30, 0], "ix": 2 },
+            "a": { "a": 0, "k": [0, 0, 0], "ix": 1 },
+            "s": { "a": 0, "k": [-100, -100, 100], "ix": 6 }
+          },
+          "ao": 0,
+          "shapes": [
+            {
+              "ty": "gr",
+              "it": [
+                {
+                  "ty": "rc",
+                  "d": 1,
+                  "s": { "a": 0, "k": [20, 20], "ix": 2 },
+                  "p": { "a": 0, "k": [0, 0], "ix": 3 },
+                  "r": { "a": 0, "k": 100, "ix": 4 },
+                  "nm": "Rectangle Path 1",
+                  "mn": "ADBE Vector Shape - Rect",
+                  "hd": false
+                },
+                {
+                  "ty": "fl",
+                  "c": {
+                    "a": 0,
+                    "k": [0.172549024224, 0.141176477075, 0.117647059262, 1],
+                    "ix": 4
+                  },
+                  "o": { "a": 0, "k": 100, "ix": 5 },
+                  "r": 1,
+                  "bm": 0,
+                  "nm": "Fill 1",
+                  "mn": "ADBE Vector Graphic - Fill",
+                  "hd": false
+                },
+                {
+                  "ty": "tr",
+                  "p": { "a": 0, "k": [0, 0], "ix": 2 },
+                  "a": { "a": 0, "k": [0, 0], "ix": 1 },
+                  "s": { "a": 0, "k": [300, 300], "ix": 3 },
+                  "r": { "a": 0, "k": 0, "ix": 6 },
+                  "o": { "a": 0, "k": 100, "ix": 7 },
+                  "sk": { "a": 0, "k": 0, "ix": 4 },
+                  "sa": { "a": 0, "k": 0, "ix": 5 },
+                  "nm": "Transform"
+                }
+              ],
+              "nm": "oToken D",
+              "np": 2,
+              "cix": 2,
+              "bm": 0,
+              "ix": 1,
+              "mn": "ADBE Vector Group",
+              "hd": false
+            }
+          ],
+          "ip": 0,
+          "op": 300,
+          "st": 0,
+          "bm": 0
+        }
+      ]
+    },
+    {
+      "id": "comp_1",
+      "layers": [
+        {
+          "ddd": 0,
+          "ind": 1,
+          "ty": 4,
+          "nm": "Ellipse 4",
+          "sr": 1,
+          "ks": {
+            "o": { "a": 0, "k": 100, "ix": 11 },
+            "r": { "a": 0, "k": 0, "ix": 10 },
+            "p": { "a": 0, "k": [30, 30, 0], "ix": 2 },
+            "a": { "a": 0, "k": [0, 0, 0], "ix": 1 },
+            "s": { "a": 0, "k": [100, 100, 100], "ix": 6 }
+          },
+          "ao": 0,
+          "shapes": [
+            {
+              "ty": "gr",
+              "it": [
+                {
+                  "d": 1,
+                  "ty": "el",
+                  "s": { "a": 0, "k": [12, 12], "ix": 2 },
+                  "p": { "a": 0, "k": [0, 0], "ix": 3 },
+                  "nm": "Ellipse Path 1",
+                  "mn": "ADBE Vector Shape - Ellipse",
+                  "hd": false
+                },
+                {
+                  "ty": "st",
+                  "c": {
+                    "a": 0,
+                    "k": [0.890196084976, 0.588235318661, 0.321568638086, 1],
+                    "ix": 3
+                  },
+                  "o": { "a": 0, "k": 100, "ix": 4 },
+                  "w": { "a": 0, "k": 1, "ix": 5 },
+                  "lc": 1,
+                  "lj": 1,
+                  "ml": 4,
+                  "bm": 0,
+                  "nm": "Stroke 1",
+                  "mn": "ADBE Vector Graphic - Stroke",
+                  "hd": false
+                },
+                {
+                  "ty": "tr",
+                  "p": { "a": 0, "k": [0, 0], "ix": 2 },
+                  "a": { "a": 0, "k": [0, 0], "ix": 1 },
+                  "s": { "a": 0, "k": [300, 300], "ix": 3 },
+                  "r": { "a": 0, "k": 0, "ix": 6 },
+                  "o": { "a": 0, "k": 100, "ix": 7 },
+                  "sk": { "a": 0, "k": 0, "ix": 4 },
+                  "sa": { "a": 0, "k": 0, "ix": 5 },
+                  "nm": "Transform"
+                }
+              ],
+              "nm": "Ellipse 4",
+              "np": 2,
+              "cix": 2,
+              "bm": 0,
+              "ix": 1,
+              "mn": "ADBE Vector Group",
+              "hd": false
+            }
+          ],
+          "ip": 0,
+          "op": 300,
+          "st": 0,
+          "bm": 0
+        },
+        {
+          "ddd": 0,
+          "ind": 2,
+          "ty": 4,
+          "nm": "oToken C",
+          "sr": 1,
+          "ks": {
+            "o": { "a": 0, "k": 100, "ix": 11 },
+            "r": { "a": 0, "k": 0, "ix": 10 },
+            "p": { "a": 0, "k": [30, 30, 0], "ix": 2 },
+            "a": { "a": 0, "k": [0, 0, 0], "ix": 1 },
+            "s": { "a": 0, "k": [-100, -100, 100], "ix": 6 }
+          },
+          "ao": 0,
+          "shapes": [
+            {
+              "ty": "gr",
+              "it": [
+                {
+                  "ty": "rc",
+                  "d": 1,
+                  "s": { "a": 0, "k": [20, 20], "ix": 2 },
+                  "p": { "a": 0, "k": [0, 0], "ix": 3 },
+                  "r": { "a": 0, "k": 100, "ix": 4 },
+                  "nm": "Rectangle Path 1",
+                  "mn": "ADBE Vector Shape - Rect",
+                  "hd": false
+                },
+                {
+                  "ty": "fl",
+                  "c": {
+                    "a": 0,
+                    "k": [0.172549024224, 0.141176477075, 0.117647059262, 1],
+                    "ix": 4
+                  },
+                  "o": { "a": 0, "k": 100, "ix": 5 },
+                  "r": 1,
+                  "bm": 0,
+                  "nm": "Fill 1",
+                  "mn": "ADBE Vector Graphic - Fill",
+                  "hd": false
+                },
+                {
+                  "ty": "tr",
+                  "p": { "a": 0, "k": [0, 0], "ix": 2 },
+                  "a": { "a": 0, "k": [0, 0], "ix": 1 },
+                  "s": { "a": 0, "k": [300, 300], "ix": 3 },
+                  "r": { "a": 0, "k": 0, "ix": 6 },
+                  "o": { "a": 0, "k": 100, "ix": 7 },
+                  "sk": { "a": 0, "k": 0, "ix": 4 },
+                  "sa": { "a": 0, "k": 0, "ix": 5 },
+                  "nm": "Transform"
+                }
+              ],
+              "nm": "oToken C",
+              "np": 2,
+              "cix": 2,
+              "bm": 0,
+              "ix": 1,
+              "mn": "ADBE Vector Group",
+              "hd": false
+            }
+          ],
+          "ip": 0,
+          "op": 300,
+          "st": 0,
+          "bm": 0
+        }
+      ]
+    },
+    {
+      "id": "comp_2",
+      "layers": [
+        {
+          "ddd": 0,
+          "ind": 2,
+          "ty": 2,
+          "nm": "Paradigm Logo.png",
+          "cl": "png",
+          "refId": "image_0",
+          "sr": 1,
+          "ks": {
+            "o": { "a": 0, "k": 100, "ix": 11 },
+            "r": { "a": 0, "k": 0, "ix": 10 },
+            "p": { "a": 0, "k": [48, 48, 0], "ix": 2 },
+            "a": { "a": 0, "k": [48, 48, 0], "ix": 1 },
+            "s": { "a": 0, "k": [100, 100, 100], "ix": 6 }
+          },
+          "ao": 0,
+          "ip": 0,
+          "op": 300,
+          "st": 0,
+          "bm": 0
+        },
+        {
+          "ddd": 0,
+          "ind": 5,
+          "ty": 4,
+          "nm": "Gnosis Logo",
+          "sr": 1,
+          "ks": {
+            "o": { "a": 0, "k": 100, "ix": 11 },
+            "r": { "a": 0, "k": 0, "ix": 10 },
+            "p": { "a": 0, "k": [48, 48, 0], "ix": 2 },
+            "a": { "a": 0, "k": [0, 0, 0], "ix": 1 },
+            "s": { "a": 0, "k": [100, 100, 100], "ix": 6 }
+          },
+          "ao": 0,
+          "shapes": [
+            {
+              "ty": "gr",
+              "it": [
+                {
+                  "ty": "rc",
+                  "d": 1,
+                  "s": { "a": 0, "k": [32, 32], "ix": 2 },
+                  "p": { "a": 0, "k": [0, 0], "ix": 3 },
+                  "r": { "a": 0, "k": 0, "ix": 4 },
+                  "nm": "Rectangle Path 1",
+                  "mn": "ADBE Vector Shape - Rect",
+                  "hd": false
+                },
+                {
+                  "ty": "tr",
+                  "p": { "a": 0, "k": [0, 0], "ix": 2 },
+                  "a": { "a": 0, "k": [0, 0], "ix": 1 },
+                  "s": { "a": 0, "k": [300, 300], "ix": 3 },
+                  "r": { "a": 0, "k": 0, "ix": 6 },
+                  "o": { "a": 0, "k": 100, "ix": 7 },
+                  "sk": { "a": 0, "k": 0, "ix": 4 },
+                  "sa": { "a": 0, "k": 0, "ix": 5 },
+                  "nm": "Transform"
+                }
+              ],
+              "nm": "Gnosis Logo",
+              "np": 1,
+              "cix": 2,
+              "bm": 0,
+              "ix": 1,
+              "mn": "ADBE Vector Group",
+              "hd": false
+            }
+          ],
+          "ip": 0,
+          "op": 300,
+          "st": 0,
+          "bm": 0
+        }
+      ]
+    },
+    {
+      "id": "comp_3",
+      "layers": [
+        {
+          "ddd": 0,
+          "ind": 1,
+          "ty": 5,
+          "nm": "BID D",
+          "sr": 1,
+          "ks": {
+            "o": { "a": 0, "k": 100, "ix": 11 },
+            "r": { "a": 0, "k": 0, "ix": 10 },
+            "p": { "a": 0, "k": [72.001, 53.783, 0], "ix": 2 },
+            "a": { "a": 0, "k": [0, 0, 0], "ix": 1 },
+            "s": { "a": 0, "k": [300, 300, 100], "ix": 6 }
+          },
+          "ao": 0,
+          "t": {
+            "d": {
+              "k": [
+                {
+                  "s": {
+                    "sz": [27.5400009155273, 10],
+                    "ps": [-13.7700004577637, -5],
+                    "s": 9,
+                    "f": "VCROSDMono",
+                    "t": "BID D",
+                    "j": 2,
+                    "tr": 0,
+                    "lh": 10.8,
+                    "ls": 0,
+                    "fc": [0.89, 0.588, 0.322]
+                  },
+                  "t": 0
+                }
+              ]
+            },
+            "p": {},
+            "m": { "g": 1, "a": { "a": 0, "k": [0, 0], "ix": 2 } },
+            "a": []
+          },
+          "ip": 0,
+          "op": 300,
+          "st": 0,
+          "bm": 0
+        },
+        {
+          "ddd": 0,
+          "ind": 2,
+          "ty": 4,
+          "nm": "Bid D Active",
+          "sr": 1,
+          "ks": {
+            "o": { "a": 0, "k": 100, "ix": 11 },
+            "r": { "a": 0, "k": 0, "ix": 10 },
+            "p": { "a": 0, "k": [72, 48, 0], "ix": 2 },
+            "a": { "a": 0, "k": [0, 0, 0], "ix": 1 },
+            "s": { "a": 0, "k": [100, 100, 100], "ix": 6 }
+          },
+          "ao": 0,
+          "shapes": [
+            {
+              "ty": "gr",
+              "it": [
+                {
+                  "ty": "rc",
+                  "d": 1,
+                  "s": { "a": 0, "k": [48, 32], "ix": 2 },
+                  "p": { "a": 0, "k": [0, 0], "ix": 3 },
+                  "r": { "a": 0, "k": 318, "ix": 4 },
+                  "nm": "Rectangle Path 1",
+                  "mn": "ADBE Vector Shape - Rect",
+                  "hd": false
+                },
+                {
+                  "ty": "st",
+                  "c": {
+                    "a": 0,
+                    "k": [0.890196084976, 0.588235318661, 0.321568638086, 1],
+                    "ix": 3
+                  },
+                  "o": { "a": 0, "k": 100, "ix": 4 },
+                  "w": { "a": 0, "k": 1, "ix": 5 },
+                  "lc": 1,
+                  "lj": 1,
+                  "ml": 4,
+                  "bm": 0,
+                  "nm": "Stroke 1",
+                  "mn": "ADBE Vector Graphic - Stroke",
+                  "hd": false
+                },
+                {
+                  "ty": "fl",
+                  "c": {
+                    "a": 0,
+                    "k": [0.890196084976, 0.588235318661, 0.321568638086, 1],
+                    "ix": 4
+                  },
+                  "o": { "a": 0, "k": 16, "ix": 5 },
+                  "r": 1,
+                  "bm": 0,
+                  "nm": "Fill 1",
+                  "mn": "ADBE Vector Graphic - Fill",
+                  "hd": false
+                },
+                {
+                  "ty": "tr",
+                  "p": { "a": 0, "k": [0, 0], "ix": 2 },
+                  "a": { "a": 0, "k": [0, 0], "ix": 1 },
+                  "s": { "a": 0, "k": [300, 300], "ix": 3 },
+                  "r": { "a": 0, "k": 0, "ix": 6 },
+                  "o": { "a": 0, "k": 100, "ix": 7 },
+                  "sk": { "a": 0, "k": 0, "ix": 4 },
+                  "sa": { "a": 0, "k": 0, "ix": 5 },
+                  "nm": "Transform"
+                }
+              ],
+              "nm": "Bid D Active",
+              "np": 3,
+              "cix": 2,
+              "bm": 0,
+              "ix": 1,
+              "mn": "ADBE Vector Group",
+              "hd": false
+            }
+          ],
+          "ip": 0,
+          "op": 300,
+          "st": 0,
+          "bm": 0
+        }
+      ]
+    },
+    {
+      "id": "comp_4",
+      "layers": [
+        {
+          "ddd": 0,
+          "ind": 1,
+          "ty": 5,
+          "nm": "BID D",
+          "sr": 1,
+          "ks": {
+            "o": { "a": 0, "k": 100, "ix": 11 },
+            "r": { "a": 0, "k": 0, "ix": 10 },
+            "p": { "a": 0, "k": [72.001, 53.783, 0], "ix": 2 },
+            "a": { "a": 0, "k": [0, 0, 0], "ix": 1 },
+            "s": { "a": 0, "k": [300, 300, 100], "ix": 6 }
+          },
+          "ao": 0,
+          "t": {
+            "d": {
+              "k": [
+                {
+                  "s": {
+                    "sz": [27.5400009155273, 10],
+                    "ps": [-13.7700004577637, -5],
+                    "s": 9,
+                    "f": "VCROSDMono",
+                    "t": "BID D",
+                    "j": 2,
+                    "tr": 0,
+                    "lh": 10.8,
+                    "ls": 0,
+                    "fc": [0.89, 0.588, 0.322]
+                  },
+                  "t": 0
+                }
+              ]
+            },
+            "p": {},
+            "m": { "g": 1, "a": { "a": 0, "k": [0, 0], "ix": 2 } },
+            "a": []
+          },
+          "ip": 0,
+          "op": 300,
+          "st": 0,
+          "bm": 0
+        },
+        {
+          "ddd": 0,
+          "ind": 2,
+          "ty": 4,
+          "nm": "Bid D",
+          "sr": 1,
+          "ks": {
+            "o": { "a": 0, "k": 100, "ix": 11 },
+            "r": { "a": 0, "k": 0, "ix": 10 },
+            "p": { "a": 0, "k": [72, 48, 0], "ix": 2 },
+            "a": { "a": 0, "k": [0, 0, 0], "ix": 1 },
+            "s": { "a": 0, "k": [100, 100, 100], "ix": 6 }
+          },
+          "ao": 0,
+          "shapes": [
+            {
+              "ty": "gr",
+              "it": [
+                {
+                  "ty": "rc",
+                  "d": 1,
+                  "s": { "a": 0, "k": [48, 32], "ix": 2 },
+                  "p": { "a": 0, "k": [0, 0], "ix": 3 },
+                  "r": { "a": 0, "k": 318, "ix": 4 },
+                  "nm": "Rectangle Path 1",
+                  "mn": "ADBE Vector Shape - Rect",
+                  "hd": false
+                },
+                {
+                  "ty": "fl",
+                  "c": {
+                    "a": 0,
+                    "k": [0.890196084976, 0.588235318661, 0.321568638086, 1],
+                    "ix": 4
+                  },
+                  "o": { "a": 0, "k": 16, "ix": 5 },
+                  "r": 1,
+                  "bm": 0,
+                  "nm": "Fill 1",
+                  "mn": "ADBE Vector Graphic - Fill",
+                  "hd": false
+                },
+                {
+                  "ty": "tr",
+                  "p": { "a": 0, "k": [0, 0], "ix": 2 },
+                  "a": { "a": 0, "k": [0, 0], "ix": 1 },
+                  "s": { "a": 0, "k": [300, 300], "ix": 3 },
+                  "r": { "a": 0, "k": 0, "ix": 6 },
+                  "o": { "a": 0, "k": 100, "ix": 7 },
+                  "sk": { "a": 0, "k": 0, "ix": 4 },
+                  "sa": { "a": 0, "k": 0, "ix": 5 },
+                  "nm": "Transform"
+                }
+              ],
+              "nm": "Bid D",
+              "np": 2,
+              "cix": 2,
+              "bm": 0,
+              "ix": 1,
+              "mn": "ADBE Vector Group",
+              "hd": false
+            }
+          ],
+          "ip": 0,
+          "op": 300,
+          "st": 0,
+          "bm": 0
+        }
+      ]
+    },
+    {
+      "id": "comp_5",
+      "layers": [
+        {
+          "ddd": 0,
+          "ind": 1,
+          "ty": 5,
+          "nm": "BID C",
+          "sr": 1,
+          "ks": {
+            "o": { "a": 0, "k": 100, "ix": 11 },
+            "r": { "a": 0, "k": 0, "ix": 10 },
+            "p": { "a": 0, "k": [72.001, 53.783, 0], "ix": 2 },
+            "a": { "a": 0, "k": [0, 0, 0], "ix": 1 },
+            "s": { "a": 0, "k": [300, 300, 100], "ix": 6 }
+          },
+          "ao": 0,
+          "t": {
+            "d": {
+              "k": [
+                {
+                  "s": {
+                    "sz": [27.5400009155273, 10],
+                    "ps": [-13.7700004577637, -5],
+                    "s": 9,
+                    "f": "VCROSDMono",
+                    "t": "BID C",
+                    "j": 2,
+                    "tr": 0,
+                    "lh": 10.8,
+                    "ls": 0,
+                    "fc": [0.89, 0.588, 0.322]
+                  },
+                  "t": 0
+                }
+              ]
+            },
+            "p": {},
+            "m": { "g": 1, "a": { "a": 0, "k": [0, 0], "ix": 2 } },
+            "a": []
+          },
+          "ip": 0,
+          "op": 300,
+          "st": 0,
+          "bm": 0
+        },
+        {
+          "ddd": 0,
+          "ind": 2,
+          "ty": 4,
+          "nm": "Bid C Active",
+          "sr": 1,
+          "ks": {
+            "o": { "a": 0, "k": 100, "ix": 11 },
+            "r": { "a": 0, "k": 0, "ix": 10 },
+            "p": { "a": 0, "k": [72, 48, 0], "ix": 2 },
+            "a": { "a": 0, "k": [0, 0, 0], "ix": 1 },
+            "s": { "a": 0, "k": [100, 100, 100], "ix": 6 }
+          },
+          "ao": 0,
+          "shapes": [
+            {
+              "ty": "gr",
+              "it": [
+                {
+                  "ty": "rc",
+                  "d": 1,
+                  "s": { "a": 0, "k": [48, 32], "ix": 2 },
+                  "p": { "a": 0, "k": [0, 0], "ix": 3 },
+                  "r": { "a": 0, "k": 100, "ix": 4 },
+                  "nm": "Rectangle Path 1",
+                  "mn": "ADBE Vector Shape - Rect",
+                  "hd": false
+                },
+                {
+                  "ty": "st",
+                  "c": {
+                    "a": 0,
+                    "k": [0.890196084976, 0.588235318661, 0.321568638086, 1],
+                    "ix": 3
+                  },
+                  "o": { "a": 0, "k": 100, "ix": 4 },
+                  "w": { "a": 0, "k": 1, "ix": 5 },
+                  "lc": 1,
+                  "lj": 1,
+                  "ml": 4,
+                  "bm": 0,
+                  "nm": "Stroke 1",
+                  "mn": "ADBE Vector Graphic - Stroke",
+                  "hd": false
+                },
+                {
+                  "ty": "fl",
+                  "c": {
+                    "a": 0,
+                    "k": [0.890196084976, 0.588235318661, 0.321568638086, 1],
+                    "ix": 4
+                  },
+                  "o": { "a": 0, "k": 12, "ix": 5 },
+                  "r": 1,
+                  "bm": 0,
+                  "nm": "Fill 1",
+                  "mn": "ADBE Vector Graphic - Fill",
+                  "hd": false
+                },
+                {
+                  "ty": "tr",
+                  "p": { "a": 0, "k": [0, 0], "ix": 2 },
+                  "a": { "a": 0, "k": [0, 0], "ix": 1 },
+                  "s": { "a": 0, "k": [300, 300], "ix": 3 },
+                  "r": { "a": 0, "k": 0, "ix": 6 },
+                  "o": { "a": 0, "k": 100, "ix": 7 },
+                  "sk": { "a": 0, "k": 0, "ix": 4 },
+                  "sa": { "a": 0, "k": 0, "ix": 5 },
+                  "nm": "Transform"
+                }
+              ],
+              "nm": "Bid C Active",
+              "np": 3,
+              "cix": 2,
+              "bm": 0,
+              "ix": 1,
+              "mn": "ADBE Vector Group",
+              "hd": false
+            }
+          ],
+          "ip": 0,
+          "op": 300,
+          "st": 0,
+          "bm": 0
+        }
+      ]
+    },
+    {
+      "id": "comp_6",
+      "layers": [
+        {
+          "ddd": 0,
+          "ind": 1,
+          "ty": 5,
+          "nm": "BID C",
+          "sr": 1,
+          "ks": {
+            "o": { "a": 0, "k": 100, "ix": 11 },
+            "r": { "a": 0, "k": 0, "ix": 10 },
+            "p": { "a": 0, "k": [72.001, 53.783, 0], "ix": 2 },
+            "a": { "a": 0, "k": [0, 0, 0], "ix": 1 },
+            "s": { "a": 0, "k": [300, 300, 100], "ix": 6 }
+          },
+          "ao": 0,
+          "t": {
+            "d": {
+              "k": [
+                {
+                  "s": {
+                    "sz": [27.5400009155273, 10],
+                    "ps": [-13.7700004577637, -5],
+                    "s": 9,
+                    "f": "VCROSDMono",
+                    "t": "BID C",
+                    "j": 2,
+                    "tr": 0,
+                    "lh": 10.8,
+                    "ls": 0,
+                    "fc": [0.89, 0.588, 0.322]
+                  },
+                  "t": 0
+                }
+              ]
+            },
+            "p": {},
+            "m": { "g": 1, "a": { "a": 0, "k": [0, 0], "ix": 2 } },
+            "a": []
+          },
+          "ip": 0,
+          "op": 300,
+          "st": 0,
+          "bm": 0
+        },
+        {
+          "ddd": 0,
+          "ind": 2,
+          "ty": 4,
+          "nm": "Bid C",
+          "sr": 1,
+          "ks": {
+            "o": { "a": 0, "k": 100, "ix": 11 },
+            "r": { "a": 0, "k": 0, "ix": 10 },
+            "p": { "a": 0, "k": [72, 48, 0], "ix": 2 },
+            "a": { "a": 0, "k": [0, 0, 0], "ix": 1 },
+            "s": { "a": 0, "k": [100, 100, 100], "ix": 6 }
+          },
+          "ao": 0,
+          "shapes": [
+            {
+              "ty": "gr",
+              "it": [
+                {
+                  "ty": "rc",
+                  "d": 1,
+                  "s": { "a": 0, "k": [48, 32], "ix": 2 },
+                  "p": { "a": 0, "k": [0, 0], "ix": 3 },
+                  "r": { "a": 0, "k": 100, "ix": 4 },
+                  "nm": "Rectangle Path 1",
+                  "mn": "ADBE Vector Shape - Rect",
+                  "hd": false
+                },
+                {
+                  "ty": "fl",
+                  "c": {
+                    "a": 0,
+                    "k": [0.890196084976, 0.588235318661, 0.321568638086, 1],
+                    "ix": 4
+                  },
+                  "o": { "a": 0, "k": 12, "ix": 5 },
+                  "r": 1,
+                  "bm": 0,
+                  "nm": "Fill 1",
+                  "mn": "ADBE Vector Graphic - Fill",
+                  "hd": false
+                },
+                {
+                  "ty": "tr",
+                  "p": { "a": 0, "k": [0, 0], "ix": 2 },
+                  "a": { "a": 0, "k": [0, 0], "ix": 1 },
+                  "s": { "a": 0, "k": [300, 300], "ix": 3 },
+                  "r": { "a": 0, "k": 0, "ix": 6 },
+                  "o": { "a": 0, "k": 100, "ix": 7 },
+                  "sk": { "a": 0, "k": 0, "ix": 4 },
+                  "sa": { "a": 0, "k": 0, "ix": 5 },
+                  "nm": "Transform"
+                }
+              ],
+              "nm": "Bid C",
+              "np": 2,
+              "cix": 2,
+              "bm": 0,
+              "ix": 1,
+              "mn": "ADBE Vector Group",
+              "hd": false
+            }
+          ],
+          "ip": 0,
+          "op": 300,
+          "st": 0,
+          "bm": 0
+        }
+      ]
+    },
+    {
+      "id": "comp_7",
+      "layers": [
+        {
+          "ddd": 0,
+          "ind": 1,
+          "ty": 5,
+          "nm": "BID B",
+          "sr": 1,
+          "ks": {
+            "o": { "a": 0, "k": 100, "ix": 11 },
+            "r": { "a": 0, "k": 0, "ix": 10 },
+            "p": { "a": 0, "k": [72.001, 53.783, 0], "ix": 2 },
+            "a": { "a": 0, "k": [0, 0, 0], "ix": 1 },
+            "s": { "a": 0, "k": [300, 300, 100], "ix": 6 }
+          },
+          "ao": 0,
+          "t": {
+            "d": {
+              "k": [
+                {
+                  "s": {
+                    "sz": [27.5400009155273, 10],
+                    "ps": [-13.7700004577637, -5],
+                    "s": 9,
+                    "f": "VCROSDMono",
+                    "t": "BID B",
+                    "j": 2,
+                    "tr": 0,
+                    "lh": 10.8,
+                    "ls": 0,
+                    "fc": [0.89, 0.588, 0.322]
+                  },
+                  "t": 0
+                }
+              ]
+            },
+            "p": {},
+            "m": { "g": 1, "a": { "a": 0, "k": [0, 0], "ix": 2 } },
+            "a": []
+          },
+          "ip": 0,
+          "op": 300,
+          "st": 0,
+          "bm": 0
+        },
+        {
+          "ddd": 0,
+          "ind": 2,
+          "ty": 4,
+          "nm": "Bid B",
+          "sr": 1,
+          "ks": {
+            "o": { "a": 0, "k": 100, "ix": 11 },
+            "r": { "a": 0, "k": 0, "ix": 10 },
+            "p": { "a": 0, "k": [72, 48, 0], "ix": 2 },
+            "a": { "a": 0, "k": [0, 0, 0], "ix": 1 },
+            "s": { "a": 0, "k": [100, 100, 100], "ix": 6 }
+          },
+          "ao": 0,
+          "shapes": [
+            {
+              "ty": "gr",
+              "it": [
+                {
+                  "ty": "rc",
+                  "d": 1,
+                  "s": { "a": 0, "k": [48, 32], "ix": 2 },
+                  "p": { "a": 0, "k": [0, 0], "ix": 3 },
+                  "r": { "a": 0, "k": 318, "ix": 4 },
+                  "nm": "Rectangle Path 1",
+                  "mn": "ADBE Vector Shape - Rect",
+                  "hd": false
+                },
+                {
+                  "ty": "fl",
+                  "c": {
+                    "a": 0,
+                    "k": [0.890196084976, 0.588235318661, 0.321568638086, 1],
+                    "ix": 4
+                  },
+                  "o": { "a": 0, "k": 16, "ix": 5 },
+                  "r": 1,
+                  "bm": 0,
+                  "nm": "Fill 1",
+                  "mn": "ADBE Vector Graphic - Fill",
+                  "hd": false
+                },
+                {
+                  "ty": "tr",
+                  "p": { "a": 0, "k": [0, 0], "ix": 2 },
+                  "a": { "a": 0, "k": [0, 0], "ix": 1 },
+                  "s": { "a": 0, "k": [300, 300], "ix": 3 },
+                  "r": { "a": 0, "k": 0, "ix": 6 },
+                  "o": { "a": 0, "k": 100, "ix": 7 },
+                  "sk": { "a": 0, "k": 0, "ix": 4 },
+                  "sa": { "a": 0, "k": 0, "ix": 5 },
+                  "nm": "Transform"
+                }
+              ],
+              "nm": "Bid B",
+              "np": 2,
+              "cix": 2,
+              "bm": 0,
+              "ix": 1,
+              "mn": "ADBE Vector Group",
+              "hd": false
+            }
+          ],
+          "ip": 0,
+          "op": 300,
+          "st": 0,
+          "bm": 0
+        }
+      ]
+    },
+    {
+      "id": "comp_8",
+      "layers": [
+        {
+          "ddd": 0,
+          "ind": 1,
+          "ty": 5,
+          "nm": "BID A",
+          "sr": 1,
+          "ks": {
+            "o": { "a": 0, "k": 100, "ix": 11 },
+            "r": { "a": 0, "k": 0, "ix": 10 },
+            "p": { "a": 0, "k": [72.001, 53.783, 0], "ix": 2 },
+            "a": { "a": 0, "k": [0, 0, 0], "ix": 1 },
+            "s": { "a": 0, "k": [300, 300, 100], "ix": 6 }
+          },
+          "ao": 0,
+          "t": {
+            "d": {
+              "k": [
+                {
+                  "s": {
+                    "sz": [27.5400009155273, 10],
+                    "ps": [-13.7700004577637, -5],
+                    "s": 9,
+                    "f": "VCROSDMono",
+                    "t": "BID A",
+                    "j": 2,
+                    "tr": 0,
+                    "lh": 10.8,
+                    "ls": 0,
+                    "fc": [0.89, 0.588, 0.322]
+                  },
+                  "t": 0
+                }
+              ]
+            },
+            "p": {},
+            "m": { "g": 1, "a": { "a": 0, "k": [0, 0], "ix": 2 } },
+            "a": []
+          },
+          "ip": 0,
+          "op": 300,
+          "st": 0,
+          "bm": 0
+        },
+        {
+          "ddd": 0,
+          "ind": 2,
+          "ty": 4,
+          "nm": "Bid A",
+          "sr": 1,
+          "ks": {
+            "o": { "a": 0, "k": 100, "ix": 11 },
+            "r": { "a": 0, "k": 0, "ix": 10 },
+            "p": { "a": 0, "k": [72, 48, 0], "ix": 2 },
+            "a": { "a": 0, "k": [0, 0, 0], "ix": 1 },
+            "s": { "a": 0, "k": [100, 100, 100], "ix": 6 }
+          },
+          "ao": 0,
+          "shapes": [
+            {
+              "ty": "gr",
+              "it": [
+                {
+                  "ty": "rc",
+                  "d": 1,
+                  "s": { "a": 0, "k": [48, 32], "ix": 2 },
+                  "p": { "a": 0, "k": [0, 0], "ix": 3 },
+                  "r": { "a": 0, "k": 318, "ix": 4 },
+                  "nm": "Rectangle Path 1",
+                  "mn": "ADBE Vector Shape - Rect",
+                  "hd": false
+                },
+                {
+                  "ty": "fl",
+                  "c": {
+                    "a": 0,
+                    "k": [0.890196084976, 0.588235318661, 0.321568638086, 1],
+                    "ix": 4
+                  },
+                  "o": { "a": 0, "k": 16, "ix": 5 },
+                  "r": 1,
+                  "bm": 0,
+                  "nm": "Fill 1",
+                  "mn": "ADBE Vector Graphic - Fill",
+                  "hd": false
+                },
+                {
+                  "ty": "tr",
+                  "p": { "a": 0, "k": [0, 0], "ix": 2 },
+                  "a": { "a": 0, "k": [0, 0], "ix": 1 },
+                  "s": { "a": 0, "k": [300, 300], "ix": 3 },
+                  "r": { "a": 0, "k": 0, "ix": 6 },
+                  "o": { "a": 0, "k": 100, "ix": 7 },
+                  "sk": { "a": 0, "k": 0, "ix": 4 },
+                  "sa": { "a": 0, "k": 0, "ix": 5 },
+                  "nm": "Transform"
+                }
+              ],
+              "nm": "Bid A",
+              "np": 2,
+              "cix": 2,
+              "bm": 0,
+              "ix": 1,
+              "mn": "ADBE Vector Group",
+              "hd": false
+            }
+          ],
+          "ip": 0,
+          "op": 300,
+          "st": 0,
+          "bm": 0
+        }
+      ]
+    }
+  ],
+  "fonts": {
+    "list": [
+      {
+        "fName": "VCROSDMono",
+        "fFamily": "VCR OSD Mono",
+        "fStyle": "Regular",
+        "ascent": 68.316650390625
+      }
+    ]
+  },
+  "layers": [
+    {
+      "ddd": 0,
+      "ind": 1,
+      "ty": 0,
+      "nm": "oToken D",
+      "refId": "comp_0",
+      "sr": 1,
+      "ks": {
+        "o": {
+          "a": 1,
+          "k": [
+            {
+              "i": { "x": [0.667], "y": [1] },
+              "o": { "x": [0.333], "y": [0] },
+              "t": 195,
+              "s": [0]
+            },
+            { "t": 200, "s": [100] }
+          ],
+          "ix": 11
+        },
+        "r": { "a": 0, "k": 0, "ix": 10 },
+        "p": {
+          "a": 1,
+          "k": [
+            {
+              "i": { "x": 0.667, "y": 0.549 },
+              "o": { "x": 0.333, "y": 0.068 },
+              "t": 200,
+              "s": [846.16, 170.812, 0],
+              "to": [1.481, -0.78, 0],
+              "ti": [-2.061, 1.09, 0]
+            },
+            {
+              "i": { "x": 0.667, "y": 1 },
+              "o": { "x": 0.333, "y": 0.191 },
+              "t": 207,
+              "s": [853.492, 165.995, 0],
+              "to": [30.324, -16.046, 0],
+              "ti": [-21.58, 11.374, 0]
+            },
+            { "t": 260, "s": [992.25, 93.25, 0] }
+          ],
+          "ix": 2
+        },
+        "a": { "a": 0, "k": [30, 30, 0], "ix": 1 },
+        "s": { "a": 0, "k": [-100, -100, 100], "ix": 6 }
+      },
+      "ao": 0,
+      "w": 60,
+      "h": 60,
+      "ip": 0,
+      "op": 300,
+      "st": 0,
+      "bm": 0
+    },
+    {
+      "ddd": 0,
+      "ind": 2,
+      "ty": 0,
+      "nm": "oToken C",
+      "refId": "comp_1",
+      "sr": 1,
+      "ks": {
+        "o": {
+          "a": 1,
+          "k": [
+            {
+              "i": { "x": [0.667], "y": [1] },
+              "o": { "x": [0.333], "y": [0] },
+              "t": 195,
+              "s": [0]
+            },
+            { "t": 200, "s": [100] }
+          ],
+          "ix": 11
+        },
+        "r": { "a": 0, "k": 0, "ix": 10 },
+        "p": {
+          "a": 1,
+          "k": [
+            {
+              "i": { "x": 0.667, "y": 1 },
+              "o": { "x": 0.333, "y": 0 },
+              "t": 200,
+              "s": [847.75, 326.25, 0],
+              "to": [22.375, 11.667, 0],
+              "ti": [-22.375, -11.667, 0]
+            },
+            { "t": 260, "s": [982, 396.25, 0] }
+          ],
+          "ix": 2
+        },
+        "a": { "a": 0, "k": [30, 30, 0], "ix": 1 },
+        "s": { "a": 0, "k": [-100, -100, 100], "ix": 6 }
+      },
+      "ao": 0,
+      "w": 60,
+      "h": 60,
+      "ip": 0,
+      "op": 300,
+      "st": 0,
+      "bm": 0
+    },
+    {
+      "ddd": 0,
+      "ind": 3,
+      "ty": 0,
+      "nm": "Gnosis Logo",
+      "refId": "comp_2",
+      "sr": 1,
+      "ks": {
+        "o": { "a": 0, "k": 100, "ix": 11 },
+        "r": { "a": 0, "k": 0, "ix": 10 },
+        "p": { "a": 0, "k": [690, 240, 0], "ix": 2 },
+        "a": { "a": 0, "k": [48, 48, 0], "ix": 1 },
+        "s": { "a": 0, "k": [100, 100, 100], "ix": 6 }
+      },
+      "ao": 0,
+      "w": 96,
+      "h": 96,
+      "ip": 0,
+      "op": 300,
+      "st": 0,
+      "bm": 0
+    },
+    {
+      "ddd": 0,
+      "ind": 4,
+      "ty": 4,
+      "nm": "Vault Container Dashed",
+      "sr": 1,
+      "ks": {
+        "o": {
+          "a": 1,
+          "k": [
+            {
+              "i": { "x": [0.667], "y": [1] },
+              "o": { "x": [0.333], "y": [0] },
+              "t": 135,
+              "s": [100]
+            },
+            { "t": 195, "s": [0] }
+          ],
+          "ix": 11
+        },
+        "r": { "a": 0, "k": 0, "ix": 10 },
+        "p": { "a": 0, "k": [690, 243, 0], "ix": 2 },
+        "a": { "a": 0, "k": [0, 0, 0], "ix": 1 },
+        "s": { "a": 0, "k": [100, 100, 100], "ix": 6 }
+      },
+      "ao": 0,
+      "shapes": [
+        {
+          "ty": "gr",
+          "it": [
+            {
+              "d": 1,
+              "ty": "el",
+              "s": { "a": 0, "k": [120, 120], "ix": 2 },
+              "p": { "a": 0, "k": [0, 0], "ix": 3 },
+              "nm": "Ellipse Path 1",
+              "mn": "ADBE Vector Shape - Ellipse",
+              "hd": false
+            },
+            {
+              "ty": "st",
+              "c": {
+                "a": 0,
+                "k": [0.890196084976, 0.588235318661, 0.321568638086, 1],
+                "ix": 3
+              },
+              "o": { "a": 0, "k": 100, "ix": 4 },
+              "w": { "a": 0, "k": 1, "ix": 5 },
+              "lc": 1,
+              "lj": 1,
+              "ml": 4,
+              "bm": 0,
+              "d": [
+                { "n": "d", "nm": "dash", "v": { "a": 0, "k": 2, "ix": 1 } },
+                { "n": "g", "nm": "gap", "v": { "a": 0, "k": 2, "ix": 2 } }
+              ],
+              "nm": "Stroke 1",
+              "mn": "ADBE Vector Graphic - Stroke",
+              "hd": false
+            },
+            {
+              "ty": "tr",
+              "p": { "a": 0, "k": [0, 0], "ix": 2 },
+              "a": { "a": 0, "k": [0, 0], "ix": 1 },
+              "s": { "a": 0, "k": [300, 300], "ix": 3 },
+              "r": { "a": 0, "k": 0, "ix": 6 },
+              "o": { "a": 0, "k": 100, "ix": 7 },
+              "sk": { "a": 0, "k": 0, "ix": 4 },
+              "sa": { "a": 0, "k": 0, "ix": 5 },
+              "nm": "Transform"
+            }
+          ],
+          "nm": "Vault Container Dashed",
+          "np": 2,
+          "cix": 2,
+          "bm": 0,
+          "ix": 1,
+          "mn": "ADBE Vector Group",
+          "hd": false
+        }
+      ],
+      "ip": 0,
+      "op": 300,
+      "st": 0,
+      "bm": 0
+    },
+    {
+      "ddd": 0,
+      "ind": 5,
+      "ty": 4,
+      "nm": "Vault Container Solid",
+      "sr": 1,
+      "ks": {
+        "o": {
+          "a": 1,
+          "k": [
+            {
+              "i": { "x": [0.667], "y": [1] },
+              "o": { "x": [0.167], "y": [0] },
+              "t": 0,
+              "s": [0]
+            },
+            {
+              "i": { "x": [0.667], "y": [1] },
+              "o": { "x": [0.333], "y": [0] },
+              "t": 135,
+              "s": [0]
+            },
+            { "t": 195, "s": [100] }
+          ],
+          "ix": 11
+        },
+        "r": { "a": 0, "k": 0, "ix": 10 },
+        "p": { "a": 0, "k": [690, 240, 0], "ix": 2 },
+        "a": { "a": 0, "k": [0, 0, 0], "ix": 1 },
+        "s": { "a": 0, "k": [100, 100, 100], "ix": 6 }
+      },
+      "ao": 0,
+      "shapes": [
+        {
+          "ty": "gr",
+          "it": [
+            {
+              "d": 1,
+              "ty": "el",
+              "s": { "a": 0, "k": [120, 120], "ix": 2 },
+              "p": { "a": 0, "k": [0, 0], "ix": 3 },
+              "nm": "Ellipse Path 1",
+              "mn": "ADBE Vector Shape - Ellipse",
+              "hd": false
+            },
+            {
+              "ty": "st",
+              "c": {
+                "a": 0,
+                "k": [0.890196084976, 0.588235318661, 0.321568638086, 1],
+                "ix": 3
+              },
+              "o": { "a": 0, "k": 100, "ix": 4 },
+              "w": { "a": 0, "k": 1, "ix": 5 },
+              "lc": 1,
+              "lj": 1,
+              "ml": 4,
+              "bm": 0,
+              "nm": "Stroke 1",
+              "mn": "ADBE Vector Graphic - Stroke",
+              "hd": false
+            },
+            {
+              "ty": "tr",
+              "p": { "a": 0, "k": [0, 0], "ix": 2 },
+              "a": { "a": 0, "k": [0, 0], "ix": 1 },
+              "s": { "a": 0, "k": [300, 300], "ix": 3 },
+              "r": { "a": 0, "k": 0, "ix": 6 },
+              "o": { "a": 0, "k": 100, "ix": 7 },
+              "sk": { "a": 0, "k": 0, "ix": 4 },
+              "sa": { "a": 0, "k": 0, "ix": 5 },
+              "nm": "Transform"
+            }
+          ],
+          "nm": "Vault Container Solid",
+          "np": 2,
+          "cix": 2,
+          "bm": 0,
+          "ix": 1,
+          "mn": "ADBE Vector Group",
+          "hd": false
+        }
+      ],
+      "ip": 0,
+      "op": 300,
+      "st": 0,
+      "bm": 0
+    },
+    {
+      "ddd": 0,
+      "ind": 6,
+      "ty": 4,
+      "nm": "Bid Marker A",
+      "sr": 1,
+      "ks": {
+        "o": {
+          "a": 1,
+          "k": [
+            {
+              "i": { "x": [0.667], "y": [1] },
+              "o": { "x": [0.333], "y": [0] },
+              "t": 0,
+              "s": [0]
+            },
+            {
+              "i": { "x": [0.667], "y": [1] },
+              "o": { "x": [0.333], "y": [0] },
+              "t": 7,
+              "s": [100]
+            },
+            { "t": 15, "s": [0] }
+          ],
+          "ix": 11
+        },
+        "r": { "a": 0, "k": 0, "ix": 10 },
+        "p": {
+          "a": 1,
+          "k": [
+            {
+              "i": { "x": 0.667, "y": 1 },
+              "o": { "x": 0.333, "y": 0 },
+              "t": 0,
+              "s": [387, 94.875, 0],
+              "to": [23.333, 12.25, 0],
+              "ti": [-23.333, -12.25, 0]
+            },
+            { "t": 15, "s": [527, 168.375, 0] }
+          ],
+          "ix": 2
+        },
+        "a": { "a": 0, "k": [0, 0, 0], "ix": 1 },
+        "s": { "a": 0, "k": [100, 100, 100], "ix": 6 }
+      },
+      "ao": 0,
+      "shapes": [
+        {
+          "ty": "gr",
+          "it": [
+            {
+              "d": 1,
+              "ty": "el",
+              "s": { "a": 0, "k": [4, 4], "ix": 2 },
+              "p": { "a": 0, "k": [0, 0], "ix": 3 },
+              "nm": "Ellipse Path 1",
+              "mn": "ADBE Vector Shape - Ellipse",
+              "hd": false
+            },
+            {
+              "ty": "fl",
+              "c": {
+                "a": 0,
+                "k": [0.890196084976, 0.588235318661, 0.321568638086, 1],
+                "ix": 4
+              },
+              "o": { "a": 0, "k": 100, "ix": 5 },
+              "r": 1,
+              "bm": 0,
+              "nm": "Fill 1",
+              "mn": "ADBE Vector Graphic - Fill",
+              "hd": false
+            },
+            {
+              "ty": "tr",
+              "p": { "a": 0, "k": [0, 0], "ix": 2 },
+              "a": { "a": 0, "k": [0, 0], "ix": 1 },
+              "s": { "a": 0, "k": [300, 300], "ix": 3 },
+              "r": { "a": 0, "k": 0, "ix": 6 },
+              "o": { "a": 0, "k": 100, "ix": 7 },
+              "sk": { "a": 0, "k": 0, "ix": 4 },
+              "sa": { "a": 0, "k": 0, "ix": 5 },
+              "nm": "Transform"
+            }
+          ],
+          "nm": "Bid Marker A",
+          "np": 2,
+          "cix": 2,
+          "bm": 0,
+          "ix": 1,
+          "mn": "ADBE Vector Group",
+          "hd": false
+        }
+      ],
+      "ip": 0,
+      "op": 300,
+      "st": 0,
+      "bm": 0
+    },
+    {
+      "ddd": 0,
+      "ind": 7,
+      "ty": 4,
+      "nm": "Wallet Connector A - Dashed",
+      "sr": 1,
+      "ks": {
+        "o": {
+          "a": 1,
+          "k": [
+            {
+              "i": { "x": [0.667], "y": [1] },
+              "o": { "x": [0.333], "y": [0] },
+              "t": 0,
+              "s": [0]
+            },
+            {
+              "i": { "x": [0.833], "y": [1] },
+              "o": { "x": [0.333], "y": [0] },
+              "t": 15,
+              "s": [100]
+            },
+            {
+              "i": { "x": [0.833], "y": [1] },
+              "o": { "x": [0.167], "y": [0] },
+              "t": 135,
+              "s": [100]
+            },
+            { "t": 195, "s": [24] }
+          ],
+          "ix": 11
+        },
+        "r": { "a": 0, "k": 0, "ix": 10 },
+        "p": { "a": 0, "k": [456.334, 131.874, 0], "ix": 2 },
+        "a": { "a": 0, "k": [0, 0, 0], "ix": 1 },
+        "s": { "a": 0, "k": [100, 100, 100], "ix": 6 }
+      },
+      "ao": 0,
+      "shapes": [
+        {
+          "ty": "gr",
+          "it": [
+            {
+              "ind": 0,
+              "ty": "sh",
+              "ix": 1,
+              "ks": {
+                "a": 0,
+                "k": {
+                  "i": [
+                    [0, 0],
+                    [0, 0]
+                  ],
+                  "o": [
+                    [0, 0],
+                    [0, 0]
+                  ],
+                  "v": [
+                    [-26.619, 0],
+                    [26.619, 0]
+                  ],
+                  "c": false
+                },
+                "ix": 2
+              },
+              "nm": "Path 1",
+              "mn": "ADBE Vector Shape - Group",
+              "hd": false
+            },
+            {
+              "ty": "st",
+              "c": {
+                "a": 0,
+                "k": [0.890196084976, 0.588235318661, 0.321568638086, 1],
+                "ix": 3
+              },
+              "o": { "a": 0, "k": 100, "ix": 4 },
+              "w": { "a": 0, "k": 1, "ix": 5 },
+              "lc": 1,
+              "lj": 1,
+              "ml": 4,
+              "bm": 0,
+              "d": [
+                { "n": "d", "nm": "dash", "v": { "a": 0, "k": 2, "ix": 1 } },
+                { "n": "g", "nm": "gap", "v": { "a": 0, "k": 2, "ix": 2 } }
+              ],
+              "nm": "Stroke 1",
+              "mn": "ADBE Vector Graphic - Stroke",
+              "hd": false
+            },
+            {
+              "ty": "tr",
+              "p": { "a": 0, "k": [0, 0], "ix": 2 },
+              "a": { "a": 0, "k": [0, 0], "ix": 1 },
+              "s": { "a": 0, "k": [300, 300], "ix": 3 },
+              "r": { "a": 0, "k": 27.5, "ix": 6 },
+              "o": { "a": 0, "k": 100, "ix": 7 },
+              "sk": { "a": 0, "k": 0, "ix": 4 },
+              "sa": { "a": 0, "k": 0, "ix": 5 },
+              "nm": "Transform"
+            }
+          ],
+          "nm": "Wallet Connector A - Dashed",
+          "np": 2,
+          "cix": 2,
+          "bm": 0,
+          "ix": 1,
+          "mn": "ADBE Vector Group",
+          "hd": false
+        }
+      ],
+      "ip": 0,
+      "op": 300,
+      "st": 0,
+      "bm": 0
+    },
+    {
+      "ddd": 0,
+      "ind": 8,
+      "ty": 4,
+      "nm": "Wallet Connector A - Solid",
+      "sr": 1,
+      "ks": {
+        "o": { "a": 0, "k": 0, "ix": 11 },
+        "r": { "a": 0, "k": 0, "ix": 10 },
+        "p": { "a": 0, "k": [457.834, 132.874, 0], "ix": 2 },
+        "a": { "a": 0, "k": [0, 0, 0], "ix": 1 },
+        "s": { "a": 0, "k": [100, 100, 100], "ix": 6 }
+      },
+      "ao": 0,
+      "shapes": [
+        {
+          "ty": "gr",
+          "it": [
+            {
+              "ind": 0,
+              "ty": "sh",
+              "ix": 1,
+              "ks": {
+                "a": 0,
+                "k": {
+                  "i": [
+                    [0, 0],
+                    [0, 0]
+                  ],
+                  "o": [
+                    [0, 0],
+                    [0, 0]
+                  ],
+                  "v": [
+                    [-26.619, 0],
+                    [26.619, 0]
+                  ],
+                  "c": false
+                },
+                "ix": 2
+              },
+              "nm": "Path 1",
+              "mn": "ADBE Vector Shape - Group",
+              "hd": false
+            },
+            {
+              "ty": "st",
+              "c": {
+                "a": 0,
+                "k": [0.890196084976, 0.588235318661, 0.321568638086, 1],
+                "ix": 3
+              },
+              "o": { "a": 0, "k": 100, "ix": 4 },
+              "w": { "a": 0, "k": 1, "ix": 5 },
+              "lc": 1,
+              "lj": 1,
+              "ml": 4,
+              "bm": 0,
+              "nm": "Stroke 1",
+              "mn": "ADBE Vector Graphic - Stroke",
+              "hd": false
+            },
+            {
+              "ty": "tr",
+              "p": { "a": 0, "k": [0, 0], "ix": 2 },
+              "a": { "a": 0, "k": [0, 0], "ix": 1 },
+              "s": { "a": 0, "k": [300, 300], "ix": 3 },
+              "r": { "a": 0, "k": 27.5, "ix": 6 },
+              "o": { "a": 0, "k": 100, "ix": 7 },
+              "sk": { "a": 0, "k": 0, "ix": 4 },
+              "sa": { "a": 0, "k": 0, "ix": 5 },
+              "nm": "Transform"
+            }
+          ],
+          "nm": "Wallet Connector A - Solid",
+          "np": 2,
+          "cix": 2,
+          "bm": 0,
+          "ix": 1,
+          "mn": "ADBE Vector Group",
+          "hd": false
+        }
+      ],
+      "ip": 0,
+      "op": 300,
+      "st": 0,
+      "bm": 0
+    },
+    {
+      "ddd": 0,
+      "ind": 9,
+      "ty": 4,
+      "nm": "Deposit Marker B",
+      "sr": 1,
+      "ks": {
+        "o": {
+          "a": 1,
+          "k": [
+            {
+              "i": { "x": [0.667], "y": [1] },
+              "o": { "x": [0.333], "y": [0] },
+              "t": 0,
+              "s": [0]
+            },
+            {
+              "i": { "x": [0.667], "y": [1] },
+              "o": { "x": [0.333], "y": [0] },
+              "t": 30,
+              "s": [0]
+            },
+            {
+              "i": { "x": [0.667], "y": [1] },
+              "o": { "x": [0.333], "y": [0] },
+              "t": 37,
+              "s": [100]
+            },
+            { "t": 45, "s": [0] }
+          ],
+          "ix": 11
+        },
+        "r": { "a": 0, "k": 0, "ix": 10 },
+        "p": {
+          "a": 1,
+          "k": [
+            {
+              "i": { "x": 0.667, "y": 1 },
+              "o": { "x": 0.333, "y": 0 },
+              "t": 30,
+              "s": [390.5, 401, 0],
+              "to": [23.5, -12.208, 0],
+              "ti": [-23.5, 12.208, 0]
+            },
+            { "t": 45, "s": [531.5, 327.75, 0] }
+          ],
+          "ix": 2
+        },
+        "a": { "a": 0, "k": [0, 0, 0], "ix": 1 },
+        "s": { "a": 0, "k": [100, 100, 100], "ix": 6 }
+      },
+      "ao": 0,
+      "shapes": [
+        {
+          "ty": "gr",
+          "it": [
+            {
+              "d": 1,
+              "ty": "el",
+              "s": { "a": 0, "k": [4, 4], "ix": 2 },
+              "p": { "a": 0, "k": [0, 0], "ix": 3 },
+              "nm": "Ellipse Path 1",
+              "mn": "ADBE Vector Shape - Ellipse",
+              "hd": false
+            },
+            {
+              "ty": "fl",
+              "c": {
+                "a": 0,
+                "k": [0.890196084976, 0.588235318661, 0.321568638086, 1],
+                "ix": 4
+              },
+              "o": { "a": 0, "k": 100, "ix": 5 },
+              "r": 1,
+              "bm": 0,
+              "nm": "Fill 1",
+              "mn": "ADBE Vector Graphic - Fill",
+              "hd": false
+            },
+            {
+              "ty": "tr",
+              "p": { "a": 0, "k": [0, 0], "ix": 2 },
+              "a": { "a": 0, "k": [0, 0], "ix": 1 },
+              "s": { "a": 0, "k": [300, 300], "ix": 3 },
+              "r": { "a": 0, "k": 0, "ix": 6 },
+              "o": { "a": 0, "k": 100, "ix": 7 },
+              "sk": { "a": 0, "k": 0, "ix": 4 },
+              "sa": { "a": 0, "k": 0, "ix": 5 },
+              "nm": "Transform"
+            }
+          ],
+          "nm": "Deposit Marker B",
+          "np": 2,
+          "cix": 2,
+          "bm": 0,
+          "ix": 1,
+          "mn": "ADBE Vector Group",
+          "hd": false
+        }
+      ],
+      "ip": 0,
+      "op": 300,
+      "st": 0,
+      "bm": 0
+    },
+    {
+      "ddd": 0,
+      "ind": 10,
+      "ty": 4,
+      "nm": "Wallet Connector B - Dashed",
+      "sr": 1,
+      "ks": {
+        "o": {
+          "a": 1,
+          "k": [
+            {
+              "i": { "x": [0.667], "y": [1] },
+              "o": { "x": [0.333], "y": [0] },
+              "t": 0,
+              "s": [0]
+            },
+            {
+              "i": { "x": [0.667], "y": [1] },
+              "o": { "x": [0.333], "y": [0] },
+              "t": 30,
+              "s": [0]
+            },
+            {
+              "i": { "x": [0.833], "y": [1] },
+              "o": { "x": [0.333], "y": [0] },
+              "t": 45,
+              "s": [100]
+            },
+            {
+              "i": { "x": [0.833], "y": [1] },
+              "o": { "x": [0.167], "y": [0] },
+              "t": 135,
+              "s": [100]
+            },
+            { "t": 195, "s": [24] }
+          ],
+          "ix": 11
+        },
+        "r": { "a": 0, "k": 0, "ix": 10 },
+        "p": { "a": 0, "k": [460.705, 363.807, 0], "ix": 2 },
+        "a": { "a": 0, "k": [0, 0, 0], "ix": 1 },
+        "s": { "a": 0, "k": [100, 100, 100], "ix": 6 }
+      },
+      "ao": 0,
+      "shapes": [
+        {
+          "ty": "gr",
+          "it": [
+            {
+              "ind": 0,
+              "ty": "sh",
+              "ix": 1,
+              "ks": {
+                "a": 0,
+                "k": {
+                  "i": [
+                    [0, 0],
+                    [0, 0]
+                  ],
+                  "o": [
+                    [0, 0],
+                    [0, 0]
+                  ],
+                  "v": [
+                    [-26.571, 0],
+                    [26.571, 0]
+                  ],
+                  "c": false
+                },
+                "ix": 2
+              },
+              "nm": "Path 1",
+              "mn": "ADBE Vector Shape - Group",
+              "hd": false
+            },
+            {
+              "ty": "st",
+              "c": {
+                "a": 0,
+                "k": [0.890196084976, 0.588235318661, 0.321568638086, 1],
+                "ix": 3
+              },
+              "o": { "a": 0, "k": 100, "ix": 4 },
+              "w": { "a": 0, "k": 1, "ix": 5 },
+              "lc": 1,
+              "lj": 1,
+              "ml": 4,
+              "bm": 0,
+              "d": [
+                { "n": "d", "nm": "dash", "v": { "a": 0, "k": 2, "ix": 1 } },
+                { "n": "g", "nm": "gap", "v": { "a": 0, "k": 2, "ix": 2 } }
+              ],
+              "nm": "Stroke 1",
+              "mn": "ADBE Vector Graphic - Stroke",
+              "hd": false
+            },
+            {
+              "ty": "tr",
+              "p": { "a": 0, "k": [0, 0], "ix": 2 },
+              "a": { "a": 0, "k": [0, 0], "ix": 1 },
+              "s": { "a": 0, "k": [300, 300], "ix": 3 },
+              "r": { "a": 0, "k": -27.5, "ix": 6 },
+              "o": { "a": 0, "k": 100, "ix": 7 },
+              "sk": { "a": 0, "k": 0, "ix": 4 },
+              "sa": { "a": 0, "k": 0, "ix": 5 },
+              "nm": "Transform"
+            }
+          ],
+          "nm": "Wallet Connector B - Dashed",
+          "np": 2,
+          "cix": 2,
+          "bm": 0,
+          "ix": 1,
+          "mn": "ADBE Vector Group",
+          "hd": false
+        }
+      ],
+      "ip": 0,
+      "op": 300,
+      "st": 0,
+      "bm": 0
+    },
+    {
+      "ddd": 0,
+      "ind": 11,
+      "ty": 4,
+      "nm": "Wallet Connector B - Solid",
+      "sr": 1,
+      "ks": {
+        "o": { "a": 0, "k": 0, "ix": 11 },
+        "r": { "a": 0, "k": 0, "ix": 10 },
+        "p": { "a": 0, "k": [460.705, 363.807, 0], "ix": 2 },
+        "a": { "a": 0, "k": [0, 0, 0], "ix": 1 },
+        "s": { "a": 0, "k": [100, 100, 100], "ix": 6 }
+      },
+      "ao": 0,
+      "shapes": [
+        {
+          "ty": "gr",
+          "it": [
+            {
+              "ind": 0,
+              "ty": "sh",
+              "ix": 1,
+              "ks": {
+                "a": 0,
+                "k": {
+                  "i": [
+                    [0, 0],
+                    [0, 0]
+                  ],
+                  "o": [
+                    [0, 0],
+                    [0, 0]
+                  ],
+                  "v": [
+                    [-26.571, 0],
+                    [26.571, 0]
+                  ],
+                  "c": false
+                },
+                "ix": 2
+              },
+              "nm": "Path 1",
+              "mn": "ADBE Vector Shape - Group",
+              "hd": false
+            },
+            {
+              "ty": "st",
+              "c": {
+                "a": 0,
+                "k": [0.890196084976, 0.588235318661, 0.321568638086, 1],
+                "ix": 3
+              },
+              "o": { "a": 0, "k": 100, "ix": 4 },
+              "w": { "a": 0, "k": 1, "ix": 5 },
+              "lc": 1,
+              "lj": 1,
+              "ml": 4,
+              "bm": 0,
+              "nm": "Stroke 1",
+              "mn": "ADBE Vector Graphic - Stroke",
+              "hd": false
+            },
+            {
+              "ty": "tr",
+              "p": { "a": 0, "k": [0, 0], "ix": 2 },
+              "a": { "a": 0, "k": [0, 0], "ix": 1 },
+              "s": { "a": 0, "k": [300, 300], "ix": 3 },
+              "r": { "a": 0, "k": -27.5, "ix": 6 },
+              "o": { "a": 0, "k": 100, "ix": 7 },
+              "sk": { "a": 0, "k": 0, "ix": 4 },
+              "sa": { "a": 0, "k": 0, "ix": 5 },
+              "nm": "Transform"
+            }
+          ],
+          "nm": "Wallet Connector B - Solid",
+          "np": 2,
+          "cix": 2,
+          "bm": 0,
+          "ix": 1,
+          "mn": "ADBE Vector Group",
+          "hd": false
+        }
+      ],
+      "ip": 0,
+      "op": 300,
+      "st": 0,
+      "bm": 0
+    },
+    {
+      "ddd": 0,
+      "ind": 12,
+      "ty": 4,
+      "nm": "Deposit Marker C",
+      "sr": 1,
+      "ks": {
+        "o": {
+          "a": 1,
+          "k": [
+            {
+              "i": { "x": [0.667], "y": [1] },
+              "o": { "x": [0.167], "y": [0] },
+              "t": 0,
+              "s": [0]
+            },
+            {
+              "i": { "x": [0.667], "y": [1] },
+              "o": { "x": [0.333], "y": [0] },
+              "t": 60,
+              "s": [0]
+            },
+            {
+              "i": { "x": [0.667], "y": [1] },
+              "o": { "x": [0.333], "y": [0] },
+              "t": 67,
+              "s": [100]
+            },
+            { "t": 75, "s": [0] }
+          ],
+          "ix": 11
+        },
+        "r": { "a": 0, "k": 0, "ix": 10 },
+        "p": {
+          "a": 1,
+          "k": [
+            {
+              "i": { "x": 0.667, "y": 1 },
+              "o": { "x": 0.333, "y": 0 },
+              "t": 60,
+              "s": [987, 399, 0],
+              "to": [-22.854, -11.833, 0],
+              "ti": [22.854, 11.833, 0]
+            },
+            { "t": 75, "s": [849.875, 328, 0] }
+          ],
+          "ix": 2
+        },
+        "a": { "a": 0, "k": [0, 0, 0], "ix": 1 },
+        "s": { "a": 0, "k": [100, 100, 100], "ix": 6 }
+      },
+      "ao": 0,
+      "shapes": [
+        {
+          "ty": "gr",
+          "it": [
+            {
+              "d": 1,
+              "ty": "el",
+              "s": { "a": 0, "k": [4, 4], "ix": 2 },
+              "p": { "a": 0, "k": [0, 0], "ix": 3 },
+              "nm": "Ellipse Path 1",
+              "mn": "ADBE Vector Shape - Ellipse",
+              "hd": false
+            },
+            {
+              "ty": "fl",
+              "c": {
+                "a": 0,
+                "k": [0.890196084976, 0.588235318661, 0.321568638086, 1],
+                "ix": 4
+              },
+              "o": { "a": 0, "k": 100, "ix": 5 },
+              "r": 1,
+              "bm": 0,
+              "nm": "Fill 1",
+              "mn": "ADBE Vector Graphic - Fill",
+              "hd": false
+            },
+            {
+              "ty": "tr",
+              "p": { "a": 0, "k": [0, 0], "ix": 2 },
+              "a": { "a": 0, "k": [0, 0], "ix": 1 },
+              "s": { "a": 0, "k": [300, 300], "ix": 3 },
+              "r": { "a": 0, "k": 0, "ix": 6 },
+              "o": { "a": 0, "k": 100, "ix": 7 },
+              "sk": { "a": 0, "k": 0, "ix": 4 },
+              "sa": { "a": 0, "k": 0, "ix": 5 },
+              "nm": "Transform"
+            }
+          ],
+          "nm": "Deposit Marker C",
+          "np": 2,
+          "cix": 2,
+          "bm": 0,
+          "ix": 1,
+          "mn": "ADBE Vector Group",
+          "hd": false
+        }
+      ],
+      "ip": 0,
+      "op": 300,
+      "st": 0,
+      "bm": 0
+    },
+    {
+      "ddd": 0,
+      "ind": 13,
+      "ty": 4,
+      "nm": "Wallet Connector C - Dashed",
+      "sr": 1,
+      "ks": {
+        "o": {
+          "a": 1,
+          "k": [
+            {
+              "i": { "x": [0.667], "y": [1] },
+              "o": { "x": [0.167], "y": [0] },
+              "t": 0,
+              "s": [0]
+            },
+            {
+              "i": { "x": [0.667], "y": [1] },
+              "o": { "x": [0.333], "y": [0] },
+              "t": 60,
+              "s": [0]
+            },
+            {
+              "i": { "x": [0.833], "y": [1] },
+              "o": { "x": [0.333], "y": [0] },
+              "t": 75,
+              "s": [100]
+            },
+            {
+              "i": { "x": [0.833], "y": [1] },
+              "o": { "x": [0.167], "y": [0] },
+              "t": 135,
+              "s": [100]
+            },
+            { "t": 195, "s": [0] }
+          ],
+          "ix": 11
+        },
+        "r": { "a": 0, "k": 0, "ix": 10 },
+        "p": { "a": 0, "k": [919.705, 363.807, 0], "ix": 2 },
+        "a": { "a": 0, "k": [0, 0, 0], "ix": 1 },
+        "s": { "a": 0, "k": [100, 100, 100], "ix": 6 }
+      },
+      "ao": 0,
+      "shapes": [
+        {
+          "ty": "gr",
+          "it": [
+            {
+              "ind": 0,
+              "ty": "sh",
+              "ix": 1,
+              "ks": {
+                "a": 0,
+                "k": {
+                  "i": [
+                    [0, 0],
+                    [0, 0]
+                  ],
+                  "o": [
+                    [0, 0],
+                    [0, 0]
+                  ],
+                  "v": [
+                    [-26.571, 0],
+                    [26.571, 0]
+                  ],
+                  "c": false
+                },
+                "ix": 2
+              },
+              "nm": "Path 1",
+              "mn": "ADBE Vector Shape - Group",
+              "hd": false
+            },
+            {
+              "ty": "st",
+              "c": {
+                "a": 0,
+                "k": [0.890196084976, 0.588235318661, 0.321568638086, 1],
+                "ix": 3
+              },
+              "o": { "a": 0, "k": 100, "ix": 4 },
+              "w": { "a": 0, "k": 1, "ix": 5 },
+              "lc": 1,
+              "lj": 1,
+              "ml": 4,
+              "bm": 0,
+              "d": [
+                { "n": "d", "nm": "dash", "v": { "a": 0, "k": 2, "ix": 1 } },
+                { "n": "g", "nm": "gap", "v": { "a": 0, "k": 2, "ix": 2 } }
+              ],
+              "nm": "Stroke 1",
+              "mn": "ADBE Vector Graphic - Stroke",
+              "hd": false
+            },
+            {
+              "ty": "tr",
+              "p": { "a": 0, "k": [0, 0], "ix": 2 },
+              "a": { "a": 0, "k": [0, 0], "ix": 1 },
+              "s": { "a": 0, "k": [300, 300], "ix": 3 },
+              "r": { "a": 0, "k": 27.5, "ix": 6 },
+              "o": { "a": 0, "k": 100, "ix": 7 },
+              "sk": { "a": 0, "k": 0, "ix": 4 },
+              "sa": { "a": 0, "k": 0, "ix": 5 },
+              "nm": "Transform"
+            }
+          ],
+          "nm": "Wallet Connector C - Dashed",
+          "np": 2,
+          "cix": 2,
+          "bm": 0,
+          "ix": 1,
+          "mn": "ADBE Vector Group",
+          "hd": false
+        }
+      ],
+      "ip": 0,
+      "op": 300,
+      "st": 0,
+      "bm": 0
+    },
+    {
+      "ddd": 0,
+      "ind": 14,
+      "ty": 4,
+      "nm": "Wallet Connector C - Solid",
+      "sr": 1,
+      "ks": {
+        "o": {
+          "a": 1,
+          "k": [
+            {
+              "i": { "x": [0.667], "y": [1] },
+              "o": { "x": [0.167], "y": [0] },
+              "t": 0,
+              "s": [0]
+            },
+            {
+              "i": { "x": [0.667], "y": [1] },
+              "o": { "x": [0.333], "y": [0] },
+              "t": 135,
+              "s": [0]
+            },
+            { "t": 195, "s": [100] }
+          ],
+          "ix": 11
+        },
+        "r": { "a": 0, "k": 0, "ix": 10 },
+        "p": { "a": 0, "k": [919.705, 363.807, 0], "ix": 2 },
+        "a": { "a": 0, "k": [0, 0, 0], "ix": 1 },
+        "s": { "a": 0, "k": [100, 100, 100], "ix": 6 }
+      },
+      "ao": 0,
+      "shapes": [
+        {
+          "ty": "gr",
+          "it": [
+            {
+              "ind": 0,
+              "ty": "sh",
+              "ix": 1,
+              "ks": {
+                "a": 0,
+                "k": {
+                  "i": [
+                    [0, 0],
+                    [0, 0]
+                  ],
+                  "o": [
+                    [0, 0],
+                    [0, 0]
+                  ],
+                  "v": [
+                    [-26.571, 0],
+                    [26.571, 0]
+                  ],
+                  "c": false
+                },
+                "ix": 2
+              },
+              "nm": "Path 1",
+              "mn": "ADBE Vector Shape - Group",
+              "hd": false
+            },
+            {
+              "ty": "st",
+              "c": {
+                "a": 0,
+                "k": [0.890196084976, 0.588235318661, 0.321568638086, 1],
+                "ix": 3
+              },
+              "o": { "a": 0, "k": 100, "ix": 4 },
+              "w": { "a": 0, "k": 1, "ix": 5 },
+              "lc": 1,
+              "lj": 1,
+              "ml": 4,
+              "bm": 0,
+              "nm": "Stroke 1",
+              "mn": "ADBE Vector Graphic - Stroke",
+              "hd": false
+            },
+            {
+              "ty": "tr",
+              "p": { "a": 0, "k": [0, 0], "ix": 2 },
+              "a": { "a": 0, "k": [0, 0], "ix": 1 },
+              "s": { "a": 0, "k": [300, 300], "ix": 3 },
+              "r": { "a": 0, "k": 27.5, "ix": 6 },
+              "o": { "a": 0, "k": 100, "ix": 7 },
+              "sk": { "a": 0, "k": 0, "ix": 4 },
+              "sa": { "a": 0, "k": 0, "ix": 5 },
+              "nm": "Transform"
+            }
+          ],
+          "nm": "Wallet Connector C - Solid",
+          "np": 2,
+          "cix": 2,
+          "bm": 0,
+          "ix": 1,
+          "mn": "ADBE Vector Group",
+          "hd": false
+        }
+      ],
+      "ip": 0,
+      "op": 300,
+      "st": 0,
+      "bm": 0
+    },
+    {
+      "ddd": 0,
+      "ind": 15,
+      "ty": 4,
+      "nm": "Deposit Marker D",
+      "sr": 1,
+      "ks": {
+        "o": {
+          "a": 1,
+          "k": [
+            {
+              "i": { "x": [0.667], "y": [1] },
+              "o": { "x": [0.167], "y": [0] },
+              "t": 0,
+              "s": [0]
+            },
+            {
+              "i": { "x": [0.667], "y": [1] },
+              "o": { "x": [0.333], "y": [0] },
+              "t": 90,
+              "s": [0]
+            },
+            {
+              "i": { "x": [0.667], "y": [1] },
+              "o": { "x": [0.333], "y": [0] },
+              "t": 97,
+              "s": [100]
+            },
+            { "t": 105, "s": [0] }
+          ],
+          "ix": 11
+        },
+        "r": { "a": 0, "k": 0, "ix": 10 },
+        "p": {
+          "a": 1,
+          "k": [
+            {
+              "i": { "x": 0.667, "y": 1 },
+              "o": { "x": 0.333, "y": 0 },
+              "t": 90,
+              "s": [993, 93, 0],
+              "to": [-23.167, 12.333, 0],
+              "ti": [23.167, -12.333, 0]
+            },
+            { "t": 105, "s": [854, 167, 0] }
+          ],
+          "ix": 2
+        },
+        "a": { "a": 0, "k": [0, 0, 0], "ix": 1 },
+        "s": { "a": 0, "k": [100, 100, 100], "ix": 6 }
+      },
+      "ao": 0,
+      "shapes": [
+        {
+          "ty": "gr",
+          "it": [
+            {
+              "d": 1,
+              "ty": "el",
+              "s": { "a": 0, "k": [4, 4], "ix": 2 },
+              "p": { "a": 0, "k": [0, 0], "ix": 3 },
+              "nm": "Ellipse Path 1",
+              "mn": "ADBE Vector Shape - Ellipse",
+              "hd": false
+            },
+            {
+              "ty": "fl",
+              "c": {
+                "a": 0,
+                "k": [0.890196084976, 0.588235318661, 0.321568638086, 1],
+                "ix": 4
+              },
+              "o": { "a": 0, "k": 100, "ix": 5 },
+              "r": 1,
+              "bm": 0,
+              "nm": "Fill 1",
+              "mn": "ADBE Vector Graphic - Fill",
+              "hd": false
+            },
+            {
+              "ty": "tr",
+              "p": { "a": 0, "k": [0, 0], "ix": 2 },
+              "a": { "a": 0, "k": [0, 0], "ix": 1 },
+              "s": { "a": 0, "k": [300, 300], "ix": 3 },
+              "r": { "a": 0, "k": 0, "ix": 6 },
+              "o": { "a": 0, "k": 100, "ix": 7 },
+              "sk": { "a": 0, "k": 0, "ix": 4 },
+              "sa": { "a": 0, "k": 0, "ix": 5 },
+              "nm": "Transform"
+            }
+          ],
+          "nm": "Deposit Marker D",
+          "np": 2,
+          "cix": 2,
+          "bm": 0,
+          "ix": 1,
+          "mn": "ADBE Vector Group",
+          "hd": false
+        }
+      ],
+      "ip": 0,
+      "op": 300,
+      "st": 0,
+      "bm": 0
+    },
+    {
+      "ddd": 0,
+      "ind": 16,
+      "ty": 4,
+      "nm": "Wallet Connector D - Dashed",
+      "sr": 1,
+      "ks": {
+        "o": {
+          "a": 1,
+          "k": [
+            {
+              "i": { "x": [0.667], "y": [1] },
+              "o": { "x": [0.167], "y": [0] },
+              "t": 0,
+              "s": [0]
+            },
+            {
+              "i": { "x": [0.667], "y": [1] },
+              "o": { "x": [0.333], "y": [0] },
+              "t": 90,
+              "s": [0]
+            },
+            {
+              "i": { "x": [0.833], "y": [1] },
+              "o": { "x": [0.333], "y": [0] },
+              "t": 105,
+              "s": [100]
+            },
+            {
+              "i": { "x": [0.833], "y": [1] },
+              "o": { "x": [0.167], "y": [0] },
+              "t": 135,
+              "s": [100]
+            },
+            { "t": 194, "s": [0] }
+          ],
+          "ix": 11
+        },
+        "r": { "a": 0, "k": 0, "ix": 10 },
+        "p": { "a": 0, "k": [922.63, 130.248, 0], "ix": 2 },
+        "a": { "a": 0, "k": [0, 0, 0], "ix": 1 },
+        "s": { "a": 0, "k": [100, 100, 100], "ix": 6 }
+      },
+      "ao": 0,
+      "shapes": [
+        {
+          "ty": "gr",
+          "it": [
+            {
+              "ind": 0,
+              "ty": "sh",
+              "ix": 1,
+              "ks": {
+                "a": 0,
+                "k": {
+                  "i": [
+                    [0, 0],
+                    [0, 0]
+                  ],
+                  "o": [
+                    [0, 0],
+                    [0, 0]
+                  ],
+                  "v": [
+                    [-26.619, 0],
+                    [26.619, 0]
+                  ],
+                  "c": false
+                },
+                "ix": 2
+              },
+              "nm": "Path 1",
+              "mn": "ADBE Vector Shape - Group",
+              "hd": false
+            },
+            {
+              "ty": "st",
+              "c": {
+                "a": 0,
+                "k": [0.890196084976, 0.588235318661, 0.321568638086, 1],
+                "ix": 3
+              },
+              "o": { "a": 0, "k": 100, "ix": 4 },
+              "w": { "a": 0, "k": 1, "ix": 5 },
+              "lc": 1,
+              "lj": 1,
+              "ml": 4,
+              "bm": 0,
+              "d": [
+                { "n": "d", "nm": "dash", "v": { "a": 0, "k": 2, "ix": 1 } },
+                { "n": "g", "nm": "gap", "v": { "a": 0, "k": 2, "ix": 2 } }
+              ],
+              "nm": "Stroke 1",
+              "mn": "ADBE Vector Graphic - Stroke",
+              "hd": false
+            },
+            {
+              "ty": "tr",
+              "p": { "a": 0, "k": [0, 0], "ix": 2 },
+              "a": { "a": 0, "k": [0, 0], "ix": 1 },
+              "s": { "a": 0, "k": [300, 300], "ix": 3 },
+              "r": { "a": 0, "k": -27.5, "ix": 6 },
+              "o": { "a": 0, "k": 100, "ix": 7 },
+              "sk": { "a": 0, "k": 0, "ix": 4 },
+              "sa": { "a": 0, "k": 0, "ix": 5 },
+              "nm": "Transform"
+            }
+          ],
+          "nm": "Wallet Connector D - Dashed",
+          "np": 2,
+          "cix": 2,
+          "bm": 0,
+          "ix": 1,
+          "mn": "ADBE Vector Group",
+          "hd": false
+        }
+      ],
+      "ip": 0,
+      "op": 300,
+      "st": 0,
+      "bm": 0
+    },
+    {
+      "ddd": 0,
+      "ind": 17,
+      "ty": 4,
+      "nm": "Wallet Connector D - Solid",
+      "sr": 1,
+      "ks": {
+        "o": {
+          "a": 1,
+          "k": [
+            {
+              "i": { "x": [0.667], "y": [1] },
+              "o": { "x": [0.167], "y": [0] },
+              "t": 0,
+              "s": [0]
+            },
+            {
+              "i": { "x": [0.667], "y": [1] },
+              "o": { "x": [0.333], "y": [0] },
+              "t": 135,
+              "s": [0]
+            },
+            { "t": 195, "s": [100] }
+          ],
+          "ix": 11
+        },
+        "r": { "a": 0, "k": 0, "ix": 10 },
+        "p": { "a": 0, "k": [924.63, 130.248, 0], "ix": 2 },
+        "a": { "a": 0, "k": [0, 0, 0], "ix": 1 },
+        "s": { "a": 0, "k": [100, 100, 100], "ix": 6 }
+      },
+      "ao": 0,
+      "shapes": [
+        {
+          "ty": "gr",
+          "it": [
+            {
+              "ind": 0,
+              "ty": "sh",
+              "ix": 1,
+              "ks": {
+                "a": 0,
+                "k": {
+                  "i": [
+                    [0, 0],
+                    [0, 0]
+                  ],
+                  "o": [
+                    [0, 0],
+                    [0, 0]
+                  ],
+                  "v": [
+                    [-26.619, 0],
+                    [26.619, 0]
+                  ],
+                  "c": false
+                },
+                "ix": 2
+              },
+              "nm": "Path 1",
+              "mn": "ADBE Vector Shape - Group",
+              "hd": false
+            },
+            {
+              "ty": "st",
+              "c": {
+                "a": 0,
+                "k": [0.890196084976, 0.588235318661, 0.321568638086, 1],
+                "ix": 3
+              },
+              "o": { "a": 0, "k": 100, "ix": 4 },
+              "w": { "a": 0, "k": 1, "ix": 5 },
+              "lc": 1,
+              "lj": 1,
+              "ml": 4,
+              "bm": 0,
+              "nm": "Stroke 1",
+              "mn": "ADBE Vector Graphic - Stroke",
+              "hd": false
+            },
+            {
+              "ty": "tr",
+              "p": { "a": 0, "k": [0, 0], "ix": 2 },
+              "a": { "a": 0, "k": [0, 0], "ix": 1 },
+              "s": { "a": 0, "k": [300, 300], "ix": 3 },
+              "r": { "a": 0, "k": -27.5, "ix": 6 },
+              "o": { "a": 0, "k": 100, "ix": 7 },
+              "sk": { "a": 0, "k": 0, "ix": 4 },
+              "sa": { "a": 0, "k": 0, "ix": 5 },
+              "nm": "Transform"
+            }
+          ],
+          "nm": "Wallet Connector D - Solid",
+          "np": 2,
+          "cix": 2,
+          "bm": 0,
+          "ix": 1,
+          "mn": "ADBE Vector Group",
+          "hd": false
+        }
+      ],
+      "ip": 0,
+      "op": 300,
+      "st": 0,
+      "bm": 0
+    },
+    {
+      "ddd": 0,
+      "ind": 18,
+      "ty": 0,
+      "nm": "Bid D Active",
+      "refId": "comp_3",
+      "sr": 1,
+      "ks": {
+        "o": {
+          "a": 1,
+          "k": [
+            {
+              "i": { "x": [0.667], "y": [1] },
+              "o": { "x": [0.333], "y": [0] },
+              "t": 135,
+              "s": [0]
+            },
+            { "t": 195, "s": [100] }
+          ],
+          "ix": 11
+        },
+        "r": { "a": 0, "k": 0, "ix": 10 },
+        "p": { "a": 0, "k": [1062, 72, 0], "ix": 2 },
+        "a": { "a": 0, "k": [72, 48, 0], "ix": 1 },
+        "s": { "a": 0, "k": [100, 100, 100], "ix": 6 }
+      },
+      "ao": 0,
+      "w": 144,
+      "h": 96,
+      "ip": 0,
+      "op": 300,
+      "st": 0,
+      "bm": 0
+    },
+    {
+      "ddd": 0,
+      "ind": 19,
+      "ty": 0,
+      "nm": "Bid D",
+      "refId": "comp_4",
+      "sr": 1,
+      "ks": {
+        "o": {
+          "a": 1,
+          "k": [
+            {
+              "i": { "x": [0.667], "y": [1] },
+              "o": { "x": [0.333], "y": [0] },
+              "t": 135,
+              "s": [100]
+            },
+            { "t": 195, "s": [0] }
+          ],
+          "ix": 11
+        },
+        "r": { "a": 0, "k": 0, "ix": 10 },
+        "p": { "a": 0, "k": [1062, 72, 0], "ix": 2 },
+        "a": { "a": 0, "k": [72, 48, 0], "ix": 1 },
+        "s": { "a": 0, "k": [100, 100, 100], "ix": 6 }
+      },
+      "ao": 0,
+      "w": 144,
+      "h": 96,
+      "ip": 0,
+      "op": 300,
+      "st": 0,
+      "bm": 0
+    },
+    {
+      "ddd": 0,
+      "ind": 20,
+      "ty": 0,
+      "nm": "Bid C Active",
+      "refId": "comp_5",
+      "sr": 1,
+      "ks": {
+        "o": {
+          "a": 1,
+          "k": [
+            {
+              "i": { "x": [0.667], "y": [1] },
+              "o": { "x": [0.333], "y": [0] },
+              "t": 135,
+              "s": [0]
+            },
+            { "t": 195, "s": [100] }
+          ],
+          "ix": 11
+        },
+        "r": { "a": 0, "k": 0, "ix": 10 },
+        "p": { "a": 0, "k": [1062, 408, 0], "ix": 2 },
+        "a": { "a": 0, "k": [72, 48, 0], "ix": 1 },
+        "s": { "a": 0, "k": [100, 100, 100], "ix": 6 }
+      },
+      "ao": 0,
+      "w": 144,
+      "h": 96,
+      "ip": 0,
+      "op": 300,
+      "st": 0,
+      "bm": 0
+    },
+    {
+      "ddd": 0,
+      "ind": 21,
+      "ty": 0,
+      "nm": "Bid C",
+      "refId": "comp_6",
+      "sr": 1,
+      "ks": {
+        "o": {
+          "a": 1,
+          "k": [
+            {
+              "i": { "x": [0.667], "y": [1] },
+              "o": { "x": [0.333], "y": [0] },
+              "t": 135,
+              "s": [100]
+            },
+            { "t": 195, "s": [0] }
+          ],
+          "ix": 11
+        },
+        "r": { "a": 0, "k": 0, "ix": 10 },
+        "p": { "a": 0, "k": [1062, 408, 0], "ix": 2 },
+        "a": { "a": 0, "k": [72, 48, 0], "ix": 1 },
+        "s": { "a": 0, "k": [100, 100, 100], "ix": 6 }
+      },
+      "ao": 0,
+      "w": 144,
+      "h": 96,
+      "ip": 0,
+      "op": 300,
+      "st": 0,
+      "bm": 0
+    },
+    {
+      "ddd": 0,
+      "ind": 22,
+      "ty": 0,
+      "nm": "Bid B",
+      "refId": "comp_7",
+      "sr": 1,
+      "ks": {
+        "o": {
+          "a": 1,
+          "k": [
+            {
+              "i": { "x": [0.667], "y": [1] },
+              "o": { "x": [0.333], "y": [0] },
+              "t": 135,
+              "s": [100]
+            },
+            { "t": 195, "s": [24] }
+          ],
+          "ix": 11
+        },
+        "r": { "a": 0, "k": 0, "ix": 10 },
+        "p": { "a": 0, "k": [318, 408, 0], "ix": 2 },
+        "a": { "a": 0, "k": [72, 48, 0], "ix": 1 },
+        "s": { "a": 0, "k": [100, 100, 100], "ix": 6 }
+      },
+      "ao": 0,
+      "w": 144,
+      "h": 96,
+      "ip": 0,
+      "op": 300,
+      "st": 0,
+      "bm": 0
+    },
+    {
+      "ddd": 0,
+      "ind": 23,
+      "ty": 0,
+      "nm": "Bid A",
+      "refId": "comp_8",
+      "sr": 1,
+      "ks": {
+        "o": {
+          "a": 1,
+          "k": [
+            {
+              "i": { "x": [0.667], "y": [1] },
+              "o": { "x": [0.333], "y": [0] },
+              "t": 135,
+              "s": [100]
+            },
+            { "t": 195, "s": [24] }
+          ],
+          "ix": 11
+        },
+        "r": { "a": 0, "k": 0, "ix": 10 },
+        "p": { "a": 0, "k": [318, 72, 0], "ix": 2 },
+        "a": { "a": 0, "k": [72, 48, 0], "ix": 1 },
+        "s": { "a": 0, "k": [100, 100, 100], "ix": 6 }
+      },
+      "ao": 0,
+      "w": 144,
+      "h": 96,
+      "ip": 0,
+      "op": 300,
+      "st": 0,
+      "bm": 0
+    }
+  ],
+  "markers": [],
+  "chars": [
+    {
+      "ch": "B",
+      "size": 9,
+      "style": "Regular",
+      "w": 58.59,
+      "data": {
+        "shapes": [
+          {
+            "ty": "gr",
+            "it": [
+              {
+                "ind": 0,
+                "ty": "sh",
+                "ix": 1,
+                "ks": {
+                  "a": 0,
+                  "k": {
+                    "i": [
+                      [0, 0],
+                      [0, 0],
+                      [0, 0],
+                      [0, 0],
+                      [0, 0],
+                      [0, 0],
+                      [0, 0],
+                      [0, 0]
+                    ],
+                    "o": [
+                      [0, 0],
+                      [0, 0],
+                      [0, 0],
+                      [0, 0],
+                      [0, 0],
+                      [0, 0],
+                      [0, 0],
+                      [0, 0]
+                    ],
+                    "v": [
+                      [14.648, -63.477],
+                      [39.062, -63.477],
+                      [39.062, -58.594],
+                      [43.945, -58.594],
+                      [43.945, -48.828],
+                      [39.062, -48.828],
+                      [39.062, -43.945],
+                      [14.648, -43.945]
+                    ],
+                    "c": true
+                  },
+                  "ix": 2
+                },
+                "nm": "B",
+                "mn": "ADBE Vector Shape - Group",
+                "hd": false
+              },
+              {
+                "ind": 1,
+                "ty": "sh",
+                "ix": 2,
+                "ks": {
+                  "a": 0,
+                  "k": {
+                    "i": [
+                      [0, 0],
+                      [0, 0],
+                      [0, 0],
+                      [0, 0],
+                      [0, 0],
+                      [0, 0],
+                      [0, 0],
+                      [0, 0],
+                      [0, 0],
+                      [0, 0],
+                      [0, 0],
+                      [0, 0],
+                      [0, 0],
+                      [0, 0],
+                      [0, 0],
+                      [0, 0]
+                    ],
+                    "o": [
+                      [0, 0],
+                      [0, 0],
+                      [0, 0],
+                      [0, 0],
+                      [0, 0],
+                      [0, 0],
+                      [0, 0],
+                      [0, 0],
+                      [0, 0],
+                      [0, 0],
+                      [0, 0],
+                      [0, 0],
+                      [0, 0],
+                      [0, 0],
+                      [0, 0],
+                      [0, 0]
+                    ],
+                    "v": [
+                      [43.945, -4.883],
+                      [43.945, -9.766],
+                      [48.828, -9.766],
+                      [48.828, -14.648],
+                      [53.711, -14.648],
+                      [53.711, -34.18],
+                      [48.828, -34.18],
+                      [48.828, -43.945],
+                      [53.711, -43.945],
+                      [53.711, -63.477],
+                      [48.828, -63.477],
+                      [48.828, -68.359],
+                      [43.945, -68.359],
+                      [43.945, -73.242],
+                      [4.883, -73.242],
+                      [4.883, -4.883]
+                    ],
+                    "c": true
+                  },
+                  "ix": 2
+                },
+                "nm": "B",
+                "mn": "ADBE Vector Shape - Group",
+                "hd": false
+              },
+              {
+                "ind": 2,
+                "ty": "sh",
+                "ix": 3,
+                "ks": {
+                  "a": 0,
+                  "k": {
+                    "i": [
+                      [0, 0],
+                      [0, 0],
+                      [0, 0],
+                      [0, 0],
+                      [0, 0],
+                      [0, 0],
+                      [0, 0],
+                      [0, 0]
+                    ],
+                    "o": [
+                      [0, 0],
+                      [0, 0],
+                      [0, 0],
+                      [0, 0],
+                      [0, 0],
+                      [0, 0],
+                      [0, 0],
+                      [0, 0]
+                    ],
+                    "v": [
+                      [14.648, -34.18],
+                      [39.062, -34.18],
+                      [39.062, -29.297],
+                      [43.945, -29.297],
+                      [43.945, -19.531],
+                      [39.062, -19.531],
+                      [39.062, -14.648],
+                      [14.648, -14.648]
+                    ],
+                    "c": true
+                  },
+                  "ix": 2
+                },
+                "nm": "B",
+                "mn": "ADBE Vector Shape - Group",
+                "hd": false
+              }
+            ],
+            "nm": "B",
+            "np": 6,
+            "cix": 2,
+            "bm": 0,
+            "ix": 1,
+            "mn": "ADBE Vector Group",
+            "hd": false
+          }
+        ]
+      },
+      "fFamily": "VCR OSD Mono"
+    },
+    {
+      "ch": "I",
+      "size": 9,
+      "style": "Regular",
+      "w": 58.59,
+      "data": {
+        "shapes": [
+          {
+            "ty": "gr",
+            "it": [
+              {
+                "ind": 0,
+                "ty": "sh",
+                "ix": 1,
+                "ks": {
+                  "a": 0,
+                  "k": {
+                    "i": [
+                      [0, 0],
+                      [0, 0],
+                      [0, 0],
+                      [0, 0],
+                      [0, 0],
+                      [0, 0],
+                      [0, 0],
+                      [0, 0],
+                      [0, 0],
+                      [0, 0],
+                      [0, 0],
+                      [0, 0]
+                    ],
+                    "o": [
+                      [0, 0],
+                      [0, 0],
+                      [0, 0],
+                      [0, 0],
+                      [0, 0],
+                      [0, 0],
+                      [0, 0],
+                      [0, 0],
+                      [0, 0],
+                      [0, 0],
+                      [0, 0],
+                      [0, 0]
+                    ],
+                    "v": [
+                      [43.945, -4.883],
+                      [43.945, -14.648],
+                      [34.18, -14.648],
+                      [34.18, -63.477],
+                      [43.945, -63.477],
+                      [43.945, -73.242],
+                      [14.648, -73.242],
+                      [14.648, -63.477],
+                      [24.414, -63.477],
+                      [24.414, -14.648],
+                      [14.648, -14.648],
+                      [14.648, -4.883]
+                    ],
+                    "c": true
+                  },
+                  "ix": 2
+                },
+                "nm": "I",
+                "mn": "ADBE Vector Shape - Group",
+                "hd": false
+              }
+            ],
+            "nm": "I",
+            "np": 3,
+            "cix": 2,
+            "bm": 0,
+            "ix": 1,
+            "mn": "ADBE Vector Group",
+            "hd": false
+          }
+        ]
+      },
+      "fFamily": "VCR OSD Mono"
+    },
+    {
+      "ch": "D",
+      "size": 9,
+      "style": "Regular",
+      "w": 58.59,
+      "data": {
+        "shapes": [
+          {
+            "ty": "gr",
+            "it": [
+              {
+                "ind": 0,
+                "ty": "sh",
+                "ix": 1,
+                "ks": {
+                  "a": 0,
+                  "k": {
+                    "i": [
+                      [0, 0],
+                      [0, 0],
+                      [0, 0],
+                      [0, 0],
+                      [0, 0],
+                      [0, 0],
+                      [0, 0],
+                      [0, 0]
+                    ],
+                    "o": [
+                      [0, 0],
+                      [0, 0],
+                      [0, 0],
+                      [0, 0],
+                      [0, 0],
+                      [0, 0],
+                      [0, 0],
+                      [0, 0]
+                    ],
+                    "v": [
+                      [39.062, -63.477],
+                      [39.062, -58.594],
+                      [43.945, -58.594],
+                      [43.945, -19.531],
+                      [39.062, -19.531],
+                      [39.062, -14.648],
+                      [14.648, -14.648],
+                      [14.648, -63.477]
+                    ],
+                    "c": true
+                  },
+                  "ix": 2
+                },
+                "nm": "D",
+                "mn": "ADBE Vector Shape - Group",
+                "hd": false
+              },
+              {
+                "ind": 1,
+                "ty": "sh",
+                "ix": 2,
+                "ks": {
+                  "a": 0,
+                  "k": {
+                    "i": [
+                      [0, 0],
+                      [0, 0],
+                      [0, 0],
+                      [0, 0],
+                      [0, 0],
+                      [0, 0],
+                      [0, 0],
+                      [0, 0],
+                      [0, 0],
+                      [0, 0],
+                      [0, 0],
+                      [0, 0]
+                    ],
+                    "o": [
+                      [0, 0],
+                      [0, 0],
+                      [0, 0],
+                      [0, 0],
+                      [0, 0],
+                      [0, 0],
+                      [0, 0],
+                      [0, 0],
+                      [0, 0],
+                      [0, 0],
+                      [0, 0],
+                      [0, 0]
+                    ],
+                    "v": [
+                      [43.945, -4.883],
+                      [43.945, -9.766],
+                      [48.828, -9.766],
+                      [48.828, -14.648],
+                      [53.711, -14.648],
+                      [53.711, -63.477],
+                      [48.828, -63.477],
+                      [48.828, -68.359],
+                      [43.945, -68.359],
+                      [43.945, -73.242],
+                      [4.883, -73.242],
+                      [4.883, -4.883]
+                    ],
+                    "c": true
+                  },
+                  "ix": 2
+                },
+                "nm": "D",
+                "mn": "ADBE Vector Shape - Group",
+                "hd": false
+              }
+            ],
+            "nm": "D",
+            "np": 5,
+            "cix": 2,
+            "bm": 0,
+            "ix": 1,
+            "mn": "ADBE Vector Group",
+            "hd": false
+          }
+        ]
+      },
+      "fFamily": "VCR OSD Mono"
+    },
+    {
+      "ch": " ",
+      "size": 9,
+      "style": "Regular",
+      "w": 58.59,
+      "data": {},
+      "fFamily": "VCR OSD Mono"
+    },
+    {
+      "ch": "A",
+      "size": 9,
+      "style": "Regular",
+      "w": 58.59,
+      "data": {
+        "shapes": [
+          {
+            "ty": "gr",
+            "it": [
+              {
+                "ind": 0,
+                "ty": "sh",
+                "ix": 1,
+                "ks": {
+                  "a": 0,
+                  "k": {
+                    "i": [
+                      [0, 0],
+                      [0, 0],
+                      [0, 0],
+                      [0, 0],
+                      [0, 0],
+                      [0, 0],
+                      [0, 0],
+                      [0, 0],
+                      [0, 0],
+                      [0, 0],
+                      [0, 0],
+                      [0, 0]
+                    ],
+                    "o": [
+                      [0, 0],
+                      [0, 0],
+                      [0, 0],
+                      [0, 0],
+                      [0, 0],
+                      [0, 0],
+                      [0, 0],
+                      [0, 0],
+                      [0, 0],
+                      [0, 0],
+                      [0, 0],
+                      [0, 0]
+                    ],
+                    "v": [
+                      [14.648, -48.828],
+                      [19.531, -48.828],
+                      [19.531, -53.711],
+                      [24.414, -53.711],
+                      [24.414, -58.594],
+                      [34.18, -58.594],
+                      [34.18, -53.711],
+                      [39.062, -53.711],
+                      [39.062, -48.828],
+                      [43.945, -48.828],
+                      [43.945, -34.18],
+                      [14.648, -34.18]
+                    ],
+                    "c": true
+                  },
+                  "ix": 2
+                },
+                "nm": "A",
+                "mn": "ADBE Vector Shape - Group",
+                "hd": false
+              },
+              {
+                "ind": 1,
+                "ty": "sh",
+                "ix": 2,
+                "ks": {
+                  "a": 0,
+                  "k": {
+                    "i": [
+                      [0, 0],
+                      [0, 0],
+                      [0, 0],
+                      [0, 0],
+                      [0, 0],
+                      [0, 0],
+                      [0, 0],
+                      [0, 0],
+                      [0, 0],
+                      [0, 0],
+                      [0, 0],
+                      [0, 0],
+                      [0, 0],
+                      [0, 0],
+                      [0, 0],
+                      [0, 0],
+                      [0, 0],
+                      [0, 0],
+                      [0, 0],
+                      [0, 0],
+                      [0, 0],
+                      [0, 0],
+                      [0, 0],
+                      [0, 0]
+                    ],
+                    "o": [
+                      [0, 0],
+                      [0, 0],
+                      [0, 0],
+                      [0, 0],
+                      [0, 0],
+                      [0, 0],
+                      [0, 0],
+                      [0, 0],
+                      [0, 0],
+                      [0, 0],
+                      [0, 0],
+                      [0, 0],
+                      [0, 0],
+                      [0, 0],
+                      [0, 0],
+                      [0, 0],
+                      [0, 0],
+                      [0, 0],
+                      [0, 0],
+                      [0, 0],
+                      [0, 0],
+                      [0, 0],
+                      [0, 0],
+                      [0, 0]
+                    ],
+                    "v": [
+                      [14.648, -24.414],
+                      [43.945, -24.414],
+                      [43.945, -4.883],
+                      [53.711, -4.883],
+                      [53.711, -53.711],
+                      [48.828, -53.711],
+                      [48.828, -58.594],
+                      [43.945, -58.594],
+                      [43.945, -63.477],
+                      [39.062, -63.477],
+                      [39.062, -68.359],
+                      [34.18, -68.359],
+                      [34.18, -73.242],
+                      [24.414, -73.242],
+                      [24.414, -68.359],
+                      [19.531, -68.359],
+                      [19.531, -63.477],
+                      [14.648, -63.477],
+                      [14.648, -58.594],
+                      [9.766, -58.594],
+                      [9.766, -53.711],
+                      [4.883, -53.711],
+                      [4.883, -4.883],
+                      [14.648, -4.883]
+                    ],
+                    "c": true
+                  },
+                  "ix": 2
+                },
+                "nm": "A",
+                "mn": "ADBE Vector Shape - Group",
+                "hd": false
+              }
+            ],
+            "nm": "A",
+            "np": 5,
+            "cix": 2,
+            "bm": 0,
+            "ix": 1,
+            "mn": "ADBE Vector Group",
+            "hd": false
+          }
+        ]
+      },
+      "fFamily": "VCR OSD Mono"
+    },
+    {
+      "ch": "C",
+      "size": 9,
+      "style": "Regular",
+      "w": 58.59,
+      "data": {
+        "shapes": [
+          {
+            "ty": "gr",
+            "it": [
+              {
+                "ind": 0,
+                "ty": "sh",
+                "ix": 1,
+                "ks": {
+                  "a": 0,
+                  "k": {
+                    "i": [
+                      [0, 0],
+                      [0, 0],
+                      [0, 0],
+                      [0, 0],
+                      [0, 0],
+                      [0, 0],
+                      [0, 0],
+                      [0, 0],
+                      [0, 0],
+                      [0, 0],
+                      [0, 0],
+                      [0, 0],
+                      [0, 0],
+                      [0, 0],
+                      [0, 0],
+                      [0, 0],
+                      [0, 0],
+                      [0, 0],
+                      [0, 0],
+                      [0, 0],
+                      [0, 0],
+                      [0, 0],
+                      [0, 0],
+                      [0, 0],
+                      [0, 0],
+                      [0, 0],
+                      [0, 0],
+                      [0, 0],
+                      [0, 0],
+                      [0, 0],
+                      [0, 0],
+                      [0, 0],
+                      [0, 0],
+                      [0, 0],
+                      [0, 0],
+                      [0, 0]
+                    ],
+                    "o": [
+                      [0, 0],
+                      [0, 0],
+                      [0, 0],
+                      [0, 0],
+                      [0, 0],
+                      [0, 0],
+                      [0, 0],
+                      [0, 0],
+                      [0, 0],
+                      [0, 0],
+                      [0, 0],
+                      [0, 0],
+                      [0, 0],
+                      [0, 0],
+                      [0, 0],
+                      [0, 0],
+                      [0, 0],
+                      [0, 0],
+                      [0, 0],
+                      [0, 0],
+                      [0, 0],
+                      [0, 0],
+                      [0, 0],
+                      [0, 0],
+                      [0, 0],
+                      [0, 0],
+                      [0, 0],
+                      [0, 0],
+                      [0, 0],
+                      [0, 0],
+                      [0, 0],
+                      [0, 0],
+                      [0, 0],
+                      [0, 0],
+                      [0, 0],
+                      [0, 0]
+                    ],
+                    "v": [
+                      [19.531, -19.531],
+                      [14.648, -19.531],
+                      [14.648, -58.594],
+                      [19.531, -58.594],
+                      [19.531, -63.477],
+                      [39.062, -63.477],
+                      [39.062, -58.594],
+                      [43.945, -58.594],
+                      [43.945, -53.711],
+                      [53.711, -53.711],
+                      [53.711, -63.477],
+                      [48.828, -63.477],
+                      [48.828, -68.359],
+                      [43.945, -68.359],
+                      [43.945, -73.242],
+                      [14.648, -73.242],
+                      [14.648, -68.359],
+                      [9.766, -68.359],
+                      [9.766, -63.477],
+                      [4.883, -63.477],
+                      [4.883, -14.648],
+                      [9.766, -14.648],
+                      [9.766, -9.766],
+                      [14.648, -9.766],
+                      [14.648, -4.883],
+                      [43.945, -4.883],
+                      [43.945, -9.766],
+                      [48.828, -9.766],
+                      [48.828, -14.648],
+                      [53.711, -14.648],
+                      [53.711, -24.414],
+                      [43.945, -24.414],
+                      [43.945, -19.531],
+                      [39.062, -19.531],
+                      [39.062, -14.648],
+                      [19.531, -14.648]
+                    ],
+                    "c": true
+                  },
+                  "ix": 2
+                },
+                "nm": "C",
+                "mn": "ADBE Vector Shape - Group",
+                "hd": false
+              }
+            ],
+            "nm": "C",
+            "np": 3,
+            "cix": 2,
+            "bm": 0,
+            "ix": 1,
+            "mn": "ADBE Vector Group",
+            "hd": false
+          }
+        ]
+      },
+      "fFamily": "VCR OSD Mono"
+    }
+  ]
+}

@@ -32,7 +32,7 @@ import useScreenSize from "shared/lib/hooks/useScreenSize";
 import sizes from "shared/lib/designSystem/sizes";
 import VaultDeposit from "./ExplainerGraphic/VaultDeposit";
 import AlgoStrikeSelection from "./ExplainerGraphic/AlgoStrikeSelection";
-import GnosisAuction from "./ExplainerGraphic/GnosisAuction";
+import ParadigmAuction from "./ExplainerGraphic/ParadigmAuction";
 import SegmentPagination from "shared/lib/components/Common/SegmentPagination";
 
 const ExplainerContainer = styled.div`
@@ -81,8 +81,8 @@ const ExplanationStepList = [
   "algoStrikeSelection",
   "strikeSelection",
   "mintOption",
-  "gnosisAuction",
-  "gnosisTrade",
+  "paradigmAuction",
+  "paradigmTrade",
   "tradeOption",
   "expiryA",
   "settlementA",
@@ -114,8 +114,8 @@ const ExplanationStepMap: {
     "swapCollateralAsset",
     "algoStrikeSelection",
     "mintOption",
-    "gnosisAuction",
-    "gnosisTrade",
+    "paradigmAuction",
+    "paradigmTrade",
     "expiryA",
     "settlementA",
     "expiryB",
@@ -203,7 +203,7 @@ const VaultStrategyExplainer: React.FC<VaultStrategyExplainerProps> = ({
         case "SOL":
           return `Zeta FLEX ${includeAuction ? "Auction" : ""}`.trim();
         default:
-          return `Gnosis ${includeAuction ? "Auction" : ""}`.trim();
+          return `Paradigm ${includeAuction ? "Auction" : ""}`.trim();
       }
     },
     [asset]
@@ -260,9 +260,9 @@ const VaultStrategyExplainer: React.FC<VaultStrategyExplainerProps> = ({
               receiveToken="oToken"
             />
           );
-        case "gnosisAuction":
-          return <GnosisAuction vaultOption={vaultOption} />;
-        case "gnosisTrade":
+        case "paradigmAuction":
+          return <ParadigmAuction vaultOption={vaultOption} />;
+        case "paradigmTrade":
           return (
             <TradeOffer
               color={color}
@@ -333,9 +333,9 @@ const VaultStrategyExplainer: React.FC<VaultStrategyExplainerProps> = ({
           return "MANAGER SELECTS STRIKE AND EXPIRY";
         case "mintOption":
           return "VAULT MINTS OPTIONS";
-        case "gnosisAuction":
+        case "paradigmAuction":
           return `VAULT SELLS OPTIONS VIA ${getAuctionTarget().toUpperCase()}`;
-        case "gnosisTrade":
+        case "paradigmTrade":
           return "VAULT COLLECTS YIELDS";
         case "tradeOption":
           return "VAULT SELLS OPTIONS TO MARKET MAKERS";
@@ -772,7 +772,7 @@ const VaultStrategyExplainer: React.FC<VaultStrategyExplainerProps> = ({
                   );
               }
           }
-        case "gnosisAuction":
+        case "paradigmAuction":
           if (isSolanaVault(vaultOption)) {
             return (
               <>
@@ -787,13 +787,13 @@ const VaultStrategyExplainer: React.FC<VaultStrategyExplainerProps> = ({
           return (
             <>
               The vault sells the newly minted options via a{" "}
-              {getAuctionTarget(false)} batch auction. The vault first sets a
-              minimum price for the options and then opens up bidding to anyone
-              in the world. Participants whose bid is greater than or equal to
-              the final clearing price receive the auctioned oTokens.
+              {getAuctionTarget(false)} blind auction. The vault first break
+              down the options in multiple batch to guarantee best execution and
+              then opens up bidding to market makers onboarded on Paradigm.
+              Participant with the highest bid receives the auctioned oTokens.
             </>
           );
-        case "gnosisTrade":
+        case "paradigmTrade":
           return collateralAsset === "stETH" ? (
             <>
               The {assetUnit} earned from the {getAuctionTarget()} is collected
