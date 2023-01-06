@@ -5,8 +5,9 @@ import {
   EVMVaultList,
   getVaultNetwork,
   isEarnVault,
+  VaultOptions,
 } from "../constants/constants";
-import { isProduction } from "../utils/env";
+import { isProduction, isTreasury } from "../utils/env";
 import { getVaultContract } from "./useVaultContract";
 import { impersonateAddress } from "../utils/development";
 import {
@@ -47,7 +48,7 @@ const useFetchEarnVaultData = (): V2VaultData => {
       return currentCounter;
     });
 
-    const vaultList = EVMVaultList.filter((vault) => isEarnVault(vault));
+    const vaultList = ["rVIP-wBTC" as VaultOptions];
 
     const responses = await Promise.all(
       vaultList.map(async (vault) => {
@@ -78,6 +79,7 @@ const useFetchEarnVaultData = (): V2VaultData => {
          */
         const unconnectedPromises: Promise<
           | BigNumber
+          | number
           | { amount: BigNumber; round: number }
           | { round: number }
           | { share: BigNumber; round: number }
@@ -85,6 +87,7 @@ const useFetchEarnVaultData = (): V2VaultData => {
         >[] = [
           contract.totalBalance(),
           contract.cap(),
+          contract.decimals(),
           contract.pricePerShare(),
           contract.vaultState(),
           contract.allocationState(),
@@ -99,6 +102,7 @@ const useFetchEarnVaultData = (): V2VaultData => {
             ? [
                 contract.depositReceipts(account!),
                 contract.accountVaultBalance(account!),
+                contract.shares(account!),
                 contract.withdrawals(account!),
               ]
             : [
@@ -112,11 +116,13 @@ const useFetchEarnVaultData = (): V2VaultData => {
         const [
           totalBalance,
           cap,
+          decimals,
           pricePerShare,
           _vaultState,
           _allocationState,
           _depositReceipts,
           accountVaultBalance,
+          shares,
           _withdrawals,
         ] = await Promise.all(
           // Default to 0 when error
@@ -130,6 +136,22 @@ const useFetchEarnVaultData = (): V2VaultData => {
         const vaultState = (
           (_vaultState as { round?: number }).round ? _vaultState : { round: 1 }
         ) as { round: number };
+
+        // we use roundPricePerShare for earn treasury because pricePerShare goes down
+        // because shares decrease when options are sold
+        const roundPricePerSharePromise = vaultState.round
+          ? contract.roundPricePerShare(vaultState.round - 1)
+          : Promise.resolve(BigNumber.from(0));
+
+        let roundPricePerShare: BigNumber = BigNumber.from(0);
+        await roundPricePerSharePromise.then((v) => (roundPricePerShare = v));
+
+        const lockedBalanceInAssetTreasury =
+          shares instanceof BigNumber
+            ? shares
+                .mul(roundPricePerShare as BigNumber)
+                .div(10 ** (decimals as number))
+            : BigNumber.from(0);
 
         const allocationState = (
           (
@@ -156,6 +178,7 @@ const useFetchEarnVaultData = (): V2VaultData => {
           round: number;
         };
         const withdrawals = (
+          _withdrawals &&
           (_withdrawals as { shares: BigNumber; round: number }).round
             ? _withdrawals
             : { shares: BigNumber.from(0), round: 1 }
@@ -167,7 +190,10 @@ const useFetchEarnVaultData = (): V2VaultData => {
           cap,
           pricePerShare,
           round: vaultState.round,
-          lockedBalanceInAsset: accountVaultBalance,
+          lockedBalanceInAsset: isTreasury()
+            ? lockedBalanceInAssetTreasury
+            : accountVaultBalance,
+          shares,
           depositBalanceInAsset:
             depositReceipts.round === vaultState.round
               ? depositReceipts.amount

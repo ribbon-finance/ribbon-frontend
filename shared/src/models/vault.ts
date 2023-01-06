@@ -252,6 +252,7 @@ export interface UnconnectedV2VaultData {
  */
 export interface ConnectedV2VaultData {
   lockedBalanceInAsset: BigNumber;
+  shares: BigNumber;
   depositBalanceInAsset: BigNumber;
   withdrawals: {
     shares: BigNumber;

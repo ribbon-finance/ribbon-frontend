@@ -1,4 +1,4 @@
-import React, { ReactNode, useMemo } from "react";
+import React, { ReactNode, useContext, useMemo } from "react";
 import { ethers } from "ethers";
 import { useWeb3Wallet } from "shared/lib/hooks/useWeb3Wallet";
 import styled from "styled-components";
@@ -21,6 +21,7 @@ import {
   getDisplayAssets,
   getEtherscanURI,
   hasVaultVersion,
+  isEarnVault,
   isPutVault,
   VaultAddressMap,
   VaultList,
@@ -29,7 +30,7 @@ import {
 } from "shared/lib/constants/constants";
 import useVaultOption from "../../hooks/useVaultOption";
 import { getVaultColor } from "shared/lib/utils/vault";
-import { getAssetLogo } from "shared/lib/utils/asset";
+import { getAssetDecimals, getAssetLogo } from "shared/lib/utils/asset";
 import { Container } from "react-bootstrap";
 import theme from "shared/lib/designSystem/theme";
 import { getVaultURI } from "../../constants/constants";
@@ -41,6 +42,7 @@ import Banner from "shared/lib/components/Banner/Banner";
 import VaultInformation from "../../components/Deposit/VaultInformation";
 import useVaultActivity from "shared/lib/hooks/useVaultActivity";
 import { getPremiumsAfterFeesFromVaultActivities } from "../../utils";
+import { SubgraphDataContext } from "shared/lib/hooks/subgraphDataContext";
 
 const { formatUnits } = ethers.utils;
 
@@ -175,9 +177,11 @@ const DepositPage = () => {
     loading,
   } = useV2VaultData(vaultOption || VaultList[0]);
 
+  const { vaultSubgraphData } = useContext(SubgraphDataContext);
   const isLoading = status === "loading" || loading;
   const activities = useVaultActivity(vaultOption!, vaultVersion);
 
+  console.log(useV2VaultData(vaultOption || VaultList[0]));
   const [totalDepositStr] = useMemo(() => {
     switch (vaultVersion) {
       case "v1":
@@ -190,6 +194,20 @@ const DepositPage = () => {
           ),
         ];
       case "earn":
+        const subgraphData =
+          vaultSubgraphData.vaults.earn[vaultOption || VaultList[0]];
+        if (!subgraphData) {
+          return [0, 0];
+        }
+        return [
+          parseFloat(
+            formatSignificantDecimals(
+              formatUnits(subgraphData.totalBalance, decimals),
+              2
+            )
+          ),
+          parseFloat(formatSignificantDecimals(formatUnits(cap, decimals))),
+        ];
       case "v2":
         return [
           parseFloat(
@@ -198,7 +216,16 @@ const DepositPage = () => {
           parseFloat(formatSignificantDecimals(formatUnits(cap, decimals))),
         ];
     }
-  }, [cap, decimals, deposits, totalBalance, vaultLimit, vaultVersion]);
+  }, [
+    cap,
+    decimals,
+    deposits,
+    totalBalance,
+    vaultLimit,
+    vaultOption,
+    vaultSubgraphData.vaults.earn,
+    vaultVersion,
+  ]);
 
   // Total lifetime yield
   const totalYields = useMemo(() => {
@@ -281,7 +308,9 @@ const DepositPage = () => {
             <DesktopActionForm vault={{ vaultOption, vaultVersion }} />
           </DesktopActionsFormContainer>
         </div>
-        <VaultActivity vault={{ vaultOption, vaultVersion }} />
+        {!isEarnVault && (
+          <VaultActivity vault={{ vaultOption, vaultVersion }} />
+        )}
       </DepositPageContainer>
 
       {/* Desktop Position Component */}
@@ -345,6 +374,14 @@ const HeroSection: React.FC<{
     }
   }, [color, variant]);
 
+  const tagPillTitle = useMemo(() => {
+    if (isEarnVault(vaultOption)) {
+      return "CUSTOM STRATEGY";
+    } else {
+      return isPutVault(vaultOption) ? "PUT-SELLING" : "COVERED CALL";
+    }
+  }, [vaultOption]);
+
   return (
     <>
       {/* V1 top banner */}
@@ -367,7 +404,7 @@ const HeroSection: React.FC<{
             <div style={{ zIndex: 1 }} className="col-xl-6 d-flex flex-column">
               <div className="d-flex flex-row my-3">
                 <TagPill className="mr-2 text-uppercase" color={color}>
-                  {isPutVault(vaultOption) ? "PUT-SELLING" : "COVERED CALL"}
+                  {tagPillTitle}
                 </TagPill>
               </div>
 

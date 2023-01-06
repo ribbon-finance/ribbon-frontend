@@ -209,6 +209,7 @@ export const Web3DataContextProvider: React.FC<{ children: ReactElement }> = ({
   const lidoOracle = useFetchLidoOracleData();
   const treasuryBalance = useFetchTreasuryBalanceData();
 
+  console.log(earnVaultData);
   return (
     <Web3DataContext.Provider
       value={{

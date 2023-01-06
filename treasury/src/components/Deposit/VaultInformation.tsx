@@ -48,7 +48,9 @@ const VaultInformation: React.FC<{
             : `${
                 vaultDeposit === 0
                   ? "---"
-                  : `${formatAmount(vaultDeposit)} ${getAssetDisplay(asset)}`
+                  : `${formatAmount(vaultDeposit, true)} ${getAssetDisplay(
+                      asset
+                    )}`
               }`}
         </VaultData>
       </VaultDataCol>
