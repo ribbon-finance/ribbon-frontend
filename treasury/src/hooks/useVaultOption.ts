@@ -11,7 +11,7 @@ import {
 } from "shared/lib/constants/constants";
 
 const useVaultOption = () => {
-  const matchv2 = useRouteMatch<{ vaultSymbol: string }>(
+  const matchVersion = useRouteMatch<{ vaultSymbol: string }>(
     "/treasury/:vaultSymbol"
   );
   const [vaultOption, vaultVersion] = useMemo((): [
@@ -19,25 +19,23 @@ const useVaultOption = () => {
     VaultVersion
   ] => {
     if (
-      matchv2?.params.vaultSymbol &&
-      matchv2.params.vaultSymbol in VaultNameOptionMap &&
+      matchVersion?.params.vaultSymbol &&
+      matchVersion.params.vaultSymbol in VaultNameOptionMap &&
       VaultList.indexOf(
         VaultNameOptionMap[
-          matchv2?.params.vaultSymbol as VaultName
+          matchVersion?.params.vaultSymbol as VaultName
         ] as typeof VaultList[number]
       ) > -1
     ) {
       const vaultName =
-        VaultNameOptionMap[matchv2?.params.vaultSymbol as VaultName];
-      if (isEarnVault(vaultName)) {
-        return [vaultName, "earn"];
-      }
-      return [vaultName, "v2"];
+        VaultNameOptionMap[matchVersion?.params.vaultSymbol as VaultName];
+      const version = isEarnVault(vaultName) ? "earn" : "v2";
+      return [vaultName, version];
     }
 
     /** Default value */
     return [undefined, "v1"];
-  }, [matchv2]);
+  }, [matchVersion]);
 
   return { vaultOption, vaultVersion };
 };

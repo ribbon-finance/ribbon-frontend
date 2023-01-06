@@ -137,7 +137,7 @@ const useFetchEarnVaultData = (): V2VaultData => {
         ) as { round: number };
 
         // we use roundPricePerShare for earn treasury because pricePerShare goes down
-        // because shares decrease when options are sold
+        // during the round itself
         const roundPricePerSharePromise = vaultState.round
           ? contract.roundPricePerShare(vaultState.round - 1)
           : Promise.resolve(BigNumber.from(0));
