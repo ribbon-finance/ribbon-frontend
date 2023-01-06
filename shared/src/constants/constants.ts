@@ -120,7 +120,8 @@ const AllVaultOptions = [
 
 export type VaultOptions = typeof AllVaultOptions[number];
 const ProdExcludeVault: VaultOptions[] = [];
-const EarnVault: VaultOptions[] = ["rEARN", "rEARN-stETH", "rVIP-wBTC"];
+export const EarnVaultList: VaultOptions[] = ["rEARN", "rEARN-stETH"];
+export const EarnVIPVaultList: VaultOptions[] = ["rVIP-wBTC"];
 const PutThetaVault: VaultOptions[] = [
   "rUSDC-ETH-P-THETA",
   "ryvUSDC-ETH-P-THETA",
@@ -376,11 +377,7 @@ export const isPutVault = (vault: VaultOptions): boolean =>
   PutThetaVault.includes(vault);
 
 export const isEarnVault = (vault: VaultOptions): boolean =>
-  EarnVault.includes(vault);
-
-export const EarnAddresses: { [key: string]: string } = {
-  RibbonEarnUSDC: v2deployment.mainnet.RibbonEarnUSDC,
-};
+  EarnVaultList.includes(vault) || EarnVIPVaultList.includes(vault);
 
 export const VaultAddressMap: {
   [vault in VaultOptions]: {

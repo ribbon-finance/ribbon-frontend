@@ -30,7 +30,7 @@ import {
 } from "shared/lib/constants/constants";
 import useVaultOption from "../../hooks/useVaultOption";
 import { getVaultColor } from "shared/lib/utils/vault";
-import { getAssetDecimals, getAssetLogo } from "shared/lib/utils/asset";
+import { getAssetLogo } from "shared/lib/utils/asset";
 import { Container } from "react-bootstrap";
 import theme from "shared/lib/designSystem/theme";
 import { getVaultURI } from "../../constants/constants";
@@ -181,7 +181,6 @@ const DepositPage = () => {
   const isLoading = status === "loading" || loading;
   const activities = useVaultActivity(vaultOption!, vaultVersion);
 
-  console.log(useV2VaultData(vaultOption || VaultList[0]));
   const [totalDepositStr] = useMemo(() => {
     switch (vaultVersion) {
       case "v1":

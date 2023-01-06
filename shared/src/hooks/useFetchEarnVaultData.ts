@@ -2,10 +2,9 @@ import { useCallback, useEffect, useState } from "react";
 import { useWeb3React } from "@web3-react/core";
 import { BigNumber } from "ethers";
 import {
-  EVMVaultList,
   getVaultNetwork,
-  isEarnVault,
-  VaultOptions,
+  EarnVaultList,
+  EarnVIPVaultList,
 } from "../constants/constants";
 import { isProduction, isTreasury } from "../utils/env";
 import { getVaultContract } from "./useVaultContract";
@@ -48,7 +47,7 @@ const useFetchEarnVaultData = (): V2VaultData => {
       return currentCounter;
     });
 
-    const vaultList = ["rVIP-wBTC" as VaultOptions];
+    const vaultList = isTreasury() ? EarnVIPVaultList : EarnVaultList;
 
     const responses = await Promise.all(
       vaultList.map(async (vault) => {
@@ -147,7 +146,7 @@ const useFetchEarnVaultData = (): V2VaultData => {
         await roundPricePerSharePromise.then((v) => (roundPricePerShare = v));
 
         const lockedBalanceInAssetTreasury =
-          shares instanceof BigNumber
+          shares instanceof BigNumber && isTreasury()
             ? shares
                 .mul(roundPricePerShare as BigNumber)
                 .div(10 ** (decimals as number))

@@ -6,6 +6,7 @@ import {
   VaultOptions,
   VaultVersion,
   VaultFees,
+  isEarnVault,
 } from "shared/lib/constants/constants";
 import { PrimaryText, SecondaryText, Title } from "shared/lib/designSystem";
 import colors from "shared/lib/designSystem/colors";
@@ -128,7 +129,7 @@ const PerformanceSection: React.FC<PerformanceSectionProps> = ({
 
   return (
     <Container>
-      {active && vaultVersion !== "earn" && (
+      {active && !isEarnVault(vaultOption) && (
         <>
           <Paragraph>
             <ParagraphHeading>Strategy Snapshot</ParagraphHeading>

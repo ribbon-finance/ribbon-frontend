@@ -108,8 +108,6 @@ const VaultV2WithdrawForm: React.FC<VaultV2WithdrawFormProps> = ({
   initiatedWithdrawAmount,
   canCompleteWithdraw,
 }) => {
-  console.log(depositBalanceInAsset);
-  console.log(lockedBalanceInAsset);
   const asset = getAssets(vaultOption);
   const assetDisplay = getAssetDisplay(asset);
   const color = getVaultColor(vaultOption);
