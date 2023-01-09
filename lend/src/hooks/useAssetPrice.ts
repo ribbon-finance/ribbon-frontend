@@ -9,17 +9,20 @@ import {
   defaultAssetsPriceData,
   ExternalAPIDataContext,
 } from "./externalAPIDataContext";
-import { COINGECKO_CURRENCIES } from "../constants/constants";
-import { VERCEL_API_BASE_URL } from "shared/lib/constants/constants";
+import {
+  COINGECKO_BASE_URL,
+  COINGECKO_CURRENCIES,
+} from "../constants/constants";
 
 const getHistoricalAssetPricesInUSD = async (
   currencyName: string
 ): Promise<{ price: number; timestamp: number }[]> => {
-  const apiURL = `${VERCEL_API_BASE_URL}/coingecko/getHistoricalAssetPricesInUSD/?currency=${currencyName}`;
+  const apiURL = `${COINGECKO_BASE_URL}/coins/${currencyName}/market_chart?vs_currency=usd&days=365&interval=daily`;
+
   const response = await axios.get(apiURL);
   const { data } = response;
 
-  return data.data.prices.map(([timestamp, price]: number[]) => ({
+  return data.prices.map(([timestamp, price]: number[]) => ({
     timestamp,
     price,
   }));
@@ -27,21 +30,18 @@ const getHistoricalAssetPricesInUSD = async (
 
 interface SimplePriceAPI {
   [key: string]: {
-    current_price: number;
-    price_change_24h: number;
+    usd: number;
+    usd_24h_change: number;
   };
 }
 
 const getLatestPrices = async (assets: string[]): Promise<SimplePriceAPI> => {
-  const ids = assets.join("%2C");
-  const apiURL = `${VERCEL_API_BASE_URL}/coingecko/getLatestPrices/?ids=${ids}`;
+  const ids = assets.join(",");
+  const apiURL = `${COINGECKO_BASE_URL}/simple/price?ids=${ids}&vs_currencies=usd&include_24hr_change=true`;
+
   const response = await axios.get(apiURL);
   const { data } = response;
-
-  return data.data.reduce((obj: any, asset: any) => {
-    obj[asset.id] = asset;
-    return obj;
-  }, {});
+  return data;
 };
 
 export const useFetchAssetsPrice = (
@@ -100,23 +100,25 @@ export const useFetchAssetsPrice = (
       assetsChunk.forEach((asset) => {
         const coinId = COINGECKO_CURRENCIES[asset];
         if (coinId) {
-          getHistoricalAssetPricesInUSD(coinId).then((data) => {
-            setData((prev) => {
-              return {
-                ...prev,
-                [asset]: {
-                  loading: false,
-                  latestPrice: coinId ? latestPrices[coinId].current_price : 0,
-                  dailyChange: coinId
-                    ? latestPrices[coinId].price_change_24h
-                    : 0,
-                  history: Object.fromEntries(
-                    data.map((item) => [item.timestamp, item.price])
-                  ),
-                },
-              };
-            });
-          });
+          getHistoricalAssetPricesInUSD(coinId)
+            .then((data) => {
+              setData((prev) => {
+                return {
+                  ...prev,
+                  [asset]: {
+                    loading: false,
+                    latestPrice: coinId ? latestPrices[coinId].usd : 0,
+                    dailyChange: coinId
+                      ? latestPrices[coinId].usd_24h_change
+                      : 0,
+                    history: Object.fromEntries(
+                      data.map((item) => [item.timestamp, item.price])
+                    ),
+                  },
+                };
+              });
+            })
+            .catch((e) => console.error(e));
         }
       });
 
@@ -242,7 +244,7 @@ export const useAssetsPriceHistory = () => {
 };
 
 interface AssetInfo {
-  circulating_supply: number;
+  circulatingSupply: number;
 }
 
 export const useAssetInfo = (asset: Assets) => {
@@ -254,18 +256,18 @@ export const useAssetInfo = (asset: Assets) => {
       return;
     }
 
-    const apiURL = `${VERCEL_API_BASE_URL}/coingecko/getAssetInfo/?currency=${COINGECKO_CURRENCIES[asset]}`;
+    const apiURL = `${COINGECKO_BASE_URL}/coins/${COINGECKO_CURRENCIES[asset]}`;
     try {
       setLoading(true);
       const response = await axios.get(apiURL);
       const { data } = response;
       setInfo({
-        circulating_supply: data.data.market_data.circulating_supply,
+        circulatingSupply: data.market_data.circulating_supply,
       });
     } catch (error) {
       !isProduction() && console.log("Asset info fetch error:", error); // eslint-disable-line
       setInfo({
-        circulating_supply: 0,
+        circulatingSupply: 0,
       });
     } finally {
       setLoading(false);
@@ -277,7 +279,7 @@ export const useAssetInfo = (asset: Assets) => {
   }, [fetchAssetInfo]);
 
   return {
-    info: info || { circulating_supply: 0 },
+    info: info || { circulatingSupply: 0 },
     loading,
   };
 };

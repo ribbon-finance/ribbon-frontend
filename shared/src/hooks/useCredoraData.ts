@@ -1,6 +1,5 @@
 import axios from "axios";
 import { useCallback, useEffect, useState } from "react";
-import { VERCEL_API_BASE_URL } from "../constants/constants";
 import {
   getCredoraName,
   PoolList,
@@ -34,7 +33,7 @@ export const useCredoraData = () => {
       return;
     }
 
-    const apiURL = `${VERCEL_API_BASE_URL}/credora`;
+    const apiURL = `https://api-ribbon.vercel.app/api/credora`;
 
     try {
       setLoading(true);
