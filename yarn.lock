@@ -1252,6 +1252,11 @@
     exec-sh "^0.3.2"
     minimist "^1.2.0"
 
+"@coinbase/cbpay-js@^1.6.0":
+  version "1.6.0"
+  resolved "https://registry.yarnpkg.com/@coinbase/cbpay-js/-/cbpay-js-1.6.0.tgz#23f4456ba57f3e6ba1583e21376e9a2337fd1aaa"
+  integrity sha512-jt1BUaMLbA2/xfHc2YC/Uq+rYD0LIpU5s70ms8VpxImNGiMLUEgUZnAzjk1aIqWiTpQWRmwqyq+WvKTb0Yv05Q==
+
 "@craco/craco@^6.1.1":
   version "6.2.0"
   resolved "https://registry.yarnpkg.com/@craco/craco/-/craco-6.2.0.tgz#93847ae20899f5e810359443f2055bcf2b1a584e"
