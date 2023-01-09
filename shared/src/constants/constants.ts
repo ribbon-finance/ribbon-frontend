@@ -1030,8 +1030,8 @@ export const VaultFees: {
   },
   "rVIP-wBTC": {
     earn: {
-      managementFee: "2",
-      performanceFee: "10",
+      managementFee: "0",
+      performanceFee: "0",
     },
   },
   // FIXME: Change with real values
