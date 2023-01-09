@@ -904,7 +904,7 @@ export const VaultMaxDeposit: { [vault in VaultOptions]: BigNumber } = {
   "rSAMB-TSRY": BigNumber.from(1000000000).mul(
     BigNumber.from(10).pow(getAssetDecimals(getAssets("rSAMB-TSRY")))
   ),
-  "rVIP-wBTC": BigNumber.from(2000).mul(
+  "rVIP-wBTC": BigNumber.from(50).mul(
     BigNumber.from(10).pow(getAssetDecimals(getAssets("rVIP-wBTC")))
   ),
   // FIXME: change with real numbers
