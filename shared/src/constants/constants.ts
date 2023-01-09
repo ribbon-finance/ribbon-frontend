@@ -1177,8 +1177,7 @@ export const SUBGRAPHS_TO_QUERY: [VaultVersion, Chains][] = isTreasury()
   ? TREASURY_SUBGRAPHS
   : WEBAPP_SUBGRAPHS;
 
-export const VERCEL_API_BASE_URL = "https://api-ribbon.vercel.app/api";
-
+export const COINGECKO_BASE_URL = "https://api.coingecko.com/api/v3";
 export const COINGECKO_CURRENCIES: { [key in Assets]: string | undefined } = {
   WETH: "ethereum",
   WBTC: "wrapped-bitcoin",
