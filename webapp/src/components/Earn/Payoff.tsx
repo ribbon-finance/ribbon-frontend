@@ -101,7 +101,7 @@ const Payoff: React.FC<PayoffSTETHProps> = ({ vaultOption }) => {
 
   const optionMoneyness = useMemo(() => {
     return getOptionMoneyness(
-      hoverPercentage,
+      hoverPercentage ? hoverPercentage / 100 : undefined,
       lowerBarrierPercentage,
       upperBarrierPercentage,
       performance,

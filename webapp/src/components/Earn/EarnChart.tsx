@@ -2,11 +2,7 @@ import React, { useCallback, useMemo, useState } from "react";
 import Chart, { ChartOptions, ChartData } from "chart.js";
 import { Line } from "react-chartjs-2";
 import colors from "shared/lib/designSystem/colors";
-import {
-  isPerformanceAboveBarriers,
-  isPerformanceBelowBarriers,
-  isPerformanceOutsideBarriers,
-} from "./PayoffHelper";
+import { isPerformanceOutsideBarriers } from "./PayoffHelper";
 import { VaultOptions } from "shared/lib/constants/constants";
 
 /**
@@ -43,41 +39,10 @@ const EarnSTETHChart: React.FC<ProfitChartProps> = ({
 }) => {
   const [hoveredIndex, setIndex] = useState<number>();
 
-  const optionMoneynessText = useCallback(
-    (price: number, drawIndex: number) => {
-      const isBelowBarrier = isPerformanceBelowBarriers(
-        price / 100,
-        lowerBarrierPercentage
-      );
-      const isAboveBarrier = isPerformanceAboveBarriers(
-        price / 100,
-        upperBarrierPercentage
-      );
+  const optionMoneynessText = useCallback((price: number) => {
+    return `${price.toFixed(2)}%`;
+  }, []);
 
-      const arrows = () => {
-        if (isBelowBarrier) {
-          return `<<<`;
-        } else if (isAboveBarrier) {
-          return `>>>`;
-        } else {
-          return ``;
-        }
-      };
-
-      const priceText = () => {
-        if (drawIndex === 0 || isBelowBarrier) {
-          return (lowerBarrierPercentage * 100).toFixed(2);
-        } else if (isAboveBarrier) {
-          return (upperBarrierPercentage * 100).toFixed(2);
-        } else {
-          return price.toFixed(2);
-        }
-      };
-
-      return `${arrows()} ${priceText()}%`;
-    },
-    [lowerBarrierPercentage, upperBarrierPercentage]
-  );
   const drawPricePoint = useCallback(
     (chart: any, price: number, drawIndex: number) => {
       const ctx: CanvasRenderingContext2D = chart.chart.ctx;
@@ -125,7 +90,7 @@ const EarnSTETHChart: React.FC<ProfitChartProps> = ({
       ctx.textBaseline = "middle";
       const padding = 8;
 
-      const text = optionMoneynessText(price, drawIndex);
+      const text = optionMoneynessText(price);
 
       const textLength = ctx.measureText(text).width;
 
@@ -194,7 +159,7 @@ const EarnSTETHChart: React.FC<ProfitChartProps> = ({
       ctx.textBaseline = "middle";
       const padding = 8;
 
-      const text = optionMoneynessText(price, drawIndex);
+      const text = optionMoneynessText(price);
 
       const textLength = ctx.measureText(text).width;
 
@@ -315,10 +280,35 @@ const EarnSTETHChart: React.FC<ProfitChartProps> = ({
       green.addColorStop(1, `transparent`);
       green.addColorStop(0.9, `${colors.green}01`);
       green.addColorStop(0, `${colors.green}20`);
-      const performanceRounded =
-        performance > 0.15 || performance < -0.05
-          ? Math.round(performance * 100)
-          : Math.round(performance * 100 * 1e2) / 1e2;
+      //if performance is outside of barriers, round to 0 decimals.
+      //else round to 2 decimals
+      const performanceRounded = isPerformanceOutsideBarriers(
+        performance,
+        lowerBarrierPercentage,
+        upperBarrierPercentage
+      )
+        ? Math.round(performance * 100 * 1e2) / 1e2
+        : Math.round(performance * 100 * 1e2) / 1e2;
+
+      moneynessRange.map((p) => {
+        if (hoveredIndex) {
+          return null;
+        }
+        if (p === lowerBarrierPercentage * 100) {
+          switch (vaultOption) {
+            case "rEARN":
+              return maxYield * 100;
+            case "rEARN-stETH":
+              return baseYield * 100;
+            default:
+              return maxYield * 100;
+          }
+        }
+        if (p === upperBarrierPercentage * 100) {
+          return maxYield * 100;
+        }
+        return null;
+      });
       return {
         labels: moneynessRange,
         datasets: [
@@ -354,9 +344,9 @@ const EarnSTETHChart: React.FC<ProfitChartProps> = ({
           },
           {
             label: "defaultPoint",
-            data: moneynessRange.map((price) => {
+            data: moneynessRange.map((price, index) => {
               if (price === performanceRounded) {
-                return yieldRange[price];
+                return yieldRange[index];
               } else {
                 return null;
               }

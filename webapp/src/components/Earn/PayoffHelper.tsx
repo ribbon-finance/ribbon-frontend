@@ -36,12 +36,12 @@ export const getOptionMoneyness = (
     case "rEARN":
       if (hoverPercentage) {
         return isPerformanceOutsideBarriers(
-          hoverPercentage / 100,
+          hoverPercentage,
           lowerBarrierPercentage,
           upperBarrierPercentage
         )
           ? 0
-          : hoverPercentage / 100 + 1;
+          : hoverPercentage + 1;
       } else {
         return isPerformanceOutsideBarriers(
           performance,
@@ -54,12 +54,12 @@ export const getOptionMoneyness = (
     case "rEARN-stETH":
       if (hoverPercentage) {
         return isPerformanceOutsideBarriers(
-          hoverPercentage / 100,
+          hoverPercentage,
           lowerBarrierPercentage,
           upperBarrierPercentage
         )
           ? 0
-          : (hoverPercentage / 100 + 1) / (1 + lowerBarrierPercentage);
+          : (hoverPercentage + 1) / (1 + lowerBarrierPercentage);
       } else {
         return isPerformanceOutsideBarriers(
           performance,
@@ -108,12 +108,15 @@ export const getOptionMoneynessRange = (
   const rightBaseYieldPoints = getRightBaseYieldPoints(vaultOption);
   switch (vaultOption) {
     case "rEARN":
+      // points that represent the moneyness below lower barrier
       for (let i = 0; i < leftBaseYieldPoints; i += 1) {
         leftArray.push(
-          Math.round(lowerBarrierPercentage * 100) - (leftBaseYieldPoints - i)
+          Math.round(lowerBarrierPercentage * 100) -
+            (leftBaseYieldPoints - i) / 100
         );
       }
 
+      // points that represent the moneyness between barriers
       for (
         let i = Math.round(lowerBarrierPercentage * 100) * 100;
         i <= Math.round(upperBarrierPercentage * 100) * 100;
@@ -122,24 +125,24 @@ export const getOptionMoneynessRange = (
         array.push(i / 100);
       }
 
+      // points that represent the moneyness above upper barrier
       for (let i = 0; i < rightBaseYieldPoints; i += 1) {
-        rightArray.push(Math.round(upperBarrierPercentage * 100) + i + 1);
+        rightArray.push(
+          Math.round(upperBarrierPercentage * 100) + (i + 1) / 100
+        );
       }
 
-      return [
-        ...leftArray,
-        lowerBarrierPercentage * 100 - 0.01,
-        ...array,
-        upperBarrierPercentage * 100 + 0.01,
-        ...rightArray,
-      ];
+      return [...leftArray, ...array, ...rightArray];
     case "rEARN-stETH":
+      // points that represent the moneyness below lower barrier
       for (let i = 0; i < leftBaseYieldPoints; i += 1) {
         leftArray.push(
-          Math.round(lowerBarrierPercentage * 100) - (leftBaseYieldPoints - i)
+          Math.round(lowerBarrierPercentage * 100) -
+            (leftBaseYieldPoints - i) / 100
         );
       }
 
+      // points that represent the moneyness when between barriers
       for (
         let i = Math.round(lowerBarrierPercentage * 100) * 100;
         i <= Math.round(upperBarrierPercentage * 100) * 100;
@@ -148,17 +151,14 @@ export const getOptionMoneynessRange = (
         array.push(i / 100);
       }
 
+      // points that represent the moneyness above upper barrier
       for (let i = 0; i < rightBaseYieldPoints; i += 1) {
-        rightArray.push(Math.round(upperBarrierPercentage * 100) + i + 1);
+        rightArray.push(
+          Math.round(upperBarrierPercentage * 100) + (i + 1) / 100
+        );
       }
 
-      return [
-        ...leftArray,
-        lowerBarrierPercentage * 100 - 0.01,
-        ...array,
-        upperBarrierPercentage * 100 + 0.01,
-        ...rightArray,
-      ];
+      return [...leftArray, ...array, ...rightArray];
     default:
       return [];
   }
@@ -180,10 +180,12 @@ export const getYieldRange = (
   const baseYieldPercentage = baseYield * 100;
   switch (vaultOption) {
     case "rEARN":
+      // points that represent the base yield below lower barrier
       for (let i = 0; i < leftBaseYieldPoints; i += 1) {
         leftArray.push(baseYieldPercentage);
       }
 
+      // points that represent the expected yield between barriers
       for (
         let i = Math.round(lowerBarrierPercentage * 100) * 100;
         i <= Math.round(upperBarrierPercentage * 100) * 100;
@@ -197,6 +199,7 @@ export const getYieldRange = (
         );
       }
 
+      // points that represent the base yield above upper barrier
       for (let i = 0; i < rightBaseYieldPoints; i += 1) {
         rightArray.push(baseYieldPercentage);
       }
@@ -208,6 +211,7 @@ export const getYieldRange = (
         ...rightArray,
       ];
     case "rEARN-stETH":
+      // points that represent the base yield below lower barrier
       for (let i = 0; i < leftBaseYieldPoints; i += 1) {
         leftArray.push(baseYieldPercentage);
       }
@@ -216,6 +220,7 @@ export const getYieldRange = (
       // we multiply the number by 10000 to make plotting easier
       const barriersSumLargeNumber = Math.round(barriersSum * 100) * 100;
 
+      // points that represent the expected yield between barriers
       // add incremental amounts of expected yield from base yield to max yield
       for (let i = 0; i <= barriersSumLargeNumber; i += 1) {
         const percentage = i / barriersSumLargeNumber;
@@ -230,6 +235,7 @@ export const getYieldRange = (
         );
       }
 
+      // points that represent the base yield above upper barrier
       for (let i = 0; i < rightBaseYieldPoints; i += 1) {
         rightArray.push(baseYieldPercentage);
       }
