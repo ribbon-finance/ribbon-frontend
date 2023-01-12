@@ -77,6 +77,19 @@ export const formatBigNumberAmount = (
   return formatAmount(parseFloat(formatUnits(num, decimals)));
 };
 
+export const formatBigNumberFloat = (
+  num: BigNumberish,
+  decimals: number = 18,
+  significantDecimals?: number
+) => {
+  const _significantDecimals =
+    significantDecimals ||
+    getDefaultSignificantDecimalsFromAssetDecimals(decimals);
+  return parseFloat(
+    formatSignificantDecimals(formatUnits(num, decimals), _significantDecimals)
+  );
+};
+
 export const toFiat = (etherVal: BigNumber) => {
   const scaleFactor = ethers.BigNumber.from(10).pow("6");
   const scaled = etherVal.div(scaleFactor);

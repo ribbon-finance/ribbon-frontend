@@ -92,6 +92,10 @@
       "title": "T-SAMB-C",
       "subtitle": "SAMB Covered Call"
     },
+    "rVIP-wBTC": {
+      "title": "R-VIP-WBTC",
+      "subtitle": "VIP WBTC Earn"
+    },
     "rAPE-THETA": {
       "title": "T-APE-C",
       "subtitle": "APE Covered Call"

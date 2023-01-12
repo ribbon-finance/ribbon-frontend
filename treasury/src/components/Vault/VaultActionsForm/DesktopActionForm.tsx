@@ -52,6 +52,7 @@ const DesktopActionForm: React.FC<DesktopActionFormProps> = ({ vault }) => {
           />
         );
       case "v2":
+      case "earn":
         return (
           <VaultV2ActionsForm
             vaultOption={vault.vaultOption}

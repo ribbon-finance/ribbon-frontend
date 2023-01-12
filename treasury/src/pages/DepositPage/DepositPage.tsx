@@ -1,5 +1,4 @@
-import React, { ReactNode, useMemo } from "react";
-import { ethers } from "ethers";
+import React, { ReactNode, useContext, useMemo } from "react";
 import { useWeb3Wallet } from "shared/lib/hooks/useWeb3Wallet";
 import styled from "styled-components";
 import { Redirect } from "react-router-dom";
@@ -10,10 +9,7 @@ import { BaseLink, Title } from "shared/lib/designSystem";
 import colors from "shared/lib/designSystem/colors";
 import PerformanceSection from "./PerformanceSection";
 import { useVaultData, useV2VaultData } from "shared/lib/hooks/web3DataContext";
-import {
-  formatSignificantDecimals,
-  isPracticallyZero,
-} from "shared/lib/utils/math";
+import { formatBigNumberFloat, isPracticallyZero } from "shared/lib/utils/math";
 import sizes from "shared/lib/designSystem/sizes";
 import VaultActivity from "../../components/Vault/VaultActivity";
 import usePullUp from "webapp/lib/hooks/usePullUp";
@@ -21,6 +17,7 @@ import {
   getDisplayAssets,
   getEtherscanURI,
   hasVaultVersion,
+  isEarnVault,
   isPutVault,
   VaultAddressMap,
   VaultList,
@@ -41,8 +38,7 @@ import Banner from "shared/lib/components/Banner/Banner";
 import VaultInformation from "../../components/Deposit/VaultInformation";
 import useVaultActivity from "shared/lib/hooks/useVaultActivity";
 import { getPremiumsAfterFeesFromVaultActivities } from "../../utils";
-
-const { formatUnits } = ethers.utils;
+import { SubgraphDataContext } from "shared/lib/hooks/subgraphDataContext";
 
 const DepositPageContainer = styled(Container)`
   @media (min-width: ${sizes.xl}px) {
@@ -171,34 +167,36 @@ const DepositPage = () => {
   );
 
   const {
-    data: { asset, cap, decimals, totalBalance },
+    data: { asset, decimals, totalBalance },
     loading,
   } = useV2VaultData(vaultOption || VaultList[0]);
 
+  const { vaultSubgraphData } = useContext(SubgraphDataContext);
   const isLoading = status === "loading" || loading;
   const activities = useVaultActivity(vaultOption!, vaultVersion);
 
-  const [totalDepositStr] = useMemo(() => {
+  const totalDepositStr = useMemo(() => {
     switch (vaultVersion) {
       case "v1":
-        return [
-          parseFloat(
-            formatSignificantDecimals(formatUnits(deposits, decimals), 2)
-          ),
-          parseFloat(
-            formatSignificantDecimals(formatUnits(vaultLimit, decimals))
-          ),
-        ];
-      case "earn":
+        return formatBigNumberFloat(deposits, decimals, 2);
       case "v2":
-        return [
-          parseFloat(
-            formatSignificantDecimals(formatUnits(totalBalance, decimals), 2)
-          ),
-          parseFloat(formatSignificantDecimals(formatUnits(cap, decimals))),
-        ];
+        return formatBigNumberFloat(totalBalance, decimals, 2);
+      case "earn":
+        const subgraphData =
+          vaultSubgraphData.vaults.earn[vaultOption || VaultList[0]];
+        if (!subgraphData) {
+          return 0;
+        }
+        return formatBigNumberFloat(subgraphData.totalBalance, decimals, 2);
     }
-  }, [cap, decimals, deposits, totalBalance, vaultLimit, vaultVersion]);
+  }, [
+    decimals,
+    deposits,
+    totalBalance,
+    vaultOption,
+    vaultSubgraphData.vaults.earn,
+    vaultVersion,
+  ]);
 
   // Total lifetime yield
   const totalYields = useMemo(() => {
@@ -281,7 +279,9 @@ const DepositPage = () => {
             <DesktopActionForm vault={{ vaultOption, vaultVersion }} />
           </DesktopActionsFormContainer>
         </div>
-        <VaultActivity vault={{ vaultOption, vaultVersion }} />
+        {!isEarnVault && (
+          <VaultActivity vault={{ vaultOption, vaultVersion }} />
+        )}
       </DepositPageContainer>
 
       {/* Desktop Position Component */}
@@ -345,6 +345,14 @@ const HeroSection: React.FC<{
     }
   }, [color, variant]);
 
+  const tagPillTitle = useMemo(() => {
+    if (isEarnVault(vaultOption)) {
+      return "CUSTOM STRATEGY";
+    } else {
+      return isPutVault(vaultOption) ? "PUT-SELLING" : "COVERED CALL";
+    }
+  }, [vaultOption]);
+
   return (
     <>
       {/* V1 top banner */}
@@ -367,7 +375,7 @@ const HeroSection: React.FC<{
             <div style={{ zIndex: 1 }} className="col-xl-6 d-flex flex-column">
               <div className="d-flex flex-row my-3">
                 <TagPill className="mr-2 text-uppercase" color={color}>
-                  {isPutVault(vaultOption) ? "PUT-SELLING" : "COVERED CALL"}
+                  {tagPillTitle}
                 </TagPill>
               </div>
 

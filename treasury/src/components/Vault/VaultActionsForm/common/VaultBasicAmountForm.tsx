@@ -160,6 +160,7 @@ const VaultBasicAmountForm: React.FC<VaultBasicAmountFormProps> = ({
     handleMaxClick,
     vaultActionForm,
   } = useVaultActionForm(vaultOption);
+
   const { active } = useWeb3Wallet();
   const [, setShowConnectModal] = useConnectWalletModal();
   const [showDepositAssetMenu, setShowDepositAssetMenu] = useState(false);

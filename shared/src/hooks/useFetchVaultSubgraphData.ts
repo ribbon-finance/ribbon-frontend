@@ -52,6 +52,7 @@ const useFetchVaultSubgraphData = () => {
   const [data, setData] = useState<VaultSubgraphDataContextType>(
     defaultVaultSubgraphData
   );
+
   const { transactionsCounter } = usePendingTransactions();
   const [, setMulticallCounter] = useState(0);
 

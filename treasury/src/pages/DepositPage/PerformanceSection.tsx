@@ -6,6 +6,7 @@ import {
   VaultOptions,
   VaultVersion,
   VaultFees,
+  isEarnVault,
 } from "shared/lib/constants/constants";
 import { PrimaryText, SecondaryText, Title } from "shared/lib/designSystem";
 import colors from "shared/lib/designSystem/colors";
@@ -128,7 +129,7 @@ const PerformanceSection: React.FC<PerformanceSectionProps> = ({
 
   return (
     <Container>
-      {active && (
+      {active && !isEarnVault(vaultOption) && (
         <>
           <Paragraph>
             <ParagraphHeading>Strategy Snapshot</ParagraphHeading>
@@ -160,36 +161,38 @@ const PerformanceSection: React.FC<PerformanceSectionProps> = ({
         </Paragraph>
       )}
 
-      <Paragraph>
-        <ParagraphHeading>Risk</ParagraphHeading>
-        <ParagraphText>
-          {treasuryCopy.vaultRisk}
-          <br />
-          <br />
-          The Treasury Vault smart contracts have been{" "}
-          <Link
-            href="https://github.com/ribbon-finance/audit/blob/master/reports/PeckShield-Audit-Report-RibbonTreasuryVault.pdf"
-            target="_blank"
-            rel="noreferrer noopener"
-          >
-            audited by PeckShield
-          </Link>{" "}
-          . Despite that, users are advised to exercise caution and only risk
-          funds they can afford to lose.
-        </ParagraphText>
+      {vaultVersion !== "earn" && (
+        <Paragraph>
+          <ParagraphHeading>Risk</ParagraphHeading>
+          <ParagraphText>
+            {treasuryCopy.vaultRisk}
+            <br />
+            <br />
+            The Treasury Vault smart contracts have been{" "}
+            <Link
+              href="https://github.com/ribbon-finance/audit/blob/master/reports/PeckShield-Audit-Report-RibbonTreasuryVault.pdf"
+              target="_blank"
+              rel="noreferrer noopener"
+            >
+              audited by PeckShield
+            </Link>{" "}
+            . Despite that, users are advised to exercise caution and only risk
+            funds they can afford to lose.
+          </ParagraphText>
 
-        <PrimaryText className="d-block mt-3">
-          <Link
-            href="https://www.research.ribbon.finance/blog/theta-vault-backtest-results"
-            target="_blank"
-            rel="noreferrer noopener"
-            className="d-flex"
-          >
-            <span className="mr-2">Read More</span>
-            <ExternalIcon color="white" />
-          </Link>
-        </PrimaryText>
-      </Paragraph>
+          <PrimaryText className="d-block mt-3">
+            <Link
+              href="https://www.research.ribbon.finance/blog/theta-vault-backtest-results"
+              target="_blank"
+              rel="noreferrer noopener"
+              className="d-flex"
+            >
+              <span className="mr-2">Read More</span>
+              <ExternalIcon color="white" />
+            </Link>
+          </PrimaryText>
+        </Paragraph>
+      )}
     </Container>
   );
 };

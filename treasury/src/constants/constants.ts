@@ -1,10 +1,12 @@
 import { BigNumber, ethers } from "ethers";
 import {
+  getAssets,
   TreasuryVaultList,
   VaultNameOptionMap,
   VaultOptions,
   VaultVersion,
 } from "shared/lib/constants/constants";
+import { getAssetDecimals } from "shared/lib/utils/asset";
 
 export type TreasuryVaultOptions = typeof TreasuryVaultList[number];
 
@@ -21,6 +23,8 @@ export const hashCode: {
     "0x43d708aa36cb2ad46d13ce5f1b32eca3d34215b0b96aca2e341c6d325d0b8a48",
   "rSAMB-TSRY":
     "0xa3423956edbd6a601b054932c817d6f845bf9bf0303cef7e47ac9a580a4e77dc",
+  "rVIP-wBTC":
+    "0xa1e9307fa0af394a591a9d447a7f1ec862de19ab669140b5ad50e8958389fb35",
 };
 
 export const minDeposit: { [vault in TreasuryVaultOptions]: BigNumber } = {
@@ -29,6 +33,7 @@ export const minDeposit: { [vault in TreasuryVaultOptions]: BigNumber } = {
   "rBADGER-TSRY": ethers.utils.parseEther("100"),
   "rSPELL-TSRY": ethers.utils.parseEther("3000"),
   "rSAMB-TSRY": ethers.utils.parseEther("3000"),
+  "rVIP-wBTC": BigNumber.from(10).pow(getAssetDecimals(getAssets("rVIP-wBTC"))), // minDeposit of 1 wBTC
 };
 
 export const getVaultURI = (
