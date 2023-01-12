@@ -92,7 +92,7 @@ const baseName = (vault: VaultOptions) => {
     case "rEARN":
       return "Earn";
     case "rEARN-stETH":
-      return "EarnSTETH";
+      return "EarnSTETHTest";
     default:
       return "EarnTest";
   }
