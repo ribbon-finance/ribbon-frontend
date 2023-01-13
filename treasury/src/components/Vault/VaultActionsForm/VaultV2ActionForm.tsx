@@ -18,7 +18,10 @@ import { useV2VaultData } from "shared/lib/hooks/web3DataContext";
 import { ActionButton } from "shared/lib/components/Common/buttons";
 import { getVaultURI } from "../../../constants/constants";
 import { WithdrawIcon } from "shared/lib/assets/icons/icons";
-import { RibbonVaultMigrationMap } from "shared/lib/constants/constants";
+import {
+  isEarnVault,
+  RibbonVaultMigrationMap,
+} from "shared/lib/constants/constants";
 import useVaultPriceHistory from "shared/lib/hooks/useVaultPerformanceUpdate";
 import { BigNumber } from "ethers";
 import { parseUnits } from "ethers/lib/utils";
@@ -71,7 +74,9 @@ const VaultV2ActionsForm: React.FC<FormStepProps> = ({
       withdrawals,
     },
   } = useV2VaultData(vaultOption);
-  const { priceHistory } = useVaultPriceHistory(vaultOption, "v2");
+
+  const vaultVersion = isEarnVault(vaultOption) ? "earn" : "v2";
+  const { priceHistory } = useVaultPriceHistory(vaultOption, vaultVersion);
   const [hideMigrationForm, setHideMigrationForm] = useState(false);
   const [hideCompleteWithdrawReminder, setHideCompleteWithdrawReminder] =
     useState(false);

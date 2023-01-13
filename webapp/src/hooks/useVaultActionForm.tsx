@@ -381,6 +381,7 @@ const useVaultActionForm = (vaultOption: VaultOptions) => {
          * V2 handle max click
          */
         case "v2":
+        case "earn":
           switch (actionForm.actionType) {
             case ACTIONS.deposit:
               const gasLimit = GAS_LIMITS[vaultOption].v2!.deposit;

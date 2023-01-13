@@ -249,6 +249,7 @@ const ActionSteps: React.FC<ActionStepsProps> = ({
                * V2 withdraw
                */
               case "v2":
+              case "earn":
                 const v2Vault = vault as RibbonV2ThetaVault;
                 switch (vaultActionForm.withdrawOption) {
                   /** Instant withdraw for V2 */
@@ -267,7 +268,7 @@ const ActionSteps: React.FC<ActionStepsProps> = ({
                     }
                     break;
 
-                  /** Initiate withdrawal for v2 */
+                  /** Initiate withdrawal for v2/earn */
                   case "standard":
                     shares = amount
                       .mul(BigNumber.from(10).pow(decimals))
