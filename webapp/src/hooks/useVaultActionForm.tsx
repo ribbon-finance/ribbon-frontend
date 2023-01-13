@@ -219,9 +219,9 @@ const useVaultActionForm = (vaultOption: VaultOptions) => {
             break;
           case ACTIONS.withdraw:
             /**
-             * Only catch v2 vault and set default withdraw option if not provided
+             * Only catch v2 and earn vault and set default withdraw option if not provided
              */
-            if (vaultVersion === "v2") {
+            if (vaultVersion === "v2" || vaultVersion === "earn") {
               withdrawOption = withdrawOption || V2WithdrawOptionList[0];
               return {
                 ...actionForm,
