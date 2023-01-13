@@ -6,6 +6,7 @@ import { useLocation } from "react-router-dom";
 
 import colors from "shared/lib/designSystem/colors";
 import {
+  isEarnVault,
   isNativeToken,
   VaultAddressMap,
   VaultAllowedDepositAssets,
@@ -119,8 +120,9 @@ const VaultV2DepositWithdrawForm: React.FC<VaultV2DepositWithdrawFormProps> = ({
   const { balance: userAssetBalance } = useAssetBalance(
     vaultActionForm.depositAsset || asset
   );
+  const vaultVersion = isEarnVault(vaultOption) ? "earn" : "v2";
   const vaultBalanceInAsset = depositBalanceInAsset.add(lockedBalanceInAsset);
-  const { priceHistory } = useVaultPriceHistory(vaultOption, "v2");
+  const { priceHistory } = useVaultPriceHistory(vaultOption, vaultVersion);
   const { active } = useWeb3React();
 
   const vaultMaxDepositAmount = VaultMaxDeposit[vaultOption];
@@ -153,7 +155,7 @@ const VaultV2DepositWithdrawForm: React.FC<VaultV2DepositWithdrawFormProps> = ({
           VaultAllowedDepositAssets[
             vaultOption
           ][0].toLowerCase()) as ERC20Token),
-    VaultAddressMap[vaultOption].v2
+    VaultAddressMap[vaultOption][vaultVersion]
   );
 
   /**
@@ -172,7 +174,7 @@ const VaultV2DepositWithdrawForm: React.FC<VaultV2DepositWithdrawFormProps> = ({
       switch (searchParams.get("initialAction")) {
         case "completeWithdraw":
           if (canCompleteWithdraw) {
-            handleActionTypeChange(ACTIONS.withdraw, "v2", {
+            handleActionTypeChange(ACTIONS.withdraw, vaultVersion, {
               withdrawOption: "complete",
             });
             handleMaxClick();
@@ -181,21 +183,14 @@ const VaultV2DepositWithdrawForm: React.FC<VaultV2DepositWithdrawFormProps> = ({
           }
           break;
         default:
-          handleActionTypeChange(ACTIONS.deposit, "v2");
+          handleActionTypeChange(ACTIONS.deposit, vaultVersion);
           setProcessedInitialState(true);
       }
     } catch {
-      handleActionTypeChange(ACTIONS.deposit, "v2");
+      handleActionTypeChange(ACTIONS.deposit, vaultVersion);
       setProcessedInitialState(true);
     }
-  }, [
-    canCompleteWithdraw,
-    handleActionTypeChange,
-    handleMaxClick,
-    location.search,
-    onFormSubmit,
-    processedInitialState,
-  ]);
+  }, [canCompleteWithdraw, handleActionTypeChange, handleMaxClick, location.search, onFormSubmit, processedInitialState, vaultVersion]);
 
   /**
    * Check if approval needed
@@ -330,7 +325,7 @@ const VaultV2DepositWithdrawForm: React.FC<VaultV2DepositWithdrawFormProps> = ({
       return (
         <VaultApprovalForm
           vaultOption={vaultOption}
-          version="v2"
+          version={vaultVersion}
           showDepositAssetSwap={
             VaultAllowedDepositAssets[vaultOption].length > 1
           }
@@ -407,6 +402,7 @@ const VaultV2DepositWithdrawForm: React.FC<VaultV2DepositWithdrawFormProps> = ({
     vaultActionForm.actionType,
     vaultActionForm.depositAsset,
     vaultOption,
+    vaultVersion,
     withdrawalAmount,
   ]);
 
@@ -434,7 +430,7 @@ const VaultV2DepositWithdrawForm: React.FC<VaultV2DepositWithdrawFormProps> = ({
       <FormTabContainer>
         <FormTab
           active={vaultActionForm.actionType === ACTIONS.deposit}
-          onClick={() => handleActionTypeChange(ACTIONS.deposit, "v2")}
+          onClick={() => handleActionTypeChange(ACTIONS.deposit, vaultVersion)}
         >
           <FormTabTitle active={vaultActionForm.actionType === ACTIONS.deposit}>
             Deposit
@@ -442,7 +438,7 @@ const VaultV2DepositWithdrawForm: React.FC<VaultV2DepositWithdrawFormProps> = ({
         </FormTab>
         <FormTab
           active={vaultActionForm.actionType === ACTIONS.withdraw}
-          onClick={() => handleActionTypeChange(ACTIONS.withdraw, "v2")}
+          onClick={() => handleActionTypeChange(ACTIONS.withdraw, vaultVersion)}
         >
           <FormTabTitle
             active={vaultActionForm.actionType === ACTIONS.withdraw}
