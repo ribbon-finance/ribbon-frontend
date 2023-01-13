@@ -203,7 +203,19 @@ const VaultV2ActionsForm: React.FC<FormStepProps> = ({
         onFormSubmit={onFormSubmit}
       />
     );
-  }, [migrateSourceVault, hideMigrationForm, vaultOption, canCompleteWithdraw, hideCompleteWithdrawReminder, onFormSubmit, color, withdrawalAmount, decimals, asset, history]);
+  }, [
+    migrateSourceVault,
+    hideMigrationForm,
+    vaultOption,
+    canCompleteWithdraw,
+    hideCompleteWithdrawReminder,
+    onFormSubmit,
+    color,
+    withdrawalAmount,
+    decimals,
+    asset,
+    history,
+  ]);
 
   const formExtra = useMemo(() => {
     let formExtraText: JSX.Element | undefined = undefined;

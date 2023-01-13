@@ -190,7 +190,15 @@ const VaultV2DepositWithdrawForm: React.FC<VaultV2DepositWithdrawFormProps> = ({
       handleActionTypeChange(ACTIONS.deposit, vaultVersion);
       setProcessedInitialState(true);
     }
-  }, [canCompleteWithdraw, handleActionTypeChange, handleMaxClick, location.search, onFormSubmit, processedInitialState, vaultVersion]);
+  }, [
+    canCompleteWithdraw,
+    handleActionTypeChange,
+    handleMaxClick,
+    location.search,
+    onFormSubmit,
+    processedInitialState,
+    vaultVersion,
+  ]);
 
   /**
    * Check if approval needed
