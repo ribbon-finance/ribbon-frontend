@@ -96,6 +96,10 @@
       "title": "R-VIP-WBTC",
       "subtitle": "VIP WBTC Earn"
     },
+    "rVIP-USDC": {
+      "title": "R-VIP-USDC",
+      "subtitle": "VIP USDC Earn"
+    },
     "rAPE-THETA": {
       "title": "T-APE-C",
       "subtitle": "APE Covered Call"

@@ -110,6 +110,7 @@ export const TreasuryVaultList = [
   "rSPELL-TSRY",
   "rSAMB-TSRY",
   "rVIP-wBTC",
+  "rVIP-USDC",
 ] as const;
 
 const AllVaultOptions = [
@@ -121,7 +122,7 @@ const AllVaultOptions = [
 export type VaultOptions = typeof AllVaultOptions[number];
 const ProdExcludeVault: VaultOptions[] = [];
 export const EarnVaultList: VaultOptions[] = ["rEARN", "rEARN-stETH"];
-export const EarnVIPVaultList: VaultOptions[] = ["rVIP-wBTC"];
+export const EarnVIPVaultList: VaultOptions[] = ["rVIP-wBTC", "rVIP-USDC"];
 const PutThetaVault: VaultOptions[] = [
   "rUSDC-ETH-P-THETA",
   "ryvUSDC-ETH-P-THETA",
@@ -285,6 +286,13 @@ export const GAS_LIMITS: {
     },
   },
   "rVIP-wBTC": {
+    earn: {
+      deposit: 380000,
+      withdrawInstantly: 130000,
+      completeWithdraw: 300000,
+    },
+  },
+  "rVIP-USDC": {
     earn: {
       deposit: 380000,
       withdrawInstantly: 130000,
@@ -544,6 +552,15 @@ export const VaultAddressMap: {
         earn: v2deployment.mainnet.RibbonVIPVaultWBTC,
         chainId: CHAINID.ETH_MAINNET,
       },
+  "rVIP-USDC": isDevelopment()
+    ? {
+        earn: v2deployment.kovan.RibbonVIPVaultUSDC,
+        chainId: CHAINID.ETH_KOVAN,
+      }
+    : {
+        earn: v2deployment.mainnet.RibbonVIPVaultUSDC,
+        chainId: CHAINID.ETH_MAINNET,
+      },
   // FIXME: change with real addresses
   "rSOL-THETA": {
     v2: getSolanaAddresses().vaults["rSOL-THETA"],
@@ -592,6 +609,7 @@ export const VaultNamesList = [
   "T-SPELL-C",
   "T-SAMB-C",
   "R-VIP-WBTC",
+  "R-VIP-USDC",
   "T-SOL-C",
   "T-APE-C",
   "R-EARN",
@@ -615,6 +633,7 @@ export const VaultNameOptionMap: { [name in VaultName]: VaultOptions } = {
   "T-SPELL-C": "rSPELL-TSRY",
   "T-SAMB-C": "rSAMB-TSRY",
   "R-VIP-WBTC": "rVIP-wBTC",
+  "R-VIP-USDC": "rVIP-USDC",
   "T-SOL-C": "rSOL-THETA",
   "T-APE-C": "rAPE-THETA",
   "R-EARN": "rEARN",
@@ -724,6 +743,8 @@ export const getAssets = (vault: VaultOptions): Assets => {
       return "SAMB";
     case "rVIP-wBTC":
       return "WBTC";
+    case "rVIP-USDC":
+      return "USDC";
     case "rSOL-THETA":
       return "SOL";
     case "rAPE-THETA":
@@ -765,6 +786,8 @@ export const getOptionAssets = (vault: VaultOptions): Assets => {
       return "SAMB";
     case "rVIP-wBTC":
       return "WBTC";
+    case "rVIP-USDC":
+      return "USDC";
     case "rSOL-THETA":
       return "SOL";
     case "rAPE-THETA":
@@ -811,6 +834,8 @@ export const getDisplayAssets = (vault: VaultOptions): Assets => {
       return "SAMB";
     case "rVIP-wBTC":
       return "WBTC";
+    case "rVIP-USDC":
+      return "USDC";
     case "rSOL-THETA":
       return "SOL";
     case "rAPE-THETA":
@@ -840,6 +865,7 @@ export const VaultAllowedDepositAssets: { [vault in VaultOptions]: Assets[] } =
     "rSPELL-TSRY": ["SPELL"],
     "rSAMB-TSRY": ["SAMB"],
     "rVIP-wBTC": ["WBTC"],
+    "rVIP-USDC": ["USDC"],
     "rSOL-THETA": ["SOL"],
     "rAPE-THETA": ["APE"],
     rEARN: ["USDC"],
@@ -906,6 +932,9 @@ export const VaultMaxDeposit: { [vault in VaultOptions]: BigNumber } = {
   ),
   "rVIP-wBTC": BigNumber.from(50).mul(
     BigNumber.from(10).pow(getAssetDecimals(getAssets("rVIP-wBTC")))
+  ),
+  "rVIP-USDC": BigNumber.from(100000000).mul(
+    BigNumber.from(10).pow(getAssetDecimals(getAssets("rVIP-USDC")))
   ),
   // FIXME: change with real numbers
   "rSOL-THETA": BigNumber.from(100000000).mul(
@@ -1029,6 +1058,12 @@ export const VaultFees: {
     },
   },
   "rVIP-wBTC": {
+    earn: {
+      managementFee: "0",
+      performanceFee: "0",
+    },
+  },
+  "rVIP-USDC": {
     earn: {
       managementFee: "0",
       performanceFee: "0",
