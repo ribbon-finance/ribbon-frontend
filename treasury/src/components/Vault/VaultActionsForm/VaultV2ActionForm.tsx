@@ -18,10 +18,20 @@ import { useV2VaultData } from "shared/lib/hooks/web3DataContext";
 import { ActionButton } from "shared/lib/components/Common/buttons";
 import { getVaultURI } from "../../../constants/constants";
 import { WithdrawIcon } from "shared/lib/assets/icons/icons";
-import { RibbonVaultMigrationMap } from "shared/lib/constants/constants";
+import {
+  isDisabledVault,
+  isEarnVault,
+  isNativeToken,
+  RibbonVaultMigrationMap,
+  VaultAddressMap,
+  VaultAllowedDepositAssets,
+} from "shared/lib/constants/constants";
 import useVaultPriceHistory from "shared/lib/hooks/useVaultPerformanceUpdate";
 import { BigNumber } from "ethers";
 import { parseUnits } from "ethers/lib/utils";
+import VaultApprovalForm from "webapp/lib/components/Vault/VaultActionsForm/common/VaultApprovalForm";
+import useTokenAllowance from "shared/lib/hooks/useTokenAllowance";
+import { ERC20Token } from "shared/lib/models/eth";
 
 const FormContainer = styled.div`
   display: flex;
@@ -79,6 +89,20 @@ const VaultV2ActionsForm: React.FC<FormStepProps> = ({
   const color = getVaultColor(vaultOption);
   const { vaultActionForm, handleActionTypeChange } =
     useVaultActionForm(vaultOption);
+
+  /**
+   * Side hooks
+   */
+  const tokenAllowance = useTokenAllowance(
+    isNativeToken(vaultActionForm.depositAsset || asset)
+      ? undefined
+      : ((vaultActionForm.depositAsset?.toLowerCase() ||
+          VaultAllowedDepositAssets[
+            vaultOption
+          ][0].toLowerCase()) as ERC20Token),
+    VaultAddressMap[vaultOption].earn
+  );
+
   const withdrawalAmount = useMemo(
     () =>
       withdrawals.shares
@@ -114,6 +138,30 @@ const VaultV2ActionsForm: React.FC<FormStepProps> = ({
   }, [round, vaultActionForm.withdrawOption, withdrawals]);
 
   /**
+   * Check if approval needed
+   */
+  const showTokenApproval = useMemo(() => {
+    if (vaultActionForm.actionType === ACTIONS.deposit) {
+      return (
+        !isNativeToken(
+          vaultActionForm.depositAsset ||
+            VaultAllowedDepositAssets[vaultOption][0]
+        ) &&
+        tokenAllowance &&
+        isPracticallyZero(tokenAllowance, decimals)
+      );
+    }
+
+    return false;
+  }, [
+    decimals,
+    tokenAllowance,
+    vaultActionForm.actionType,
+    vaultActionForm.depositAsset,
+    vaultOption,
+  ]);
+
+  /**
    * Make sure action type cannot be migrate when user cannot migrate
    */
   useEffect(() => {
@@ -134,6 +182,27 @@ const VaultV2ActionsForm: React.FC<FormStepProps> = ({
           onFormSubmit={onFormSubmit}
           onHideForm={() => setHideMigrationForm(true)}
         />
+      );
+    }
+
+    /**
+     * Approval before deposit
+     */
+    if (
+      showTokenApproval &&
+      !isDisabledVault(vaultOption) &&
+      isEarnVault(vaultOption)
+    ) {
+      return (
+        <div style={{ padding: 16 }}>
+          <VaultApprovalForm
+            vaultOption={vaultOption}
+            version="earn"
+            showDepositAssetSwap={
+              VaultAllowedDepositAssets[vaultOption].length > 1
+            }
+          />
+        </div>
       );
     }
 
@@ -203,17 +272,18 @@ const VaultV2ActionsForm: React.FC<FormStepProps> = ({
       />
     );
   }, [
-    asset,
-    canCompleteWithdraw,
     migrateSourceVault,
-    color,
-    decimals,
-    hideCompleteWithdrawReminder,
     hideMigrationForm,
-    history,
-    onFormSubmit,
+    showTokenApproval,
     vaultOption,
+    canCompleteWithdraw,
+    hideCompleteWithdrawReminder,
+    onFormSubmit,
+    color,
     withdrawalAmount,
+    decimals,
+    asset,
+    history,
   ]);
 
   const formExtra = useMemo(() => {
