@@ -161,11 +161,6 @@ const VaultV2ActionsForm: React.FC<FormStepProps> = ({
     vaultOption,
   ]);
 
-  console.log(
-    !isNativeToken(
-      vaultActionForm.depositAsset || VaultAllowedDepositAssets[vaultOption][0]
-    )
-  );
   /**
    * Make sure action type cannot be migrate when user cannot migrate
    */
