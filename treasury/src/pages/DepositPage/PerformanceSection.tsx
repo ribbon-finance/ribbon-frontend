@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useCallback, useState } from "react";
 import styled from "styled-components";
 
 import { ExternalIcon } from "shared/lib/assets/icons/icons";
@@ -15,6 +15,10 @@ import StrategySnapshot, {
 } from "../../components/Deposit/StrategySnapshot";
 import sizes from "shared/lib/designSystem/sizes";
 import { treasuryCopy } from "../../components/Product/treasuryCopies";
+import { ActionButton } from "shared/lib/components/Common/buttons";
+import { getVaultColor } from "shared/lib/utils/vault";
+import { sendMessage } from "../../hooks/useTelegramPing";
+import useWeb3Wallet from "shared/lib/hooks/useWeb3Wallet";
 
 const Paragraph = styled.div`
   margin-bottom: 64px;
@@ -66,6 +70,8 @@ const PerformanceSection: React.FC<PerformanceSectionProps> = ({
   vault,
   active,
 }) => {
+  const { account } = useWeb3Wallet();
+  const [pinged, setPinged] = useState<boolean>(false);
   const renderWithdrawalsSection = (
     <>
       Once user funds have been used in the vault's strategy, they cannot be
@@ -76,6 +82,14 @@ const PerformanceSection: React.FC<PerformanceSectionProps> = ({
       the vault closes its previous position and opens its new position.{" "}
     </>
   );
+
+  const handleSendTelegramMessage = useCallback(() => {
+    if (!account || !vault) {
+      return;
+    }
+    sendMessage(`${account} has requested a bid for ${vault.vaultOption}`);
+    setPinged(true);
+  }, [account, vault]);
 
   if (!vault) {
     return (
@@ -127,6 +141,8 @@ const PerformanceSection: React.FC<PerformanceSectionProps> = ({
 
   const { vaultOption, vaultVersion } = vault;
 
+  const color = getVaultColor(vault.vaultOption);
+
   return (
     <Container>
       {active && !isEarnVault(vaultOption) && (
@@ -137,7 +153,16 @@ const PerformanceSection: React.FC<PerformanceSectionProps> = ({
           </Paragraph>
         </>
       )}
-
+      {active && isEarnVault(vaultOption) && (
+        <ActionButton
+          disabled={pinged}
+          color={color}
+          className="mb-3"
+          onClick={() => handleSendTelegramMessage()}
+        >
+          {pinged ? "Pinged" : "Ping Ribbon Team"}
+        </ActionButton>
+      )}
       {active && (
         <Paragraph>
           <ParagraphHeading>Withdrawals</ParagraphHeading>
