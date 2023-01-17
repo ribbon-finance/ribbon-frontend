@@ -58,6 +58,9 @@ const Container = styled.div`
   }
 `;
 
+const StyledActionButton = styled(ActionButton)`
+  margin-bottom: 64px;
+`;
 interface PerformanceSectionProps {
   vault?: {
     vaultOption: VaultOptions;
@@ -153,16 +156,17 @@ const PerformanceSection: React.FC<PerformanceSectionProps> = ({
           </Paragraph>
         </>
       )}
+
       {active && isEarnVault(vaultOption) && (
-        <ActionButton
+        <StyledActionButton
           disabled={pinged}
           color={color}
-          className="mb-3"
           onClick={() => handleSendTelegramMessage()}
         >
           {pinged ? "Pinged" : "Ping Ribbon Team"}
-        </ActionButton>
+        </StyledActionButton>
       )}
+
       {active && (
         <Paragraph>
           <ParagraphHeading>Withdrawals</ParagraphHeading>
