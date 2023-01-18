@@ -73,8 +73,8 @@ export const usePoolsApr = () => {
   }, [loading, assetPriceLoading, RBNPrice, poolDatas]);
 
   const isLoading = useMemo(() => {
-    return loading || !aprs;
-  }, [loading, aprs]);
+    return loading || !aprs || assetPriceLoading;
+  }, [loading, aprs, assetPriceLoading]);
 
   if (isLoading || !aprs || !supplyAprs || !rbnAprs) {
     //placeholder values while values are loading
