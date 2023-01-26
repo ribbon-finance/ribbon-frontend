@@ -11,9 +11,8 @@ import {
 } from "shared/lib/constants/constants";
 
 const useVaultOption = () => {
-  const matchVersion = useRouteMatch<{ vaultSymbol: string }>(
-    "/treasury/:vaultSymbol"
-  );
+  const matchVersion =
+    useRouteMatch<{ vaultSymbol: string }>("/vip/:vaultSymbol");
   const [vaultOption, vaultVersion] = useMemo((): [
     VaultOptions | undefined,
     VaultVersion

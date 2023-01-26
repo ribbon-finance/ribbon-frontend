@@ -333,7 +333,7 @@ const Homepage = () => {
         }
         return null;
       });
-      history.push("/treasury/" + vaultName);
+      history.push("/vip/" + vaultName);
     }
   }
 

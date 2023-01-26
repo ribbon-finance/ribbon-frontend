@@ -36,7 +36,7 @@ const RootApp = () => {
           <Route path="/" exact>
             <Homepage />
           </Route>
-          <Route path="/treasury/:vaultSymbol">
+          <Route path="/vip/:vaultSymbol">
             <DepositPage />
           </Route>
           <Route path="/portfolio">

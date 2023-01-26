@@ -55,7 +55,7 @@ const useGlobalAccess = () => {
         return null;
       });
 
-      history.push("/treasury/" + vaultName);
+      history.push("/vip/" + vaultName);
       setAccessModal(false);
     } else {
       setError("Invalid Code");
