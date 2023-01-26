@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import HeaderLogo from "webapp/lib/components/Header/HeaderLogo";
+import { VIPLogo } from "shared/lib/assets/icons/logo";
 import colors from "shared/lib/designSystem/colors";
 import sizes from "shared/lib/designSystem/sizes";
 import theme from "shared/lib/designSystem/theme";
@@ -149,7 +149,7 @@ const Header = () => {
       <HeaderContainer className="d-flex align-items-center">
         {/* LOGO */}
         <LogoContainer>
-          <HeaderLogo />
+          <VIPLogo width={40} height={40} />
         </LogoContainer>
 
         <HeaderAbsoluteContainer>

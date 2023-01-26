@@ -44,3 +44,18 @@ export const AppLogo: React.FC<SVGProps> = ({ color, ...props }) => (
     />
   </svg>
 );
+
+export const VIPLogo: React.FC<SVGProps> = ({ color, ...props }) => (
+  <svg
+    viewBox="0 0 400 400"
+    fill="none"
+    xmlns="http://www.w3.org/2000/svg"
+    {...props}
+  >
+    <rect width="400" height="400" rx="200" fill={color || "white"} />
+    <path
+      d="M199.5 122L28 302C28 302 24.1853 295.687 22 291.5C19.8985 287.474 17 281 17 281L199.5 86.5L315.5 206.5L198.5 332L180.5 315L281 206.5L199.5 122Z"
+      fill="black"
+    />
+  </svg>
+);
