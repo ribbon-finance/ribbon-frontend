@@ -113,6 +113,8 @@ export const TreasuryVaultList = [
   "rVIP-USDC",
 ] as const;
 
+export const VIPVaultList = ["rVIP-wBTC", "rVIP-USDC"] as const;
+
 const AllVaultOptions = [
   ...EVMVaultList,
   ...TreasuryVaultList,

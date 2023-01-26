@@ -1,7 +1,7 @@
 import { useCallback, useState } from "react";
 import { ethers } from "ethers";
 import { useGlobalAccessState, useWebappGlobalState } from "../store/store";
-import { hashCode, TreasuryVaultOptions } from "../constants/constants";
+import { hashCode, VIPVaultOptions } from "../constants/constants";
 import { useHistory } from "react-router-dom";
 import { VaultName, VaultNameOptionMap } from "shared/lib/constants/constants";
 
@@ -25,21 +25,21 @@ const useGlobalAccess = () => {
     const hex = ethers.utils.formatBytes32String(code.toUpperCase());
     const hash = ethers.utils.sha256(hex);
 
-    let vault: TreasuryVaultOptions | undefined;
+    let vault: VIPVaultOptions | undefined;
     for (const [key, value] of Object.entries(hashCode)) {
       if (value === hash) {
-        vault = key as TreasuryVaultOptions;
+        vault = key as VIPVaultOptions;
       }
     }
 
     if (vault) {
       setGlobalAccess((accessState) => {
-        if (!accessState.includes(vault as TreasuryVaultOptions)) {
+        if (!accessState.includes(vault as VIPVaultOptions)) {
           localStorage.setItem(
             "auth",
-            JSON.stringify([...accessState, vault as TreasuryVaultOptions])
+            JSON.stringify([...accessState, vault as VIPVaultOptions])
           );
-          return [...accessState, vault as TreasuryVaultOptions];
+          return [...accessState, vault as VIPVaultOptions];
         } else {
           return accessState;
         }

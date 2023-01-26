@@ -364,7 +364,7 @@ const HeroSection: React.FC<{
               ? "V1 vaults are now inactive and do not accept deposits"
               : "V2 vaults are now live"
           }
-          linkURI={getVaultURI(vaultOption, "v2")}
+          linkURI={getVaultURI(vaultOption)}
           linkText="Switch to V2"
         ></Banner>
       )}

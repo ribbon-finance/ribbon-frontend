@@ -331,10 +331,8 @@ const NotificationList: React.FC<NotificationListProps> = ({
                 onClose();
                 notification.type !== "distributePremium"
                   ? history.push(
-                      getVaultURI(
-                        notification.vault,
-                        notification.vaultVersion
-                      ) + getNotificationRedirectQuerystring(notification)
+                      getVaultURI(notification.vault) +
+                        getNotificationRedirectQuerystring(notification)
                     )
                   : history.push("/portfolio");
               }}
