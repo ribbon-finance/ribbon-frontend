@@ -39,7 +39,7 @@ export const minDeposit: { [vault in TreasuryVaultOptions]: BigNumber } = {
   "rSAMB-TSRY": ethers.utils.parseEther("3000"),
   "rVIP-wBTC": BigNumber.from(10).pow(getAssetDecimals(getAssets("rVIP-wBTC"))), // minDeposit of 1 wBTC
   "rVIP-USDC": BigNumber.from(10).pow(getAssetDecimals(getAssets("rVIP-USDC"))), // minDeposit of 1 USDC
-  "rVIP-VOL": BigNumber.from(0),
+  "rVIP-VOL": BigNumber.from(10).pow(5),
 };
 
 export const getVaultURI = (
