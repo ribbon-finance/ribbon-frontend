@@ -27,6 +27,8 @@ export const hashCode: {
     "0xa1e9307fa0af394a591a9d447a7f1ec862de19ab669140b5ad50e8958389fb35",
   "rVIP-USDC":
     "0x17d0a0373c697b3fd118b3d17830db65e0e8bf48731ec235f776c0e54bc0cb07",
+  "rVIP-VOL":
+    "0xd78519789185b74073aa363ba21a046efff34892c1f6e8e3bb7b12fedf42b836",
 };
 
 export const minDeposit: { [vault in TreasuryVaultOptions]: BigNumber } = {
@@ -37,6 +39,7 @@ export const minDeposit: { [vault in TreasuryVaultOptions]: BigNumber } = {
   "rSAMB-TSRY": ethers.utils.parseEther("3000"),
   "rVIP-wBTC": BigNumber.from(10).pow(getAssetDecimals(getAssets("rVIP-wBTC"))), // minDeposit of 1 wBTC
   "rVIP-USDC": BigNumber.from(10).pow(getAssetDecimals(getAssets("rVIP-USDC"))), // minDeposit of 1 USDC
+  "rVIP-VOL": BigNumber.from(0),
 };
 
 export const getVaultURI = (
