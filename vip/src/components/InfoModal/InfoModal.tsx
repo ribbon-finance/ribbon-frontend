@@ -88,7 +88,7 @@ export const InfoModal: React.FC<InfoModalProps> = ({ isVisible, setShow }) => {
         </BaseModalContentColumn>
         <InfoModalColumn marginTop={16}>
           <ReadMoreLink
-            href="https://www.research.ribbon.finance/blog/ribbon-treasury"
+            href="https://www.research.ribbon.finance/blog/introducing-ribbon-vip"
             target="_blank"
             rel="noopener noreferrer"
           >
