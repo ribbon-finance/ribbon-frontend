@@ -182,8 +182,7 @@ const VaultV2ActionsForm: React.FC<FormStepProps> = ({
                * Push complete withdraw history
                */
               history.push(
-                getVaultURI(vaultOption, "v2") +
-                  "?initialAction=completeWithdraw"
+                getVaultURI(vaultOption) + "?initialAction=completeWithdraw"
               );
             }}
           >

@@ -4,7 +4,7 @@ import { BigNumber } from "ethers";
 import {
   getVaultNetwork,
   EarnVaultList,
-  EarnVIPVaultList,
+  VIPVaultList,
 } from "../constants/constants";
 import { isProduction, isTreasury } from "../utils/env";
 import { getVaultContract } from "./useVaultContract";
@@ -47,7 +47,7 @@ const useFetchEarnVaultData = (): V2VaultData => {
       return currentCounter;
     });
 
-    const vaultList = isTreasury() ? EarnVIPVaultList : EarnVaultList;
+    const vaultList = isTreasury() ? VIPVaultList : EarnVaultList;
 
     const responses = await Promise.all(
       vaultList.map(async (vault) => {

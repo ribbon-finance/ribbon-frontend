@@ -69,17 +69,14 @@ const Footer = () => {
         screenHeight={screenHeight}
         showVaultPosition={showVaultPosition}
       >
-        {!hasAccess && (
-          <FrameBar bottom={width <= sizes.md ? 104 : 0} height={4} />
-        )}
         {/** Mobile */}
-        {!hasAccess ? (
+        {hasAccess ? (
           <OpenTreasuryButton
             variant="mobile"
             role="button"
             onClick={() => setAccessModal(true)}
           >
-            Open Treasury
+            Open VIP Vaults
           </OpenTreasuryButton>
         ) : (
           <AccountStatus
@@ -89,6 +86,7 @@ const Footer = () => {
             showAirdropButton={false}
           />
         )}
+        {!hasAccess && <FrameBar bottom={0} height={4} />}
       </FooterContainer>
       <MobileFooterOffsetContainer showVaultPosition={showVaultPosition} />
     </>

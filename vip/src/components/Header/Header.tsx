@@ -1,12 +1,10 @@
 import styled from "styled-components";
-import HeaderLogo from "webapp/lib/components/Header/HeaderLogo";
+import { VIPLogo } from "shared/lib/assets/icons/logo";
 import colors from "shared/lib/designSystem/colors";
 import sizes from "shared/lib/designSystem/sizes";
 import theme from "shared/lib/designSystem/theme";
 import { ConnectWalletButton } from "shared/lib/components/Common/buttons";
-import AccountStatus from "webapp/lib/components/Wallet/AccountStatus";
 import { AccessModal } from "../AccessModal/AccessModal";
-import { useWebappGlobalState } from "../../store/store";
 import { Title } from "shared/lib/designSystem";
 import { InfoModal } from "../InfoModal/InfoModal";
 import { useState } from "react";
@@ -77,7 +75,6 @@ export const OpenTreasuryButton = styled(ConnectWalletButton)<{
   cursor: pointer;
   z-index: 100;
   height: fit-content;
-
   ${(props) =>
     props.variant === "mobile" &&
     `
@@ -102,40 +99,43 @@ export const OpenTreasuryButton = styled(ConnectWalletButton)<{
   }
 `;
 
-const HeaderAbsoluteContainer = styled.div`
-  position: absolute;
-  display: flex;
-  height: 100%;
-  width: 100%;
-  justify-content: center;
-  left: 0;
-`;
-
 const LinksContainer = styled.div`
   display: flex;
 `;
 
-const NavItem = styled.div`
-  display: flex;
+const NavItem = styled.div<{
+  variant: "desktop" | "mobile";
+}>`
+  cursor: pointer;
+  z-index: 100;
   align-items: center;
-  padding: 0px 28px;
   height: 100%;
+  padding: 12px 16px;
+  background: ${colors.background.four};
+  border-radius: 8px;
+  ${(props) =>
+    props.variant === "mobile" &&
+    `
+    margin: 16px;
+    width: 100%;
+  `};
+
+  @media (min-width: ${sizes.lg}px) {
+    ${(props) => props.variant === "desktop" && "margin-right: 40px"};
+  }
+
+  &:hover {
+    opacity: 0.64;
+  }
 `;
 
 const NavLinkText = styled(Title)`
   letter-spacing: 1.5px;
   font-size: 14px;
   line-height: 20px;
-  cursor: pointer;
-  opacity: 0.48;
-
-  &:hover {
-    opacity: 1;
-  }
 `;
 
 const Header = () => {
-  const [, setAccessModal] = useWebappGlobalState("isAccessModalVisible");
   const [isInfoModalVisible, setInfoModal] = useState<boolean>(false);
   const hasAccess = localStorage.getItem("auth");
 
@@ -149,28 +149,13 @@ const Header = () => {
       <HeaderContainer className="d-flex align-items-center">
         {/* LOGO */}
         <LogoContainer>
-          <HeaderLogo />
+          <VIPLogo width={40} height={40} />
         </LogoContainer>
-
-        <HeaderAbsoluteContainer>
-          <LinksContainer>
-            <NavItem onClick={() => setInfoModal(true)}>
-              <NavLinkText>Info</NavLinkText>
-            </NavItem>
-          </LinksContainer>
-        </HeaderAbsoluteContainer>
-
-        {hasAccess ? (
-          <AccountStatus variant="desktop" showAirdropButton={false} />
-        ) : (
-          <OpenTreasuryButton
-            variant="desktop"
-            role="button"
-            onClick={() => setAccessModal(true)}
-          >
-            Open Treasury
-          </OpenTreasuryButton>
-        )}
+        <LinksContainer>
+          <NavItem variant="desktop" onClick={() => setInfoModal(true)}>
+            <NavLinkText>Info</NavLinkText>
+          </NavItem>
+        </LinksContainer>
         {!hasAccess && <FrameBar bottom={0} height={4} />}
       </HeaderContainer>
     </>

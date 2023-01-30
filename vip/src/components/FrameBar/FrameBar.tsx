@@ -24,9 +24,9 @@ export const FrameBar = styled.div<{
   height: ${(props) => props.height}px;
   background: ${`linear-gradient(
     270deg,
-    ${colors.asset.veRBN}00 5%,
-    ${colors.asset.veRBN} 50%,
-    ${colors.asset.veRBN}00 95%
+    ${colors.primaryText}00 5%,
+    ${colors.primaryText} 50%,
+    ${colors.primaryText}00 95%
   )`};
   background-size: 200%;
   animation: 10s ${livelyAnimation("bottom")} linear infinite;

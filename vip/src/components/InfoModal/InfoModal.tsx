@@ -76,14 +76,14 @@ export const InfoModal: React.FC<InfoModalProps> = ({ isVisible, setShow }) => {
     >
       <InfoModalContainer>
         <InfoModalColumn marginTop={8}>
-          <InfoModalTitle>Ribbon Treasury</InfoModalTitle>
+          <InfoModalTitle>Ribbon VIP</InfoModalTitle>
         </InfoModalColumn>
         <BaseModalContentColumn marginTop={16}>
           <InfoModalExplainer>
-            Ribbon Treasury is a private Ribbon vault built specifically for
-            DAOs to run customisable covered call strategies on their native
-            tokens, generate income from these covered call premiums and build a
-            healthy diversified portfolio of treasury assets.
+            Ribbon VIP is a suite of prime services offered to Ribbon’s largest
+            stakeholders. Benefits include exclusive custom vaults, 24/7 support
+            with a direct line to the team, and access to new product features
+            and private events.
           </InfoModalExplainer>
         </BaseModalContentColumn>
         <InfoModalColumn marginTop={16}>

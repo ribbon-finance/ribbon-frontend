@@ -231,7 +231,7 @@ const PortfolioPosition: React.FC<PortfolioPositionProps> = ({
   }, [color, vaultVersion]);
 
   return (
-    <PositionLink to={getVaultURI(vaultAccount.vault.symbol, vaultVersion)}>
+    <PositionLink to={getVaultURI(vaultAccount.vault.symbol)}>
       <PositionContainer color={color}>
         <PositionMainContainer>
           <LogoContainer color={color}>{logo}</LogoContainer>

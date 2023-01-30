@@ -122,14 +122,20 @@ const AllVaultOptions = [
 ];
 
 export type VaultOptions = typeof AllVaultOptions[number];
+
 const ProdExcludeVault: VaultOptions[] = [];
+
 export const EarnVaultList: VaultOptions[] = ["rEARN", "rEARN-stETH"];
-export const EarnVIPVaultList: VaultOptions[] = [
+
+export const VIPVaultList = [
   "rVIP-wBTC",
   "rVIP-USDC",
   "rVIP-VOL",
   "rVIP-VOL-TWO",
-];
+] as const;
+
+const AllEarnVaults = [...EarnVaultList, ...VIPVaultList];
+
 const PutThetaVault: VaultOptions[] = [
   "rUSDC-ETH-P-THETA",
   "ryvUSDC-ETH-P-THETA",
@@ -406,7 +412,7 @@ export const isPutVault = (vault: VaultOptions): boolean =>
   PutThetaVault.includes(vault);
 
 export const isEarnVault = (vault: VaultOptions): boolean =>
-  EarnVaultList.includes(vault) || EarnVIPVaultList.includes(vault);
+  EarnVaultList.includes(vault) || AllEarnVaults.includes(vault);
 
 export const VaultAddressMap: {
   [vault in VaultOptions]: {

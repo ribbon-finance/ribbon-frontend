@@ -29,10 +29,7 @@ import VaultBasicAmountForm from "../common/VaultBasicAmountForm";
 import { getAssetDisplay } from "shared/lib/utils/asset";
 import { VaultValidationErrors } from "../../types";
 import VaultV2WithdrawForm from "./VaultV2WithdrawForm";
-import {
-  minDeposit,
-  TreasuryVaultOptions,
-} from "../../../../constants/constants";
+import { minDeposit, VIPVaultOptions } from "../../../../constants/constants";
 import useVaultPriceHistory from "shared/lib/hooks/useVaultPerformanceUpdate";
 import { BigNumber } from "ethers";
 
@@ -264,9 +261,7 @@ const VaultV2DepositWithdrawForm: React.FC<VaultV2DepositWithdrawFormProps> = ({
             }
 
             if (
-              amountBigNumber.lt(
-                minDeposit[vaultOption as TreasuryVaultOptions]
-              ) &&
+              amountBigNumber.lt(minDeposit[vaultOption as VIPVaultOptions]) &&
               lockedBalanceInAsset.isZero()
             ) {
               return "minNotReached";
@@ -360,7 +355,7 @@ const VaultV2DepositWithdrawForm: React.FC<VaultV2DepositWithdrawFormProps> = ({
                     },
                     {
                       label: "Min. Initial Deposit",
-                      amount: minDeposit[vaultOption as TreasuryVaultOptions],
+                      amount: minDeposit[vaultOption as VIPVaultOptions],
                       unitDisplay: getAssetDisplay(
                         vaultActionForm.depositAsset || asset
                       ),
