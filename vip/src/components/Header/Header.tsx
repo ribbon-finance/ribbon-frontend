@@ -4,9 +4,7 @@ import colors from "shared/lib/designSystem/colors";
 import sizes from "shared/lib/designSystem/sizes";
 import theme from "shared/lib/designSystem/theme";
 import { ConnectWalletButton } from "shared/lib/components/Common/buttons";
-import AccountStatus from "webapp/lib/components/Wallet/AccountStatus";
 import { AccessModal } from "../AccessModal/AccessModal";
-import { useWebappGlobalState } from "../../store/store";
 import { Title } from "shared/lib/designSystem";
 import { InfoModal } from "../InfoModal/InfoModal";
 import { useState } from "react";
@@ -101,15 +99,6 @@ export const OpenTreasuryButton = styled(ConnectWalletButton)<{
   }
 `;
 
-const HeaderAbsoluteContainer = styled.div`
-  position: absolute;
-  display: flex;
-  height: 100%;
-  width: 100%;
-  justify-content: center;
-  left: 0;
-`;
-
 const LinksContainer = styled.div`
   display: flex;
 `;
@@ -117,21 +106,12 @@ const LinksContainer = styled.div`
 const NavItem = styled.div<{
   variant: "desktop" | "mobile";
 }>`
-  font-size: 14px;
-  width: fit-content;
-  border: none;
-  padding: 12px 16px;
-  line-height: 20px;
-  border-radius: 8px;
   cursor: pointer;
   z-index: 100;
-  height: fit-content;
-
-  display: flex;
   align-items: center;
   height: 100%;
   padding: 12px 16px;
-  background: #26262b;
+  background: ${colors.background.four};
   border-radius: 8px;
   ${(props) =>
     props.variant === "mobile" &&
@@ -153,16 +133,9 @@ const NavLinkText = styled(Title)`
   letter-spacing: 1.5px;
   font-size: 14px;
   line-height: 20px;
-  cursor: pointer;
-  opacity: 0.48;
-
-  &:hover {
-    opacity: 1;
-  }
 `;
 
 const Header = () => {
-  const [, setAccessModal] = useWebappGlobalState("isAccessModalVisible");
   const [isInfoModalVisible, setInfoModal] = useState<boolean>(false);
   const hasAccess = localStorage.getItem("auth");
 
