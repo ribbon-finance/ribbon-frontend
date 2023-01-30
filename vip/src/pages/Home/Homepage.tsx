@@ -6,12 +6,12 @@ import { URLS } from "shared/lib/constants/constants";
 import usePullUp from "webapp/lib/hooks/usePullUp";
 import { useHistory } from "react-router-dom";
 import { VaultName, VaultNameOptionMap } from "shared/lib/constants/constants";
-import ReactPlayer from "react-player";
 import colors from "shared/lib/designSystem/colors";
 import { ExternalIcon } from "shared/lib/assets/icons/icons";
 import { useCallback, useEffect, useState } from "react";
 import Chevron from "../../img/scroll-chevron.svg";
 import { useWebappGlobalState } from "../../store/store";
+import BackgroundLoader from "../../components/BackgroundLoader";
 
 const HomepageContainer = styled.div`
   display: flex;
@@ -29,10 +29,7 @@ const HomepageContainer = styled.div`
 
 const FloatingContainer = styled.div<{ footerHeight?: number }>`
   width: 100%;
-  height: calc(
-    100vh - ${theme.header.height}px -
-      ${(props) => (props.footerHeight ? props.footerHeight + 48 : 48)}px
-  );
+  height: calc(100vh - ${theme.header.height}px);
   display: flex;
   flex-direction: row;
   align-items: center;
@@ -44,28 +41,6 @@ const FloatingContainer = styled.div<{ footerHeight?: number }>`
     flex-direction: column;
     height: fit-content;
     display: flex;
-  }
-`;
-
-const PlayerContainer = styled(ReactPlayer)`
-  width: 100%;
-  position: absolute;
-  pointer-events: none !important;
-  z-index: -1;
-  top: 0px;
-
-  // > div {
-  //   margin-top: 64px;
-  //   height: calc(100vh - ${theme.header.height}px);
-  // }
-
-  // iframe {
-  > div {
-    overflow: hidden;
-  }
-
-  iframe {
-    transform: scale(1.5);
   }
 `;
 
@@ -340,6 +315,7 @@ const Homepage = () => {
     setFooterRef(ref);
   }, []);
 
+  console.log(footerRef?.offsetHeight);
   return (
     <HomepageContainer>
       <FloatingContainer footerHeight={footerRef?.offsetHeight}>
@@ -357,6 +333,7 @@ const Homepage = () => {
           muted
           loop
         /> */}
+        <BackgroundLoader active={true} />
         <LandingContent>
           <h1>Ribbon VIP</h1>
           <p>
