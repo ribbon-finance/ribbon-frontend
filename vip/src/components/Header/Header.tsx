@@ -9,6 +9,7 @@ import { Title } from "shared/lib/designSystem";
 import { InfoModal } from "../InfoModal/InfoModal";
 import { useState } from "react";
 import { FrameBar } from "../FrameBar/FrameBar";
+import AccountStatus from "webapp/lib/components/Wallet/AccountStatus";
 
 const HeaderContainer = styled.div<{ isMenuOpen?: boolean }>`
   height: ${theme.header.height}px;
@@ -139,6 +140,7 @@ const Header = () => {
   const [isInfoModalVisible, setInfoModal] = useState<boolean>(false);
   const hasAccess = localStorage.getItem("auth");
 
+  console.log(hasAccess);
   return (
     <>
       <AccessModal />
@@ -152,9 +154,13 @@ const Header = () => {
           <VIPLogo width={40} height={40} />
         </LogoContainer>
         <LinksContainer>
-          <NavItem variant="desktop" onClick={() => setInfoModal(true)}>
-            <NavLinkText>Info</NavLinkText>
-          </NavItem>
+          {hasAccess ? (
+            <AccountStatus variant="desktop" showAirdropButton={false} />
+          ) : (
+            <NavItem variant="desktop" onClick={() => setInfoModal(true)}>
+              <NavLinkText>Info</NavLinkText>
+            </NavItem>
+          )}
         </LinksContainer>
         {!hasAccess && <FrameBar bottom={0} height={4} />}
       </HeaderContainer>
