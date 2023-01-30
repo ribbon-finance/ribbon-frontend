@@ -60,7 +60,7 @@ const FloatingBoxBar = styled.div<{
       props.numberOfBars}ms;
     `;
   }}
-  @media (max-width: calc(${sizes.md}px + 120px)) {
+  @media (max-width: calc(${sizes.md}px)) {
     display: none;
   }
 `;
