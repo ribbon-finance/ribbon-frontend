@@ -124,10 +124,6 @@ const SplashImage = styled.div`
 const DesktopActionsFormContainer = styled.div`
   display: flex;
 
-  @media (max-width: ${sizes.md}px) {
-    display: none;
-  }
-
   @media (min-width: ${sizes.xl}px) {
     padding: 0px 45px 0px 30px;
   }
@@ -273,7 +269,6 @@ const DepositPage = () => {
               )
             }
           />
-
           {/* Form for desktop */}
           <DesktopActionsFormContainer className="flex-column col-xl-5 offset-xl-1 col-md-6">
             <DesktopActionForm vault={{ vaultOption, vaultVersion }} />

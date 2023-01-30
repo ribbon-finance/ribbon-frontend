@@ -100,6 +100,14 @@
       "title": "R-VIP-USDC",
       "subtitle": "VIP USDC Earn"
     },
+    "rVIP-VOL": {
+      "title": "R-VIP-VOL",
+      "subtitle": "VIP USDC Vol"
+    },
+    "rVIP-VOL-TWO": {
+      "title": "R-VIP-VOL-TWO",
+      "subtitle": "VIP USDC Vol Two"
+    },
     "rAPE-THETA": {
       "title": "T-APE-C",
       "subtitle": "APE Covered Call"
