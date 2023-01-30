@@ -11,6 +11,7 @@ import colors from "shared/lib/designSystem/colors";
 import { ExternalIcon } from "shared/lib/assets/icons/icons";
 import { useCallback, useEffect, useState } from "react";
 import Chevron from "../../img/scroll-chevron.svg";
+import { useWebappGlobalState } from "../../store/store";
 
 const HomepageContainer = styled.div`
   display: flex;
@@ -290,6 +291,7 @@ const Homepage = () => {
   const [footerRef, setFooterRef] = useState<HTMLDivElement | null>(null);
   const [activeStep, setActiveStep] = useState<number>(0);
   const interval = 5;
+  const [, setAccessModal] = useWebappGlobalState("isAccessModalVisible");
 
   useEffect(() => {
     if (width > sizes.md) {
@@ -308,18 +310,15 @@ const Homepage = () => {
   const steps: Step[] = [
     {
       title: "01",
-      content:
-        "Diversify your DAO's treasury holdings by earning premiums in stables",
+      content: "Exclusive access to custom tactical trades via VIP vaults",
     },
     {
       title: "02",
-      content:
-        "Customise your covered call strike selection methodology, tenor and premium currency",
+      content: "24/7 support with a direct line to the Ribbon Labs team",
     },
     {
       title: "03",
-      content:
-        "Leverage Ribbon's network of market makers to bootstrap a market",
+      content: "Early previews of new products and features",
     },
   ];
 
@@ -359,14 +358,12 @@ const Homepage = () => {
           loop
         /> */}
         <LandingContent>
-          <h1>Treasury</h1>
-          <p>Earn yield on your protocol's native token</p>
-          <AccessLink
-            href="https://d9gte6lu2ax.typeform.com/to/ZaNFY9zP"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Apply for access
+          <h1>Ribbon VIP</h1>
+          <p>
+            A suite of prime services offered to Ribbon’s largest stakeholders
+          </p>
+          <AccessLink role="button" onClick={() => setAccessModal(true)}>
+            Open VIP Vaults
           </AccessLink>
           <ProductText>
             A product by{" "}

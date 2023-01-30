@@ -77,7 +77,6 @@ export const OpenTreasuryButton = styled(ConnectWalletButton)<{
   cursor: pointer;
   z-index: 100;
   height: fit-content;
-
   ${(props) =>
     props.variant === "mobile" &&
     `
@@ -115,11 +114,39 @@ const LinksContainer = styled.div`
   display: flex;
 `;
 
-const NavItem = styled.div`
+const NavItem = styled.div<{
+  variant: "desktop" | "mobile";
+}>`
+  font-size: 14px;
+  width: fit-content;
+  border: none;
+  padding: 12px 16px;
+  line-height: 20px;
+  border-radius: 8px;
+  cursor: pointer;
+  z-index: 100;
+  height: fit-content;
+
   display: flex;
   align-items: center;
-  padding: 0px 28px;
   height: 100%;
+  padding: 12px 16px;
+  background: #26262b;
+  border-radius: 8px;
+  ${(props) =>
+    props.variant === "mobile" &&
+    `
+    margin: 16px;
+    width: 100%;
+  `};
+
+  @media (min-width: ${sizes.lg}px) {
+    ${(props) => props.variant === "desktop" && "margin-right: 40px"};
+  }
+
+  &:hover {
+    opacity: 0.64;
+  }
 `;
 
 const NavLinkText = styled(Title)`
@@ -151,26 +178,11 @@ const Header = () => {
         <LogoContainer>
           <VIPLogo width={40} height={40} />
         </LogoContainer>
-
-        <HeaderAbsoluteContainer>
-          <LinksContainer>
-            <NavItem onClick={() => setInfoModal(true)}>
-              <NavLinkText>Info</NavLinkText>
-            </NavItem>
-          </LinksContainer>
-        </HeaderAbsoluteContainer>
-
-        {hasAccess ? (
-          <AccountStatus variant="desktop" showAirdropButton={false} />
-        ) : (
-          <OpenTreasuryButton
-            variant="desktop"
-            role="button"
-            onClick={() => setAccessModal(true)}
-          >
-            Open Treasury
-          </OpenTreasuryButton>
-        )}
+        <LinksContainer>
+          <NavItem variant="desktop" onClick={() => setInfoModal(true)}>
+            <NavLinkText>Info</NavLinkText>
+          </NavItem>
+        </LinksContainer>
         {!hasAccess && <FrameBar bottom={0} height={4} />}
       </HeaderContainer>
     </>
