@@ -344,7 +344,7 @@ const Homepage = () => {
   return (
     <HomepageContainer>
       <FloatingContainer footerHeight={footerRef?.offsetHeight}>
-        <PlayerContainer
+        {/* <PlayerContainer
           key="video-player"
           url="https://player.vimeo.com/video/722230744"
           playing={true}
@@ -357,7 +357,7 @@ const Homepage = () => {
           config={{ vimeo: { playerOptions: { background: true } } }}
           muted
           loop
-        />
+        /> */}
         <LandingContent>
           <h1>Treasury</h1>
           <p>Earn yield on your protocol's native token</p>
