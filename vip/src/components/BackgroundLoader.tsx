@@ -2,6 +2,7 @@ import React from "react";
 import styled, { css, keyframes } from "styled-components";
 import colors from "shared/lib/designSystem/colors";
 import useScreenSize from "shared/lib/hooks/useScreenSize";
+import sizes from "shared/lib/designSystem/sizes";
 
 const barMarginRight = `16px`;
 
@@ -59,6 +60,9 @@ const FloatingBoxBar = styled.div<{
       props.numberOfBars}ms;
     `;
   }}
+  @media (max-width: calc(${sizes.md}px + 120px)) {
+    display: none;
+  }
 `;
 
 interface BackgroundLoaderProps {

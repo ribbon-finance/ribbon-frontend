@@ -6,6 +6,7 @@ import { URLS } from "shared/lib/constants/constants";
 import usePullUp from "webapp/lib/hooks/usePullUp";
 import { useHistory } from "react-router-dom";
 import { VaultName, VaultNameOptionMap } from "shared/lib/constants/constants";
+import ReactPlayer from "react-player";
 import colors from "shared/lib/designSystem/colors";
 import { ExternalIcon } from "shared/lib/assets/icons/icons";
 import { useCallback, useEffect, useState } from "react";
@@ -113,7 +114,7 @@ const LandingSteps = styled.div<{ totalSteps: number }>`
   display: flex;
   transition: 0.2s;
 
-  @media (max-width: calc(${sizes.md}px + 100px)) {
+  @media (max-width: calc(${sizes.md}px)) {
     display: block;
     // bottom: 120px;
     top: calc(${theme.header.height}px + 600px);
@@ -123,8 +124,15 @@ const LandingSteps = styled.div<{ totalSteps: number }>`
 `;
 
 const StepContainer = styled.div`
-  width: 300px;
+  width: 280px;
   position: relative;
+
+  @media (min-width: ${sizes.md}px) {
+    width: 250px;
+    &:not(:last-of-type) {
+      margin-right: 10px;
+    }
+  }
 
   @media (min-width: ${sizes.lg}px) {
     &:not(:last-of-type) {
@@ -132,7 +140,7 @@ const StepContainer = styled.div`
     }
   }
 
-  @media (max-width: ${sizes.lg}px) {
+  @media (max-width: ${sizes.md}px) {
     margin: auto;
 
     &:not(:last-of-type) {
@@ -171,7 +179,7 @@ const StepProgressContainer = styled.div`
   background: ${colors.background.four};
   width: 100%;
 
-  @media (max-width: calc(${sizes.md}px + 100px)) {
+  @media (max-width: calc(${sizes.md}px)) {
     display: none;
   }
 
@@ -236,7 +244,7 @@ const scroll = keyframes`
 const ScrollText = styled.div`
   display: none;
 
-  @media (max-width: calc(${sizes.md}px + 100px)) {
+  @media (max-width: calc(${sizes.md}px)) {
     display: initial;
     position: absolute;
     bottom: 104px;

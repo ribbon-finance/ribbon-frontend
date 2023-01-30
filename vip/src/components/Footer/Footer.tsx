@@ -18,6 +18,7 @@ const FooterContainer = styled.div<{
   width: 100%;
   display: flex;
   justify-content: center;
+  align-items: center;
   backdrop-filter: blur(40px);
   /**
    * Firefox desktop come with default flag to have backdrop-filter disabled
@@ -69,6 +70,9 @@ const Footer = () => {
         screenHeight={screenHeight}
         showVaultPosition={showVaultPosition}
       >
+        {!hasAccess && (
+          <FrameBar bottom={width <= sizes.md ? 104 : 0} height={4} />
+        )}
         {/** Mobile */}
         {hasAccess ? (
           <OpenTreasuryButton
@@ -86,7 +90,6 @@ const Footer = () => {
             showAirdropButton={false}
           />
         )}
-        {!hasAccess && <FrameBar bottom={0} height={4} />}
       </FooterContainer>
       <MobileFooterOffsetContainer showVaultPosition={showVaultPosition} />
     </>
