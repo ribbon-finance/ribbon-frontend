@@ -8,9 +8,10 @@ import useVaultOption from "../../hooks/useVaultOption";
 import AccountStatus from "webapp/lib/components/Wallet/AccountStatus";
 import { useState } from "react";
 import { FrameBar } from "../FrameBar/FrameBar";
-import { OpenTreasuryButton } from "../Header/Header";
+import { NavItem, NavLinkText, OpenTreasuryButton } from "../Header/Header";
 import { useWebappGlobalState } from "../../store/store";
 import { useStorage } from "../../hooks/useStorageContextProvider";
+import { InfoModal } from "../InfoModal/InfoModal";
 
 const FooterContainer = styled.div<{
   screenHeight: number;
@@ -60,13 +61,17 @@ const MobileFooterOffsetContainer = styled.div<{ showVaultPosition: boolean }>`
 
 const Footer = () => {
   const { height: screenHeight, width } = useScreenSize();
+  const [isInfoModalVisible, setInfoModal] = useState<boolean>(false);
   const { vaultOption, vaultVersion } = useVaultOption();
   const [showVaultPosition, setShowVaultPosition] = useState(false);
   const [storage] = useStorage();
-  const [, setAccessModal] = useWebappGlobalState("isAccessModalVisible");
 
   return (
     <>
+      <InfoModal
+        isVisible={isInfoModalVisible}
+        setShow={(set) => setInfoModal(set)}
+      />
       <FooterContainer
         screenHeight={screenHeight}
         showVaultPosition={showVaultPosition}
@@ -83,13 +88,9 @@ const Footer = () => {
             showAirdropButton={false}
           />
         ) : (
-          <OpenTreasuryButton
-            variant="mobile"
-            role="button"
-            onClick={() => setAccessModal(true)}
-          >
-            Open VIP Vaults
-          </OpenTreasuryButton>
+          <NavItem variant="mobile" onClick={() => setInfoModal(true)}>
+            <NavLinkText>Info</NavLinkText>
+          </NavItem>
         )}
       </FooterContainer>
       <MobileFooterOffsetContainer showVaultPosition={showVaultPosition} />

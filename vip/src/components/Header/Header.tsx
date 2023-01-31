@@ -105,7 +105,7 @@ const LinksContainer = styled.div`
   display: flex;
 `;
 
-const NavItem = styled.div<{
+export const NavItem = styled.div<{
   variant: "desktop" | "mobile";
 }>`
   cursor: pointer;
@@ -115,12 +115,22 @@ const NavItem = styled.div<{
   padding: 12px 16px;
   background: ${colors.background.four};
   border-radius: 8px;
+  text-align: center;
   ${(props) =>
     props.variant === "mobile" &&
     `
     margin: 16px;
     width: 100%;
+    height: 48px;
   `};
+
+  @media (max-width: ${sizes.md}px) {
+    ${(props) => props.variant === "desktop" && "display: none"};
+  }
+
+  @media (min-width: ${sizes.md}px) {
+    ${(props) => props.variant === "mobile" && "display: none"};
+  }
 
   @media (min-width: ${sizes.lg}px) {
     ${(props) => props.variant === "desktop" && "margin-right: 40px"};
@@ -131,7 +141,7 @@ const NavItem = styled.div<{
   }
 `;
 
-const NavLinkText = styled(Title)`
+export const NavLinkText = styled(Title)`
   letter-spacing: 1.5px;
   font-size: 14px;
   line-height: 20px;
