@@ -63,7 +63,7 @@ const useGlobalAccess = () => {
     } else {
       setError("Invalid Code");
     }
-  }, [setError, code, history, setGlobalAccess, setAccessModal]);
+  }, [code, setGlobalAccess, history, setAccessModal, setStorage]);
 
   return {
     handleInputChange,

@@ -6,7 +6,6 @@ import { URLS } from "shared/lib/constants/constants";
 import usePullUp from "webapp/lib/hooks/usePullUp";
 import { useHistory } from "react-router-dom";
 import { VaultName, VaultNameOptionMap } from "shared/lib/constants/constants";
-import ReactPlayer from "react-player";
 import colors from "shared/lib/designSystem/colors";
 import { ExternalIcon } from "shared/lib/assets/icons/icons";
 import { useCallback, useEffect, useState } from "react";
@@ -30,7 +29,10 @@ const HomepageContainer = styled.div`
 
 const FloatingContainer = styled.div<{ footerHeight?: number }>`
   width: 100%;
-  height: calc(100vh - ${theme.header.height}px);
+  height: calc(
+    100vh - ${theme.header.height}px -
+      ${(props) => (props.footerHeight ? props.footerHeight + 48 : 48)}px
+  );
   display: flex;
   flex-direction: row;
   align-items: center;
@@ -325,22 +327,8 @@ const Homepage = () => {
 
   return (
     <HomepageContainer>
+      <BackgroundLoader active={true} />
       <FloatingContainer footerHeight={footerRef?.offsetHeight}>
-        {/* <PlayerContainer
-          key="video-player"
-          url="https://player.vimeo.com/video/722230744"
-          playing={true}
-          height={"calc(100vh - 80px)"}
-          width={"100vw"}
-          // style={{
-          //   overflow: 'hidden',
-          //   transform: 'scale(1.5)'
-          // }}
-          config={{ vimeo: { playerOptions: { background: true } } }}
-          muted
-          loop
-        /> */}
-        <BackgroundLoader active={true} />
         <LandingContent>
           <h1>Ribbon VIP</h1>
           <p>

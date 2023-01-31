@@ -7,7 +7,7 @@ import { ConnectWalletButton } from "shared/lib/components/Common/buttons";
 import { AccessModal } from "../AccessModal/AccessModal";
 import { Title } from "shared/lib/designSystem";
 import { InfoModal } from "../InfoModal/InfoModal";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { FrameBar } from "../FrameBar/FrameBar";
 import AccountStatus from "webapp/lib/components/Wallet/AccountStatus";
 import { useStorage } from "../../hooks/useStorageContextProvider";

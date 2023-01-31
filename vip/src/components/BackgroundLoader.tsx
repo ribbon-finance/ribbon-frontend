@@ -24,10 +24,10 @@ const cascadeFade = keyframes`
   0% {
     opacity: 0;
   }
-  5% {
-    opacity: 0.1;
+  15% {
+    opacity: 0.3;
   }
-  35% {
+  50% {
     opacity: 0;
   }
 `;
@@ -55,7 +55,7 @@ const FloatingBoxBar = styled.div<{
   ${(props) => {
     return css`
       animation: ${props.barAnimationTime + 1500}ms ${cascadeFade} ease-in-out
-        backwards infinite;
+        forwards infinite;
       animation-delay: ${(props.index * props.barAnimationTime) /
       props.numberOfBars}ms;
     `;
@@ -77,10 +77,10 @@ interface BackgroundLoaderProps {
 }
 
 const BackgroundLoader: React.FC<BackgroundLoaderProps> = ({
-  color = "black",
+  color = colors.primaryText,
   active,
   animationTimeMs = 500,
-  numberOfBars = 6,
+  numberOfBars = 7,
   width = "100%",
   barHeight,
   animationType = "default",
@@ -96,14 +96,19 @@ const BackgroundLoader: React.FC<BackgroundLoaderProps> = ({
               animationType={animationType}
               key={index}
               color={
-                `${colors.primaryText}64`
-                // index === 0
-                //   ? "rgba(252, 10, 84, 1)"
-                //   : index === 1
-                //   ? "rgba(252, 10, 84, 0.64)"
-                //   : index === 2
-                //   ? "rgba(252, 10, 84, 0.32)"
-                //   : "rgba(252, 10, 84, 0.16)"
+                index === 0
+                  ? `${color}08`
+                  : index === 1
+                  ? `${color}16`
+                  : index === 2
+                  ? `${color}32`
+                  : index === 3
+                  ? `${color}40`
+                  : index === 4
+                  ? `${color}48`
+                  : index === 5
+                  ? `${color}64`
+                  : `${color}`
               }
               barAnimationTime={animationTimeMs}
               numberOfBars={numberOfBars}
