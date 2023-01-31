@@ -47,7 +47,7 @@ const Banner: React.FC<BannerProps> = ({
   message,
   linkURI,
   linkText,
-  blink,
+  blink = true,
   onClick = () => {},
   linkOpensNewTab = false,
 }) => {
