@@ -10,6 +10,7 @@ import { useState } from "react";
 import { FrameBar } from "../FrameBar/FrameBar";
 import { OpenTreasuryButton } from "../Header/Header";
 import { useWebappGlobalState } from "../../store/store";
+import { useStorage } from "../../hooks/useStorageContextProvider";
 
 const FooterContainer = styled.div<{
   screenHeight: number;
@@ -61,7 +62,7 @@ const Footer = () => {
   const { height: screenHeight, width } = useScreenSize();
   const { vaultOption, vaultVersion } = useVaultOption();
   const [showVaultPosition, setShowVaultPosition] = useState(false);
-  const hasAccess = localStorage.getItem("auth");
+  const [storage] = useStorage();
   const [, setAccessModal] = useWebappGlobalState("isAccessModalVisible");
 
   return (
@@ -70,11 +71,18 @@ const Footer = () => {
         screenHeight={screenHeight}
         showVaultPosition={showVaultPosition}
       >
-        {!hasAccess && (
+        {!storage && (
           <FrameBar bottom={width <= sizes.md ? 104 : 0} height={4} />
         )}
         {/** Mobile */}
-        {hasAccess ? (
+        {storage ? (
+          <AccountStatus
+            variant="mobile"
+            vault={vaultOption ? { vaultOption, vaultVersion } : undefined}
+            showVaultPositionHook={setShowVaultPosition}
+            showAirdropButton={false}
+          />
+        ) : (
           <OpenTreasuryButton
             variant="mobile"
             role="button"
@@ -82,13 +90,6 @@ const Footer = () => {
           >
             Open VIP Vaults
           </OpenTreasuryButton>
-        ) : (
-          <AccountStatus
-            variant="mobile"
-            vault={vaultOption ? { vaultOption, vaultVersion } : undefined}
-            showVaultPositionHook={setShowVaultPosition}
-            showAirdropButton={false}
-          />
         )}
       </FooterContainer>
       <MobileFooterOffsetContainer showVaultPosition={showVaultPosition} />

@@ -7,9 +7,10 @@ import { ConnectWalletButton } from "shared/lib/components/Common/buttons";
 import { AccessModal } from "../AccessModal/AccessModal";
 import { Title } from "shared/lib/designSystem";
 import { InfoModal } from "../InfoModal/InfoModal";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { FrameBar } from "../FrameBar/FrameBar";
 import AccountStatus from "webapp/lib/components/Wallet/AccountStatus";
+import { useStorage } from "../../hooks/useStorageContextProvider";
 
 const HeaderContainer = styled.div<{ isMenuOpen?: boolean }>`
   height: ${theme.header.height}px;
@@ -138,9 +139,9 @@ const NavLinkText = styled(Title)`
 
 const Header = () => {
   const [isInfoModalVisible, setInfoModal] = useState<boolean>(false);
-  const hasAccess = localStorage.getItem("auth");
 
-  console.log(hasAccess);
+  const [storage] = useStorage();
+
   return (
     <>
       <AccessModal />
@@ -154,7 +155,7 @@ const Header = () => {
           <VIPLogo width={40} height={40} />
         </LogoContainer>
         <LinksContainer>
-          {hasAccess ? (
+          {storage ? (
             <AccountStatus variant="desktop" showAirdropButton={false} />
           ) : (
             <NavItem variant="desktop" onClick={() => setInfoModal(true)}>
@@ -162,7 +163,7 @@ const Header = () => {
             </NavItem>
           )}
         </LinksContainer>
-        {!hasAccess && <FrameBar bottom={0} height={4} />}
+        {!storage && <FrameBar bottom={0} height={4} />}
       </HeaderContainer>
     </>
   );

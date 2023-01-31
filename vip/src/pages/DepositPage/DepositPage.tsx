@@ -39,6 +39,7 @@ import VaultInformation from "../../components/Deposit/VaultInformation";
 import useVaultActivity from "shared/lib/hooks/useVaultActivity";
 import { getPremiumsAfterFeesFromVaultActivities } from "../../utils";
 import { SubgraphDataContext } from "shared/lib/hooks/subgraphDataContext";
+import { useStorage } from "../../hooks/useStorageContextProvider";
 
 const DepositPageContainer = styled(Container)`
   @media (min-width: ${sizes.xl}px) {
@@ -155,7 +156,7 @@ const ContractButtonTitle = styled(Title)`
 `;
 
 const DepositPage = () => {
-  const auth = localStorage.getItem("auth");
+  const [storage] = useStorage();
 
   const { vaultOption, vaultVersion } = useVaultOption();
   const { chainId } = useWeb3Wallet();
@@ -224,7 +225,7 @@ const DepositPage = () => {
     return <Redirect to="/" />;
   }
 
-  if (!auth || !auth.includes(vaultOption)) {
+  if (!storage || !storage.includes(vaultOption)) {
     return <Redirect to="/" />;
   }
 

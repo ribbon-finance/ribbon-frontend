@@ -28,7 +28,6 @@ const RootApp = () => {
     <Root id="appRoot" screenHeight={screenHeight}>
       <WalletConnectModal />
       <WithdrawReminderToast />
-
       <Router>
         <Header />
         <TxStatusToast />

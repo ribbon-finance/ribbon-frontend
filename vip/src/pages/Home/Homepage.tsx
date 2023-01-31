@@ -323,7 +323,6 @@ const Homepage = () => {
     setFooterRef(ref);
   }, []);
 
-  console.log(footerRef?.offsetHeight);
   return (
     <HomepageContainer>
       <FloatingContainer footerHeight={footerRef?.offsetHeight}>
