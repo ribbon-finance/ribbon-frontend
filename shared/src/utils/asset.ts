@@ -26,6 +26,7 @@ import { Assets, Wallets } from "../store/types";
 
 export const assetFilterList: Assets[] = [
   "AAVE",
+  "UNI",
   "WETH",
   "stETH",
   "USDC",
