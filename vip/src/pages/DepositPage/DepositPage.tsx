@@ -125,10 +125,6 @@ const SplashImage = styled.div`
 const DesktopActionsFormContainer = styled.div`
   display: flex;
 
-  @media (max-width: ${sizes.md}px) {
-    display: none;
-  }
-
   @media (min-width: ${sizes.xl}px) {
     padding: 0px 45px 0px 30px;
   }
@@ -250,21 +246,7 @@ const DepositPage = () => {
               target="_blank"
               rel="noreferrer noopener"
               className="w-100"
-            >
-              <ContractButton color={getVaultColor(vaultOption)}>
-                <ContractButtonTitle
-                  fontSize={14}
-                  lineHeight={20}
-                  color={getVaultColor(vaultOption)}
-                  className="mr-2"
-                >
-                  {`CONTRACT: ${truncateAddress(
-                    VaultAddressMap[vaultOption][vaultVersion]!
-                  )}`}
-                </ContractButtonTitle>
-                <ExternalIcon color={getVaultColor(vaultOption)} />
-              </ContractButton>
-            </BaseLink>
+            ></BaseLink>
           )}
           <PerformanceSection
             vault={{ vaultOption, vaultVersion }}
