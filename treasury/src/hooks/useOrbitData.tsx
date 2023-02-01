@@ -26,7 +26,7 @@ export const useOrbitData = () => {
 
       const { data } = response;
 
-      const orbitData = { loading: false, pv: data.orbitData } as OrbitData;
+      const orbitData = { loading: false, pv: data.pv } as OrbitData;
 
       setData(orbitData);
     } catch (error) {
