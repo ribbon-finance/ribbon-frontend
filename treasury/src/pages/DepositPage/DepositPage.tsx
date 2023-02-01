@@ -209,6 +209,7 @@ const DepositPage = () => {
       vaultDeposit={totalDepositStr}
       vaultYield={totalYields}
       asset={asset}
+      vaultOption={vaultOption}
     />
   );
 

@@ -6,7 +6,8 @@ import { Col, Row } from "react-bootstrap";
 import { SecondaryText, Title } from "shared/lib/designSystem";
 import { Assets } from "shared/lib/store/types";
 import useLoadingText from "shared/lib/hooks/useLoadingText";
-
+import { useOrbitData } from "../../hooks/useOrbitData";
+import { VaultOptions } from "shared/lib/constants/constants";
 const VaultDataCol = styled(Col)`
   margin-top: 20px;
   margin-bottom: 20px;
@@ -36,8 +37,10 @@ const VaultInformation: React.FC<{
   vaultDeposit: number;
   vaultYield: number;
   asset: Assets;
-}> = ({ loading, vaultDeposit, vaultYield, asset }) => {
+  vaultOption?: VaultOptions;
+}> = ({ loading, vaultDeposit, vaultYield, asset, vaultOption }) => {
   const loadingText = useLoadingText();
+  const { loading: orbitDataLoading, pv } = useOrbitData();
   return (
     <Row noGutters>
       <VaultDataCol xs="3">
@@ -65,6 +68,15 @@ const VaultInformation: React.FC<{
               }`}
         </VaultData>
       </VaultDataCol>
+      {vaultOption === "rVIP-USDC" && (
+        <>
+          <VerticalLineSeparator xs="1"></VerticalLineSeparator>
+          <VaultDataCol xs="3">
+            <VaultDataLabel className="d-block">PV</VaultDataLabel>
+            <VaultData>{orbitDataLoading ? loadingText : pv}</VaultData>
+          </VaultDataCol>
+        </>
+      )}
     </Row>
   );
 };
