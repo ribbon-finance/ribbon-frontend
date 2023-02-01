@@ -72,7 +72,9 @@ const VaultInformation: React.FC<{
         <>
           <VerticalLineSeparator xs="1"></VerticalLineSeparator>
           <VaultDataCol xs="3">
-            <VaultDataLabel className="d-block">PV</VaultDataLabel>
+            <VaultDataLabel className="d-block">
+              Unrealized Gains
+            </VaultDataLabel>
             <VaultData>{orbitDataLoading ? loadingText : pv}</VaultData>
           </VaultDataCol>
         </>
