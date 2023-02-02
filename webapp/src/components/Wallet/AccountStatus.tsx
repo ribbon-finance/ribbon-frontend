@@ -108,6 +108,7 @@ const WalletContainer = styled.div<AccountStatusVariantProps>`
           @media (max-width: ${sizes.md}px) {
             display: flex;
             align-items: unset;
+            padding-top: 16px;
             width: 100%;
           }
         `;

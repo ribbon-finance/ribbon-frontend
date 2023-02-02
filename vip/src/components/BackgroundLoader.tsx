@@ -25,7 +25,7 @@ const cascadeFade = keyframes`
     opacity: 0;
   }
   15% {
-    opacity: 0.3;
+    opacity: 0.25;
   }
   50% {
     opacity: 0;

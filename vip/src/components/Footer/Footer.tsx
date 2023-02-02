@@ -8,8 +8,7 @@ import useVaultOption from "../../hooks/useVaultOption";
 import AccountStatus from "webapp/lib/components/Wallet/AccountStatus";
 import { useState } from "react";
 import { FrameBar } from "../FrameBar/FrameBar";
-import { NavItem, NavLinkText, OpenTreasuryButton } from "../Header/Header";
-import { useWebappGlobalState } from "../../store/store";
+import { NavItem, NavLinkText } from "../Header/Header";
 import { useStorage } from "../../hooks/useStorageContextProvider";
 import { InfoModal } from "../InfoModal/InfoModal";
 
@@ -20,7 +19,6 @@ const FooterContainer = styled.div<{
   width: 100%;
   display: flex;
   justify-content: center;
-  align-items: center;
   backdrop-filter: blur(40px);
   /**
    * Firefox desktop come with default flag to have backdrop-filter disabled

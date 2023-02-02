@@ -32,8 +32,6 @@ import theme from "shared/lib/designSystem/theme";
 import { getVaultURI } from "../../constants/constants";
 import DesktopActionForm from "../../components/Vault/VaultActionsForm/DesktopActionForm";
 import YourPosition from "../../components/Vault/YourPosition";
-import { truncateAddress } from "shared/lib/utils/address";
-import { ExternalIcon } from "shared/lib/assets/icons/icons";
 import Banner from "shared/lib/components/Banner/Banner";
 import VaultInformation from "../../components/Deposit/VaultInformation";
 import useVaultActivity from "shared/lib/hooks/useVaultActivity";
@@ -128,27 +126,6 @@ const DesktopActionsFormContainer = styled.div`
   @media (min-width: ${sizes.xl}px) {
     padding: 0px 45px 0px 30px;
   }
-`;
-
-const ContractButton = styled.div<{ color: string }>`
-  @media (max-width: ${sizes.md}px) {
-    display: flex;
-    justify-content: center;
-    padding: 10px 16px;
-    background: ${(props) => props.color}14;
-    border-radius: 100px;
-    margin-left: 16px;
-    margin-right: 16px;
-    margin-top: -15px;
-    margin-bottom: 48px;
-  }
-  @media (min-width: ${sizes.md + 1}px) {
-    display: none !important;
-  }
-`;
-
-const ContractButtonTitle = styled(Title)`
-  letter-spacing: 1px;
 `;
 
 const DepositPage = () => {

@@ -28,6 +28,7 @@ export const FrameBar = styled.div<{
     ${colors.primaryText} 50%,
     ${colors.primaryText}00 95%
   )`};
+  box-shadow: 4px 8px 80px 4px rgba(255, 255, 255, 0.43);
   background-size: 200%;
   animation: 10s ${livelyAnimation("bottom")} linear infinite;
   left: 0;
