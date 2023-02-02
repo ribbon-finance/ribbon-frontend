@@ -28,11 +28,7 @@ const useGlobalAccess = () => {
     const hash = ethers.utils.sha256(hex);
 
     let userAddress: string | undefined;
-    // for (const [key, value] of Object.entries(hashCode)) {
-    //   if (value === hash) {
-    //     userAddress = key as string;
-    //   }
-    // }
+
     for (const [key, value] of Object.entries(vipMap)) {
       if (value.passcodeHash === hash) {
         userAddress = key as string;

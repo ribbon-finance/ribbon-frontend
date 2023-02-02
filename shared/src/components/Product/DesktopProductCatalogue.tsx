@@ -37,6 +37,11 @@ const DesktopProductCatalogue: React.FC<
       );
     }
 
+    if (variant === "vip") {
+      return (
+        <ProductCatalogueGridView setView={setView} {...props} variant="vip" />
+      );
+    }
     switch (view) {
       case "grid":
         return (

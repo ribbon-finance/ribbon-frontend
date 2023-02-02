@@ -6,7 +6,6 @@ import {
   ActionType,
   V2WithdrawOption,
 } from "webapp/lib/components/Vault/VaultActionsForm/Modal/types";
-import { VIPVaultOptions } from "../constants/constants";
 
 interface GlobalStore {
   isAccessModalVisible: boolean;

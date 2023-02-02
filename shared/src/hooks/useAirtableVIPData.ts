@@ -63,7 +63,6 @@ export const useAirtableVIPData = () => {
       .select({ view: "Grid view" })
       .all()
       .then((records) => {
-        // console.log(records);
         // check for undefined rows in airtable
         const filteredRecords = records.filter(
           (record) => !recordHasUndefined(record)

@@ -6,7 +6,6 @@ import { useStorage } from "../../hooks/useStorageContextProvider";
 const UserPage = () => {
   const history = useHistory();
   const [storage] = useStorage();
-  console.log(storage);
   /**
    * Redirect to homepage if no passcode and no cache in storage
    */

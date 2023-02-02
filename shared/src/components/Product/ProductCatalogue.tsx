@@ -34,7 +34,7 @@ import { getChainByVaultOption, getIntegralAsset } from "../../utils/asset";
 import { useChain } from "../../hooks/chainContext";
 import { useAirtableVIPData } from "../../hooks/useAirtableVIPData";
 import TextPreview from "../TextPreview/TextPreview";
-import { LoadingText } from "shared/lib/hooks/useLoadingText";
+import { LoadingText } from "../../hooks/useLoadingText";
 import theme from "../../designSystem/theme";
 
 const ProductCatalogue: React.FC<ProductCatalogueProps> = ({
@@ -112,20 +112,23 @@ const ProductCatalogue: React.FC<ProductCatalogueProps> = ({
   const auth = localStorage.getItem("auth");
 
   const filteredProducts = useMemo(() => {
-    if (variant === "vip" && auth) {
-      const allUserVaults = JSON.parse(auth).reduce(
-        (allVaultOptions: VaultOptions[], userAddress: string) => {
-          const userVaults = vipMap[userAddress].vaultOptions;
-          for (const vaultOption of userVaults) {
-            if (!allVaultOptions.includes(vaultOption)) {
-              allVaultOptions.push(vaultOption);
+    if (variant === "vip" && !loading) {
+      if (auth) {
+        const allUserVaults: VaultOptions[] = JSON.parse(auth).reduce(
+          (allVaultOptions: VaultOptions[], userAddress: string) => {
+            const userVaults = vipMap[userAddress].vaultOptions;
+            for (const vaultOption of userVaults) {
+              if (!allVaultOptions.includes(vaultOption)) {
+                allVaultOptions.push(vaultOption);
+              }
             }
-          }
-          return allVaultOptions;
-        },
-        []
-      );
-      return allUserVaults;
+            return allVaultOptions;
+          },
+          []
+        );
+
+        return allUserVaults;
+      }
     }
     const filteredList = VaultList.filter((vault) => {
       if (
@@ -200,6 +203,7 @@ const ProductCatalogue: React.FC<ProductCatalogueProps> = ({
     chainId,
     filterAssets,
     filterStrategies,
+    loading,
     sort,
     variant,
     vaultsDisplayVersion,
