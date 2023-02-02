@@ -32,13 +32,12 @@ import theme from "shared/lib/designSystem/theme";
 import { getVaultURI } from "../../constants/constants";
 import DesktopActionForm from "../../components/Vault/VaultActionsForm/DesktopActionForm";
 import YourPosition from "../../components/Vault/YourPosition";
-import { truncateAddress } from "shared/lib/utils/address";
-import { ExternalIcon } from "shared/lib/assets/icons/icons";
 import Banner from "shared/lib/components/Banner/Banner";
 import VaultInformation from "../../components/Deposit/VaultInformation";
 import useVaultActivity from "shared/lib/hooks/useVaultActivity";
 import { getPremiumsAfterFeesFromVaultActivities } from "../../utils";
 import { SubgraphDataContext } from "shared/lib/hooks/subgraphDataContext";
+import { useStorage } from "../../hooks/useStorageContextProvider";
 
 const DepositPageContainer = styled(Container)`
   @media (min-width: ${sizes.xl}px) {
@@ -124,38 +123,13 @@ const SplashImage = styled.div`
 const DesktopActionsFormContainer = styled.div`
   display: flex;
 
-  @media (max-width: ${sizes.md}px) {
-    display: none;
-  }
-
   @media (min-width: ${sizes.xl}px) {
     padding: 0px 45px 0px 30px;
   }
 `;
 
-const ContractButton = styled.div<{ color: string }>`
-  @media (max-width: ${sizes.md}px) {
-    display: flex;
-    justify-content: center;
-    padding: 10px 16px;
-    background: ${(props) => props.color}14;
-    border-radius: 100px;
-    margin-left: 16px;
-    margin-right: 16px;
-    margin-top: -15px;
-    margin-bottom: 48px;
-  }
-  @media (min-width: ${sizes.md + 1}px) {
-    display: none !important;
-  }
-`;
-
-const ContractButtonTitle = styled(Title)`
-  letter-spacing: 1px;
-`;
-
 const DepositPage = () => {
-  const auth = localStorage.getItem("auth");
+  const [storage] = useStorage();
 
   const { vaultOption, vaultVersion } = useVaultOption();
   const { chainId } = useWeb3Wallet();
@@ -224,7 +198,7 @@ const DepositPage = () => {
     return <Redirect to="/" />;
   }
 
-  if (!auth || !auth.includes(vaultOption)) {
+  if (!storage || !storage.includes(vaultOption)) {
     return <Redirect to="/" />;
   }
 
@@ -249,21 +223,7 @@ const DepositPage = () => {
               target="_blank"
               rel="noreferrer noopener"
               className="w-100"
-            >
-              <ContractButton color={getVaultColor(vaultOption)}>
-                <ContractButtonTitle
-                  fontSize={14}
-                  lineHeight={20}
-                  color={getVaultColor(vaultOption)}
-                  className="mr-2"
-                >
-                  {`CONTRACT: ${truncateAddress(
-                    VaultAddressMap[vaultOption][vaultVersion]!
-                  )}`}
-                </ContractButtonTitle>
-                <ExternalIcon color={getVaultColor(vaultOption)} />
-              </ContractButton>
-            </BaseLink>
+            ></BaseLink>
           )}
           <PerformanceSection
             vault={{ vaultOption, vaultVersion }}

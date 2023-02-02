@@ -8,8 +8,9 @@ import useVaultOption from "../../hooks/useVaultOption";
 import AccountStatus from "webapp/lib/components/Wallet/AccountStatus";
 import { useState } from "react";
 import { FrameBar } from "../FrameBar/FrameBar";
-import { OpenTreasuryButton } from "../Header/Header";
-import { useWebappGlobalState } from "../../store/store";
+import { NavItem, NavLinkText } from "../Header/Header";
+import { useStorage } from "../../hooks/useStorageContextProvider";
+import { InfoModal } from "../InfoModal/InfoModal";
 
 const FooterContainer = styled.div<{
   screenHeight: number;
@@ -58,35 +59,37 @@ const MobileFooterOffsetContainer = styled.div<{ showVaultPosition: boolean }>`
 
 const Footer = () => {
   const { height: screenHeight, width } = useScreenSize();
+  const [isInfoModalVisible, setInfoModal] = useState<boolean>(false);
   const { vaultOption, vaultVersion } = useVaultOption();
   const [showVaultPosition, setShowVaultPosition] = useState(false);
-  const hasAccess = localStorage.getItem("auth");
-  const [, setAccessModal] = useWebappGlobalState("isAccessModalVisible");
+  const [storage] = useStorage();
 
   return (
     <>
+      <InfoModal
+        isVisible={isInfoModalVisible}
+        setShow={(set) => setInfoModal(set)}
+      />
       <FooterContainer
         screenHeight={screenHeight}
         showVaultPosition={showVaultPosition}
       >
+        {!storage && (
+          <FrameBar bottom={width <= sizes.md ? 104 : 0} height={4} />
+        )}
         {/** Mobile */}
-        {hasAccess ? (
-          <OpenTreasuryButton
-            variant="mobile"
-            role="button"
-            onClick={() => setAccessModal(true)}
-          >
-            Open VIP Vaults
-          </OpenTreasuryButton>
-        ) : (
+        {storage ? (
           <AccountStatus
             variant="mobile"
             vault={vaultOption ? { vaultOption, vaultVersion } : undefined}
             showVaultPositionHook={setShowVaultPosition}
             showAirdropButton={false}
           />
+        ) : (
+          <NavItem variant="mobile" onClick={() => setInfoModal(true)}>
+            <NavLinkText>Info</NavLinkText>
+          </NavItem>
         )}
-        {!hasAccess && <FrameBar bottom={0} height={4} />}
       </FooterContainer>
       <MobileFooterOffsetContainer showVaultPosition={showVaultPosition} />
     </>

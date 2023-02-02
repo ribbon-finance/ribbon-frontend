@@ -11,6 +11,7 @@ import { PendingTransactionsContextProvider } from "shared/lib/hooks/pendingTran
 import { ExternalAPIDataContextProvider } from "shared/lib/hooks/externalAPIDataContext";
 import { ChainContextProvider } from "shared/lib/hooks/chainContext";
 import "shared/lib/i18n/config";
+import { StorageContextProvider } from "./hooks/useStorageContextProvider";
 
 function App() {
   useEffect(() => {
@@ -25,7 +26,9 @@ function App() {
             <Web3DataContextProvider>
               <SubgraphDataContextProvider>
                 <ExternalAPIDataContextProvider>
-                  <RootApp />
+                  <StorageContextProvider>
+                    <RootApp />
+                  </StorageContextProvider>
                 </ExternalAPIDataContextProvider>
               </SubgraphDataContextProvider>
             </Web3DataContextProvider>

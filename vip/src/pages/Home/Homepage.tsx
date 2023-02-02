@@ -6,12 +6,12 @@ import { URLS } from "shared/lib/constants/constants";
 import usePullUp from "webapp/lib/hooks/usePullUp";
 import { useHistory } from "react-router-dom";
 import { VaultName, VaultNameOptionMap } from "shared/lib/constants/constants";
-import ReactPlayer from "react-player";
 import colors from "shared/lib/designSystem/colors";
 import { ExternalIcon } from "shared/lib/assets/icons/icons";
 import { useCallback, useEffect, useState } from "react";
 import Chevron from "../../img/scroll-chevron.svg";
 import { useWebappGlobalState } from "../../store/store";
+import BackgroundLoader from "../../components/BackgroundLoader";
 
 const HomepageContainer = styled.div`
   display: flex;
@@ -44,28 +44,6 @@ const FloatingContainer = styled.div<{ footerHeight?: number }>`
     flex-direction: column;
     height: fit-content;
     display: flex;
-  }
-`;
-
-const PlayerContainer = styled(ReactPlayer)`
-  width: 100%;
-  position: absolute;
-  pointer-events: none !important;
-  z-index: -1;
-  top: 0px;
-
-  // > div {
-  //   margin-top: 64px;
-  //   height: calc(100vh - ${theme.header.height}px);
-  // }
-
-  // iframe {
-  > div {
-    overflow: hidden;
-  }
-
-  iframe {
-    transform: scale(1.5);
   }
 `;
 
@@ -138,7 +116,7 @@ const LandingSteps = styled.div<{ totalSteps: number }>`
   display: flex;
   transition: 0.2s;
 
-  @media (max-width: calc(${sizes.md}px + 100px)) {
+  @media (max-width: calc(${sizes.md}px)) {
     display: block;
     // bottom: 120px;
     top: calc(${theme.header.height}px + 600px);
@@ -148,8 +126,15 @@ const LandingSteps = styled.div<{ totalSteps: number }>`
 `;
 
 const StepContainer = styled.div`
-  width: 300px;
+  width: 280px;
   position: relative;
+
+  @media (min-width: ${sizes.md}px) {
+    width: 250px;
+    &:not(:last-of-type) {
+      margin-right: 10px;
+    }
+  }
 
   @media (min-width: ${sizes.lg}px) {
     &:not(:last-of-type) {
@@ -157,7 +142,7 @@ const StepContainer = styled.div`
     }
   }
 
-  @media (max-width: ${sizes.lg}px) {
+  @media (max-width: ${sizes.md}px) {
     margin: auto;
 
     &:not(:last-of-type) {
@@ -196,7 +181,7 @@ const StepProgressContainer = styled.div`
   background: ${colors.background.four};
   width: 100%;
 
-  @media (max-width: calc(${sizes.md}px + 100px)) {
+  @media (max-width: calc(${sizes.md}px)) {
     display: none;
   }
 
@@ -261,7 +246,7 @@ const scroll = keyframes`
 const ScrollText = styled.div`
   display: none;
 
-  @media (max-width: calc(${sizes.md}px + 100px)) {
+  @media (max-width: calc(${sizes.md}px)) {
     display: initial;
     position: absolute;
     bottom: 104px;
@@ -342,21 +327,8 @@ const Homepage = () => {
 
   return (
     <HomepageContainer>
+      <BackgroundLoader active={true} />
       <FloatingContainer footerHeight={footerRef?.offsetHeight}>
-        {/* <PlayerContainer
-          key="video-player"
-          url="https://player.vimeo.com/video/722230744"
-          playing={true}
-          height={"calc(100vh - 80px)"}
-          width={"100vw"}
-          // style={{
-          //   overflow: 'hidden',
-          //   transform: 'scale(1.5)'
-          // }}
-          config={{ vimeo: { playerOptions: { background: true } } }}
-          muted
-          loop
-        /> */}
         <LandingContent>
           <h1>Ribbon VIP</h1>
           <p>

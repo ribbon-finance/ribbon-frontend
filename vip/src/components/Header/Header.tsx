@@ -9,6 +9,8 @@ import { Title } from "shared/lib/designSystem";
 import { InfoModal } from "../InfoModal/InfoModal";
 import { useState } from "react";
 import { FrameBar } from "../FrameBar/FrameBar";
+import AccountStatus from "webapp/lib/components/Wallet/AccountStatus";
+import { useStorage } from "../../hooks/useStorageContextProvider";
 
 const HeaderContainer = styled.div<{ isMenuOpen?: boolean }>`
   height: ${theme.header.height}px;
@@ -103,7 +105,7 @@ const LinksContainer = styled.div`
   display: flex;
 `;
 
-const NavItem = styled.div<{
+export const NavItem = styled.div<{
   variant: "desktop" | "mobile";
 }>`
   cursor: pointer;
@@ -113,12 +115,22 @@ const NavItem = styled.div<{
   padding: 12px 16px;
   background: ${colors.background.four};
   border-radius: 8px;
+  text-align: center;
   ${(props) =>
     props.variant === "mobile" &&
     `
     margin: 16px;
     width: 100%;
+    height: 48px;
   `};
+
+  @media (max-width: ${sizes.md}px) {
+    ${(props) => props.variant === "desktop" && "display: none"};
+  }
+
+  @media (min-width: ${sizes.md}px) {
+    ${(props) => props.variant === "mobile" && "display: none"};
+  }
 
   @media (min-width: ${sizes.lg}px) {
     ${(props) => props.variant === "desktop" && "margin-right: 40px"};
@@ -129,7 +141,7 @@ const NavItem = styled.div<{
   }
 `;
 
-const NavLinkText = styled(Title)`
+export const NavLinkText = styled(Title)`
   letter-spacing: 1.5px;
   font-size: 14px;
   line-height: 20px;
@@ -137,7 +149,8 @@ const NavLinkText = styled(Title)`
 
 const Header = () => {
   const [isInfoModalVisible, setInfoModal] = useState<boolean>(false);
-  const hasAccess = localStorage.getItem("auth");
+
+  const [storage] = useStorage();
 
   return (
     <>
@@ -152,11 +165,15 @@ const Header = () => {
           <VIPLogo width={40} height={40} />
         </LogoContainer>
         <LinksContainer>
-          <NavItem variant="desktop" onClick={() => setInfoModal(true)}>
-            <NavLinkText>Info</NavLinkText>
-          </NavItem>
+          {storage ? (
+            <AccountStatus variant="desktop" showAirdropButton={false} />
+          ) : (
+            <NavItem variant="desktop" onClick={() => setInfoModal(true)}>
+              <NavLinkText>Info</NavLinkText>
+            </NavItem>
+          )}
         </LinksContainer>
-        {!hasAccess && <FrameBar bottom={0} height={4} />}
+        {!storage && <FrameBar bottom={0} height={4} />}
       </HeaderContainer>
     </>
   );

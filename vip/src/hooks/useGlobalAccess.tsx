@@ -4,6 +4,7 @@ import { useGlobalAccessState, useWebappGlobalState } from "../store/store";
 import { hashCode, VIPVaultOptions } from "../constants/constants";
 import { useHistory } from "react-router-dom";
 import { VaultName, VaultNameOptionMap } from "shared/lib/constants/constants";
+import { useStorage } from "./useStorageContextProvider";
 
 const useGlobalAccess = () => {
   const history = useHistory();
@@ -11,6 +12,7 @@ const useGlobalAccess = () => {
   const [, setAccessModal] = useWebappGlobalState("isAccessModalVisible");
   const [code, setCode] = useState("");
   const [error, setError] = useState("");
+  const [, setStorage] = useStorage();
 
   const handleInputChange = useCallback(
     (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -39,6 +41,7 @@ const useGlobalAccess = () => {
             "auth",
             JSON.stringify([...accessState, vault as VIPVaultOptions])
           );
+          setStorage(localStorage.getItem("auth"));
           return [...accessState, vault as VIPVaultOptions];
         } else {
           return accessState;
@@ -60,7 +63,7 @@ const useGlobalAccess = () => {
     } else {
       setError("Invalid Code");
     }
-  }, [setError, code, history, setGlobalAccess, setAccessModal]);
+  }, [code, setGlobalAccess, history, setAccessModal, setStorage]);
 
   return {
     handleInputChange,
