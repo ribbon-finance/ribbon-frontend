@@ -1396,6 +1396,7 @@ export const URLS = {
   tokenterminal:
     "https://www.tokenterminal.com/terminal/projects/ribbon-finance",
   defillama: "https://defillama.com/protocol/ribbon-finance",
+  arkham: "https://www.arkhamintelligence.com/",
   coingecko: "https://www.coingecko.com/en/coins/ribbon-finance",
   hiddenhand: "https://hiddenhand.finance/ribbon",
 } as const;
