@@ -256,6 +256,10 @@ const Header = () => {
                 text: "Defi Llama",
                 link: URLS.defillama,
               },
+              {
+                text: "Arkham",
+                link: URLS.arkham,
+              },
             ]}
           >
             Data
