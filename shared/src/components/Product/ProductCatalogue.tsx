@@ -32,12 +32,17 @@ import {
 import useWeb3Wallet from "../../hooks/useWeb3Wallet";
 import { getChainByVaultOption, getIntegralAsset } from "../../utils/asset";
 import { useChain } from "../../hooks/chainContext";
+import { useAirtableVIPData } from "../../hooks/useAirtableVIPData";
+import TextPreview from "../TextPreview/TextPreview";
+import { LoadingText } from "shared/lib/hooks/useLoadingText";
+import theme from "../../designSystem/theme";
 
 const ProductCatalogue: React.FC<ProductCatalogueProps> = ({
   variant,
   onVaultPress,
 }) => {
   const [chain] = useChain();
+  const { loading, vipMap } = useAirtableVIPData();
   const { chainId } = useWeb3Wallet();
   const { width } = useScreenSize();
   const [filterStrategies, setFilterStrategies] = useState<VaultStrategy[]>([]);
@@ -104,7 +109,24 @@ const ProductCatalogue: React.FC<ProductCatalogueProps> = ({
     []
   );
 
+  const auth = localStorage.getItem("auth");
+
   const filteredProducts = useMemo(() => {
+    if (variant === "vip" && auth) {
+      const allUserVaults = JSON.parse(auth).reduce(
+        (allVaultOptions: VaultOptions[], userAddress: string) => {
+          const userVaults = vipMap[userAddress].vaultOptions;
+          for (const vaultOption of userVaults) {
+            if (!allVaultOptions.includes(vaultOption)) {
+              allVaultOptions.push(vaultOption);
+            }
+          }
+          return allVaultOptions;
+        },
+        []
+      );
+      return allUserVaults;
+    }
     const filteredList = VaultList.filter((vault) => {
       if (
         chain !== Chains.NotSelected &&
@@ -173,15 +195,27 @@ const ProductCatalogue: React.FC<ProductCatalogueProps> = ({
 
     return filteredList;
   }, [
+    auth,
     chain,
     chainId,
     filterAssets,
     filterStrategies,
     sort,
+    variant,
     vaultsDisplayVersion,
-    yieldsData,
+    vipMap,
+    yieldsData.res,
   ]);
 
+  if (variant === "vip" && loading) {
+    return (
+      <div style={{ marginTop: -`${theme.header.height}` }}>
+        <TextPreview>
+          <LoadingText>Ribbon VIP</LoadingText>
+        </TextPreview>
+      </div>
+    );
+  }
   return width > sizes.md ? (
     <DesktopProductCatalogue
       variant={variant}

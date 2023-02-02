@@ -5,7 +5,6 @@ import useScreenSize from "shared/lib/hooks/useScreenSize";
 import { URLS } from "shared/lib/constants/constants";
 import usePullUp from "webapp/lib/hooks/usePullUp";
 import { useHistory } from "react-router-dom";
-import { VaultName, VaultNameOptionMap } from "shared/lib/constants/constants";
 import colors from "shared/lib/designSystem/colors";
 import { ExternalIcon } from "shared/lib/assets/icons/icons";
 import { useCallback, useEffect, useState } from "react";
@@ -308,16 +307,9 @@ const Homepage = () => {
   ];
 
   if (auth) {
-    const vault = JSON.parse(auth).pop();
-    if (vault) {
-      let vaultName;
-      Object.keys(VaultNameOptionMap).filter((name) => {
-        if (VaultNameOptionMap[name as VaultName] === vault) {
-          vaultName = name;
-        }
-        return null;
-      });
-      history.push("/vip/" + vaultName);
+    const userAddress = JSON.parse(auth).pop();
+    if (userAddress) {
+      history.push("/vip/");
     }
   }
 

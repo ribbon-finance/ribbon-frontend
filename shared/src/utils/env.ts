@@ -39,6 +39,8 @@ export const isProduction = () =>
 export const isTreasury = () =>
   process.env.REACT_APP_VAULT_COLLECTION === "treasury";
 
+export const isVIP = () => process.env.REACT_APP_VAULT_COLLECTION === "vip";
+
 export const NODE_URI: Record<number, string> = {
   [CHAINID.ETH_MAINNET]: process.env.REACT_APP_MAINNET_URI || "",
   [CHAINID.ETH_KOVAN]: process.env.REACT_APP_TESTNET_URI || "",

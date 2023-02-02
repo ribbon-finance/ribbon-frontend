@@ -32,7 +32,7 @@ export interface HeaderScrollIndicatorProps {
 }
 
 export interface ProductCatalogueProps {
-  variant: "landing" | "webapp";
+  variant: "landing" | "webapp" | "vip";
   onVaultPress: (vault: VaultOptions, vaultVersion: VaultVersion) => void;
 }
 

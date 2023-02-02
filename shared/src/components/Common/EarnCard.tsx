@@ -94,12 +94,14 @@ const rotateAnticlockwise = keyframes`
   }
 `;
 
-const StyledEarnOuterCircle = styled(EarnCardOuterCircle)`
+const StyledEarnOuterCircle = styled(EarnCardOuterCircle)<{ color: string }>`
+  color: ${(props) => props.color};
   animation: ${rotateClockwise} 20s linear infinite;
   position: absolute;
 `;
 
-const StyledEarnMiddleCircle = styled(EarnCardMiddleCircle)`
+const StyledEarnMiddleCircle = styled(EarnCardMiddleCircle)<{ color: string }>`
+  color: ${(props) => props.color};
   animation: ${rotateAnticlockwise} 20s linear infinite;
   overflow: show;
   display: flex;
@@ -172,7 +174,6 @@ const EarnCard: React.FC<AssetCircleContainerProps> = ({
   const Logo = getAssetLogo(asset);
 
   let logo = <Logo height={"100%"} />;
-
   return (
     <>
       <StyledGrid height={height} />

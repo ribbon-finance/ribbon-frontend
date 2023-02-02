@@ -7,8 +7,9 @@ import {
   isEarnVault,
   isPutVault,
   TreasuryVaultList,
+  VIPVaultList,
 } from "../constants/constants";
-import { isProduction, isTreasury } from "../utils/env";
+import { isProduction, isTreasury, isVIP } from "../utils/env";
 import { getVaultContract } from "./useVaultContract";
 import { getStrikeSelectionContract } from "./useStrikeSelection";
 import { impersonateAddress } from "../utils/development";
@@ -51,7 +52,11 @@ const useFetchV2VaultData = (): V2VaultData => {
       return currentCounter;
     });
 
-    const vaultList = isTreasury() ? TreasuryVaultList : EVMVaultList;
+    const vaultList = isTreasury()
+      ? TreasuryVaultList
+      : isVIP()
+      ? VIPVaultList
+      : EVMVaultList;
 
     const responses = await Promise.all(
       vaultList.map(async (vault) => {
