@@ -38,7 +38,7 @@ export const { useGlobalState: useWebappGlobalState } =
   createGlobalState(initialState);
 
 interface GlobalAccessStore {
-  access: VIPVaultOptions[];
+  access: string[];
 }
 
 export const initialAccessState: GlobalAccessStore = {

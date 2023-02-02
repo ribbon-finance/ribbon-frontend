@@ -104,7 +104,7 @@ const BackgroundText = styled(Title)`
 `;
 
 interface DesktopProductCatalogueGridViewProps {
-  variant: "landing" | "webapp";
+  variant: "landing" | "webapp" | "vip";
   setView?: React.Dispatch<React.SetStateAction<DesktopViewType>>;
   onVaultPress: (vault: VaultOptions, vaultVersion: VaultVersion) => void;
   filteredProducts: VaultOptions[];

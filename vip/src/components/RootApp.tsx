@@ -1,4 +1,9 @@
-import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
+import {
+  BrowserRouter as Router,
+  Route,
+  Switch,
+  useHistory,
+} from "react-router-dom";
 import styled from "styled-components";
 
 import Header from "./Header/Header";
@@ -14,7 +19,7 @@ import {
 } from "webapp/lib/components/Common/toasts";
 import WalletConnectModal from "shared/lib/components/Wallet/WalletConnectModal";
 import NotFound from "shared/lib/pages/NotFound";
-
+import UserPage from "../pages/User/UserPage";
 const Root = styled.div<{ screenHeight: number }>`
   max-height: 100vh;
   background: transparent;
@@ -23,7 +28,6 @@ const Root = styled.div<{ screenHeight: number }>`
 const RootApp = () => {
   useEagerConnect();
   const { height: screenHeight } = useScreenSize();
-
   return (
     <Root id="appRoot" screenHeight={screenHeight}>
       <WalletConnectModal />
@@ -35,7 +39,10 @@ const RootApp = () => {
           <Route path="/" exact>
             <Homepage />
           </Route>
-          <Route path="/vip/:vaultSymbol">
+          <Route path="/vip" exact>
+            <UserPage />
+          </Route>
+          <Route path="/vip/:vaultSymbol" exact>
             <DepositPage />
           </Route>
           <Route path="/portfolio">

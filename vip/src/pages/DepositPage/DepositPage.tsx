@@ -198,9 +198,9 @@ const DepositPage = () => {
     return <Redirect to="/" />;
   }
 
-  if (!storage || !storage.includes(vaultOption)) {
-    return <Redirect to="/" />;
-  }
+  // if (!storage || !storage.includes(vaultOption)) {
+  //   return <Redirect to="/" />;
+  // }
 
   return (
     <>

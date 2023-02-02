@@ -12,6 +12,7 @@ import {
   getSolanaAddresses,
   SOLANA_SUBGRAPH,
   getSubgraphqlRearnURI,
+  isVIP,
 } from "../utils/env";
 import { PublicKey } from "@solana/web3.js";
 import v1deployment from "./v1Deployments.json";
@@ -158,6 +159,8 @@ export type StakingVaultOptions = typeof StakingVaultList[number];
 // @ts-ignore
 export const VaultList: VaultOptions[] = isTreasury()
   ? TreasuryVaultList
+  : isVIP()
+  ? VIPVaultList
   : !isProduction()
   ? RetailVaultList
   : RetailVaultList.filter((vault) => !ProdExcludeVault.includes(vault));
