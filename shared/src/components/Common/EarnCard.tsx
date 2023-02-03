@@ -9,6 +9,8 @@ import {
 } from "../../assets/icons/icons";
 import { getAssetLogo } from "../../utils/asset";
 import { Assets } from "../../store/types";
+import { getEarnVaultFeColorMatrix } from "../../utils/vault";
+import { VaultOptions } from "../../constants/constants";
 
 const ProductAssetLogoContainer = styled.div<{ color: string }>`
   display: flex;
@@ -94,7 +96,9 @@ const rotateAnticlockwise = keyframes`
   }
 `;
 
-const StyledEarnOuterCircle = styled(EarnCardOuterCircle)<{ color: string }>`
+const StyledEarnOuterCircle = styled(EarnCardOuterCircle)<{
+  color: string;
+}>`
   color: ${(props) => props.color};
   animation: ${rotateClockwise} 20s linear infinite;
   position: absolute;
@@ -164,16 +168,19 @@ interface AssetCircleContainerProps {
   color: string;
   height: number;
   asset: Assets;
+  vaultOption: VaultOptions;
 }
 
 const EarnCard: React.FC<AssetCircleContainerProps> = ({
   asset,
   color,
   height,
+  vaultOption,
 }) => {
   const Logo = getAssetLogo(asset);
-
   let logo = <Logo height={"100%"} />;
+
+  const feColorMatrix = getEarnVaultFeColorMatrix(vaultOption);
   return (
     <>
       <StyledGrid height={height} />
@@ -205,7 +212,11 @@ const EarnCard: React.FC<AssetCircleContainerProps> = ({
           <StyledProductAssetLogoContainer color={color}>
             {logo}
           </StyledProductAssetLogoContainer>
-          <StyledEarnOuterCircle color={color} />
+          <StyledEarnOuterCircle
+            type={color}
+            feColorMatrix={feColorMatrix}
+            color={color}
+          />
           <StyledEarnMiddleCircle color={color} />
         </CirclesContainer>
       </OuterContainer>

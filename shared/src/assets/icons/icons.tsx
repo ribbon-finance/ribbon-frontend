@@ -1,12 +1,12 @@
 import React from "react";
 import styled from "styled-components";
 import theme from "../../designSystem/theme";
-import { getVaultColor } from "../../utils/vault";
 
 type SVGProps = React.SVGAttributes<SVGElement>;
 
 export interface SVGPropsWithColor extends SVGProps {
   color?: string;
+  feColorMatrix?: string;
   backgroundColor?: string;
 }
 
@@ -705,6 +705,7 @@ export const EarnMiddleRing: React.FC<EarnRingProps> = ({
 export const EarnOuterRing: React.FC<EarnRingProps> = ({
   type,
   color,
+  feColorMatrix,
   ...props
 }) => (
   <svg
@@ -755,11 +756,8 @@ export const EarnOuterRing: React.FC<EarnRingProps> = ({
         <feColorMatrix
           type="matrix"
           values={
-            type === getVaultColor("rEARN")
-              ? "0 0 0 0 0.243137 0 0 0 0 0.45098 0 0 0 0 0.768627 0 0 0 0.25 0"
-              : type === getVaultColor("rEARN-stETH")
-              ? "0 0 0 0 0 0 0 0 0 0.639216 0 0 0 0 1 0 0 0 0.25 0"
-              : "0 0 0 0 0.0862745 0 0 0 0 0.807843 0 0 0 0 0.72549 0 0 0 0.25 0"
+            feColorMatrix ||
+            "0 0 0 0 0.0862745 0 0 0 0 0.807843 0 0 0 0 0.72549 0 0 0 0.25 0"
           }
         />
         <feBlend
@@ -778,7 +776,7 @@ export const EarnOuterRing: React.FC<EarnRingProps> = ({
   </svg>
 );
 
-export const EarnCardMiddleCircle: React.FC<SVGPropsWithColor> = ({
+export const EarnCardMiddleCircle: React.FC<EarnRingProps> = ({
   color,
   ...props
 }) => (
@@ -801,8 +799,10 @@ export const EarnCardMiddleCircle: React.FC<SVGPropsWithColor> = ({
   </svg>
 );
 
-export const EarnCardOuterCircle: React.FC<SVGPropsWithColor> = ({
+export const EarnCardOuterCircle: React.FC<EarnRingProps> = ({
+  type,
   color,
+  feColorMatrix,
   ...props
 }) => (
   <svg
@@ -813,7 +813,7 @@ export const EarnCardOuterCircle: React.FC<SVGPropsWithColor> = ({
     xmlns="http://www.w3.org/2000/svg"
     {...props}
   >
-    <g filter="url(#filter0_d_1082_3282)">
+    <g filter={`url(#filter0_d_1082_3282_${type})`}>
       <circle
         cx="145"
         cy="150"
@@ -826,7 +826,7 @@ export const EarnCardOuterCircle: React.FC<SVGPropsWithColor> = ({
     </g>
     <defs>
       <filter
-        id="filter0_d_1082_3282"
+        id={`filter0_d_1082_3282_${type}`}
         x="-6"
         y="0"
         width="304"
@@ -850,10 +850,7 @@ export const EarnCardOuterCircle: React.FC<SVGPropsWithColor> = ({
         <feOffset dx="1" dy="2" />
         <feGaussianBlur stdDeviation="12" />
         <feComposite in2="hardAlpha" operator="out" />
-        <feColorMatrix
-          type="matrix"
-          values="0 0 0 0 0.243137 0 0 0 0 0.45098 0 0 0 0 0.768627 0 0 0 0.25 0"
-        />
+        <feColorMatrix type="matrix" values={feColorMatrix} />
         <feBlend
           mode="normal"
           in2="BackgroundImageFix"

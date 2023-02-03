@@ -672,7 +672,12 @@ const YieldCard: React.FC<YieldCardProps> = ({
             )} ${asset}`
           )}
         </EarnCapacityText>
-        <EarnCard color={color} height={!!account ? 447 : 504} asset={asset} />
+        <EarnCard
+          vaultOption={vault}
+          color={color}
+          height={!!account ? 447 : 504}
+          asset={asset}
+        />
         <ParagraphText>
           Earn up to{" "}
           <HighlightedText>
