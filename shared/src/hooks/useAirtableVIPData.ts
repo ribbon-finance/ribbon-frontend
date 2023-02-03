@@ -79,7 +79,7 @@ export const useAirtableVIPData = () => {
 
   const vipMap = useMemo(() => {
     if (!values) {
-      return {};
+      return { "0x01": defaultVIP } as VIPMap;
     }
 
     setLoading(false);
@@ -99,12 +99,34 @@ export const useAirtableVIPData = () => {
     ) as VIPMap;
   }, [values]);
 
+  // gets all vaults that vip has access to
+  const allUserVaults = (): VaultOptions[] => {
+    const auth = localStorage.getItem("auth");
+    if (loading || !auth) {
+      return [];
+    }
+    return JSON.parse(auth).reduce(
+      (allVaultOptions: VaultOptions[], userAddress: string) => {
+        const userVaults = vipMap[userAddress].vaultOptions;
+        for (const vaultOption of userVaults) {
+          if (!allVaultOptions.includes(vaultOption)) {
+            allVaultOptions.push(vaultOption);
+          }
+        }
+        return allVaultOptions;
+      },
+      []
+    );
+  };
+
   if (loading || !values) {
     //placeholder values while values are loading
-    return { loading, vipMap: { "0x01": defaultVIP } as VIPMap };
+    return { loading, vipMap: { "0x01": defaultVIP } as VIPMap, allUserVaults };
   }
+
   return {
     loading,
     vipMap,
+    allUserVaults,
   };
 };

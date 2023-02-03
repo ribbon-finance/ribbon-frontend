@@ -7,7 +7,6 @@ import {
   VaultOptions,
   VaultVersion,
   VaultList,
-  isEarnVault,
 } from "shared/lib/constants/constants";
 
 const useVaultOption = () => {
@@ -28,8 +27,7 @@ const useVaultOption = () => {
     ) {
       const vaultName =
         VaultNameOptionMap[matchVersion?.params.vaultSymbol as VaultName];
-      const version = isEarnVault(vaultName) ? "earn" : "v2";
-      return [vaultName, version];
+      return [vaultName, "earn"];
     }
 
     /** Default value */

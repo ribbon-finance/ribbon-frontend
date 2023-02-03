@@ -42,7 +42,7 @@ const ProductCatalogue: React.FC<ProductCatalogueProps> = ({
   onVaultPress,
 }) => {
   const [chain] = useChain();
-  const { loading, vipMap } = useAirtableVIPData();
+  const { loading, allUserVaults } = useAirtableVIPData();
   const { chainId } = useWeb3Wallet();
   const { width } = useScreenSize();
   const [filterStrategies, setFilterStrategies] = useState<VaultStrategy[]>([]);
@@ -109,26 +109,9 @@ const ProductCatalogue: React.FC<ProductCatalogueProps> = ({
     []
   );
 
-  const auth = localStorage.getItem("auth");
-
   const filteredProducts = useMemo(() => {
     if (variant === "vip" && !loading) {
-      if (auth) {
-        const allUserVaults: VaultOptions[] = JSON.parse(auth).reduce(
-          (allVaultOptions: VaultOptions[], userAddress: string) => {
-            const userVaults = vipMap[userAddress].vaultOptions;
-            for (const vaultOption of userVaults) {
-              if (!allVaultOptions.includes(vaultOption)) {
-                allVaultOptions.push(vaultOption);
-              }
-            }
-            return allVaultOptions;
-          },
-          []
-        );
-
-        return allUserVaults;
-      }
+      return allUserVaults();
     }
     const filteredList = VaultList.filter((vault) => {
       if (
@@ -198,7 +181,7 @@ const ProductCatalogue: React.FC<ProductCatalogueProps> = ({
 
     return filteredList;
   }, [
-    auth,
+    allUserVaults,
     chain,
     chainId,
     filterAssets,
@@ -207,7 +190,6 @@ const ProductCatalogue: React.FC<ProductCatalogueProps> = ({
     sort,
     variant,
     vaultsDisplayVersion,
-    vipMap,
     yieldsData.res,
   ]);
 

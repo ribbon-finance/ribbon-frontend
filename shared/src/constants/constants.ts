@@ -1327,8 +1327,12 @@ const TREASURY_SUBGRAPHS: [VaultVersion, Chains][] = [
   ["earn", Chains.Ethereum],
 ];
 
+const VIP_SUBGRAPHS: [VaultVersion, Chains][] = [["earn", Chains.Ethereum]];
+
 export const SUBGRAPHS_TO_QUERY: [VaultVersion, Chains][] = isTreasury()
   ? TREASURY_SUBGRAPHS
+  : isVIP()
+  ? VIP_SUBGRAPHS
   : WEBAPP_SUBGRAPHS;
 
 export const COINGECKO_BASE_URL = "https://api.coingecko.com/api/v3";
