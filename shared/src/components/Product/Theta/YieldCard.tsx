@@ -56,6 +56,7 @@ import { useAssetsPrice } from "../../../hooks/useAssetPrice";
 import EarnCard from "../../Common/EarnCard";
 import { useAirtableEarnData } from "../../../hooks/useAirtableEarnData";
 import { usePausedPosition } from "../../../hooks/usePausedPosition";
+import { isVIP } from "../../../utils/env";
 const { formatUnits } = ethers.utils;
 
 const CardContainer = styled.div`
@@ -661,31 +662,35 @@ const YieldCard: React.FC<YieldCardProps> = ({
         <EarnTitle fontSize={28} lineHeight={40}>
           {t(`shared:ProductCopies:${vault}:title`)}
         </EarnTitle>
-        <EarnCapacityText>
-          {v2DataLoading || isVaultMaxCapacity === undefined ? (
-            loadingText
-          ) : isVaultMaxCapacity === true ? (
-            <VaultFullText>Vault is currently full</VaultFullText>
-          ) : (
-            `${formatAmount(totalDepositStr)} ${asset} / ${formatAmount(
-              depositLimitStr
-            )} ${asset}`
-          )}
-        </EarnCapacityText>
+        {!isVIP() && (
+          <EarnCapacityText>
+            {v2DataLoading || isVaultMaxCapacity === undefined ? (
+              loadingText
+            ) : isVaultMaxCapacity === true ? (
+              <VaultFullText>Vault is currently full</VaultFullText>
+            ) : (
+              `${formatAmount(totalDepositStr)} ${asset} / ${formatAmount(
+                depositLimitStr
+              )} ${asset}`
+            )}
+          </EarnCapacityText>
+        )}
         <EarnCard
           vaultOption={vault}
           color={color}
           height={!!account ? 447 : 504}
           asset={asset}
         />
-        <ParagraphText>
-          Earn up to{" "}
-          <HighlightedText>
-            {loading ? "---" : (maxYield * 100).toFixed(2) + "%"} APY
-          </HighlightedText>{" "}
-          with a <HighlightedText>principal protected</HighlightedText> vault
-          strategy
-        </ParagraphText>
+        {!isVIP() && (
+          <ParagraphText>
+            Earn up to{" "}
+            <HighlightedText>
+              {loading ? "---" : (maxYield * 100).toFixed(2) + "%"} APY
+            </HighlightedText>{" "}
+            with a <HighlightedText>principal protected</HighlightedText> vault
+            strategy
+          </ParagraphText>
+        )}
       </>
     );
   }, [
