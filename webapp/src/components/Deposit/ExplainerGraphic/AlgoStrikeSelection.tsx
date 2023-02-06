@@ -7,6 +7,7 @@ import ETHAlgoStrikeSelection from "../../../assets/icons/vaultExplainer/algoStr
 import STETHAlgoStrikeSelection from "../../../assets/icons/vaultExplainer/algoStrikeSelection/STETH_Algo_Strike_Selection.json";
 import RETHAlgoStrikeSelection from "../../../assets/icons/vaultExplainer/algoStrikeSelection/RETH_Algo_Strike_Selection.json";
 import AAVEAlgoStrikeSelection from "../../../assets/icons/vaultExplainer/algoStrikeSelection/AAVE_Algo_Strike_Selection.json";
+import UNIAlgoStrikeSelection from "../../../assets/icons/vaultExplainer/algoStrikeSelection/UNI_Algo_Strike_Selection.json";
 import AVAXAlgoStrikeSelection from "../../../assets/icons/vaultExplainer/algoStrikeSelection/AVAX_Algo_Strike_Selection.json";
 import SAVAXAlgoStrikeSelection from "../../../assets/icons/vaultExplainer/algoStrikeSelection/SAVAX_Algo_Strike_Selection.json";
 import SOLAlgoStrikeSelection from "../../../assets/icons/vaultExplainer/algoStrikeSelection/SOL_Algo_Strike_Selection.json";
@@ -37,6 +38,8 @@ const AlgoStrikeSelection: React.FC<AlgoStrikeSelectionProps> = ({
             return USDCAlgoStrikeSelection;
           case "AAVE":
             return AAVEAlgoStrikeSelection;
+          case "UNI":
+            return UNIAlgoStrikeSelection;
           case "WAVAX":
             return AVAXAlgoStrikeSelection;
           case "sAVAX":

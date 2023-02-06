@@ -2,6 +2,7 @@ import React from "react";
 import styled, { StyledComponent } from "styled-components";
 import {
   AAVELogo,
+  UNILogo,
   STETHLogo,
   USDCLogo,
   WBTCLogo,
@@ -25,6 +26,7 @@ import { Assets, Wallets } from "../store/types";
 
 export const assetFilterList: Assets[] = [
   "AAVE",
+  "UNI",
   "WETH",
   "stETH",
   "USDC",
@@ -100,6 +102,7 @@ export const getChainByVaultOption = (vault: VaultOptions): Chains => {
     case "rrETH-THETA":
     case "rBTC-THETA":
     case "rAAVE-THETA":
+    case "rUNI-THETA":
     case "rAPE-THETA":
     case "rEARN":
     case "rEARN-stETH":
@@ -249,6 +252,8 @@ export const getAssetLogo: (asset: Assets) =>
       return RETHLogo;
     case "AAVE":
       return AAVELogo;
+    case "UNI":
+      return UNILogo;
     case "WAVAX":
       return WAVAXLogo;
     case "sAVAX":
