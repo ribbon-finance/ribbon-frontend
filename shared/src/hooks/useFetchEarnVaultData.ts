@@ -139,9 +139,10 @@ const useFetchEarnVaultData = (): V2VaultData => {
         // we use roundPricePerShare for earn treasury because pricePerShare goes down
         // during the round itself
 
-        const roundPricePerShare = vaultState.round
-          ? await contract.roundPricePerShare(vaultState.round - 1)
-          : BigNumber.from(0);
+        const roundPricePerShare =
+          isTreasury() && vaultState.round
+            ? await contract.roundPricePerShare(vaultState.round - 1)
+            : BigNumber.from(0);
 
         const lockedBalanceInAssetTreasury =
           shares instanceof BigNumber && isTreasury()
