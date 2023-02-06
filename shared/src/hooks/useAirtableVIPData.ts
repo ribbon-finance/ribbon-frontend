@@ -1,6 +1,7 @@
 import Airtable from "airtable";
 import { useEffect, useMemo, useState } from "react";
 import { VaultOptions } from "../constants/constants";
+import useWeb3Wallet from "./useWeb3Wallet";
 
 export type VIP = {
   loading: boolean;
@@ -57,6 +58,7 @@ export const useAirtableVIPData = () => {
   const [values, setValues] = useState<AirtableValues[]>();
   const [, setError] = useState<string>();
   const [loading, setLoading] = useState<boolean>(true);
+  const { account } = useWeb3Wallet();
   useEffect(() => {
     // 1. When init load schedules
     base(baseName)
@@ -77,27 +79,34 @@ export const useAirtableVIPData = () => {
       });
   }, []);
 
-  const vipMap = useMemo(() => {
+  const [vipMap, isVIPAddress] = useMemo(() => {
     if (!values) {
-      return { "0x01": defaultVIP } as VIPMap;
+      return [{ "0x01": defaultVIP } as VIPMap, false];
     }
 
     setLoading(false);
 
-    return Object.fromEntries(
-      values.map((value) => {
-        return [
-          value.userAddress,
-          {
-            loading: false,
-            username: value.username,
-            passcodeHash: value.passcodeHash,
-            vaultOptions: JSON.parse(value.vaultOptions) as VaultOptions[],
-          },
-        ];
-      })
-    ) as VIPMap;
-  }, [values]);
+    return [
+      Object.fromEntries(
+        values.map((value) => {
+          return [
+            value.userAddress,
+            {
+              loading: false,
+              username: value.username,
+              passcodeHash: value.passcodeHash,
+              vaultOptions: JSON.parse(value.vaultOptions) as VaultOptions[],
+            },
+          ];
+        })
+      ) as VIPMap,
+      account
+        ? values.some(function (obj) {
+            return obj.userAddress === account;
+          })
+        : false,
+    ];
+  }, [account, values]);
 
   // gets all vaults that vip has access to
   const allUserVaults = (): VaultOptions[] => {
@@ -121,12 +130,18 @@ export const useAirtableVIPData = () => {
 
   if (loading || !values) {
     //placeholder values while values are loading
-    return { loading, vipMap: { "0x01": defaultVIP } as VIPMap, allUserVaults };
+    return {
+      loading,
+      vipMap: { "0x01": defaultVIP } as VIPMap,
+      allUserVaults,
+      isVIPAddress,
+    };
   }
 
   return {
     loading,
     vipMap,
     allUserVaults,
+    isVIPAddress,
   };
 };

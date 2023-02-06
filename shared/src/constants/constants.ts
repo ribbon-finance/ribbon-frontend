@@ -1379,6 +1379,8 @@ export const URLS = {
   lend: "https://lend.ribbon.finance",
   lendApp: "https://lend.ribbon.finance/app",
 
+  // vip
+  vip: "https://vip.ribbon.finance",
   // governance
   governance: "https://vote.ribbon.finance",
   snapshot: "https://snapshot.org/#/rbn.eth",
