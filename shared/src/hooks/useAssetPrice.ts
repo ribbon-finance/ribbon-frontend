@@ -5,39 +5,37 @@ import { Moment } from "moment";
 import { Assets, AssetsList } from "../store/types";
 import { isProduction } from "../utils/env";
 import {
+  AssetsHistoricalPriceData,
   AssetsPriceData,
+  defaultAssetsHistoricalPriceData,
   defaultAssetsPriceData,
   ExternalAPIDataContext,
 } from "./externalAPIDataContext";
 import {
-  COINGECKO_BASE_URL,
+  COINGECKO_AWS_BASE_URL,
   COINGECKO_CURRENCIES,
 } from "../constants/constants";
 
 const getHistoricalAssetPricesInUSD = async (
   currencyName: string
 ): Promise<{ price: number; timestamp: number }[]> => {
-  const apiURL = `${COINGECKO_BASE_URL}/coins/${currencyName}/market_chart?vs_currency=usd&days=max&interval=daily`;
+  const apiURL = `${COINGECKO_AWS_BASE_URL}${currencyName}-historicalData`;
 
   const response = await axios.get(apiURL);
   const { data } = response;
 
-  return data.prices.map(([timestamp, price]: number[]) => ({
-    timestamp,
-    price,
-  }));
+  return data;
 };
 
 interface SimplePriceAPI {
   [key: string]: {
-    usd: number;
-    usd_24h_change: number;
+    current_price: number;
+    price_change_24h: number;
   };
 }
 
-const getLatestPrices = async (assets: string[]): Promise<SimplePriceAPI> => {
-  const ids = assets.join(",");
-  const apiURL = `${COINGECKO_BASE_URL}/simple/price?ids=${ids}&vs_currencies=usd&include_24hr_change=true`;
+const getLatestPrices = async (): Promise<SimplePriceAPI> => {
+  const apiURL = `${COINGECKO_AWS_BASE_URL}latestPrices`;
 
   const response = await axios.get(apiURL);
   const { data } = response;
@@ -54,6 +52,8 @@ export const useFetchAssetsPrice = (
   } = { poll: true, pollingFrequency: 120000 }
 ) => {
   const [data, setData] = useState<AssetsPriceData>(defaultAssetsPriceData);
+  const [historicalData, setHistoricalData] =
+    useState<AssetsHistoricalPriceData>(defaultAssetsHistoricalPriceData);
 
   const fetchAssetsPrices = useCallback(async () => {
     if (!isProduction()) {
@@ -61,11 +61,8 @@ export const useFetchAssetsPrice = (
     }
 
     const assetsBarUSDC = [...AssetsList].filter((asset) => asset !== "USDC");
-    const coinIds = assetsBarUSDC
-      .map((a) => COINGECKO_CURRENCIES[a] as string)
-      .filter(Boolean);
 
-    const latestPrices = await getLatestPrices(coinIds);
+    const latestPrices = await getLatestPrices();
 
     const todayTimestamp = new Date(new Date().toDateString());
     todayTimestamp.setHours(0 - todayTimestamp.getTimezoneOffset() / 60);
@@ -78,6 +75,16 @@ export const useFetchAssetsPrice = (
           loading: false,
           latestPrice: 1,
           dailyChange: 0,
+        },
+      };
+    });
+
+    // Default USDC price
+    setHistoricalData((prev) => {
+      return {
+        ...prev,
+        USDC: {
+          loading: false,
           history: Object.fromEntries(
             [...new Array(365)].map((_, index) => [
               todayTimestamp.valueOf() - index * (1000 * 60 * 60 * 24),
@@ -88,43 +95,42 @@ export const useFetchAssetsPrice = (
       };
     });
 
-    // Load other assets price
-    // Break into multiple loops
-    const chunkSize = 4;
-    for (let i = 0; i < assetsBarUSDC.length; i += chunkSize) {
-      const assetsChunk = assetsBarUSDC.slice(i, i + chunkSize);
-      if (!isProduction()) {
-        console.log("LOADING CHUNK PRICE", assetsChunk);
-      }
-
-      assetsChunk.forEach((asset) => {
-        const coinId = COINGECKO_CURRENCIES[asset];
-        if (coinId) {
-          getHistoricalAssetPricesInUSD(coinId)
-            .then((data) => {
-              setData((prev) => {
-                return {
-                  ...prev,
-                  [asset]: {
-                    loading: false,
-                    latestPrice: coinId ? latestPrices[coinId].usd : 0,
-                    dailyChange: coinId
-                      ? latestPrices[coinId].usd_24h_change
-                      : 0,
-                    history: Object.fromEntries(
-                      data.map((item) => [item.timestamp, item.price])
-                    ),
-                  },
-                };
-              });
-            })
-            .catch((e) => console.error(e));
-        }
-      });
-
-      // Waits 2 seconds before proceeding to next chunk
-      await new Promise((resolve) => setTimeout(resolve, 2000));
+    if (!isProduction()) {
+      console.log("LOADING ASSETS", assetsBarUSDC);
     }
+
+    // separately call latestPrices and historicalData
+    // because historicalData takes more time to load
+    assetsBarUSDC.forEach((asset) => {
+      const coinId = COINGECKO_CURRENCIES[asset];
+      if (coinId) {
+        setData((prev) => {
+          return {
+            ...prev,
+            [asset]: {
+              loading: false,
+              latestPrice: coinId ? latestPrices[coinId].current_price : 0,
+              dailyChange: coinId ? latestPrices[coinId].price_change_24h : 0,
+            },
+          };
+        });
+        getHistoricalAssetPricesInUSD(coinId)
+          .then((data) => {
+            setHistoricalData((prev) => {
+              return {
+                ...prev,
+                [asset]: {
+                  loading: false,
+                  history: Object.fromEntries(
+                    data.map((item) => [item.timestamp, item.price])
+                  ),
+                },
+              };
+            });
+          })
+          .catch((e) => console.error(e));
+      }
+    });
 
     if (!isProduction()) {
       console.timeEnd("Asset Price Data Fetch"); // eslint-disable-line
@@ -147,7 +153,10 @@ export const useFetchAssetsPrice = (
     };
   }, [fetchAssetsPrices, poll, pollingFrequency]);
 
-  return { data };
+  return {
+    assetsPrice: { data: data },
+    assetsHistoricalPrice: { data: historicalData },
+  };
 };
 
 const useAssetPrice = ({ asset }: { asset: Assets } = { asset: "WETH" }) => {
@@ -196,10 +205,12 @@ export const useAssetsPriceHistory = () => {
       queryDate.setUTCHours(0);
 
       return (
-        contextData.assetsPrice.data[asset].history[queryDate.valueOf()] || 0
+        contextData.assetsHistoricalPrice.data[asset].history[
+          queryDate.valueOf()
+        ] || 0
       );
     },
-    [contextData.assetsPrice]
+    [contextData.assetsHistoricalPrice.data]
   );
 
   /**
@@ -226,7 +237,7 @@ export const useAssetsPriceHistory = () => {
         asset,
         {
           loading: contextData.assetsPrice.data[asset].loading,
-          history: contextData.assetsPrice.data[asset].history,
+          history: contextData.assetsHistoricalPrice.data[asset].history,
         },
       ])
     ) as {
@@ -247,6 +258,7 @@ interface AssetInfo {
   circulating_supply: number;
 }
 
+// circulating supply of RBN
 export const useAssetInfo = (asset: Assets) => {
   const [loading, setLoading] = useState(false);
   const [info, setInfo] = useState<AssetInfo>();
@@ -256,13 +268,13 @@ export const useAssetInfo = (asset: Assets) => {
       return;
     }
 
-    const apiURL = `${COINGECKO_BASE_URL}/coins/${COINGECKO_CURRENCIES[asset]}`;
+    const apiURL = `${COINGECKO_AWS_BASE_URL}circulatingSupply`;
     try {
       setLoading(true);
       const response = await axios.get(apiURL);
       const { data } = response;
       setInfo({
-        circulating_supply: data.market_data.circulating_supply,
+        circulating_supply: data,
       });
     } catch (error) {
       !isProduction() && console.log("Asset info fetch error:", error); // eslint-disable-line
@@ -272,7 +284,7 @@ export const useAssetInfo = (asset: Assets) => {
     } finally {
       setLoading(false);
     }
-  }, [info, asset]);
+  }, [info]);
 
   useEffect(() => {
     fetchAssetInfo();

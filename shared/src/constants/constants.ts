@@ -1367,6 +1367,8 @@ export const SUBGRAPHS_TO_QUERY: [VaultVersion, Chains][] = isTreasury()
   : WEBAPP_SUBGRAPHS;
 
 export const COINGECKO_BASE_URL = "https://api.coingecko.com/api/v3";
+export const COINGECKO_AWS_BASE_URL =
+  "https://bho4x9ko02.execute-api.us-east-2.amazonaws.com/1/readCoingeckoData?id=";
 export const COINGECKO_CURRENCIES: { [key in Assets]: string | undefined } = {
   WETH: "ethereum",
   WBTC: "wrapped-bitcoin",
