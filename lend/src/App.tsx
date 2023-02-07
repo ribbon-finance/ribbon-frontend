@@ -8,7 +8,7 @@ import { Web3ContextProvider } from "./hooks/web3Context";
 import { getLibrary } from "shared/lib/utils/getLibrary";
 import { SubgraphDataContextProvider } from "./hooks/subgraphDataContext";
 import { PendingTransactionsContextProvider } from "./hooks/pendingTransactionsContext";
-import { ExternalAPIDataContextProvider } from "./hooks/externalAPIDataContext";
+import { ExternalAPIDataContextProvider } from "shared/lib/hooks/externalAPIDataContext";
 import { ChainContextProvider } from "./hooks/chainContext";
 import { GeofenceCountry, useGeofence } from "shared/lib/hooks/useGeofence";
 import TextPreview from "shared/lib/components/TextPreview/TextPreview";
