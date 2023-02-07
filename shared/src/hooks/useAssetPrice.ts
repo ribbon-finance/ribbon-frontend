@@ -56,10 +56,6 @@ export const useFetchAssetsPrice = (
     useState<AssetsHistoricalPriceData>(defaultAssetsHistoricalPriceData);
 
   const fetchAssetsPrices = useCallback(async () => {
-    if (!isProduction()) {
-      console.time("Asset Price Data Fetch"); // eslint-disable-line
-    }
-
     const assetsBarUSDC = [...AssetsList].filter((asset) => asset !== "USDC");
 
     const latestPrices = await getLatestPrices();
@@ -95,10 +91,6 @@ export const useFetchAssetsPrice = (
       };
     });
 
-    if (!isProduction()) {
-      console.log("LOADING ASSETS", assetsBarUSDC);
-    }
-
     // separately call latestPrices and historicalData
     // because historicalData takes more time to load
     assetsBarUSDC.forEach((asset) => {
@@ -131,10 +123,6 @@ export const useFetchAssetsPrice = (
           .catch((e) => console.error(e));
       }
     });
-
-    if (!isProduction()) {
-      console.timeEnd("Asset Price Data Fetch"); // eslint-disable-line
-    }
   }, []);
 
   useEffect(() => {
