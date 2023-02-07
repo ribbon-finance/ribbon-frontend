@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { secondsPerYear } from "../constants/constants";
 import { PoolOptions, PoolList } from "shared/lib/constants/lendConstants";
-import useAssetPrice from "./useAssetPrice";
+import useAssetPrice from "shared/lib/hooks/useAssetPrice";
 import { usePoolsData } from "./web3DataContext";
 import { formatUnits } from "ethers/lib/utils";
 
