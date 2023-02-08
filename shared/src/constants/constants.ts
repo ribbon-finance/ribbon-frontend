@@ -12,6 +12,7 @@ import {
   getSolanaAddresses,
   SOLANA_SUBGRAPH,
   getSubgraphqlRearnURI,
+  isVIP,
 } from "../utils/env";
 import { PublicKey } from "@solana/web3.js";
 import v1deployment from "./v1Deployments.json";
@@ -159,6 +160,8 @@ export type StakingVaultOptions = typeof StakingVaultList[number];
 // @ts-ignore
 export const VaultList: VaultOptions[] = isTreasury()
   ? TreasuryVaultList
+  : isVIP()
+  ? VIPVaultList
   : !isProduction()
   ? RetailVaultList
   : RetailVaultList.filter((vault) => !ProdExcludeVault.includes(vault));
@@ -1362,8 +1365,12 @@ const TREASURY_SUBGRAPHS: [VaultVersion, Chains][] = [
   ["earn", Chains.Ethereum],
 ];
 
+const VIP_SUBGRAPHS: [VaultVersion, Chains][] = [["earn", Chains.Ethereum]];
+
 export const SUBGRAPHS_TO_QUERY: [VaultVersion, Chains][] = isTreasury()
   ? TREASURY_SUBGRAPHS
+  : isVIP()
+  ? VIP_SUBGRAPHS
   : WEBAPP_SUBGRAPHS;
 
 export const COINGECKO_AWS_BASE_URL =
@@ -1413,6 +1420,8 @@ export const URLS = {
   lend: "https://lend.ribbon.finance",
   lendApp: "https://lend.ribbon.finance/app",
 
+  // vip
+  vip: "https://vip.ribbon.finance",
   // governance
   governance: "https://vote.ribbon.finance",
   snapshot: "https://snapshot.org/#/rbn.eth",

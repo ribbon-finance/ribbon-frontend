@@ -5,12 +5,24 @@ import sizes from "shared/lib/designSystem/sizes";
 import theme from "shared/lib/designSystem/theme";
 import { ConnectWalletButton } from "shared/lib/components/Common/buttons";
 import { AccessModal } from "../AccessModal/AccessModal";
-import { Title } from "shared/lib/designSystem";
+import { BaseLink, Title } from "shared/lib/designSystem";
 import { InfoModal } from "../InfoModal/InfoModal";
 import { useState } from "react";
 import { FrameBar } from "../FrameBar/FrameBar";
 import AccountStatus from "webapp/lib/components/Wallet/AccountStatus";
 import { useStorage } from "../../hooks/useStorageContextProvider";
+import { useRouteMatch } from "react-router-dom";
+import ExternalLink from "shared/lib/assets/icons/externalLink";
+import { URLS } from "shared/lib/constants/constants";
+
+export interface NavItemProps {
+  isSelected: boolean;
+  isHighlighted: boolean;
+}
+
+export interface MobileMenuOpenProps {
+  isMenuOpen: boolean;
+}
 
 const HeaderContainer = styled.div<{ isMenuOpen?: boolean }>`
   height: ${theme.header.height}px;
@@ -143,14 +155,93 @@ export const NavItem = styled.div<{
 
 export const NavLinkText = styled(Title)`
   letter-spacing: 1.5px;
-  font-size: 14px;
+  font-size: 12px;
   line-height: 20px;
+`;
+
+const HeaderAbsoluteContainer = styled.div`
+  position: absolute;
+  display: flex;
+  height: 100%;
+  width: 100%;
+  justify-content: center;
+
+  @media (max-width: ${sizes.xl}px) {
+    display: none;
+  }
+`;
+
+const SecondaryMobileNavItem = styled.div`
+  display: none;
+
+  @media (max-width: ${sizes.xl}px) {
+    display: flex;
+    padding: 0px 0px 24px 48px;
+  }
+`;
+
+const NavItemMiddle = styled.div.attrs({
+  className: "d-flex align-items-center justify-content-center",
+})<NavItemProps>`
+  padding: 0px 16px;
+  height: 100%;
+  opacity: ${(props) => (props.isSelected ? "1" : "0.48")};
+
+  &:hover {
+    opacity: ${(props) =>
+      props.isHighlighted ? "1" : props.isSelected ? theme.hover.opacity : "1"};
+  }
+
+  @media (max-width: ${sizes.xl}px) {
+    padding: 0px 0px 40px 48px;
+  }
 `;
 
 const Header = () => {
   const [isInfoModalVisible, setInfoModal] = useState<boolean>(false);
-
+  const trades = useRouteMatch({ path: "/trades", exact: false });
+  const positions = useRouteMatch({ path: "/positions", exact: true });
   const [storage] = useStorage();
+
+  const renderLinkItem = (
+    title: string,
+    to: string,
+    isSelected: boolean,
+    primary: boolean = true,
+    external: boolean = false,
+    isHighlighted: boolean = false
+  ) => {
+    return (
+      <BaseLink
+        to={to}
+        target={external ? "_blank" : undefined}
+        rel={external ? "noreferrer noopener" : undefined}
+        onClick={() => {}}
+      >
+        {primary ? (
+          <NavItemMiddle isSelected={isSelected} isHighlighted={isHighlighted}>
+            <NavLinkText color={isHighlighted ? colors.green : undefined}>
+              {title}
+            </NavLinkText>
+            {external && (
+              <ExternalLink
+                color={isHighlighted ? colors.green : undefined}
+                style={{
+                  marginLeft: 6,
+                }}
+              />
+            )}
+          </NavItemMiddle>
+        ) : (
+          <SecondaryMobileNavItem>
+            <Title fontSize={18} color={`${colors.primaryText}7A`}>
+              {title}
+            </Title>
+          </SecondaryMobileNavItem>
+        )}
+      </BaseLink>
+    );
+  };
 
   return (
     <>
@@ -164,6 +255,19 @@ const Header = () => {
         <LogoContainer>
           <VIPLogo width={40} height={40} />
         </LogoContainer>
+        {storage && (
+          <HeaderAbsoluteContainer>
+            <LinksContainer>
+              {renderLinkItem("TRADE IDEAS", "/trades", Boolean(trades))}
+            </LinksContainer>
+            <LinksContainer>
+              {renderLinkItem("POSITIONS", "/positions", Boolean(positions))}
+            </LinksContainer>
+            <LinksContainer>
+              {renderLinkItem("DOV", URLS.ribbonApp, false, true, true)}
+            </LinksContainer>
+          </HeaderAbsoluteContainer>
+        )}
         <LinksContainer>
           {storage ? (
             <AccountStatus variant="desktop" showAirdropButton={false} />

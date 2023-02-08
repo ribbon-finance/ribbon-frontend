@@ -334,7 +334,7 @@ const NotificationList: React.FC<NotificationListProps> = ({
                       getVaultURI(notification.vault) +
                         getNotificationRedirectQuerystring(notification)
                     )
-                  : history.push("/portfolio");
+                  : history.push("/positions");
               }}
             >
               <NotificationItemIcon>

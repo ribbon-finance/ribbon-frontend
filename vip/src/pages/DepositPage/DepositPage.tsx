@@ -37,7 +37,7 @@ import VaultInformation from "../../components/Deposit/VaultInformation";
 import useVaultActivity from "shared/lib/hooks/useVaultActivity";
 import { getPremiumsAfterFeesFromVaultActivities } from "../../utils";
 import { SubgraphDataContext } from "shared/lib/hooks/subgraphDataContext";
-import { useStorage } from "../../hooks/useStorageContextProvider";
+import { useAirtableVIPData } from "shared/lib/hooks/useAirtableVIPData";
 
 const DepositPageContainer = styled(Container)`
   @media (min-width: ${sizes.xl}px) {
@@ -129,8 +129,6 @@ const DesktopActionsFormContainer = styled.div`
 `;
 
 const DepositPage = () => {
-  const [storage] = useStorage();
-
   const { vaultOption, vaultVersion } = useVaultOption();
   const { chainId } = useWeb3Wallet();
 
@@ -148,6 +146,8 @@ const DepositPage = () => {
   const { vaultSubgraphData } = useContext(SubgraphDataContext);
   const isLoading = status === "loading" || loading;
   const activities = useVaultActivity(vaultOption!, vaultVersion);
+  const { allUserVaults } = useAirtableVIPData();
+  const auth = localStorage.getItem("auth");
 
   const totalDepositStr = useMemo(() => {
     switch (vaultVersion) {
@@ -192,14 +192,17 @@ const DepositPage = () => {
 
   /**
    * Redirect to homepage if no clear vault is chosen
+   * Or if vip does not have access to a vip vault
    */
 
-  if (!vaultOption) {
+  if (!vaultOption || !auth) {
     return <Redirect to="/" />;
   }
 
-  if (!storage || !storage.includes(vaultOption)) {
-    return <Redirect to="/" />;
+  if (allUserVaults().length > 0) {
+    if (!allUserVaults().includes(vaultOption)) {
+      return <Redirect to="/" />;
+    }
   }
 
   return (

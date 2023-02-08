@@ -54,6 +54,10 @@ import AirdropButton from "../Airdrop/AirdropButton";
 import AirdropModal from "../Airdrop/AirdropModal";
 import Indicator from "shared/lib/components/Indicator/Indicator";
 import { useChain } from "shared/lib/hooks/chainContext";
+import { useAirtableVIPData } from "shared/lib/hooks/useAirtableVIPData";
+import { VIPLogo } from "shared/lib/assets/icons/logo";
+import VIPButton from "../VIP/VIPButton";
+import VIPModal from "../VIP/VIPModal";
 
 const walletButtonMarginLeft = 5;
 const walletButtonWidth = 55;
@@ -120,7 +124,7 @@ const WalletButton = styled(BaseButton)<WalletButtonProps>`
   background-color: ${(props) =>
     props.connected ? colors.background.two : `${colors.green}14`};
   align-items: center;
-  height: fit-content;
+  height: 48px;
 
   &:hover {
     opacity: ${theme.hover.opacity};
@@ -162,6 +166,8 @@ const WalletButtonText = styled(Title)<WalletStatusProps>`
 
 const Avatar = styled.div`
   margin-right: 8px;
+  display: flex;
+  align-items: center;
 `;
 
 const InvestButton = styled(ActionButton)`
@@ -268,7 +274,7 @@ const MenuCloseItem = styled(MenuItem)`
 `;
 
 const AirdropMenuItem = styled(MenuItem)`
-  padding: 8px 8px;
+  padding: 4px 8px;
 `;
 
 interface AccountStatusProps {
@@ -299,6 +305,7 @@ const AccountStatus: React.FC<AccountStatusProps> = ({
   const [, setShowConnectModal] = useConnectWalletModal();
   const [showActionModal, setShowActionModal] = useState(false);
   const [showAirdropModal, setShowAirdropModal] = useState(false);
+  const [showVIPModal, setShowVIPModal] = useState(false);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [copyState, setCopyState] = useState<"visible" | "hiding" | "hidden">(
     "hidden"
@@ -307,6 +314,7 @@ const AccountStatus: React.FC<AccountStatusProps> = ({
   const { status, vaultLimit } = useVaultData(
     vault?.vaultOption || VaultList[0]
   );
+  const { isVIPAddress } = useAirtableVIPData();
   const { vaultAccounts: v1VaultAccounts, loading: v1VaultAccountsLoading } =
     useVaultAccounts("v1");
 
@@ -362,6 +370,11 @@ const AccountStatus: React.FC<AccountStatusProps> = ({
     setShowAirdropModal(true);
   }, []);
 
+  const onShowVIPModal = useCallback(() => {
+    setIsMenuOpen(false);
+    setShowVIPModal(true);
+  }, []);
+
   const handleChangeWallet = useCallback(() => {
     setShowConnectModal(true);
     onCloseMenu();
@@ -399,7 +412,11 @@ const AccountStatus: React.FC<AccountStatusProps> = ({
       <>
         {chainId ? (
           <Avatar>
-            <Davatar address={account} size={20} />
+            {isVIPAddress ? (
+              <VIPLogo width={16} height={16} />
+            ) : (
+              <Davatar address={account} size={16} />
+            )}
           </Avatar>
         ) : (
           <Indicator connected={active} />
@@ -501,6 +518,11 @@ const AccountStatus: React.FC<AccountStatusProps> = ({
               <AirdropButton onClick={onShowAirdropModal}></AirdropButton>
             </AirdropMenuItem>
           )}
+          {isVIPAddress && (
+            <AirdropMenuItem role="button">
+              <VIPButton onClick={onShowVIPModal}></VIPButton>
+            </AirdropMenuItem>
+          )}
         </DesktopFloatingMenu>
       </WalletContainer>
 
@@ -542,6 +564,12 @@ const AccountStatus: React.FC<AccountStatusProps> = ({
         show={showAirdropModal}
         onClose={() => {
           setShowAirdropModal(false);
+        }}
+      />
+      <VIPModal
+        show={showVIPModal}
+        onClose={() => {
+          setShowVIPModal(false);
         }}
       />
     </AccountStatusContainer>

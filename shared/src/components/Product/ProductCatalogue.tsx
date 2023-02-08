@@ -32,12 +32,17 @@ import {
 import useWeb3Wallet from "../../hooks/useWeb3Wallet";
 import { getChainByVaultOption, getIntegralAsset } from "../../utils/asset";
 import { useChain } from "../../hooks/chainContext";
+import { useAirtableVIPData } from "../../hooks/useAirtableVIPData";
+import TextPreview from "../TextPreview/TextPreview";
+import { LoadingText } from "../../hooks/useLoadingText";
+import theme from "../../designSystem/theme";
 
 const ProductCatalogue: React.FC<ProductCatalogueProps> = ({
   variant,
   onVaultPress,
 }) => {
   const [chain] = useChain();
+  const { loading, allUserVaults } = useAirtableVIPData();
   const { chainId } = useWeb3Wallet();
   const { width } = useScreenSize();
   const [filterStrategies, setFilterStrategies] = useState<VaultStrategy[]>([]);
@@ -105,6 +110,9 @@ const ProductCatalogue: React.FC<ProductCatalogueProps> = ({
   );
 
   const filteredProducts = useMemo(() => {
+    if (variant === "vip" && !loading) {
+      return allUserVaults();
+    }
     const filteredList = VaultList.filter((vault) => {
       if (
         chain !== Chains.NotSelected &&
@@ -173,15 +181,27 @@ const ProductCatalogue: React.FC<ProductCatalogueProps> = ({
 
     return filteredList;
   }, [
+    allUserVaults,
     chain,
     chainId,
     filterAssets,
     filterStrategies,
+    loading,
     sort,
+    variant,
     vaultsDisplayVersion,
-    yieldsData,
+    yieldsData.res,
   ]);
 
+  if (variant === "vip" && loading) {
+    return (
+      <div style={{ marginTop: -`${theme.header.height}` }}>
+        <TextPreview>
+          <LoadingText>Ribbon VIP</LoadingText>
+        </TextPreview>
+      </div>
+    );
+  }
   return width > sizes.md ? (
     <DesktopProductCatalogue
       variant={variant}

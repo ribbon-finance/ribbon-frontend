@@ -93,7 +93,7 @@ interface ProductCatalogueGridViewProps {
   vaultAccounts: {
     [key: string]: VaultAccount | undefined;
   };
-  variant: "desktop" | "mobile";
+  variant: "desktop" | "mobile" | "vip";
 }
 
 const ProductCatalogueGridView: React.FC<
@@ -173,59 +173,26 @@ const ProductCatalogueGridView: React.FC<
   return (
     <div className="container mt-5 d-flex flex-column align-items-center">
       {/* Filters */}
-      <FilterContainer>
-        {variant === "desktop" ? (
-          <>
-            {/* Strategy */}
-            <MultiselectFilterDropdown
-              values={filterStrategies}
-              options={VaultStrategyList.map((strategy) => ({
-                value: strategy,
-                display: strategy,
-                color: colors.green,
-              }))}
-              title="STRATEGY"
-              // @ts-ignore
-              onSelect={setFilterStrategies}
-            />
-            {/* Assets */}
-            <MultiselectFilterDropdown
-              values={filterAssets}
-              options={getFilterAssets(chain).map((asset) => {
-                const Logo = getAssetLogo(asset);
-                const logo = <Logo height="100%" />;
-                return {
-                  value: asset,
-                  display: getAssetDisplay(asset),
-                  color: getAssetColor(asset),
-                  textColor: colors.primaryText,
-                  logo: logo,
-                };
-              })}
-              title="DEPOSIT ASSET"
-              // @ts-ignore
-              onSelect={setFilterAssets}
-            />{" "}
-          </>
-        ) : (
-          <FullscreenMultiselectFilters
-            filters={[
-              {
-                name: "strategy",
-                title: "STRATEGY",
-                values: filterStrategies,
-                options: VaultStrategyList.map((strategy) => ({
+      {variant !== "vip" && (
+        <FilterContainer>
+          {variant === "desktop" ? (
+            <>
+              {/* Strategy */}
+              <MultiselectFilterDropdown
+                values={filterStrategies}
+                options={VaultStrategyList.map((strategy) => ({
                   value: strategy,
                   display: strategy,
-                })),
+                  color: colors.green,
+                }))}
+                title="STRATEGY"
                 // @ts-ignore
-                onSelect: setFilterStrategies,
-              },
-              {
-                name: "asset",
-                title: "DEPOSIT ASSET",
-                values: filterAssets,
-                options: getFilterAssets(chain).map((asset) => {
+                onSelect={setFilterStrategies}
+              />
+              {/* Assets */}
+              <MultiselectFilterDropdown
+                values={filterAssets}
+                options={getFilterAssets(chain).map((asset) => {
                   const Logo = getAssetLogo(asset);
                   const logo = <Logo height="100%" />;
                   return {
@@ -235,38 +202,73 @@ const ProductCatalogueGridView: React.FC<
                     textColor: colors.primaryText,
                     logo: logo,
                   };
-                }),
+                })}
+                title="DEPOSIT ASSET"
                 // @ts-ignore
-                onSelect: setFilterAssets,
-              },
-            ]}
-            title="FILTERS"
-            className="flex-grow-1 "
+                onSelect={setFilterAssets}
+              />{" "}
+            </>
+          ) : (
+            <FullscreenMultiselectFilters
+              filters={[
+                {
+                  name: "strategy",
+                  title: "STRATEGY",
+                  values: filterStrategies,
+                  options: VaultStrategyList.map((strategy) => ({
+                    value: strategy,
+                    display: strategy,
+                  })),
+                  // @ts-ignore
+                  onSelect: setFilterStrategies,
+                },
+                {
+                  name: "asset",
+                  title: "DEPOSIT ASSET",
+                  values: filterAssets,
+                  options: getFilterAssets(chain).map((asset) => {
+                    const Logo = getAssetLogo(asset);
+                    const logo = <Logo height="100%" />;
+                    return {
+                      value: asset,
+                      display: getAssetDisplay(asset),
+                      color: getAssetColor(asset),
+                      textColor: colors.primaryText,
+                      logo: logo,
+                    };
+                  }),
+                  // @ts-ignore
+                  onSelect: setFilterAssets,
+                },
+              ]}
+              title="FILTERS"
+              className="flex-grow-1 "
+            />
+          )}
+          {/* Sort */}
+          <FilterDropdown
+            options={VaultSortByFilterOptions}
+            value={sort}
+            // @ts-ignore
+            onSelect={(option: string) => {
+              setSort(option as VaultSortBy);
+            }}
+            buttonConfig={{
+              background: colors.background.two,
+              activeBackground: colors.background.three,
+              paddingHorizontal: 16,
+              paddingVertical: 12,
+              color: colors.primaryText,
+            }}
+            dropdownMenuConfig={{
+              horizontalOrientation: "right",
+              topBuffer: 16,
+            }}
+            className="flex-grow-1"
           />
-        )}
-        {/* Sort */}
-        <FilterDropdown
-          options={VaultSortByFilterOptions}
-          value={sort}
-          // @ts-ignore
-          onSelect={(option: string) => {
-            setSort(option as VaultSortBy);
-          }}
-          buttonConfig={{
-            background: colors.background.two,
-            activeBackground: colors.background.three,
-            paddingHorizontal: 16,
-            paddingVertical: 12,
-            color: colors.primaryText,
-          }}
-          dropdownMenuConfig={{
-            horizontalOrientation: "right",
-            topBuffer: 16,
-          }}
-          className="flex-grow-1"
-        />
-        {setView && <SwitchViewButton view="grid" setView={setView} />}
-      </FilterContainer>
+          {setView && <SwitchViewButton view="grid" setView={setView} />}
+        </FilterContainer>
+      )}
       {productResults}
     </div>
   );

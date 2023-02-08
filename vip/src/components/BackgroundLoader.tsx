@@ -25,7 +25,7 @@ const cascadeFade = keyframes`
     opacity: 0;
   }
   15% {
-    opacity: 0.25;
+    opacity: 0.24;
   }
   50% {
     opacity: 0;
@@ -54,7 +54,7 @@ const FloatingBoxBar = styled.div<{
   margin-right: ${barMarginRight};
   ${(props) => {
     return css`
-      animation: ${props.barAnimationTime + 1500}ms ${cascadeFade} ease-in-out
+      animation: ${props.barAnimationTime + 2500}ms ${cascadeFade} ease-in-out
         forwards infinite;
       animation-delay: ${(props.index * props.barAnimationTime) /
       props.numberOfBars}ms;

@@ -5,7 +5,7 @@ import Header from "./Header/Header";
 import Homepage from "../pages/Home/Homepage";
 import DepositPage from "../pages/DepositPage/DepositPage";
 import useEagerConnect from "shared/lib/hooks/useEagerConnect";
-import PortfolioPage from "../pages/Portfolio/PortfolioPage";
+import PositionsPage from "../pages/Positions/PositionsPage";
 import Footer from "./Footer/Footer";
 import useScreenSize from "shared/lib/hooks/useScreenSize";
 import {
@@ -14,7 +14,7 @@ import {
 } from "webapp/lib/components/Common/toasts";
 import WalletConnectModal from "shared/lib/components/Wallet/WalletConnectModal";
 import NotFound from "shared/lib/pages/NotFound";
-
+import UserPage from "../pages/User/UserPage";
 const Root = styled.div<{ screenHeight: number }>`
   max-height: 100vh;
   background: transparent;
@@ -23,7 +23,6 @@ const Root = styled.div<{ screenHeight: number }>`
 const RootApp = () => {
   useEagerConnect();
   const { height: screenHeight } = useScreenSize();
-
   return (
     <Root id="appRoot" screenHeight={screenHeight}>
       <WalletConnectModal />
@@ -35,11 +34,14 @@ const RootApp = () => {
           <Route path="/" exact>
             <Homepage />
           </Route>
-          <Route path="/vip/:vaultSymbol">
+          <Route path="/trades" exact>
+            <UserPage />
+          </Route>
+          <Route path="/trades/:vaultSymbol" exact>
             <DepositPage />
           </Route>
-          <Route path="/portfolio">
-            <PortfolioPage />
+          <Route path="/positions">
+            <PositionsPage />
           </Route>
           <Route>
             <NotFound />

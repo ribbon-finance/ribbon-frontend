@@ -7,12 +7,12 @@ import {
   VaultOptions,
   VaultVersion,
   VaultList,
-  isEarnVault,
 } from "shared/lib/constants/constants";
 
 const useVaultOption = () => {
-  const matchVersion =
-    useRouteMatch<{ vaultSymbol: string }>("/vip/:vaultSymbol");
+  const matchVersion = useRouteMatch<{ vaultSymbol: string }>(
+    "/trades/:vaultSymbol"
+  );
   const [vaultOption, vaultVersion] = useMemo((): [
     VaultOptions | undefined,
     VaultVersion
@@ -28,8 +28,7 @@ const useVaultOption = () => {
     ) {
       const vaultName =
         VaultNameOptionMap[matchVersion?.params.vaultSymbol as VaultName];
-      const version = isEarnVault(vaultName) ? "earn" : "v2";
-      return [vaultName, version];
+      return [vaultName, "earn"];
     }
 
     /** Default value */

@@ -11,7 +11,7 @@ const PerformanceTitle = styled(Title)`
   margin-top: 48px;
 `;
 
-const PortfolioPage = () => {
+const PositionsPage = () => {
   return (
     <Container>
       <Row className="justify-content-center">
@@ -26,4 +26,4 @@ const PortfolioPage = () => {
   );
 };
 
-export default PortfolioPage;
+export default PositionsPage;

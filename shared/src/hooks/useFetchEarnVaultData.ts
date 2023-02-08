@@ -6,7 +6,7 @@ import {
   EarnVaultList,
   VIPVaultList,
 } from "../constants/constants";
-import { isProduction, isTreasury } from "../utils/env";
+import { isProduction, isTreasury, isVIP } from "../utils/env";
 import { getVaultContract } from "./useVaultContract";
 import { impersonateAddress } from "../utils/development";
 import {
@@ -47,7 +47,7 @@ const useFetchEarnVaultData = (): V2VaultData => {
       return currentCounter;
     });
 
-    const vaultList = isTreasury() ? VIPVaultList : EarnVaultList;
+    const vaultList = isTreasury() || isVIP() ? VIPVaultList : EarnVaultList;
 
     const responses = await Promise.all(
       vaultList.map(async (vault) => {
@@ -145,7 +145,7 @@ const useFetchEarnVaultData = (): V2VaultData => {
             : BigNumber.from(0);
 
         const lockedBalanceInAssetTreasury =
-          shares instanceof BigNumber && isTreasury()
+          shares instanceof BigNumber && isVIP()
             ? shares
                 .mul(roundPricePerShare as BigNumber)
                 .div(10 ** (decimals as number))
@@ -188,7 +188,7 @@ const useFetchEarnVaultData = (): V2VaultData => {
           cap,
           pricePerShare,
           round: vaultState.round,
-          lockedBalanceInAsset: isTreasury()
+          lockedBalanceInAsset: isVIP()
             ? lockedBalanceInAssetTreasury
             : accountVaultBalance,
           shares,

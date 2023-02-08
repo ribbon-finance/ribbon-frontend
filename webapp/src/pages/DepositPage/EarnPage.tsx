@@ -21,7 +21,10 @@ import {
 } from "shared/lib/constants/constants";
 import { Subtitle } from "shared/lib/designSystem";
 import useVaultOption from "../../hooks/useVaultOption";
-import { getVaultColor } from "shared/lib/utils/vault";
+import {
+  getEarnVaultFeColorMatrix,
+  getVaultColor,
+} from "shared/lib/utils/vault";
 import {
   getAssetDefaultSignificantDecimals,
   getAssetLogo,
@@ -338,6 +341,7 @@ const EarnPage = () => {
   useRedirectOnSwitchChain(getChainByVaultOption(vaultOption as VaultOptions));
   const decimalPlaces = getAssetDefaultSignificantDecimals(asset);
   const logo = <Logo height="100%" />;
+  const feColorMatrix = getEarnVaultFeColorMatrix(vaultOption as VaultOptions);
 
   const color = useMemo(() => {
     if (vaultOption) {
@@ -452,7 +456,11 @@ const EarnPage = () => {
     <>
       <CirclesContainer offset={pageOffset}>
         <FadeDiv delaySeconds={0.3} show={!isDepositSuccess}>
-          <StyledEarnOuterRing type={color} color={color} />
+          <StyledEarnOuterRing
+            feColorMatrix={feColorMatrix}
+            type={color}
+            color={color}
+          />
         </FadeDiv>
         <FadeDiv delaySeconds={0.3} show={isDepositSuccess}>
           <StyledEarnOuterRing color={colors.green} />

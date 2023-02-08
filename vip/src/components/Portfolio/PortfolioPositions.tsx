@@ -14,7 +14,7 @@ import colors from "shared/lib/designSystem/colors";
 import theme from "shared/lib/designSystem/theme";
 import useAssetPrice from "shared/lib/hooks/useAssetPrice";
 import useLoadingText from "shared/lib/hooks/useLoadingText";
-import { CurrencyType } from "../../pages/Portfolio/types";
+import { CurrencyType } from "../../pages/Positions/types";
 import {
   assetToUSD,
   formatBigNumber,

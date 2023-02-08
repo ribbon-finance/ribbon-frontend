@@ -68,12 +68,13 @@ const PerformanceSection: React.FC<PerformanceSectionProps> = ({
 }) => {
   const renderWithdrawalsSection = (
     <>
-      Once user funds have been used in the vault's strategy, they cannot be
-      withdrawn until the vault closes its position in the following round.
+      Once user funds have been used in the vault's strategy, they can be
+      withdrawn before the vault closes its position. Users can request an early
+      withdrawal on their VIP chat.
       <br />
       <br />
       Users can withdraw their funds instantly during the timelock period where
-      the vault closes its previous position and opens its new position.{" "}
+      the vault closes its previous position and opens its new position.
     </>
   );
 

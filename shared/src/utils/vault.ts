@@ -32,6 +32,21 @@ export const isETHVault = (vault: VaultOptions) =>
 export const getVaultColor = (vault: VaultOptions) =>
   getAssetColor(getDisplayAssets(vault));
 
+// earn outer ring feColorMatrix value
+export const getEarnVaultFeColorMatrix = (vault: VaultOptions) => {
+  const displayAsset = getDisplayAssets(vault);
+  switch (displayAsset) {
+    case "USDC":
+      return "0 0 0 0 0.243137 0 0 0 0 0.45098 0 0 0 0 0.768627 0 0 0 0.25 0";
+    case "stETH":
+      return "0 0 0 0 0.243137 0 0 0 0 0.45098 0 0 0 0 0.768627 0 0 0 0.25 0";
+    case "WBTC":
+      return "";
+    default:
+      return "0 0 0 0 0.0862745 0 0 0 0 0.807843 0 0 0 0 0.72549 0 0 0 0.25 0";
+  }
+};
+
 /*** SOLANA-ONLY UTILS ***/
 export const isEqualsToUserAddress = (
   userKey: PublicKey,
