@@ -51,7 +51,6 @@ const DesktopFooter = () => {
     []
   );
 
-  console.log(isVIP());
   return (
     <FooterContainer>
       <LeftContainer>
