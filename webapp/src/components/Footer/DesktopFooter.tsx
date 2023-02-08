@@ -6,6 +6,7 @@ import { BaseLink, Title } from "shared/lib/designSystem";
 import colors from "shared/lib/designSystem/colors";
 import sizes from "shared/lib/designSystem/sizes";
 import theme from "shared/lib/designSystem/theme";
+import { isVIP } from "shared/lib/utils/env";
 
 const FooterContainer = styled.div`
   display: flex;
@@ -50,6 +51,7 @@ const DesktopFooter = () => {
     []
   );
 
+  console.log(isVIP());
   return (
     <FooterContainer>
       <LeftContainer>
@@ -57,7 +59,7 @@ const DesktopFooter = () => {
         {renderLinkItem("BLOG", URLS.medium)}
         {renderLinkItem("TERMS", URLS.ribbonFinanceTerms)}
         {renderLinkItem("POLICY", URLS.ribbonFinancePolicy)}
-        {renderLinkItem("AUCTIONS", URLS.auction)}
+        {!isVIP() && renderLinkItem("AUCTIONS", URLS.auction)}
       </LeftContainer>
       <LinksContainer>
         {renderLinkItem("DISCORD", URLS.discord)}

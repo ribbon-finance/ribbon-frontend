@@ -7,13 +7,16 @@ import { ConnectWalletButton } from "shared/lib/components/Common/buttons";
 import { AccessModal } from "../AccessModal/AccessModal";
 import { BaseLink, Title } from "shared/lib/designSystem";
 import { InfoModal } from "../InfoModal/InfoModal";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { FrameBar } from "../FrameBar/FrameBar";
 import AccountStatus from "webapp/lib/components/Wallet/AccountStatus";
 import { useStorage } from "../../hooks/useStorageContextProvider";
 import { useRouteMatch } from "react-router-dom";
 import ExternalLink from "shared/lib/assets/icons/externalLink";
 import { URLS } from "shared/lib/constants/constants";
+import MenuButton from "shared/lib/components/Common/MenuButton";
+import MobileOverlayMenu from "shared/lib/components/Common/MobileOverlayMenu";
+import { useGlobalState } from "shared/lib/store/store";
 
 export interface NavItemProps {
   isSelected: boolean;
@@ -30,9 +33,8 @@ const HeaderContainer = styled.div<{ isMenuOpen?: boolean }>`
   top: 0;
   border-bottom: 1px solid ${colors.border};
 
-  @media (max-width: ${sizes.lg}px) {
+  @media (max-width: ${sizes.xl}px) {
     padding: 16px 24px;
-    border-bottom: none;
   }
 
   z-index: ${(props) => (props.isMenuOpen ? 50 : 10)};
@@ -157,6 +159,10 @@ export const NavLinkText = styled(Title)`
   letter-spacing: 1.5px;
   font-size: 12px;
   line-height: 20px;
+
+  @media (max-width: ${sizes.xl}px) {
+    font-size: 24px;
+  }
 `;
 
 const HeaderAbsoluteContainer = styled.div`
@@ -197,11 +203,34 @@ const NavItemMiddle = styled.div.attrs({
   }
 `;
 
+const MobileOnly = styled.div`
+  display: none;
+
+  @media (max-width: ${sizes.xl}px) {
+    display: flex;
+  }
+`;
+
 const Header = () => {
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isInfoModalVisible, setInfoModal] = useState<boolean>(false);
   const trades = useRouteMatch({ path: "/trades", exact: false });
   const positions = useRouteMatch({ path: "/positions", exact: true });
   const [storage] = useStorage();
+  const headerRef = useRef<HTMLDivElement>(null);
+  const [, setComponentRefs] = useGlobalState("componentRefs");
+  const onToggleMenu = () => {
+    setIsMenuOpen(!isMenuOpen);
+  };
+
+  useEffect(() => {
+    if (headerRef.current) {
+      setComponentRefs((prev) => ({
+        ...prev,
+        header: headerRef.current as HTMLDivElement,
+      }));
+    }
+  }, [headerRef, setComponentRefs]);
 
   const renderLinkItem = (
     title: string,
@@ -250,7 +279,11 @@ const Header = () => {
         isVisible={isInfoModalVisible}
         setShow={(set) => setInfoModal(set)}
       />
-      <HeaderContainer className="d-flex align-items-center">
+      <HeaderContainer
+        className="d-flex align-items-center"
+        isMenuOpen={isMenuOpen}
+        ref={headerRef}
+      >
         {/* LOGO */}
         <LogoContainer>
           <VIPLogo width={40} height={40} />
@@ -277,6 +310,50 @@ const Header = () => {
             </NavItem>
           )}
         </LinksContainer>
+        <MobileOnly>
+          <MenuButton onToggle={onToggleMenu} isOpen={isMenuOpen} />
+          <MobileOverlayMenu
+            className="flex-column align-items-center justify-content-center"
+            isMenuOpen={isMenuOpen}
+            onClick={onToggleMenu}
+            boundingDivProps={{
+              style: {
+                marginRight: "auto",
+              },
+            }}
+          >
+            {renderLinkItem(
+              "TRADE IDEAS",
+              "/trades",
+              Boolean(useRouteMatch({ path: "/trades/", exact: true }))
+            )}
+            {renderLinkItem(
+              "POSITIONS",
+              "/positions",
+              Boolean(useRouteMatch({ path: "/positions/", exact: true }))
+            )}
+            {renderLinkItem("DOVS", URLS.ribbonApp, false, true, true, false)}
+            {renderLinkItem("DISCORD", URLS.discord, false, false, true)}
+            {renderLinkItem("TWITTER", URLS.twitter, false, false, true)}
+            {renderLinkItem("GITHUB", URLS.github, false, false, true)}
+            {renderLinkItem("FAQ", URLS.docsFaq, false, false, true)}
+            {renderLinkItem("BLOG", URLS.medium, false, false, true)}
+            {renderLinkItem(
+              "TERMS",
+              URLS.ribbonFinanceTerms,
+              false,
+              false,
+              true
+            )}
+            {renderLinkItem(
+              "POLICY",
+              URLS.ribbonFinancePolicy,
+              false,
+              false,
+              true
+            )}
+          </MobileOverlayMenu>
+        </MobileOnly>
         {!storage && <FrameBar bottom={0} height={4} />}
       </HeaderContainer>
     </>

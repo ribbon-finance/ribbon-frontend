@@ -11,11 +11,13 @@ import { FrameBar } from "../FrameBar/FrameBar";
 import { NavItem, NavLinkText } from "../Header/Header";
 import { useStorage } from "../../hooks/useStorageContextProvider";
 import { InfoModal } from "../InfoModal/InfoModal";
+import DesktopFooter from "webapp/lib/components/Footer/DesktopFooter";
 
 const FooterContainer = styled.div<{
   screenHeight: number;
   showVaultPosition: boolean;
 }>`
+  height: ${theme.footer.desktop.height}px;
   width: 100%;
   display: flex;
   justify-content: center;
@@ -78,13 +80,17 @@ const Footer = () => {
           <FrameBar bottom={width <= sizes.md ? 104 : 0} height={4} />
         )}
         {/** Mobile */}
+
         {storage ? (
-          <AccountStatus
-            variant="mobile"
-            vault={vaultOption ? { vaultOption, vaultVersion } : undefined}
-            showVaultPositionHook={setShowVaultPosition}
-            showAirdropButton={false}
-          />
+          <>
+            <DesktopFooter />
+            <AccountStatus
+              variant="mobile"
+              vault={vaultOption ? { vaultOption, vaultVersion } : undefined}
+              showVaultPositionHook={setShowVaultPosition}
+              showAirdropButton={false}
+            />
+          </>
         ) : (
           <NavItem variant="mobile" onClick={() => setInfoModal(true)}>
             <NavLinkText>Info</NavLinkText>
