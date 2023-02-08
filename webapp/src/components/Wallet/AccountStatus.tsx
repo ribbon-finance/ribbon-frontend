@@ -274,7 +274,7 @@ const MenuCloseItem = styled(MenuItem)`
 `;
 
 const AirdropMenuItem = styled(MenuItem)`
-  padding: 4px 8px 4px 8px;
+  padding: 4px 8px;
 `;
 
 interface AccountStatusProps {

@@ -132,7 +132,6 @@ const DepositPage = () => {
   const { vaultOption, vaultVersion } = useVaultOption();
   const { chainId } = useWeb3Wallet();
 
-  console.log(vaultOption);
   usePullUp();
 
   const { status, deposits, vaultLimit } = useVaultData(
@@ -195,19 +194,17 @@ const DepositPage = () => {
    * Redirect to homepage if no clear vault is chosen
    * Or if vip does not have access to a vip vault
    */
-  console.log("reached");
 
   if (!vaultOption || !auth) {
     return <Redirect to="/" />;
   }
-  console.log("reached1");
+
   if (allUserVaults().length > 0) {
     if (!allUserVaults().includes(vaultOption)) {
       return <Redirect to="/" />;
     }
   }
 
-  console.log("reached2");
   return (
     <>
       <HeroSection

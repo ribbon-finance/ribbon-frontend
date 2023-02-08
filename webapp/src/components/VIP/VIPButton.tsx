@@ -1,7 +1,7 @@
 import React from "react";
 import styled from "styled-components";
 
-import Logo, { VIPLogo } from "shared/lib/assets/icons/logo";
+import { VIPLogo } from "shared/lib/assets/icons/logo";
 import { Subtitle } from "shared/lib/designSystem";
 import colors from "shared/lib/designSystem/colors";
 
@@ -30,16 +30,6 @@ const ClaimText = styled(Subtitle)`
   text-transform: uppercase;
   color: ${colors.primaryText};
   letter-spacing: 0.3px;
-`;
-
-const RedLogo = styled(Logo)`
-  circle {
-    fill: ${colors.products.yield}3D;
-  }
-
-  path {
-    stroke: ${colors.products.yield};
-  }
 `;
 
 const VIPButton = ({ onClick }: { onClick: () => void }) => {

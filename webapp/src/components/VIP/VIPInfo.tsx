@@ -202,7 +202,7 @@ const VIPInfo: React.FC = () => {
           <ActionButton
             className="btn"
             color={colors.primaryText}
-            onClick={() => window.open(URLS.vip)}
+            onClick={() => window.open(URLS.treasury)}
           >
             VIEW CUSTOM VAULTS
           </ActionButton>

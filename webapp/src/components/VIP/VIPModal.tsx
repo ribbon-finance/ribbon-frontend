@@ -2,11 +2,11 @@ import React, { useCallback } from "react";
 import BasicModal from "shared/lib/components/Common/BasicModal";
 import VIPInfo from "./VIPInfo";
 
-interface AirdropModalProps {
+interface VIPModalProps {
   show: boolean;
   onClose: () => void;
 }
-const VIPModal: React.FC<AirdropModalProps> = ({ show, onClose }) => {
+const VIPModal: React.FC<VIPModalProps> = ({ show, onClose }) => {
   const handleClose = useCallback(() => {
     onClose();
   }, [onClose]);
