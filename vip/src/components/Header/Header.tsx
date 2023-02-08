@@ -74,7 +74,7 @@ const LogoContainer = styled.div`
   margin-right: auto;
   z-index: 1000;
 
-  @media (max-width: ${sizes.lg}px) {
+  @media (max-width: ${sizes.xl}px) {
     padding-left: 0;
   }
 `;
@@ -165,6 +165,11 @@ export const NavLinkText = styled(Title)`
   }
 `;
 
+export const InfoText = styled(Title)`
+  letter-spacing: 1.5px;
+  font-size: 14px;
+  line-height: 20px;
+`;
 const HeaderAbsoluteContainer = styled.div`
   position: absolute;
   display: flex;
@@ -203,11 +208,11 @@ const NavItemMiddle = styled.div.attrs({
   }
 `;
 
-const MobileOnly = styled.div`
+const MobileOnly = styled.div<{ visible: boolean }>`
   display: none;
 
   @media (max-width: ${sizes.xl}px) {
-    display: flex;
+    ${(props) => props.visible && `display: flex;`}
   }
 `;
 
@@ -306,11 +311,11 @@ const Header = () => {
             <AccountStatus variant="desktop" showAirdropButton={false} />
           ) : (
             <NavItem variant="desktop" onClick={() => setInfoModal(true)}>
-              <NavLinkText>Info</NavLinkText>
+              <InfoText>Info</InfoText>
             </NavItem>
           )}
         </LinksContainer>
-        <MobileOnly>
+        <MobileOnly visible={storage != null}>
           <MenuButton onToggle={onToggleMenu} isOpen={isMenuOpen} />
           <MobileOverlayMenu
             className="flex-column align-items-center justify-content-center"

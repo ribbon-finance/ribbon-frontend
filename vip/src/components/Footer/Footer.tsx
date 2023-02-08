@@ -8,7 +8,7 @@ import useVaultOption from "../../hooks/useVaultOption";
 import AccountStatus from "webapp/lib/components/Wallet/AccountStatus";
 import { useState } from "react";
 import { FrameBar } from "../FrameBar/FrameBar";
-import { NavItem, NavLinkText } from "../Header/Header";
+import { NavItem, NavLinkText, InfoText } from "../Header/Header";
 import { useStorage } from "../../hooks/useStorageContextProvider";
 import { InfoModal } from "../InfoModal/InfoModal";
 import DesktopFooter from "webapp/lib/components/Footer/DesktopFooter";
@@ -93,7 +93,7 @@ const Footer = () => {
           </>
         ) : (
           <NavItem variant="mobile" onClick={() => setInfoModal(true)}>
-            <NavLinkText>Info</NavLinkText>
+            <InfoText>Info</InfoText>
           </NavItem>
         )}
       </FooterContainer>
