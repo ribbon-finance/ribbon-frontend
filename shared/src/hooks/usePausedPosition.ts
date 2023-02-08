@@ -13,6 +13,7 @@ import useVaultContract from "./useVaultContract";
 import useVaultPauser from "./useV2VaultPauserContract";
 import useWeb3Wallet from "./useWeb3Wallet";
 import { useV2VaultData } from "./web3DataContext";
+import { isVIP } from "../utils/env";
 
 export const usePausedPosition = (
   vaultOption: VaultOptions,
@@ -39,6 +40,7 @@ export const usePausedPosition = (
       v2Contract &&
       vaultAddress &&
       account &&
+      !isVIP() &&
       !isSolanaVault(vaultOption)
     ) {
       pauseContract

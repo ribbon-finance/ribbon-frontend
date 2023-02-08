@@ -140,7 +140,7 @@ const useFetchEarnVaultData = (): V2VaultData => {
         // during the round itself
 
         const roundPricePerShare =
-          isTreasury() && vaultState.round
+          (isTreasury() || isVIP()) && vaultState.round
             ? await contract.roundPricePerShare(vaultState.round - 1)
             : BigNumber.from(0);
 

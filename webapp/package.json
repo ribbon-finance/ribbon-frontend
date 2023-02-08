@@ -64,6 +64,7 @@
     "build": "craco build",
     "test": "craco test",
     "eject": "react-scripts eject",
+    "clean": "rm -rf ./lib",
     "lint": "eslint --fix --ext .tsx,.ts .",
     "lib": "tsc -w",
     "compile": "tsc --build \"./tsconfig.json\"",
