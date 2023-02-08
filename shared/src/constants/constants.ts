@@ -85,6 +85,7 @@ export type VaultVersion = typeof VaultVersionList[number];
 export type VaultVersionExcludeV1 = Exclude<VaultVersion, "v1">;
 
 export const EVMVaultList = [
+  "rUNI-THETA",
   "rEARN-stETH",
   "rEARN",
   "rsAVAX-THETA",
@@ -239,6 +240,13 @@ export const GAS_LIMITS: {
     },
   },
   "rAAVE-THETA": {
+    v2: {
+      deposit: 380000,
+      withdrawInstantly: 130000,
+      completeWithdraw: 300000,
+    },
+  },
+  "rUNI-THETA": {
     v2: {
       deposit: 380000,
       withdrawInstantly: 130000,
@@ -500,6 +508,18 @@ export const VaultAddressMap: {
         v2: v2deployment.mainnet.RibbonThetaVaultAAVECall,
         chainId: CHAINID.ETH_MAINNET,
       },
+  "rUNI-THETA": isDevelopment()
+    ? {
+        /**
+         * We use ETH vault for Kovan preview
+         */
+        v2: v2deployment.kovan.RibbonThetaVaultETHCall,
+        chainId: CHAINID.ETH_KOVAN,
+      }
+    : {
+        v2: v2deployment.mainnet.RibbonThetaVaultUNICall,
+        chainId: CHAINID.ETH_MAINNET,
+      },
   "rAVAX-THETA": isDevelopment()
     ? {
         v2: v2deployment.fuji.RibbonThetaVaultAVAXCall,
@@ -648,6 +668,7 @@ export const VaultNamesList = [
   "T-stETH-C",
   "T-rETH-C",
   "T-AAVE-C",
+  "T-UNI-C",
   "T-AVAX-C",
   "T-sAVAX-C",
   "T-USDC-P-AVAX",
@@ -674,6 +695,7 @@ export const VaultNameOptionMap: { [name in VaultName]: VaultOptions } = {
   "T-stETH-C": "rstETH-THETA",
   "T-rETH-C": "rrETH-THETA",
   "T-AAVE-C": "rAAVE-THETA",
+  "T-UNI-C": "rUNI-THETA",
   "T-AVAX-C": "rAVAX-THETA",
   "T-sAVAX-C": "rsAVAX-THETA",
   "T-USDC-P-AVAX": "rUSDC-AVAX-P-THETA",
@@ -779,6 +801,8 @@ export const getAssets = (vault: VaultOptions): Assets => {
       return "WBTC";
     case "rAAVE-THETA":
       return "AAVE";
+    case "rUNI-THETA":
+      return "UNI";
     case "rAVAX-THETA":
       return "WAVAX";
     case "rsAVAX-THETA":
@@ -825,6 +849,8 @@ export const getOptionAssets = (vault: VaultOptions): Assets => {
       return "WETH";
     case "rAAVE-THETA":
       return "AAVE";
+    case "rUNI-THETA":
+      return "UNI";
     case "rAVAX-THETA":
     case "rUSDC-AVAX-P-THETA":
       return "WAVAX";
@@ -878,6 +904,8 @@ export const getDisplayAssets = (vault: VaultOptions): Assets => {
       return "rETH";
     case "rAAVE-THETA":
       return "AAVE";
+    case "rUNI-THETA":
+      return "UNI";
     case "rAVAX-THETA":
       return "WAVAX";
     case "rsAVAX-THETA":
@@ -914,6 +942,7 @@ export const getDisplayAssets = (vault: VaultOptions): Assets => {
 export const VaultAllowedDepositAssets: { [vault in VaultOptions]: Assets[] } =
   {
     "rAAVE-THETA": ["AAVE"],
+    "rUNI-THETA": ["UNI"],
     "rBTC-THETA": ["WBTC"],
     "rETH-THETA": ["WETH"],
     "rAVAX-THETA": ["WAVAX"],
@@ -974,6 +1003,9 @@ export const VaultMaxDeposit: { [vault in VaultOptions]: BigNumber } = {
   ),
   "rAAVE-THETA": BigNumber.from(20000).mul(
     BigNumber.from(10).pow(getAssetDecimals(getAssets("rAAVE-THETA")))
+  ),
+  "rUNI-THETA": BigNumber.from(20000).mul(
+    BigNumber.from(10).pow(getAssetDecimals(getAssets("rUNI-THETA")))
   ),
   "rAVAX-THETA": BigNumber.from(100000000).mul(
     BigNumber.from(10).pow(getAssetDecimals(getAssets("rAVAX-THETA")))
@@ -1076,6 +1108,12 @@ export const VaultFees: {
     },
   },
   "rAAVE-THETA": {
+    v2: {
+      managementFee: "2",
+      performanceFee: "10",
+    },
+  },
+  "rUNI-THETA": {
     v2: {
       managementFee: "2",
       performanceFee: "10",
@@ -1335,7 +1373,9 @@ export const SUBGRAPHS_TO_QUERY: [VaultVersion, Chains][] = isTreasury()
   ? VIP_SUBGRAPHS
   : WEBAPP_SUBGRAPHS;
 
-export const COINGECKO_BASE_URL = "https://api.coingecko.com/api/v3";
+export const COINGECKO_AWS_BASE_URL =
+  process.env.REACT_APP_COINGECKO_AWS_BASE_URL;
+
 export const COINGECKO_CURRENCIES: { [key in Assets]: string | undefined } = {
   WETH: "ethereum",
   WBTC: "wrapped-bitcoin",
@@ -1347,6 +1387,7 @@ export const COINGECKO_CURRENCIES: { [key in Assets]: string | undefined } = {
   wstETH: "wrapped-steth",
   LDO: "lido-dao",
   AAVE: "aave",
+  UNI: "uniswap",
   WAVAX: "avalanche-2",
   sAVAX: "benqi-liquid-staked-avax",
   PERP: "perpetual-protocol",
@@ -1405,6 +1446,7 @@ export const URLS = {
   tokenterminal:
     "https://www.tokenterminal.com/terminal/projects/ribbon-finance",
   defillama: "https://defillama.com/protocol/ribbon-finance",
+  arkham: "https://www.arkhamintelligence.com/",
   coingecko: "https://www.coingecko.com/en/coins/ribbon-finance",
   hiddenhand: "https://hiddenhand.finance/ribbon",
 } as const;

@@ -5,7 +5,7 @@ import Header from "./Header/Header";
 import Homepage from "../pages/Home/Homepage";
 import DepositPage from "../pages/DepositPage/DepositPage";
 import useEagerConnect from "shared/lib/hooks/useEagerConnect";
-import PortfolioPage from "../pages/Portfolio/PortfolioPage";
+import PositionsPage from "../pages/Positions/PositionsPage";
 import Footer from "./Footer/Footer";
 import useScreenSize from "shared/lib/hooks/useScreenSize";
 import {
@@ -34,14 +34,14 @@ const RootApp = () => {
           <Route path="/" exact>
             <Homepage />
           </Route>
-          <Route path="/vip" exact>
+          <Route path="/trades" exact>
             <UserPage />
           </Route>
-          <Route path="/vip/:vaultSymbol" exact>
+          <Route path="/trades/:vaultSymbol" exact>
             <DepositPage />
           </Route>
-          <Route path="/portfolio">
-            <PortfolioPage />
+          <Route path="/positions">
+            <PositionsPage />
           </Route>
           <Route>
             <NotFound />

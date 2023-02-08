@@ -13,6 +13,7 @@ import AccountStatus from "webapp/lib/components/Wallet/AccountStatus";
 import { useStorage } from "../../hooks/useStorageContextProvider";
 import { useRouteMatch } from "react-router-dom";
 import ExternalLink from "shared/lib/assets/icons/externalLink";
+import { URLS } from "shared/lib/constants/constants";
 
 export interface NavItemProps {
   isSelected: boolean;
@@ -154,7 +155,7 @@ export const NavItem = styled.div<{
 
 export const NavLinkText = styled(Title)`
   letter-spacing: 1.5px;
-  font-size: 14px;
+  font-size: 12px;
   line-height: 20px;
 `;
 
@@ -198,7 +199,8 @@ const NavItemMiddle = styled.div.attrs({
 
 const Header = () => {
   const [isInfoModalVisible, setInfoModal] = useState<boolean>(false);
-  const home = useRouteMatch({ path: "/vip", exact: true });
+  const trades = useRouteMatch({ path: "/trades", exact: false });
+  const positions = useRouteMatch({ path: "/positions", exact: true });
   const [storage] = useStorage();
 
   const renderLinkItem = (
@@ -256,7 +258,13 @@ const Header = () => {
         {storage && (
           <HeaderAbsoluteContainer>
             <LinksContainer>
-              {renderLinkItem("HOME", "/", Boolean(home))}
+              {renderLinkItem("TRADE IDEAS", "/trades", Boolean(trades))}
+            </LinksContainer>
+            <LinksContainer>
+              {renderLinkItem("POSITIONS", "/positions", Boolean(positions))}
+            </LinksContainer>
+            <LinksContainer>
+              {renderLinkItem("DOV", URLS.ribbonApp, false, true, true)}
             </LinksContainer>
           </HeaderAbsoluteContainer>
         )}

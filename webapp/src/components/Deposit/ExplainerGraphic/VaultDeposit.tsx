@@ -7,6 +7,7 @@ import ETHDepositAnimationData from "../../../assets/icons/vaultExplainer/deposi
 import STETHDepositAnimationData from "../../../assets/icons/vaultExplainer/deposit/STETH_Deposit.json";
 import RETHDepositAnimationData from "../../../assets/icons/vaultExplainer/deposit/RETH_Deposit.json";
 import AAVEDepositAnimationData from "../../../assets/icons/vaultExplainer/deposit/AAVE_Deposit.json";
+import UNIDepositAnimationData from "../../../assets/icons/vaultExplainer/deposit/UNI_Deposit.json";
 import AVAXDepositAnimationData from "../../../assets/icons/vaultExplainer/deposit/AVAX_Deposit.json";
 import SAVAXDepositAnimationData from "../../../assets/icons/vaultExplainer/deposit/SAVAX_Deposit.json";
 import APEDepositAnimationData from "../../../assets/icons/vaultExplainer/deposit/APE_Deposit.json";
@@ -35,6 +36,8 @@ const VaultDeposit: React.FC<VaultDepositProps> = ({ vaultOption }) => {
             return USDCDepositAnimationData;
           case "AAVE":
             return AAVEDepositAnimationData;
+          case "UNI":
+            return UNIDepositAnimationData;
           case "WAVAX":
             return AVAXDepositAnimationData;
           case "sAVAX":

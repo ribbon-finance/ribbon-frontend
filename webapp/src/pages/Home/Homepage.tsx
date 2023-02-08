@@ -5,7 +5,7 @@ import { Title } from "shared/lib/designSystem";
 import sizes from "shared/lib/designSystem/sizes";
 import styled from "styled-components";
 import { getVaultURI } from "../../constants/constants";
-import LendBanner from "../../components/Banner/LendBanner";
+import UNIBanner from "../../components/Banner/UNIBanner";
 
 const ProductTitle = styled(Title)`
   display: none;
@@ -22,7 +22,7 @@ const Homepage = () => {
   const history = useHistory();
   return (
     <>
-      <LendBanner />
+      <UNIBanner />
       <ProductTitle>PRODUCT</ProductTitle>
       <ProductCatalogue
         variant="webapp"

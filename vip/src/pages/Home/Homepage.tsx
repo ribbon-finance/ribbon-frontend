@@ -306,16 +306,16 @@ const Homepage = () => {
     },
   ];
 
-  if (auth) {
-    const userAddress = JSON.parse(auth).pop();
-    if (userAddress) {
-      history.push("/vip/");
-    }
-  }
-
   const onSetFooterRef = useCallback((ref) => {
     setFooterRef(ref);
   }, []);
+
+  if (auth) {
+    const userAddress = JSON.parse(auth).pop();
+    if (userAddress) {
+      history.push("/trades/");
+    }
+  }
 
   return (
     <HomepageContainer>

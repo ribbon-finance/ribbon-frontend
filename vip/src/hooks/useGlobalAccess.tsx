@@ -50,7 +50,7 @@ const useGlobalAccess = () => {
       });
       setError("");
 
-      history.push("/vip/");
+      history.push("/trades/");
       setAccessModal(false);
     } else {
       setError("Invalid Code");

@@ -17,7 +17,7 @@ export const minDeposit: { [vault in VIPVaultOptions]: BigNumber } = {
 };
 
 export const getVaultURI = (vaultOption: VaultOptions): string => {
-  return `/vip/${
+  return `/trades/${
     Object.keys(VaultNameOptionMap)[
       Object.values(VaultNameOptionMap).indexOf(vaultOption)
     ]
