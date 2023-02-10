@@ -146,6 +146,7 @@ export const MobileMenuContainer = styled.div`
   overflow: scroll;
   width: 100vw;
   max-height: calc(100vh - ${theme.header.height}px);
+  padding-top: 16px;
 `;
 
 const Header = () => {
