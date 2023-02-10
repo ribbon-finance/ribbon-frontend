@@ -34,6 +34,9 @@ const Container = styled.div.attrs({
   className: "d-flex align-items-center justify-content-center",
 })`
   padding: 0 100px;
+  @media (max-width: ${sizes.md}px) {
+    padding: 0 50px;
+  }
 `;
 
 const Geoblocked = () => {

@@ -2,7 +2,6 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import styled from "styled-components";
 import { useRouteMatch } from "react-router-dom";
 import { useWeb3Wallet } from "shared/lib/hooks/useWeb3Wallet";
-
 import HeaderLogo from "./HeaderLogo";
 import { URLS } from "shared/lib/constants/constants";
 import colors from "shared/lib/designSystem/colors";
@@ -23,7 +22,7 @@ import { useHistory } from "react-router-dom";
 import { useLendLink } from "shared/lib/hooks/useLendLink";
 import { BuyButton } from "../Wallet/BuyButton";
 
-const HeaderContainer = styled.div<MobileMenuOpenProps>`
+export const HeaderContainer = styled.div<MobileMenuOpenProps>`
   height: ${theme.header.height}px;
   position: sticky;
   top: 0;
@@ -66,7 +65,7 @@ const HeaderContainer = styled.div<MobileMenuOpenProps>`
   }
 `;
 
-const LogoContainer = styled.div`
+export const LogoContainer = styled.div`
   padding-left: 40px;
   margin-right: auto;
   z-index: 1000;
@@ -82,7 +81,7 @@ const HeaderButtonContainer = styled.div`
   z-index: 1;
 `;
 
-const HeaderAbsoluteContainer = styled.div`
+export const HeaderAbsoluteContainer = styled.div`
   position: absolute;
   display: flex;
   height: 100%;
@@ -94,11 +93,11 @@ const HeaderAbsoluteContainer = styled.div`
   }
 `;
 
-const LinksContainer = styled.div`
+export const LinksContainer = styled.div`
   display: flex;
 `;
 
-const NavItem = styled.div.attrs({
+export const NavItem = styled.div.attrs({
   className: "d-flex align-items-center justify-content-center",
 })<NavItemProps>`
   padding: 0px 16px;
@@ -111,11 +110,12 @@ const NavItem = styled.div.attrs({
   }
 
   @media (max-width: ${sizes.xl}px) {
+    justify-content: unset !important;
     padding: 0px 0px 40px 48px;
   }
 `;
 
-const NavLinkText = styled(Title)`
+export const NavLinkText = styled(Title)`
   letter-spacing: 1.5px;
   font-size: 12px;
   line-height: 16px;
@@ -125,7 +125,7 @@ const NavLinkText = styled(Title)`
   }
 `;
 
-const SecondaryMobileNavItem = styled.div`
+export const SecondaryMobileNavItem = styled.div`
   display: none;
 
   @media (max-width: ${sizes.xl}px) {
@@ -134,12 +134,19 @@ const SecondaryMobileNavItem = styled.div`
   }
 `;
 
-const MobileOnly = styled.div`
+export const MobileOnly = styled.div`
   display: none;
 
   @media (max-width: ${sizes.xl}px) {
     display: flex;
   }
+`;
+
+export const MobileMenuContainer = styled.div`
+  overflow: scroll;
+  width: 100vw;
+  max-height: calc(100vh - ${theme.header.height}px);
+  padding-top: 16px;
 `;
 
 const Header = () => {
@@ -301,42 +308,51 @@ const Header = () => {
           onClick={onToggleMenu}
           boundingDivProps={{
             style: {
+              paddingTop: theme.header.height,
               marginRight: "auto",
             },
           }}
         >
-          {renderLinkItem(
-            "PRODUCTS",
-            "/",
-            Boolean(useRouteMatch({ path: "/", exact: true }))
-          )}
-          {renderLinkItem(
-            "PORTFOLIO",
-            "/portfolio",
-            Boolean(useRouteMatch({ path: "/portfolio", exact: true }))
-          )}
-          {renderLinkItem(
-            "VAULT TOKENS",
-            "/staking",
-            Boolean(useRouteMatch({ path: "/staking", exact: true }))
-          )}
-          {renderLinkItem("STAKE RBN", URLS.governance, false, true, true)}
-          {renderLinkItem("LEND", lendLink, true, true, true, true)}
-          {renderLinkItem("DISCORD", URLS.discord, false, false, true)}
-          {renderLinkItem("TWITTER", URLS.twitter, false, false, true)}
-          {renderLinkItem("GITHUB", URLS.github, false, false, true)}
-          {renderLinkItem("FAQ", URLS.docsFaq, false, false, true)}
-          {renderLinkItem("BLOG", URLS.medium, false, false, true)}
-          {renderLinkItem("TERMS", URLS.ribbonFinanceTerms, false, false, true)}
-          {renderLinkItem(
-            "POLICY",
-            URLS.ribbonFinancePolicy,
-            false,
-            false,
-            true
-          )}
+          <MobileMenuContainer>
+            {renderLinkItem(
+              "PRODUCTS",
+              "/",
+              Boolean(useRouteMatch({ path: "/", exact: true }))
+            )}
+            {renderLinkItem(
+              "PORTFOLIO",
+              "/portfolio",
+              Boolean(useRouteMatch({ path: "/portfolio", exact: true }))
+            )}
+            {renderLinkItem(
+              "VAULT TOKENS",
+              "/staking",
+              Boolean(useRouteMatch({ path: "/staking", exact: true }))
+            )}
+            {renderLinkItem("STAKE RBN", URLS.governance, false, true, true)}
+            {renderLinkItem("LEND", lendLink, true, true, true, true)}
+            {renderLinkItem("DISCORD", URLS.discord, false, false, true)}
+            {renderLinkItem("TWITTER", URLS.twitter, false, false, true)}
+            {renderLinkItem("GITHUB", URLS.github, false, false, true)}
+            {renderLinkItem("FAQ", URLS.docsFaq, false, false, true)}
+            {renderLinkItem("BLOG", URLS.medium, false, false, true)}
+            {renderLinkItem(
+              "TERMS",
+              URLS.ribbonFinanceTerms,
+              false,
+              false,
+              true
+            )}
+            {renderLinkItem(
+              "POLICY",
+              URLS.ribbonFinancePolicy,
+              false,
+              false,
+              true
+            )}
 
-          {renderLinkItem("AUCTIONS", URLS.auction, false, false, true)}
+            {renderLinkItem("AUCTIONS", URLS.auction, false, false, true)}
+          </MobileMenuContainer>
         </MobileOverlayMenu>
       </MobileOnly>
     </HeaderContainer>
