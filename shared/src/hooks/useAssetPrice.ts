@@ -75,14 +75,14 @@ export const useFetchAssetsPrice = (
       };
     });
 
-    // Default USDC price
+    // Default USDC price for 3 years
     setHistoricalData((prev) => {
       return {
         ...prev,
         USDC: {
           loading: false,
           history: Object.fromEntries(
-            [...new Array(365)].map((_, index) => [
+            [...new Array(1095)].map((_, index) => [
               todayTimestamp.valueOf() - index * (1000 * 60 * 60 * 24),
               1,
             ])
