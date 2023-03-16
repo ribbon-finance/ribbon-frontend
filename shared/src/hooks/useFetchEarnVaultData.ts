@@ -144,13 +144,6 @@ const useFetchEarnVaultData = (): V2VaultData => {
             ? await contract.roundPricePerShare(vaultState.round - 1)
             : BigNumber.from(0);
 
-        const lockedBalanceInAssetTreasury =
-          shares instanceof BigNumber && isVIP()
-            ? shares
-                .mul(roundPricePerShare as BigNumber)
-                .div(10 ** (decimals as number))
-            : BigNumber.from(0);
-
         const allocationState = (
           (
             _allocationState as {
@@ -188,9 +181,8 @@ const useFetchEarnVaultData = (): V2VaultData => {
           cap,
           pricePerShare,
           round: vaultState.round,
-          lockedBalanceInAsset: isVIP()
-            ? lockedBalanceInAssetTreasury
-            : accountVaultBalance,
+          roundPricePerShare,
+          lockedBalanceInAsset: accountVaultBalance,
           shares,
           depositBalanceInAsset:
             depositReceipts.round === vaultState.round

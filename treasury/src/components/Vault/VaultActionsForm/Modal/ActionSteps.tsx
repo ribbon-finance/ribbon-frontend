@@ -15,7 +15,6 @@ import {
   VaultOptions,
   VaultVersion,
   VaultAllowedDepositAssets,
-  isEarnVault,
 } from "shared/lib/constants/constants";
 import { isETHVault } from "shared/lib/utils/vault";
 import { usePendingTransactions } from "shared/lib/hooks/pendingTransactionsContext";
@@ -32,7 +31,6 @@ import {
   RibbonV2stETHThetaVault,
   RibbonV2ThetaVault,
 } from "shared/lib/codegen";
-import { isVIP } from "shared/lib/utils/env";
 
 export interface ActionStepsProps {
   vault: {
@@ -90,6 +88,7 @@ const ActionSteps: React.FC<ActionStepsProps> = ({
   const {
     data: {
       pricePerShare,
+      roundPricePerShare,
       decimals,
       lockedBalanceInAsset,
       depositBalanceInAsset,
@@ -272,12 +271,14 @@ const ActionSteps: React.FC<ActionStepsProps> = ({
 
                   /** Initiate withdrawal for v2/earn */
                   case "standard":
-                    const shares =
-                      isEarnVault(vaultOption) && isVIP()
-                        ? amount
-                        : amount
-                            .mul(BigNumber.from(10).pow(decimals))
-                            .div(pricePerShare);
+                    // for vip vaults if pricePerShare is 0 use roundPricePerShare for calculation
+                    const pps =
+                      pricePerShare !== BigNumber.from(0)
+                        ? pricePerShare
+                        : roundPricePerShare;
+                    const shares = amount
+                      .mul(BigNumber.from(10).pow(decimals))
+                      .div(pps);
                     res = await v2Vault.initiateWithdraw(shares);
                     break;
                   case "complete":
