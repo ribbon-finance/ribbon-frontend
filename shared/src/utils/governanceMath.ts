@@ -49,6 +49,14 @@ export const calculateEarlyUnlockPenalty = (
 ) => {
   const penaltyPercent =
     calculateEarlyUnlockPenaltyPercentage(remainingDuration);
+
+  // get the min between original penalty and rbnRebateAmount
+  const penaltyDeduction = penaltyRebate.gt(
+    lockedAmount.mul(Math.round((penaltyPercent * 10000) / 2)).div(10000)
+  )
+    ? lockedAmount.mul(Math.round((penaltyPercent * 10000) / 2)).div(10000)
+    : penaltyRebate;
+
   // Multiply and divide by 10,000 to preserve the accuracy, because BigNumber will remove
   // all decimals.
   // Eg. If penaltyPercent is 0.34, it will be 0 when converted to BigNumber
@@ -57,7 +65,7 @@ export const calculateEarlyUnlockPenalty = (
   return lockedAmount
     .mul(Math.round(penaltyPercent * 10000))
     .div(10000)
-    .sub(penaltyRebate);
+    .sub(penaltyDeduction);
 };
 
 interface BaseRewardsCalculationProps {
