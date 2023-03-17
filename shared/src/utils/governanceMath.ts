@@ -54,8 +54,8 @@ export const calculateEarlyUnlockPenalty = (
   const penaltyDeduction = penaltyRebate.gt(
     lockedAmount.mul(Math.round((penaltyPercent * 10000) / 2)).div(10000)
   )
-    ? penaltyRebate
-    : lockedAmount.mul(Math.round((penaltyPercent * 10000) / 2)).div(10000);
+    ? lockedAmount.mul(Math.round((penaltyPercent * 10000) / 2)).div(10000)
+    : penaltyRebate;
 
   // Multiply and divide by 10,000 to preserve the accuracy, because BigNumber will remove
   // all decimals.
