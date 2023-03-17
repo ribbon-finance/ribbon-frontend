@@ -11,6 +11,7 @@ import { useGovernanceGlobalState } from "../../store/store";
 import ModalTransactionContent from "../Shared/ModalTransactionContent";
 import UnstakingModalPreview from "./UnstakingModalPreview";
 import { calculateEarlyUnlockPenalty } from "shared/lib/utils/governanceMath";
+import useAccountRebateAmount from "../../hooks/useAccountRebateAmount";
 
 const unstakingModes = ["preview", "transaction"] as const;
 type UnstakingMode = typeof unstakingModes[number];
@@ -21,7 +22,7 @@ const stakingModalHeight: {
   preview: { [scenario in UnstakingScenario]: number };
   transaction: number;
 } = {
-  preview: { early: 478, default: 350 },
+  preview: { early: 520, default: 350 },
   transaction: 412,
 };
 
@@ -32,6 +33,7 @@ const UnstakingModal = () => {
   const [stepNum, setStepNum] = useState<number>(0);
   const { data: rbnTokenAccount, loading } = useRBNTokenAccount();
   const { addPendingTransaction } = usePendingTransactions();
+  const { rbnRebateAmount } = useAccountRebateAmount();
 
   const votingEscrowContract = useVotingEscrow();
 
@@ -61,7 +63,6 @@ const UnstakingModal = () => {
       expiryMoment && momentNow.isBefore(expiryMoment)
         ? moment.duration(expiryMoment.diff(momentNow))
         : undefined;
-
     try {
       // Is early unlock
       const tx = durationToExpiry
@@ -82,6 +83,7 @@ const UnstakingModal = () => {
             ? rbnTokenAccount.lockedBalance.sub(
                 calculateEarlyUnlockPenalty(
                   rbnTokenAccount.lockedBalance,
+                  rbnRebateAmount,
                   durationToExpiry
                 )
               )
@@ -103,6 +105,7 @@ const UnstakingModal = () => {
     addPendingTransaction,
     loading,
     provider,
+    rbnRebateAmount,
     rbnTokenAccount,
     setUnstakingModalState,
     votingEscrowContract,

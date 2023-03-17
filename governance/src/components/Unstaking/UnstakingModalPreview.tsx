@@ -17,11 +17,14 @@ import useLoadingText from "shared/lib/hooks/useLoadingText";
 import { formatBigNumber } from "shared/lib/utils/math";
 import { ActionButton } from "shared/lib/components/Common/buttons";
 import {
+  calculateAdjustedEarlyUnlockPenaltyPercentage,
   calculateEarlyUnlockPenalty,
   calculateEarlyUnlockPenaltyPercentage,
 } from "shared/lib/utils/governanceMath";
 import TooltipExplanation from "shared/lib/components/Common/TooltipExplanation";
 import HelpInfo from "shared/lib/components/Common/HelpInfo";
+import useAccountRebateAmount from "../../hooks/useAccountRebateAmount";
+import { BigNumber } from "ethers";
 
 const LogoContainer = styled.div`
   display: flex;
@@ -41,6 +44,8 @@ const UnstakingModalPreview: React.FC<UnstakingModalPreviewProps> = ({
   onUnstake,
 }) => {
   const { data: rbnTokenAccount, loading } = useRBNTokenAccount();
+  const { rbnRebateAmount } = useAccountRebateAmount();
+
   const loadingText = useLoadingText();
 
   const canUnstake = useMemo(() => {
@@ -95,11 +100,26 @@ const UnstakingModalPreview: React.FC<UnstakingModalPreviewProps> = ({
     if (rbnTokenAccount && earlyUnlockDuration) {
       const penalty = calculateEarlyUnlockPenalty(
         rbnTokenAccount.lockedBalance,
+        rbnRebateAmount,
         earlyUnlockDuration
       );
       return formatBigNumber(penalty);
     }
-  }, [earlyUnlockDuration, rbnTokenAccount]);
+  }, [earlyUnlockDuration, rbnRebateAmount, rbnTokenAccount]);
+
+  const adjustedEarlyUnlockPenaltyPercentageDisplay = useMemo(() => {
+    if (rbnTokenAccount && earlyUnlockDuration) {
+      const penalty = calculateEarlyUnlockPenalty(
+        rbnTokenAccount.lockedBalance,
+        rbnRebateAmount,
+        earlyUnlockDuration
+      );
+      return `${calculateAdjustedEarlyUnlockPenaltyPercentage(
+        rbnTokenAccount.totalBalance,
+        penalty
+      )}%`;
+    }
+  }, [earlyUnlockDuration, rbnRebateAmount, rbnTokenAccount]);
 
   return (
     <>
@@ -118,7 +138,7 @@ const UnstakingModalPreview: React.FC<UnstakingModalPreviewProps> = ({
           <SecondaryText lineHeight={24}>RBN Available to Unlock</SecondaryText>
           <TooltipExplanation
             title="RBN AVAILABLE TO UNLOCK"
-            explanation="The amount of locked RBN that you can now unlock."
+            explanation="The amount of locked RBN that you can now unlock"
             renderContent={({ ref, ...triggerHandler }) => (
               <HelpInfo containerRef={ref} {...triggerHandler}>
                 i
@@ -175,6 +195,44 @@ const UnstakingModalPreview: React.FC<UnstakingModalPreviewProps> = ({
               className="ml-auto"
             >
               {earlyUnlockPenaltyPercentageDisplay}
+            </Subtitle>
+          </div>
+        </BaseModalContentColumn>
+      ) : (
+        <></>
+      )}
+      {rbnRebateAmount.gt(BigNumber.from("0")) ? (
+        <BaseModalContentColumn>
+          <div className="d-flex w-100 align-items-center">
+            <SecondaryText lineHeight={24}>
+              Adjusted Early Unlock Penalty
+            </SecondaryText>
+            <TooltipExplanation
+              title="Adjusted Early Unlock Penalty"
+              explanation={
+                <>
+                  The unlock penalty is adjusted to account for a 50%
+                  penalty-free unlock. The remaining 50% unlocked will still be
+                  subject to the existing penalty mechanism.
+                  <br></br>
+                  <br></br>
+                  NOTE: Any lock time increases / RBN locked increases after
+                  RGP-31 passed will NOT be given a 50% penalty-free unlock.
+                </>
+              }
+              renderContent={({ ref, ...triggerHandler }) => (
+                <HelpInfo containerRef={ref} {...triggerHandler}>
+                  i
+                </HelpInfo>
+              )}
+            />
+            <Subtitle
+              fontSize={14}
+              lineHeight={24}
+              letterSpacing={1}
+              className="ml-auto"
+            >
+              {adjustedEarlyUnlockPenaltyPercentageDisplay}
             </Subtitle>
           </div>
         </BaseModalContentColumn>
