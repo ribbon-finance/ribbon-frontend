@@ -1282,6 +1282,10 @@ export const RibbonTreasuryAddress = {
   [CHAINID.ETH_MAINNET]: "0xDAEada3d210D2f45874724BeEa03C7d4BBD41674",
 };
 
+export const CurveFeeDistributionAddress = isDevelopment()
+  ? governanceDeployment.kovan.CurveFeeDistribution
+  : governanceDeployment.mainnet.CurveFeeDistribution;
+
 export const PenaltyRewardsAddress = isDevelopment()
   ? governanceDeployment.kovan.RBNPenaltyRewards
   : governanceDeployment.mainnet.RBNPenaltyRewards;

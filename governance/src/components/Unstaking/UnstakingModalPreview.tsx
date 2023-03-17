@@ -22,6 +22,8 @@ import {
 } from "shared/lib/utils/governanceMath";
 import TooltipExplanation from "shared/lib/components/Common/TooltipExplanation";
 import HelpInfo from "shared/lib/components/Common/HelpInfo";
+import useAccountRebateAmount from "../../hooks/useAccountRebateAmount";
+import { BigNumber } from "ethers";
 
 const LogoContainer = styled.div`
   display: flex;
@@ -41,6 +43,8 @@ const UnstakingModalPreview: React.FC<UnstakingModalPreviewProps> = ({
   onUnstake,
 }) => {
   const { data: rbnTokenAccount, loading } = useRBNTokenAccount();
+  const { rbnRebateAmount } = useAccountRebateAmount();
+
   const loadingText = useLoadingText();
 
   const canUnstake = useMemo(() => {
@@ -95,11 +99,16 @@ const UnstakingModalPreview: React.FC<UnstakingModalPreviewProps> = ({
     if (rbnTokenAccount && earlyUnlockDuration) {
       const penalty = calculateEarlyUnlockPenalty(
         rbnTokenAccount.lockedBalance,
+        rbnRebateAmount,
         earlyUnlockDuration
       );
       return formatBigNumber(penalty);
     }
-  }, [earlyUnlockDuration, rbnTokenAccount]);
+  }, [earlyUnlockDuration, rbnRebateAmount, rbnTokenAccount]);
+
+  const rbnRebateAmountDisplay = useMemo(() => {
+    return `${formatBigNumber(rbnRebateAmount, 18, 2)} RBN`;
+  }, [rbnRebateAmount]);
 
   return (
     <>
@@ -118,7 +127,7 @@ const UnstakingModalPreview: React.FC<UnstakingModalPreviewProps> = ({
           <SecondaryText lineHeight={24}>RBN Available to Unlock</SecondaryText>
           <TooltipExplanation
             title="RBN AVAILABLE TO UNLOCK"
-            explanation="The amount of locked RBN that you can now unlock."
+            explanation="The amount of locked RBN that you can now unlock"
             renderContent={({ ref, ...triggerHandler }) => (
               <HelpInfo containerRef={ref} {...triggerHandler}>
                 i
@@ -175,6 +184,39 @@ const UnstakingModalPreview: React.FC<UnstakingModalPreviewProps> = ({
               className="ml-auto"
             >
               {earlyUnlockPenaltyPercentageDisplay}
+            </Subtitle>
+          </div>
+        </BaseModalContentColumn>
+      ) : (
+        <></>
+      )}
+      {rbnRebateAmount.gt(BigNumber.from("0")) ? (
+        <BaseModalContentColumn>
+          <div className="d-flex w-100 align-items-center">
+            <SecondaryText lineHeight={24}>Penalty Rebate Amount</SecondaryText>
+            <TooltipExplanation
+              title="Penalty Rebate Amount"
+              explanation={
+                <>
+                  Lockers will be eligible to unlock 50% of their RBN balance
+                  locked at timestamp 1677261600 penalty-free, when RGP-31
+                  passed. Any RBN locked afterwards is not eligible to early
+                  unlock penalty-free
+                </>
+              }
+              renderContent={({ ref, ...triggerHandler }) => (
+                <HelpInfo containerRef={ref} {...triggerHandler}>
+                  i
+                </HelpInfo>
+              )}
+            />
+            <Subtitle
+              fontSize={14}
+              lineHeight={24}
+              letterSpacing={1}
+              className="ml-auto"
+            >
+              {rbnRebateAmountDisplay}
             </Subtitle>
           </div>
         </BaseModalContentColumn>

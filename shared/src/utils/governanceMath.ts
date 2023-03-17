@@ -29,6 +29,7 @@ export const calculateEarlyUnlockPenaltyPercentage = (
 
 export const calculateEarlyUnlockPenalty = (
   lockedAmount: BigNumber,
+  penaltyRebate: BigNumber,
   remainingDuration: Duration
 ) => {
   const penaltyPercent =
@@ -37,7 +38,11 @@ export const calculateEarlyUnlockPenalty = (
   // all decimals.
   // Eg. If penaltyPercent is 0.34, it will be 0 when converted to BigNumber
   // then lockedAmount.mul(0) will be 0.
-  return lockedAmount.mul(Math.round(penaltyPercent * 10000)).div(10000);
+  // If user locked before 1677261600, the penalty is reduced by penalty rebate amount
+  return lockedAmount
+    .mul(Math.round(penaltyPercent * 10000))
+    .div(10000)
+    .sub(penaltyRebate);
 };
 
 interface BaseRewardsCalculationProps {
