@@ -50,7 +50,7 @@ export const calculateEarlyUnlockPenalty = (
   const penaltyPercent =
     calculateEarlyUnlockPenaltyPercentage(remainingDuration);
 
-  // get the max between original penalty and rbnRebateAmount
+  // get the min between original penalty and rbnRebateAmount
   const penaltyDeduction = penaltyRebate.gt(
     lockedAmount.mul(Math.round((penaltyPercent * 10000) / 2)).div(10000)
   )
