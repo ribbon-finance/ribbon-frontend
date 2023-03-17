@@ -17,6 +17,7 @@ import useLoadingText from "shared/lib/hooks/useLoadingText";
 import { formatBigNumber } from "shared/lib/utils/math";
 import { ActionButton } from "shared/lib/components/Common/buttons";
 import {
+  calculateAdjustedEarlyUnlockPenaltyPercentage,
   calculateEarlyUnlockPenalty,
   calculateEarlyUnlockPenaltyPercentage,
 } from "shared/lib/utils/governanceMath";
@@ -106,9 +107,19 @@ const UnstakingModalPreview: React.FC<UnstakingModalPreviewProps> = ({
     }
   }, [earlyUnlockDuration, rbnRebateAmount, rbnTokenAccount]);
 
-  const rbnRebateAmountDisplay = useMemo(() => {
-    return `${formatBigNumber(rbnRebateAmount, 18, 2)} RBN`;
-  }, [rbnRebateAmount]);
+  const adjustedEarlyUnlockPenaltyPercentageDisplay = useMemo(() => {
+    if (rbnTokenAccount && earlyUnlockDuration) {
+      const penalty = calculateEarlyUnlockPenalty(
+        rbnTokenAccount.lockedBalance,
+        rbnRebateAmount,
+        earlyUnlockDuration
+      );
+      return `${calculateAdjustedEarlyUnlockPenaltyPercentage(
+        rbnTokenAccount.totalBalance,
+        penalty
+      )}%`;
+    }
+  }, [earlyUnlockDuration, rbnRebateAmount, rbnTokenAccount]);
 
   return (
     <>
@@ -193,15 +204,20 @@ const UnstakingModalPreview: React.FC<UnstakingModalPreviewProps> = ({
       {rbnRebateAmount.gt(BigNumber.from("0")) ? (
         <BaseModalContentColumn>
           <div className="d-flex w-100 align-items-center">
-            <SecondaryText lineHeight={24}>Penalty Rebate Amount</SecondaryText>
+            <SecondaryText lineHeight={24}>
+              Adjusted Early Unlock Penalty
+            </SecondaryText>
             <TooltipExplanation
-              title="Penalty Rebate Amount"
+              title="Adjusted Early Unlock Penalty"
               explanation={
                 <>
-                  Lockers will be eligible to unlock 50% of their RBN balance
-                  locked at timestamp 1677261600 penalty-free, when RGP-31
-                  passed. Any RBN locked afterwards is not eligible to early
-                  unlock penalty-free
+                  The unlock penalty is adjusted to account for a 50%
+                  penalty-free unlock. The remaining 50% unlocked will still be
+                  subject to the existing penalty mechanism.
+                  <br></br>
+                  <br></br>
+                  NOTE: Any lock time increases / RBN locked increases after
+                  RGP-31 passed will NOT be given a 50% penalty-free unlock.
                 </>
               }
               renderContent={({ ref, ...triggerHandler }) => (
@@ -216,7 +232,7 @@ const UnstakingModalPreview: React.FC<UnstakingModalPreviewProps> = ({
               letterSpacing={1}
               className="ml-auto"
             >
-              {rbnRebateAmountDisplay}
+              {adjustedEarlyUnlockPenaltyPercentageDisplay}
             </Subtitle>
           </div>
         </BaseModalContentColumn>

@@ -27,6 +27,21 @@ export const calculateEarlyUnlockPenaltyPercentage = (
   return Math.min(0.75, minutesRemaining / minutesInTwoyears);
 };
 
+export const calculateAdjustedEarlyUnlockPenaltyPercentage = (
+  lockedAmount: BigNumber,
+  penalty: BigNumber
+) => {
+  return (
+    parseFloat(
+      lockedAmount
+        .sub(lockedAmount.sub(penalty))
+        .mul(10000)
+        .div(lockedAmount)
+        .toString()
+    ) / 100
+  );
+};
+
 export const calculateEarlyUnlockPenalty = (
   lockedAmount: BigNumber,
   penaltyRebate: BigNumber,
