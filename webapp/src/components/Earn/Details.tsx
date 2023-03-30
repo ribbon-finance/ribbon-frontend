@@ -154,7 +154,7 @@ export const Strategy: React.FC<StrategyProps> = ({ setStep, vaultOption }) => {
             to purchase{" "}
             <TooltipExplanation
               title="weekly at-the-money knock-out barrier options"
-              explanation={`The options bought are expiring every Friday, with a one week maturity and the strike price is set to 95% of the underlying asset price. The knock-out barrier is used to define when the payoff is inactive, i.e. if the price of the underlying asset at maturity is greater than the upper barrier, the option is worthless.`}
+              explanation={`The options bought are expiring every Friday, with a one week maturity and the strike price is set to 90% of the underlying asset price. The knock-out barrier is used to define when the payoff is inactive, i.e. if the price of the underlying asset at maturity is greater than the upper barrier, the option is worthless.`}
               learnMoreURL="https://bookdown.org/maxime_debellefroid/MyBook/barrier-options.html#knock-out-options"
               renderContent={({ ref, ...triggerHandler }) => (
                 <HighlightedText ref={ref} {...triggerHandler}>
