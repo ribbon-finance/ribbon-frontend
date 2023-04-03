@@ -1466,6 +1466,8 @@ export const isDisabledVault = (vaultOption: VaultOptions) => {
   return DISABLED_VAULTS.includes(vaultOption);
 };
 
+export const tokenApprovalMaxAmount =
+  "115792089237316195423570985008687907853269984665640564039457584007913129639935";
 export const URLS = {
   ribbonFinance: "https://ribbon.finance",
   ribbonFinanceTerms: "https://ribbon.finance/terms",

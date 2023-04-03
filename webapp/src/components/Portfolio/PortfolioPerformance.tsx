@@ -474,11 +474,18 @@ const PortfolioPerformance = () => {
     return currency(calculatedKPI.balance.toFixed(2)).format();
   }, [active, animatedLoadingText, loading, calculatedKPI]);
 
-  const handleChartHover = useCallback((hoverInfo: HoverInfo) => {
-    setHoveredBalanceUpdateIndex(
-      hoverInfo.focused ? hoverInfo.index : undefined
-    );
-  }, []);
+  const handleChartHover = useCallback(
+    (hoverInfo: HoverInfo) => {
+      setHoveredBalanceUpdateIndex(
+        hoverInfo.focused
+          ? balances.length === 1
+            ? 0
+            : hoverInfo.index
+          : undefined
+      );
+    },
+    [balances.length]
+  );
 
   const renderYieldEarnedText = useCallback(() => {
     if (!active) {

@@ -26,7 +26,7 @@ import {
 import { ERC20Token } from "shared/lib/models/eth";
 import { isVaultFull } from "shared/lib/utils/vault";
 import { getAssetDisplay, getAssetColor } from "shared/lib/utils/asset";
-import { formatBigNumber, isPracticallyZero } from "shared/lib/utils/math";
+import { formatBigNumber } from "shared/lib/utils/math";
 import VaultApprovalForm from "../common/VaultApprovalForm";
 import ButtonArrow from "shared/lib/components/Common/ButtonArrow";
 import theme from "shared/lib/designSystem/theme";
@@ -140,6 +140,8 @@ const VaultV2DepositWithdrawForm: React.FC<VaultV2DepositWithdrawFormProps> = ({
    */
   const { handleActionTypeChange, vaultActionForm, handleMaxClick } =
     useVaultActionForm(vaultOption);
+  const [showTokenApprovalForm, setShowTokenApprovalForm] =
+    useState<boolean>(false);
   const {
     data: {
       asset,
@@ -251,6 +253,12 @@ const VaultV2DepositWithdrawForm: React.FC<VaultV2DepositWithdrawFormProps> = ({
    * Check if approval needed
    */
   const showTokenApproval = useMemo(() => {
+    const amountBigNumber = parseUnits(
+      vaultActionForm.inputAmount || "0",
+      decimals
+    );
+    console.log(amountBigNumber.toString());
+    console.log(tokenAllowance?.toString());
     if (vaultActionForm.actionType === ACTIONS.deposit) {
       return (
         !isNoApproveToken(
@@ -258,7 +266,7 @@ const VaultV2DepositWithdrawForm: React.FC<VaultV2DepositWithdrawFormProps> = ({
             VaultAllowedDepositAssets[vaultOption][0]
         ) &&
         tokenAllowance &&
-        isPracticallyZero(tokenAllowance, decimals)
+        tokenAllowance.lt(amountBigNumber)
       );
     }
 
@@ -268,6 +276,7 @@ const VaultV2DepositWithdrawForm: React.FC<VaultV2DepositWithdrawFormProps> = ({
     tokenAllowance,
     vaultActionForm.actionType,
     vaultActionForm.depositAsset,
+    vaultActionForm.inputAmount,
     vaultOption,
   ]);
 
@@ -368,7 +377,7 @@ const VaultV2DepositWithdrawForm: React.FC<VaultV2DepositWithdrawFormProps> = ({
     /**
      * Approval before deposit
      */
-    if (showTokenApproval && !isDisabledVault(vaultOption)) {
+    if (showTokenApprovalForm && !isDisabledVault(vaultOption)) {
       return (
         <VaultApprovalForm
           vaultOption={vaultOption}
@@ -376,6 +385,7 @@ const VaultV2DepositWithdrawForm: React.FC<VaultV2DepositWithdrawFormProps> = ({
           showDepositAssetSwap={
             VaultAllowedDepositAssets[vaultOption].length > 1
           }
+          setShowTokenApprovalForm={setShowTokenApprovalForm}
         />
       );
     }
@@ -397,7 +407,13 @@ const VaultV2DepositWithdrawForm: React.FC<VaultV2DepositWithdrawFormProps> = ({
             showSwapDepositAsset={
               VaultAllowedDepositAssets[vaultOption].length > 1
             }
-            onFormSubmit={onFormSubmit}
+            onFormSubmit={() => {
+              if (showTokenApproval) {
+                setShowTokenApprovalForm(true);
+              } else {
+                onFormSubmit();
+              }
+            }}
             actionButtonText="Preview Deposit"
           />
         );
@@ -422,6 +438,7 @@ const VaultV2DepositWithdrawForm: React.FC<VaultV2DepositWithdrawFormProps> = ({
     lockedBalanceInAsset,
     onFormSubmit,
     showTokenApproval,
+    showTokenApprovalForm,
     userAssetBalance,
     vaultActionForm.actionType,
     vaultActionForm.depositAsset,

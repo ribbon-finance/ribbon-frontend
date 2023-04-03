@@ -3,7 +3,7 @@ import { BigNumber } from "ethers";
 
 import { Assets, AssetsList } from "../store/types";
 import { impersonateAddress } from "../utils/development";
-import { Chains, isNativeToken } from "../constants/constants";
+import { Chains, isNoApproveToken } from "../constants/constants";
 import { ERC20Token } from "../models/eth";
 import { getERC20Token } from "./useERC20Token";
 import { isProduction } from "../utils/env";
@@ -90,7 +90,7 @@ const useFetchAssetBalanceData = (
                   chainId as number
                 );
                 if (token) {
-                  const balance = await (!isNativeToken(asset)
+                  const balance = await (isNoApproveToken(asset)
                     ? ethereumProvider.getBalance(account!)
                     : token.balanceOf(account!));
 
@@ -105,7 +105,7 @@ const useFetchAssetBalanceData = (
              */
             case Chains.Solana:
               if (isSolanaChain(chain)) {
-                if (isNativeToken(asset)) {
+                if (isNoApproveToken(asset)) {
                   // FIXME: Token balance should query based on address of Solana-based tokens
                   // const tokenBalance = await connection.getTokenAccountBalance(new PublicKey("So11111111111111111111111111111111111111112"));
                   const tokenBalance = await connection.getBalance(
