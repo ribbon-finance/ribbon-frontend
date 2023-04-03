@@ -20,7 +20,7 @@ import v2deployment from "./v2Deployments.json";
 import governanceDeployment from "./governanceDeployment.json";
 import addresses from "./externalAddresses.json";
 
-export type NETWORK_NAMES = "mainnet" | "kovan" | "fuji" | "avax";
+export type NETWORK_NAMES = "mainnet" | "kovan" | "fuji" | "avax" | "bsc";
 export type TESTNET_NAMES = "kovan" | "fuji";
 export type MAINNET_NAMES = Exclude<NETWORK_NAMES, TESTNET_NAMES>;
 
@@ -28,6 +28,7 @@ export enum Chains {
   NotSelected,
   Ethereum,
   Avalanche,
+  Binance,
   Solana,
 }
 
@@ -36,6 +37,7 @@ export const NETWORKS: Record<number, NETWORK_NAMES> = {
   [CHAINID.ETH_KOVAN]: "kovan",
   [CHAINID.AVAX_FUJI]: "fuji",
   [CHAINID.AVAX_MAINNET]: "avax",
+  [CHAINID.BINANCE_MAINNET]: "bsc",
 };
 
 export const CHAINID_TO_NATIVE_TOKENS: Record<CHAINID, Assets> = {
@@ -43,12 +45,14 @@ export const CHAINID_TO_NATIVE_TOKENS: Record<CHAINID, Assets> = {
   [CHAINID.ETH_KOVAN]: "WETH",
   [CHAINID.AVAX_MAINNET]: "WAVAX",
   [CHAINID.AVAX_FUJI]: "WAVAX",
+  [CHAINID.BINANCE_MAINNET]: "WBNB",
 };
 export const READABLE_NETWORK_NAMES: Record<CHAINID, string> = {
   [CHAINID.ETH_MAINNET]: "Ethereum",
   [CHAINID.ETH_KOVAN]: "Kovan",
   [CHAINID.AVAX_MAINNET]: "Avalanche",
   [CHAINID.AVAX_FUJI]: "Fuji",
+  [CHAINID.BINANCE_MAINNET]: "Binance",
 };
 
 export const isEthNetwork = (chainId: number): boolean =>
@@ -57,15 +61,22 @@ export const isEthNetwork = (chainId: number): boolean =>
 export const isAvaxNetwork = (chainId: number): boolean =>
   chainId === CHAINID.AVAX_MAINNET || chainId === CHAINID.AVAX_FUJI;
 
+export const isBinanceNetwork = (chainId: number): boolean =>
+  chainId === CHAINID.BINANCE_MAINNET;
+
 export const isEthVault = (vault: string) =>
   isEthNetwork(VaultAddressMap[vault as VaultOptions].chainId);
 
 export const isAvaxVault = (vault: string) =>
   isAvaxNetwork(VaultAddressMap[vault as VaultOptions].chainId);
 
+export const isBinanceVault = (vault: string) =>
+  isBinanceNetwork(VaultAddressMap[vault as VaultOptions].chainId);
+
 export const getVaultChain = (vault: string): Chains => {
   if (isEthVault(vault)) return Chains.Ethereum;
   else if (isAvaxVault(vault)) return Chains.Avalanche;
+  else if (isBinanceVault(vault)) return Chains.Binance;
   else if (isSolanaVault(vault)) return Chains.Solana;
   else throw new Error(`Unknown network for ${vault}`);
 };
@@ -73,18 +84,23 @@ export const getVaultChain = (vault: string): Chains => {
 export const getVaultNetwork = (vault: string): MAINNET_NAMES => {
   if (isEthVault(vault)) return "mainnet";
   else if (isAvaxVault(vault)) return "avax";
+  else if (isBinanceVault(vault)) return "bsc";
   else throw new Error(`Unknown network for ${vault}`);
 };
 
-export const NATIVE_TOKENS = ["WETH", "WAVAX", "SOL"];
+export const NATIVE_TOKENS = ["WETH", "WAVAX", "WBNB", "SOL"];
+export const NO_APPROVE_TOKENS = ["WETH", "WAVAX", "SOL"];
 export const isNativeToken = (token: string): boolean =>
   NATIVE_TOKENS.includes(token);
+export const isNoApproveToken = (token: string): boolean =>
+  NO_APPROVE_TOKENS.includes(token);
 
 export const VaultVersionList = ["earn", "v2", "v1"] as const;
 export type VaultVersion = typeof VaultVersionList[number];
 export type VaultVersionExcludeV1 = Exclude<VaultVersion, "v1">;
 
 export const EVMVaultList = [
+  "rBNB-THETA",
   "rUNI-THETA",
   "rEARN-stETH",
   "rEARN",
@@ -261,6 +277,13 @@ export const GAS_LIMITS: {
     },
   },
   "rsAVAX-THETA": {
+    v2: {
+      deposit: 380000,
+      withdrawInstantly: 130000,
+      completeWithdraw: 300000,
+    },
+  },
+  "rBNB-THETA": {
     v2: {
       deposit: 380000,
       withdrawInstantly: 130000,
@@ -638,6 +661,10 @@ export const VaultAddressMap: {
     v2: v2deployment.mainnet.RibbonThetaVaultAPECall,
     chainId: CHAINID.ETH_MAINNET,
   },
+  "rBNB-THETA": {
+    v2: v2deployment.bsc.RibbonThetaVaultBNBCall,
+    chainId: CHAINID.BINANCE_MAINNET,
+  },
   rEARN: {
     earn: v2deployment.mainnet.RibbonEarnUSDC,
     chainId: CHAINID.ETH_MAINNET,
@@ -669,6 +696,7 @@ export const VaultNamesList = [
   "T-rETH-C",
   "T-AAVE-C",
   "T-UNI-C",
+  "T-WBNB-C",
   "T-AVAX-C",
   "T-sAVAX-C",
   "T-USDC-P-AVAX",
@@ -696,6 +724,7 @@ export const VaultNameOptionMap: { [name in VaultName]: VaultOptions } = {
   "T-rETH-C": "rrETH-THETA",
   "T-AAVE-C": "rAAVE-THETA",
   "T-UNI-C": "rUNI-THETA",
+  "T-WBNB-C": "rBNB-THETA",
   "T-AVAX-C": "rAVAX-THETA",
   "T-sAVAX-C": "rsAVAX-THETA",
   "T-USDC-P-AVAX": "rUSDC-AVAX-P-THETA",
@@ -732,6 +761,7 @@ export const EVM_BLOCKCHAIN_EXPLORER_NAME: Record<number, string> = {
   [CHAINID.ETH_KOVAN]: "Etherscan",
   [CHAINID.AVAX_MAINNET]: "SnowTrace",
   [CHAINID.AVAX_FUJI]: "SnowTrace",
+  [CHAINID.BINANCE_MAINNET]: "BscScan",
 };
 
 export const EVM_BLOCKCHAIN_EXPLORER_URI: Record<number, string> = {
@@ -739,6 +769,7 @@ export const EVM_BLOCKCHAIN_EXPLORER_URI: Record<number, string> = {
   [CHAINID.ETH_KOVAN]: "https://kovan.etherscan.io",
   [CHAINID.AVAX_MAINNET]: "https://snowtrace.io",
   [CHAINID.AVAX_FUJI]: "https://testnet.snowtrace.io",
+  [CHAINID.BINANCE_MAINNET]: "https://bscscan.com",
 };
 
 export const AVAX_BRIDGE_URI = "https://bridge.avax.network";
@@ -772,6 +803,7 @@ export const getSubgraphURIForVersion = (
       switch (chain) {
         case Chains.Ethereum:
         case Chains.Avalanche:
+        case Chains.Binance:
           return SUBGRAPH_URI[CHAINS_TO_ID[chain]];
         case Chains.Solana:
           return SOLANA_SUBGRAPH;
@@ -803,6 +835,8 @@ export const getAssets = (vault: VaultOptions): Assets => {
       return "AAVE";
     case "rUNI-THETA":
       return "UNI";
+    case "rBNB-THETA":
+      return "WBNB";
     case "rAVAX-THETA":
       return "WAVAX";
     case "rsAVAX-THETA":
@@ -851,6 +885,8 @@ export const getOptionAssets = (vault: VaultOptions): Assets => {
       return "AAVE";
     case "rUNI-THETA":
       return "UNI";
+    case "rBNB-THETA":
+      return "WBNB";
     case "rAVAX-THETA":
     case "rUSDC-AVAX-P-THETA":
       return "WAVAX";
@@ -906,6 +942,8 @@ export const getDisplayAssets = (vault: VaultOptions): Assets => {
       return "AAVE";
     case "rUNI-THETA":
       return "UNI";
+    case "rBNB-THETA":
+      return "WBNB";
     case "rAVAX-THETA":
       return "WAVAX";
     case "rsAVAX-THETA":
@@ -945,6 +983,7 @@ export const VaultAllowedDepositAssets: { [vault in VaultOptions]: Assets[] } =
     "rUNI-THETA": ["UNI"],
     "rBTC-THETA": ["WBTC"],
     "rETH-THETA": ["WETH"],
+    "rBNB-THETA": ["WBNB"],
     "rAVAX-THETA": ["WAVAX"],
     "rsAVAX-THETA": ["WAVAX", "sAVAX"],
     "rUSDC-ETH-P-THETA": ["USDC"],
@@ -1006,6 +1045,9 @@ export const VaultMaxDeposit: { [vault in VaultOptions]: BigNumber } = {
   ),
   "rUNI-THETA": BigNumber.from(20000).mul(
     BigNumber.from(10).pow(getAssetDecimals(getAssets("rUNI-THETA")))
+  ),
+  "rBNB-THETA": BigNumber.from(100000000).mul(
+    BigNumber.from(10).pow(getAssetDecimals(getAssets("rBNB-THETA")))
   ),
   "rAVAX-THETA": BigNumber.from(100000000).mul(
     BigNumber.from(10).pow(getAssetDecimals(getAssets("rAVAX-THETA")))
@@ -1126,6 +1168,12 @@ export const VaultFees: {
     },
   },
   "rsAVAX-THETA": {
+    v2: {
+      managementFee: "2",
+      performanceFee: "10",
+    },
+  },
+  "rBNB-THETA": {
     v2: {
       managementFee: "2",
       performanceFee: "10",
@@ -1319,6 +1367,7 @@ export const RibbonVaultPauserAddress: Record<number, string> = {
 export const READABLE_CHAIN_NAMES: Record<Chains, string> = {
   [Chains.Ethereum]: "Ethereum",
   [Chains.Avalanche]: "Avalanche",
+  [Chains.Binance]: "Binance",
   [Chains.Solana]: "Solana",
   [Chains.NotSelected]: "No Chain Selected",
 };
@@ -1326,12 +1375,14 @@ export const READABLE_CHAIN_NAMES: Record<Chains, string> = {
 export const ENABLED_CHAINS: Chains[] = [
   Chains.Ethereum,
   Chains.Avalanche,
+  Chains.Binance,
   Chains.Solana,
 ];
 
 export const CHAINS_TO_NATIVE_TOKENS: Record<Chains, Assets> = {
   [Chains.Ethereum]: "WETH",
   [Chains.Avalanche]: "WAVAX",
+  [Chains.Binance]: "WBNB",
   [Chains.Solana]: "SOL",
   [Chains.NotSelected]: "WETH",
 };
@@ -1341,6 +1392,7 @@ export const CHAINS_TO_ID: Record<number, number> = {
   [Chains.Avalanche]: isDevelopment()
     ? CHAINID.AVAX_FUJI
     : CHAINID.AVAX_MAINNET,
+  [Chains.Binance]: CHAINID.BINANCE_MAINNET,
 };
 
 export const ID_TO_CHAINS: Record<number, number> = {
@@ -1348,6 +1400,7 @@ export const ID_TO_CHAINS: Record<number, number> = {
   [CHAINID.ETH_MAINNET]: Chains.Ethereum,
   [CHAINID.AVAX_FUJI]: Chains.Avalanche,
   [CHAINID.AVAX_MAINNET]: Chains.Avalanche,
+  [CHAINID.BINANCE_MAINNET]: Chains.Binance,
 };
 
 export const getSolanaVaultInstance = (vaultOption: VaultOptions) => {
@@ -1361,6 +1414,7 @@ const WEBAPP_SUBGRAPHS: [VaultVersion, Chains][] = [
   ["v2", Chains.Ethereum],
   ["earn", Chains.Ethereum],
   ["v2", Chains.Avalanche],
+  ["v2", Chains.Binance],
   ["v2", Chains.Solana],
 ];
 
@@ -1392,6 +1446,7 @@ export const COINGECKO_CURRENCIES: { [key in Assets]: string | undefined } = {
   LDO: "lido-dao",
   AAVE: "aave",
   UNI: "uniswap",
+  WBNB: "binancecoin",
   WAVAX: "avalanche-2",
   sAVAX: "benqi-liquid-staked-avax",
   PERP: "perpetual-protocol",

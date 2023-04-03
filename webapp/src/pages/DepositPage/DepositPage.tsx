@@ -172,6 +172,7 @@ const HeroSection: React.FC<{
       case "WBTC":
       case "SOL":
       case "USDC":
+      case "WBNB":
         return <Logo height="200%" width="200%" />;
       case "AAVE":
       case "WAVAX":

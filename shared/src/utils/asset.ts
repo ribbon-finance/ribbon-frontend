@@ -3,6 +3,7 @@ import styled, { StyledComponent } from "styled-components";
 import {
   AAVELogo,
   UNILogo,
+  BNBLogo,
   STETHLogo,
   USDCLogo,
   WBTCLogo,
@@ -27,6 +28,7 @@ import { Assets, Wallets } from "../store/types";
 export const assetFilterList: Assets[] = [
   "AAVE",
   "UNI",
+  "WBNB",
   "WETH",
   "stETH",
   "USDC",
@@ -84,6 +86,8 @@ export const getChainByAsset = (asset: Assets): Chains => {
   switch (asset) {
     case "SOL":
       return Chains.Solana;
+    case "WBNB":
+      return Chains.Binance;
     case "WAVAX":
     case "sAVAX":
     case "USDC.e":
@@ -111,7 +115,8 @@ export const getChainByVaultOption = (vault: VaultOptions): Chains => {
     case "rsAVAX-THETA":
     case "rUSDC-AVAX-P-THETA":
       return Chains.Avalanche;
-
+    case "rBNB-THETA":
+      return Chains.Binance;
     case "rSOL-THETA":
       return Chains.Solana;
 
@@ -126,6 +131,8 @@ export const getAssetDisplay = (asset: Assets): string => {
       return "ETH";
     case "WAVAX":
       return "AVAX";
+    case "WBNB":
+      return "BNB";
     default:
       return asset;
   }
@@ -254,6 +261,8 @@ export const getAssetLogo: (asset: Assets) =>
       return AAVELogo;
     case "UNI":
       return UNILogo;
+    case "WBNB":
+      return BNBLogo;
     case "WAVAX":
       return WAVAXLogo;
     case "sAVAX":

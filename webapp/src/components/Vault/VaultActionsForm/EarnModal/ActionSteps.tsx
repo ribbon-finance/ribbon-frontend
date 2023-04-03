@@ -5,7 +5,7 @@ import PreviewStep from "./PreviewStep";
 import TransactionStep from "./TransactionStep";
 import {
   getAssets,
-  isNativeToken,
+  isNoApproveToken,
   VaultAllowedDepositAssets,
   VaultOptions,
   VaultVersion,
@@ -141,7 +141,7 @@ const ActionSteps: React.FC<ActionStepsProps> = ({
 
   useEffect(() => {
     // Fetch stETH rate
-    if (vaultOption === "rEARN-stETH" && isNativeToken(depositAsset)) {
+    if (vaultOption === "rEARN-stETH" && isNoApproveToken(depositAsset)) {
       if (!amount.isZero()) {
         setMinSTETHAmount(undefined);
         getMinSTETHAmount(amount).then((amt) => {
@@ -220,7 +220,7 @@ const ActionSteps: React.FC<ActionStepsProps> = ({
           case "deposit":
             switch (vaultOption) {
               case "rEARN-stETH":
-                if (isNativeToken(depositAsset)) {
+                if (isNoApproveToken(depositAsset)) {
                   res = await handleSwapCurveAndDepositSTETH();
                 } else {
                   res = await vault.deposit(amountStr);

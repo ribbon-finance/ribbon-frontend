@@ -2,8 +2,9 @@ import { providers } from "ethers";
 import {
   AVALANCHE_MAINNET_PARAMS,
   AVALANCHE_TESTNET_PARAMS,
+  BINANCE_MAINNET_PARAMS,
 } from "../constants/chainParameters";
-import { isAvaxNetwork } from "../constants/constants";
+import { isAvaxNetwork, isBinanceNetwork } from "../constants/constants";
 import { CHAINID } from "./env";
 
 // This error code indicates that
@@ -46,6 +47,10 @@ export const switchChains = async (
           chainId === CHAINID.AVAX_MAINNET
             ? AVALANCHE_MAINNET_PARAMS
             : AVALANCHE_TESTNET_PARAMS;
+      }
+
+      if (isBinanceNetwork(chainId)) {
+        params = BINANCE_MAINNET_PARAMS;
       }
 
       if (params) {

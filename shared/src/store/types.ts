@@ -21,6 +21,7 @@ export const AssetsList = [
   "LDO",
   "SOL",
   "APE",
+  "WBNB",
   // Treasury
   "PERP",
   "BAL",

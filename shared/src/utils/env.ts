@@ -6,6 +6,7 @@ export enum CHAINID {
   ETH_KOVAN = 42,
   AVAX_FUJI = 43113,
   AVAX_MAINNET = 43114,
+  BINANCE_MAINNET = 56,
 }
 
 export const SUBGRAPH_URI: Record<number, string> = {
@@ -21,6 +22,9 @@ export const SUBGRAPH_URI: Record<number, string> = {
   [CHAINID.AVAX_MAINNET]:
     process.env.REACT_APP_AVAX_SUBGRAPHQL_URL ||
     "https://api.thegraph.com/subgraphs/name/ribbon-finance/ribbon-avax",
+  [CHAINID.BINANCE_MAINNET]:
+    process.env.REACT_APP_BINANCE_SUBGRAPHQL_URL ||
+    "https://api.goldsky.com/api/public/project_clch40o0v0d510huoey7g5yaz/subgraphs/ribbon-binance/prod/gn",
 };
 
 export const SOLANA_SUBGRAPH = "https://ribbon-solana.hasura.app/v1/graphql";
@@ -48,6 +52,7 @@ export const NODE_URI: Record<number, string> = {
   [CHAINID.ETH_KOVAN]: process.env.REACT_APP_TESTNET_URI || "",
   [CHAINID.AVAX_MAINNET]: process.env.REACT_APP_AVAX_URI || "",
   [CHAINID.AVAX_FUJI]: process.env.REACT_APP_FUJI_URI || "",
+  [CHAINID.BINANCE_MAINNET]: process.env.REACT_APP_BINANCE_URI || "",
 };
 
 export const getSolanaClusterURI: () => string = () =>
@@ -75,7 +80,7 @@ export const getSubgraphqlRearnURI = () =>
 
 export const supportedChainIds = isDevelopment()
   ? [CHAINID.ETH_KOVAN, CHAINID.AVAX_FUJI]
-  : [CHAINID.ETH_MAINNET, CHAINID.AVAX_MAINNET];
+  : [CHAINID.ETH_MAINNET, CHAINID.AVAX_MAINNET, CHAINID.BINANCE_MAINNET];
 
 /**
  * Multi chain env configs
@@ -84,6 +89,7 @@ export const supportedChainIds = isDevelopment()
 export const ENABLED_CHAINID: CHAINID[] = [
   CHAINID.ETH_MAINNET,
   CHAINID.AVAX_MAINNET,
+  CHAINID.BINANCE_MAINNET,
 ];
 
 export const isChainIdEnabled = (chainId: number) =>

@@ -11,6 +11,18 @@ interface AddEthereumChainParameter {
   iconUrls?: string[]; // Currently ignored.
 }
 
+export const BINANCE_MAINNET_PARAMS: AddEthereumChainParameter = {
+  chainId: "0x38",
+  chainName: "Binance Mainnet C-Chain",
+  nativeCurrency: {
+    name: "Binance",
+    symbol: "BNB",
+    decimals: 18,
+  },
+  rpcUrls: ["https://bsc-dataseed.binance.org"],
+  blockExplorerUrls: ["https://bscscan.com"],
+};
+
 export const AVALANCHE_MAINNET_PARAMS: AddEthereumChainParameter = {
   chainId: "0xA86A",
   chainName: "Avalanche Mainnet C-Chain",

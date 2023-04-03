@@ -5,7 +5,7 @@ import { AnimatePresence, motion } from "framer";
 
 import {
   getAssets,
-  isNativeToken,
+  isNoApproveToken,
   URLS,
   VaultAddressMap,
   VaultAllowedDepositAssets,
@@ -206,7 +206,7 @@ const VaultApprovalForm: React.FC<VaultApprovalFormProps> = ({
   const Logo = getAssetLogo(depositAsset);
 
   const tokenContract = useMemo(() => {
-    if (isNativeToken(depositAsset) || !chainId) {
+    if (isNoApproveToken(depositAsset) || !chainId) {
       return;
     }
 

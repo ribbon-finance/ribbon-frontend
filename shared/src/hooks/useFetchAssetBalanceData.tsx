@@ -55,89 +55,94 @@ const useFetchAssetBalanceData = (
   const { connection } = useConnection();
   const { publicKey } = useWallet();
   const [chain] = useChain();
-
   const doMulticall = useCallback(async () => {
-    if (!isProduction()) {
-      console.time("Asset Balance Data Fetch"); // eslint-disable-line
-    }
+    try {
+      if (!isProduction()) {
+        console.time("Asset Balance Data Fetch"); // eslint-disable-line
+      }
 
-    if (!active) {
-      setData({ ...defaultUserAssetBalanceData, loading: false });
-      return;
-    }
+      if (!active) {
+        setData({ ...defaultUserAssetBalanceData, loading: false });
+        return;
+      }
 
-    const responses: Array<AssetBalance> = await Promise.all(
-      AssetsList.map(async (asset) => {
-        const defaultResponse = {
-          asset,
-          balance: undefined,
-        };
+      const responses: Array<AssetBalance> = await Promise.all(
+        AssetsList.map(async (asset) => {
+          const defaultResponse = {
+            asset,
+            balance: undefined,
+          };
 
-        switch (getChainByAsset(asset)) {
-          /**
-           * EVM Chain
-           */
-          case Chains.Ethereum:
-          case Chains.Avalanche:
+          switch (getChainByAsset(asset)) {
             /**
-             * Return default response if it is not eth chain
+             * EVM Chain
              */
-            if (isEVMChain(chain) && ethereumProvider) {
-              const token = getERC20Token(
-                ethereumProvider,
-                asset.toLowerCase() as ERC20Token,
-                chainId as number
-              );
-              if (token) {
-                const balance = await (isNativeToken(asset)
-                  ? ethereumProvider.getBalance(account!)
-                  : token.balanceOf(account!));
-                return { asset, balance };
-              }
-            }
-
-            return defaultResponse;
-
-          /**
-           * Solana Chain
-           */
-          case Chains.Solana:
-            if (isSolanaChain(chain)) {
-              if (isNativeToken(asset)) {
-                // FIXME: Token balance should query based on address of Solana-based tokens
-                // const tokenBalance = await connection.getTokenAccountBalance(new PublicKey("So11111111111111111111111111111111111111112"));
-                const tokenBalance = await connection.getBalance(
-                  publicKey as PublicKey
+            case Chains.Ethereum:
+            case Chains.Avalanche:
+            case Chains.Binance:
+              /**
+               * Return default response if it is not eth chain
+               */
+              if (isEVMChain(chain) && ethereumProvider) {
+                const token = getERC20Token(
+                  ethereumProvider,
+                  asset.toLowerCase() as ERC20Token,
+                  chainId as number
                 );
-                return {
-                  asset,
-                  balance: BigNumber.from(tokenBalance),
-                };
+                if (token) {
+                  const balance = await (!isNativeToken(asset)
+                    ? ethereumProvider.getBalance(account!)
+                    : token.balanceOf(account!));
+
+                  return { asset, balance };
+                }
               }
-            }
 
-            return defaultResponse;
-        }
+              return defaultResponse;
 
-        return defaultResponse;
-      })
-    );
+            /**
+             * Solana Chain
+             */
+            case Chains.Solana:
+              if (isSolanaChain(chain)) {
+                if (isNativeToken(asset)) {
+                  // FIXME: Token balance should query based on address of Solana-based tokens
+                  // const tokenBalance = await connection.getTokenAccountBalance(new PublicKey("So11111111111111111111111111111111111111112"));
+                  const tokenBalance = await connection.getBalance(
+                    publicKey as PublicKey
+                  );
+                  return {
+                    asset,
+                    balance: BigNumber.from(tokenBalance),
+                  };
+                }
+              }
 
-    setData((prevData) => ({
-      data: Object.fromEntries(
-        responses.map(({ asset, balance }) => [
-          asset,
-          /**
-           * We fall back to previous value if balance is undefined
-           */
-          balance || prevData.data[asset],
-        ])
-      ) as UserAssetBalanceResponses,
-      loading: false,
-    }));
+              return defaultResponse;
+          }
 
-    if (!isProduction()) {
-      console.timeEnd("Asset Balance Data Fetch"); // eslint-disable-line
+          return defaultResponse;
+        })
+      );
+
+      setData((prevData) => ({
+        data: Object.fromEntries(
+          responses.map(({ asset, balance }) => [
+            asset,
+            /**
+             * We fall back to previous value if balance is undefined
+             */
+            balance || prevData.data[asset],
+          ])
+        ) as UserAssetBalanceResponses,
+        loading: false,
+      }));
+
+      if (!isProduction()) {
+        console.timeEnd("Asset Balance Data Fetch"); // eslint-disable-line
+      }
+    } catch (error) {
+      console.log(error);
     }
   }, [
     account,

@@ -110,5 +110,8 @@
     "StrikeSelectionWBTC": "0x6c2Bd3FF7C5d7c3cF782860fc1d88cdf438ccf7b",
     "VaultLifecycle": "0xe0854DDD162ffE4E2fF1DB6E62b544521cB9223e",
     "RibbonVaultPauser": "0xf08d6a9c2C5a2Dc9B8645c5Ac0b529D4046D19aa"
+  },
+  "bsc": {
+    "RibbonThetaVaultBNBCall": "0xC56d5a5BE96B5fB51C2bA5cBC59AfE77198838F7"
   }
 }

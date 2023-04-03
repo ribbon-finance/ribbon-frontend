@@ -28,6 +28,7 @@ import {
   isPutVault,
   isEthVault,
   isAvaxVault,
+  isBinanceVault,
   isSolanaVault,
   isDisabledVault,
   isEarnVault,
@@ -47,6 +48,7 @@ import useStrikePrice from "../../../hooks/useStrikePrice";
 import { animatedGradientKeyframe } from "../../../designSystem/keyframes";
 import { ETHMonoLogo } from "../../../assets/icons/vaultMonoLogos";
 import { AVAXMonoLogo } from "../../../assets/icons/vaultMonoLogos";
+import { BINANCEMonoLogo } from "../../../assets/icons/vaultMonoLogos";
 import { SOLMonoLogo } from "../../../assets/icons/vaultMonoLogos";
 import useWeb3Wallet from "../../../hooks/useWeb3Wallet";
 import TooltipExplanation from "../../Common/TooltipExplanation";
@@ -465,7 +467,7 @@ const YieldCard: React.FC<YieldCardProps> = ({
 
   const isActiveVault = vaultVersion === "v2" && !isDisabledVault(vault);
   const isEVMVault = (vault: VaultOptions) =>
-    isEthVault(vault) || isAvaxVault(vault);
+    isEthVault(vault) || isAvaxVault(vault) || isBinanceVault(vault);
 
   const totalProjectedYield = useMemo(() => {
     if (!isActiveVault) return "0%";
@@ -894,6 +896,7 @@ const YieldCard: React.FC<YieldCardProps> = ({
 
     if (isEthVault(vault)) logo = <ETHMonoLogo />;
     else if (isAvaxVault(vault)) logo = <AVAXMonoLogo />;
+    else if (isBinanceVault(vault)) logo = <BINANCEMonoLogo />;
     else if (isSolanaVault(vault)) logo = <SOLMonoLogo />;
 
     if (logo) {

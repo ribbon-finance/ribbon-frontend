@@ -86,7 +86,6 @@ const ConnectChainBody: React.FC<ConnectChainBodyProps> = ({
       <TitleContainer>
         <Title>Select a blockchain</Title>
       </TitleContainer>
-
       {availableChains.map((chain: Chains) => (
         <ChainButton
           key={chain}

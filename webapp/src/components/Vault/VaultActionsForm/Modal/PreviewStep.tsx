@@ -14,7 +14,7 @@ import {
   VaultFees,
   VaultVersion,
   isPutVault,
-  isNativeToken,
+  isNoApproveToken,
 } from "shared/lib/constants/constants";
 import { getVaultColor } from "shared/lib/utils/vault";
 import { capitalize } from "shared/lib/utils/text";
@@ -509,7 +509,7 @@ const PreviewStep: React.FC<{
           )}
           {vaultOption === "rstETH-THETA" &&
             actionType === "deposit" &&
-            isNativeToken(asset) &&
+            isNoApproveToken(asset) &&
             estimatedSTETHDepositAmount && (
               <div className="d-flex w-100 flex-row align-items-center justify-content-between mt-4">
                 <DetailWithTooltipContainer>

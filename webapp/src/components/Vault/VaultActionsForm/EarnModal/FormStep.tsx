@@ -27,8 +27,8 @@ import {
   VaultMaxDeposit,
   VaultAllowedDepositAssets,
   VaultAddressMap,
-  isNativeToken,
   GAS_LIMITS,
+  isNoApproveToken,
 } from "shared/lib/constants/constants";
 import { getVaultColor } from "shared/lib/utils/vault";
 import {
@@ -374,7 +374,7 @@ const FormStep: React.FC<{
   } = useV2VaultData(vaultOption);
   const decimalPlaces = getAssetDefaultSignificantDecimals(asset);
   const tokenAllowance = useTokenAllowance(
-    isNativeToken(asset)
+    isNoApproveToken(asset)
       ? undefined
       : ((asset?.toLowerCase() ||
           VaultAllowedDepositAssets[
@@ -386,7 +386,7 @@ const FormStep: React.FC<{
   const showTokenApproval = useMemo(() => {
     if (actionType === "deposit" && asset !== "USDC") {
       return (
-        !isNativeToken(asset || VaultAllowedDepositAssets[vaultOption][0]) &&
+        !isNoApproveToken(asset || VaultAllowedDepositAssets[vaultOption][0]) &&
         tokenAllowance &&
         isPracticallyZero(tokenAllowance, decimals)
       );
@@ -394,6 +394,7 @@ const FormStep: React.FC<{
 
     return false;
   }, [actionType, asset, decimals, tokenAllowance, vaultOption]);
+
   const gasPrice = useGasPrice();
   const { balance: userAssetBalance } = useAssetBalance(asset);
   const vaultBalanceInAsset = depositBalanceInAsset.add(lockedBalanceInAsset);
@@ -651,7 +652,7 @@ const FormStep: React.FC<{
         const amountBigNumber = parseUnits(inputAmount, decimals);
         switch (actionType) {
           case "deposit":
-            if (isNativeToken(asset)) {
+            if (isNoApproveToken(asset)) {
               // check that user balance - estimate gas fee is gt deposit amount
               const gasLimit = GAS_LIMITS[vaultOption].earn!.deposit;
               const gasFee = BigNumber.from(gasLimit.toString()).mul(
@@ -933,7 +934,7 @@ const FormStep: React.FC<{
         onClickUpdateInput(formatUnits(maxAmount, decimals));
         break;
       case "deposit":
-        if (isNativeToken(asset)) {
+        if (isNoApproveToken(asset)) {
           // account for eth gas fee if deposit token is eth
           const gasLimit = GAS_LIMITS[vaultOption].earn!.deposit;
           const gasFee = BigNumber.from(gasLimit.toString()).mul(

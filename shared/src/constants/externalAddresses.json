@@ -156,5 +156,10 @@
     "gammaController": "0x836E115f0580c8350228E073949bf269F7BC4B62",
     "gammaMarginPool": "0x9EBC603bBf8309E1715a1678B5C13A4aE6c26452",
     "sAvaxDepositHelper": "0x13F20ed881f7ED97C5EA34B33C9305D7f7D00fd3"
+  },
+  "bsc": {
+    "assets": {
+      "wbnb": "0xbb4CdB9CBd36B01bD1cBaEBF2De08d9173bc095c"
+    }
   }
 }

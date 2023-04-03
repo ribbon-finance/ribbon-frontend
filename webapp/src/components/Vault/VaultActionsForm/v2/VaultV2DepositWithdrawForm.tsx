@@ -6,13 +6,13 @@ import { useLocation } from "react-router-dom";
 import colors from "shared/lib/designSystem/colors";
 import {
   AVAX_BRIDGE_URI,
-  isNativeToken,
   isAvaxNetwork,
   VaultAddressMap,
   VaultAllowedDepositAssets,
   VaultMaxDeposit,
   VaultOptions,
   isDisabledVault,
+  isNoApproveToken,
 } from "shared/lib/constants/constants";
 import { ExternalIcon } from "shared/lib/assets/icons/icons";
 import { ACTIONS } from "../Modal/types";
@@ -197,7 +197,7 @@ const VaultV2DepositWithdrawForm: React.FC<VaultV2DepositWithdrawFormProps> = ({
    * Side hooks
    */
   const tokenAllowance = useTokenAllowance(
-    isNativeToken(vaultActionForm.depositAsset || asset)
+    isNoApproveToken(vaultActionForm.depositAsset || asset)
       ? undefined
       : ((vaultActionForm.depositAsset?.toLowerCase() ||
           VaultAllowedDepositAssets[
@@ -253,7 +253,7 @@ const VaultV2DepositWithdrawForm: React.FC<VaultV2DepositWithdrawFormProps> = ({
   const showTokenApproval = useMemo(() => {
     if (vaultActionForm.actionType === ACTIONS.deposit) {
       return (
-        !isNativeToken(
+        !isNoApproveToken(
           vaultActionForm.depositAsset ||
             VaultAllowedDepositAssets[vaultOption][0]
         ) &&
@@ -270,6 +270,7 @@ const VaultV2DepositWithdrawForm: React.FC<VaultV2DepositWithdrawFormProps> = ({
     vaultActionForm.depositAsset,
     vaultOption,
   ]);
+
   const [swapContainerOpen, setSwapContainerOpen] = useState(false);
 
   const error = useMemo((): VaultValidationErrors | undefined => {

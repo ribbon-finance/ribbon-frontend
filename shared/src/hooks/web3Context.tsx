@@ -2,7 +2,7 @@ import React, { ReactElement, useContext } from "react";
 import { ethers } from "ethers";
 import { BaseProvider } from "@ethersproject/providers";
 import { CHAINID, NODE_URI, isDevelopment } from "../utils/env";
-import { isAvaxNetwork } from "../constants/constants";
+import { isAvaxNetwork, isBinanceNetwork } from "../constants/constants";
 
 export type Web3ContextData = {
   provider: BaseProvider;
@@ -14,6 +14,9 @@ const defaultProvider = new ethers.providers.StaticJsonRpcProvider(
 const avaxProvider = new ethers.providers.StaticJsonRpcProvider(
   NODE_URI[isDevelopment() ? CHAINID.AVAX_FUJI : CHAINID.AVAX_MAINNET]
 );
+const binanceProvider = new ethers.providers.StaticJsonRpcProvider(
+  NODE_URI[CHAINID.BINANCE_MAINNET]
+);
 
 export const Web3Context = React.createContext<Web3ContextData>({
   provider: defaultProvider,
@@ -23,9 +26,14 @@ export const AvaxWeb3Context = React.createContext<Web3ContextData>({
   provider: avaxProvider,
 });
 
+export const BinanceWeb3Context = React.createContext<Web3ContextData>({
+  provider: binanceProvider,
+});
+
 export const useWeb3Context = (chainId: CHAINID = CHAINID.ETH_MAINNET) => {
   let context = Web3Context;
   if (isAvaxNetwork(chainId)) context = AvaxWeb3Context;
+  if (isBinanceNetwork(chainId)) context = BinanceWeb3Context;
   return useContext(context);
 };
 
@@ -38,7 +46,9 @@ export const Web3ContextProvider: React.FC<{ children: ReactElement }> = ({
 }) => (
   <Web3Context.Provider value={{ provider: defaultProvider }}>
     <AvaxWeb3Context.Provider value={{ provider: avaxProvider }}>
-      {children}
+      <BinanceWeb3Context.Provider value={{ provider: binanceProvider }}>
+        {children}
+      </BinanceWeb3Context.Provider>
     </AvaxWeb3Context.Provider>
   </Web3Context.Provider>
 );
