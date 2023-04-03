@@ -11,10 +11,10 @@ import TransactionStep from "webapp/lib/components/Vault/VaultActionsForm/Modal/
 import FormStep from "webapp/lib/components/Vault/VaultActionsForm/Modal/FormStep";
 import {
   getAssets,
-  isNativeToken,
   VaultOptions,
   VaultVersion,
   VaultAllowedDepositAssets,
+  isNoApproveToken,
 } from "shared/lib/constants/constants";
 import { isETHVault } from "shared/lib/utils/vault";
 import { usePendingTransactions } from "shared/lib/hooks/pendingTransactionsContext";
@@ -215,7 +215,7 @@ const ActionSteps: React.FC<ActionStepsProps> = ({
           case ACTIONS.deposit:
             switch (vaultOption) {
               case "rstETH-THETA":
-                res = await (isNativeToken(asset)
+                res = await (isNoApproveToken(asset)
                   ? (vault as RibbonV2ThetaVault).depositETH({
                       value: amountStr,
                     })
@@ -224,7 +224,7 @@ const ActionSteps: React.FC<ActionStepsProps> = ({
                     ));
                 break;
               default:
-                res = await (isNativeToken(asset)
+                res = await (isNoApproveToken(asset)
                   ? (vault as RibbonV2ThetaVault).depositETH({
                       value: amountStr,
                     })

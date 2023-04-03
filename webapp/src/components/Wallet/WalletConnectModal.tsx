@@ -82,6 +82,7 @@ const WalletConnectModal: React.FC = () => {
     switch (selectedChain) {
       case Chains.Ethereum:
       case Chains.Avalanche:
+      case Chains.Binance:
         setWalletList(ETHEREUM_WALLETS);
         break;
       case Chains.Solana:
@@ -116,6 +117,9 @@ const WalletConnectModal: React.FC = () => {
     case 3:
       modalHeightForChain = 400;
       break;
+    case 4:
+      modalHeightForChain = 480;
+      break;
     default:
       break;
   }
@@ -126,7 +130,7 @@ const WalletConnectModal: React.FC = () => {
       modalHeightForWallets = 400;
       break;
     case 3:
-      modalHeightForWallets = 450;
+      modalHeightForWallets = 480;
       break;
     default:
       break;

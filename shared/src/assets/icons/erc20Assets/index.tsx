@@ -452,6 +452,37 @@ export const UNILogo: React.FC<SVGProps & { showBackground?: boolean }> = ({
   </svg>
 );
 
+export const BNBLogo: React.FC<SVGProps & { showBackground?: boolean }> = ({
+  showBackground = true,
+  ...props
+}) => (
+  <svg
+    width="56"
+    height="56"
+    viewBox="0 0 56 56"
+    fill="none"
+    xmlns="http://www.w3.org/2000/svg"
+    {...props}
+  >
+    <rect width="56" height="56" rx="28" fill="#FBC828" fill-opacity="0.12" />
+    <g clip-path="url(#clip0_1001_80)">
+      <path
+        d="M20.2318 24.8084L27.9998 17.0406L35.7718 24.8124L40.2918 20.2924L27.9998 8L15.712 20.2884L20.2318 24.8084ZM8.00008 27.9994L12.5202 23.4792L17.0401 27.9991L12.52 32.5192L8.00008 27.9994ZM20.2318 31.1916L27.9998 38.9594L35.7716 31.1878L40.294 35.7054L40.2918 35.7078L27.9998 48L15.7116 35.712L15.7052 35.7056L20.2318 31.1916ZM38.9602 28.0019L43.4804 23.4817L48.0002 28.0016L43.4801 32.5217L38.9602 28.0019Z"
+        fill="#FBC828"
+      />
+      <path
+        d="M32.5844 27.9976H32.5864L27.9998 23.411L24.6102 26.8006H24.61L24.2206 27.1902L23.4174 27.9936L23.411 27.9998L23.4174 28.0064L27.9998 32.589L32.5864 28.0024L32.5886 27.9998L32.5844 27.9976Z"
+        fill="#FBC828"
+      />
+    </g>
+    <defs>
+      <clipPath id="clip0_1001_80">
+        <rect width="40" height="40" fill="white" transform="translate(8 8)" />
+      </clipPath>
+    </defs>
+  </svg>
+);
+
 export const PERPLogo: React.FC<SVGProps> = ({ ...props }) => (
   <svg
     viewBox="0 0 675 675"

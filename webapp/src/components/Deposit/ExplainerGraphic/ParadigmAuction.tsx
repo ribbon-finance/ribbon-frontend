@@ -8,6 +8,7 @@ import STETHParadigmAuction from "../../../assets/icons/vaultExplainer/paradigmA
 import RETHParadigmAuction from "../../../assets/icons/vaultExplainer/paradigmAuction/RETH_Paradigm_Auction.json";
 import AAVEParadigmAuction from "../../../assets/icons/vaultExplainer/paradigmAuction/AAVE_Paradigm_Auction.json";
 import UNIParadigmAuction from "../../../assets/icons/vaultExplainer/paradigmAuction/UNI_Paradigm_Auction.json";
+import BNBParadigmAuction from "../../../assets/icons/vaultExplainer/paradigmAuction/BNB_Paradigm_Auction.json";
 import AVAXParadigmAuction from "../../../assets/icons/vaultExplainer/paradigmAuction/AVAX_Paradigm_Auction.json";
 import SAVAXParadigmAuction from "../../../assets/icons/vaultExplainer/paradigmAuction/SAVAX_Paradigm_Auction.json";
 import APEParadigmAuction from "../../../assets/icons/vaultExplainer/paradigmAuction/APE_Paradigm_Auction.json";
@@ -38,6 +39,8 @@ const ParadigmAuction: React.FC<ParadigmAuctionProps> = ({ vaultOption }) => {
             return AAVEParadigmAuction;
           case "UNI":
             return UNIParadigmAuction;
+          case "WBNB":
+            return BNBParadigmAuction;
           case "WAVAX":
             return AVAXParadigmAuction;
           case "sAVAX":

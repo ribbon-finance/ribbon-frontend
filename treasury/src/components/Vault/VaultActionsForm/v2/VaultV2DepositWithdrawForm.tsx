@@ -7,7 +7,7 @@ import { useLocation } from "react-router-dom";
 import colors from "shared/lib/designSystem/colors";
 import {
   isEarnVault,
-  isNativeToken,
+  isNoApproveToken,
   VaultAddressMap,
   VaultAllowedDepositAssets,
   VaultMaxDeposit,
@@ -149,7 +149,7 @@ const VaultV2DepositWithdrawForm: React.FC<VaultV2DepositWithdrawFormProps> = ({
    * Side hooks
    */
   const tokenAllowance = useTokenAllowance(
-    isNativeToken(vaultActionForm.depositAsset || asset)
+    isNoApproveToken(vaultActionForm.depositAsset || asset)
       ? undefined
       : ((vaultActionForm.depositAsset?.toLowerCase() ||
           VaultAllowedDepositAssets[
@@ -206,7 +206,7 @@ const VaultV2DepositWithdrawForm: React.FC<VaultV2DepositWithdrawFormProps> = ({
   const showTokenApproval = useMemo(() => {
     if (vaultActionForm.actionType === ACTIONS.deposit) {
       return (
-        !isNativeToken(
+        !isNoApproveToken(
           vaultActionForm.depositAsset ||
             VaultAllowedDepositAssets[vaultOption][0]
         ) &&

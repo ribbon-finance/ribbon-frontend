@@ -12,7 +12,7 @@ import {
   VaultOptions,
   VaultVersion,
   VaultAddressMap,
-  isNativeToken,
+  isNoApproveToken,
 } from "shared/lib/constants/constants";
 import { getVaultColor } from "shared/lib/utils/vault";
 import { capitalize } from "shared/lib/utils/text";
@@ -247,7 +247,7 @@ const PreviewStep: React.FC<{
             break;
           case "rEARN-stETH":
             if (
-              isNativeToken(asset) &&
+              isNoApproveToken(asset) &&
               typeof estimatedSTETHDepositAmount === "string"
             ) {
               actionDetails.push({

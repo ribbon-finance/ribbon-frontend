@@ -68,6 +68,10 @@
       "title": "T-UNI-C",
       "subtitle": "UNI Covered Call"
     },
+    "rBNB-THETA": {
+      "title": "T-WBNB-C",
+      "subtitle": "BNB Covered Call"
+    },
     "rsAVAX-THETA": {
       "title": "T-sAVAX-C",
       "subtitle": "sAVAX Covered Call"

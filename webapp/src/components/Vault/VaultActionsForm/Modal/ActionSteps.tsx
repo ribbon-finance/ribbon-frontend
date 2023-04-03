@@ -9,12 +9,12 @@ import TransactionStep from "./TransactionStep";
 import FormStep from "./FormStep";
 import {
   getAssets,
-  isNativeToken,
   VaultOptions,
   VaultVersion,
   VaultAllowedDepositAssets,
   getSolanaVaultInstance,
   isSolanaVault,
+  isNoApproveToken,
 } from "shared/lib/constants/constants";
 import { getSOLAmountByShares, isETHVault } from "shared/lib/utils/vault";
 import { usePendingTransactions } from "shared/lib/hooks/pendingTransactionsContext";
@@ -205,7 +205,7 @@ const ActionSteps: React.FC<ActionStepsProps> = ({
 
   useEffect(() => {
     // Fetch stETH rate
-    if (vaultOption === "rstETH-THETA" && isNativeToken(asset)) {
+    if (vaultOption === "rstETH-THETA" && isNoApproveToken(asset)) {
       if (!amount.isZero()) {
         setMinSTETHAmount(undefined);
         getMinSTETHAmount(amount).then((amt) => {
@@ -253,7 +253,7 @@ const ActionSteps: React.FC<ActionStepsProps> = ({
           case ACTIONS.deposit:
             switch (vaultOption) {
               case "rstETH-THETA": {
-                if (isNativeToken(asset)) {
+                if (isNoApproveToken(asset)) {
                   res = await handleSwapCurveAndDepositSTETH();
                 } else {
                   res = await (
@@ -282,7 +282,7 @@ const ActionSteps: React.FC<ActionStepsProps> = ({
                 break;
 
               default:
-                res = await (isNativeToken(asset)
+                res = await (isNoApproveToken(asset)
                   ? (vault as RibbonV2ThetaVault).depositETH({
                       value: amountStr,
                     })

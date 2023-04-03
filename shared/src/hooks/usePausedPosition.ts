@@ -3,6 +3,7 @@ import { parseUnits } from "ethers/lib/utils";
 import { useEffect, useMemo, useState } from "react";
 import { RibbonVaultPauser } from "../codegen";
 import {
+  isBinanceVault,
   isSolanaVault,
   VaultAddressMap,
   VaultOptions,
@@ -41,6 +42,7 @@ export const usePausedPosition = (
       vaultAddress &&
       account &&
       !isVIP() &&
+      !isBinanceVault(vaultOption) &&
       !isSolanaVault(vaultOption)
     ) {
       pauseContract

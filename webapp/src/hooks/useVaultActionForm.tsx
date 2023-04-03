@@ -8,7 +8,7 @@ import {
   VaultOptions,
   VaultVersion,
   VaultAllowedDepositAssets,
-  isNativeToken,
+  isNoApproveToken,
 } from "shared/lib/constants/constants";
 import {
   ACTIONS,
@@ -75,6 +75,7 @@ const useVaultActionForm = (vaultOption: VaultOptions) => {
   const { data: liquidityGaugeV5Data } = useAllLiquidityGaugeV5PoolsData();
 
   const { data: assetsBalance } = useAssetsBalance();
+
   const vaultMaxDepositAmount = VaultMaxDeposit[vaultOption];
   const receiveVaultData = useVaultData(
     vaultActionForm.receiveVault || vaultOption
@@ -391,7 +392,7 @@ const useVaultActionForm = (vaultOption: VaultOptions) => {
               const walletBalance = assetsBalance[actionForm.depositAsset!];
 
               // TODO: Optimize the code to request gas fees only when needed
-              const walletMaxAmount = isNativeToken(
+              const walletMaxAmount = isNoApproveToken(
                 actionForm.depositAsset || ""
               )
                 ? walletBalance.sub(gasFee)

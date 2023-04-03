@@ -56,6 +56,7 @@ const colors = {
     wstETH: "#00A3FF",
     AAVE: "#2EBAC6",
     UNI: "#FF007A",
+    WBNB: "#F0B90B",
     WAVAX: "#E84142",
     sAVAX: "#11BAF0",
     rETH: "#EF4444",

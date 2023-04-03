@@ -11,6 +11,7 @@ export const useEVMWeb3Context = () => {
     avax: useWeb3Context(
       isDevelopment() ? CHAINID.AVAX_FUJI : CHAINID.AVAX_MAINNET
     ).provider,
+    bsc: useWeb3Context(CHAINID.BINANCE_MAINNET).provider,
   };
   const getProviderForNetwork = useCallback(
     (network: MAINNET_NAMES) => providers[network],

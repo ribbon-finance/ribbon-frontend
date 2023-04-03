@@ -5,7 +5,8 @@ import { AnimatePresence, motion } from "framer";
 
 import {
   getAssets,
-  isNativeToken,
+  isNoApproveToken,
+  tokenApprovalMaxAmount,
   URLS,
   VaultAddressMap,
   VaultAllowedDepositAssets,
@@ -165,6 +166,7 @@ interface VaultApprovalFormProps {
   showDepositAssetSwap?: boolean;
   earnHandleDepositAssetChange?: (asset: Assets) => void;
   earnDepositAsset?: Assets;
+  setShowTokenApprovalForm?: (show: boolean) => void;
 }
 
 const VaultApprovalForm: React.FC<VaultApprovalFormProps> = ({
@@ -173,6 +175,7 @@ const VaultApprovalForm: React.FC<VaultApprovalFormProps> = ({
   showDepositAssetSwap = false,
   earnHandleDepositAssetChange,
   earnDepositAsset,
+  setShowTokenApprovalForm,
 }) => {
   const { vaultActionForm, handleDepositAssetChange } =
     useVaultActionForm(vaultOption);
@@ -206,7 +209,7 @@ const VaultApprovalForm: React.FC<VaultApprovalFormProps> = ({
   const Logo = getAssetLogo(depositAsset);
 
   const tokenContract = useMemo(() => {
-    if (isNativeToken(depositAsset) || !chainId) {
+    if (isNoApproveToken(depositAsset) || !chainId) {
       return;
     }
 
@@ -224,8 +227,7 @@ const VaultApprovalForm: React.FC<VaultApprovalFormProps> = ({
     const approveToAddress = VaultAddressMap[vaultOption][version];
     if (tokenContract && approveToAddress) {
       setWaitingApproval(true);
-      const amount =
-        "0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff";
+      const amount = tokenApprovalMaxAmount;
       try {
         const tx = await tokenContract.approve(approveToAddress, amount);
 
@@ -244,12 +246,14 @@ const VaultApprovalForm: React.FC<VaultApprovalFormProps> = ({
       } catch (err) {
       } finally {
         setWaitingApproval(false);
+        setShowTokenApprovalForm && setShowTokenApprovalForm(false);
       }
     }
   }, [
     addPendingTransaction,
     depositAsset,
     provider,
+    setShowTokenApprovalForm,
     tokenContract,
     vaultOption,
     version,
