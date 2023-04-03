@@ -257,8 +257,6 @@ const VaultV2DepositWithdrawForm: React.FC<VaultV2DepositWithdrawFormProps> = ({
       vaultActionForm.inputAmount || "0",
       decimals
     );
-    console.log(amountBigNumber.toString());
-    console.log(tokenAllowance?.toString());
     if (vaultActionForm.actionType === ACTIONS.deposit) {
       return (
         !isNoApproveToken(
