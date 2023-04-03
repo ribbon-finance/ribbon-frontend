@@ -166,7 +166,7 @@ interface VaultApprovalFormProps {
   showDepositAssetSwap?: boolean;
   earnHandleDepositAssetChange?: (asset: Assets) => void;
   earnDepositAsset?: Assets;
-  setShowTokenApprovalForm: (show: boolean) => void;
+  setShowTokenApprovalForm?: (show: boolean) => void;
 }
 
 const VaultApprovalForm: React.FC<VaultApprovalFormProps> = ({
@@ -246,7 +246,7 @@ const VaultApprovalForm: React.FC<VaultApprovalFormProps> = ({
       } catch (err) {
       } finally {
         setWaitingApproval(false);
-        setShowTokenApprovalForm(false);
+        setShowTokenApprovalForm && setShowTokenApprovalForm(false);
       }
     }
   }, [

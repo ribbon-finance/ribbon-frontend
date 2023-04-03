@@ -237,8 +237,6 @@ const VaultV1ActionsForm: React.FC<VaultV1ActionsFormProps & FormStepProps> = ({
   vaultOption,
   onFormSubmit,
 }) => {
-  const [showTokenApprovalForm, setShowTokenApprovalForm] =
-    useState<boolean>(false);
   const color = getVaultColor(vaultOption);
   const {
     status,
@@ -640,13 +638,7 @@ const VaultV1ActionsForm: React.FC<VaultV1ActionsFormProps & FormStepProps> = ({
      * Approval before deposit
      */
     if (vaultActionForm.actionType === ACTIONS.deposit && showTokenApproval) {
-      return (
-        <VaultApprovalForm
-          vaultOption={vaultOption}
-          version="v1"
-          setShowTokenApprovalForm={setShowTokenApprovalForm}
-        />
-      );
+      return <VaultApprovalForm vaultOption={vaultOption} version="v1" />;
     }
 
     switch (vaultActionForm.actionType) {

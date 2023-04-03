@@ -359,8 +359,6 @@ const FormStep: React.FC<{
   showSwapDepositAsset,
   earnHandleDepositAssetChange,
 }) => {
-  const [showTokenApprovalForm, setShowTokenApprovalForm] =
-    useState<boolean>(false);
   const [showDepositAssetMenu, setShowDepositAssetMenu] = useState(false);
   const color = getVaultColor(vaultOption);
   const {
@@ -1041,7 +1039,6 @@ const FormStep: React.FC<{
         showDepositAssetSwap={VaultAllowedDepositAssets[vaultOption].length > 1}
         earnHandleDepositAssetChange={earnHandleDepositAssetChange}
         earnDepositAsset={asset}
-        setShowTokenApprovalForm={setShowTokenApprovalForm}
       />
     );
   }
