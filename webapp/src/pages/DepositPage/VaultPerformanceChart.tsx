@@ -492,7 +492,9 @@ const VaultPerformanceChart: React.FC<VaultPerformanceChartProps> = ({
                   color={colors.green}
                   className="mt-1"
                 >
-                  {latestAPY.fetched
+                  {vaultOption === "rBNB-THETA"
+                    ? "20.00%"
+                    : latestAPY.fetched
                     ? `+${latestAPY.res.toFixed(2)}%`
                     : loadingText}
                 </Title>
