@@ -131,8 +131,6 @@ export const getAssetDisplay = (asset: Assets): string => {
       return "ETH";
     case "WAVAX":
       return "AVAX";
-    case "WBNB":
-      return "BNB";
     default:
       return asset;
   }

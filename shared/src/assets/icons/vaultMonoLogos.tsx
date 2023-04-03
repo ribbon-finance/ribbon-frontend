@@ -81,7 +81,7 @@ export const BINANCEMonoLogo: React.FC<SVGProps> = (props) => (
     fill="none"
     xmlns="http://www.w3.org/2000/svg"
   >
-    <g clip-path="url(#clip0_1001_66)">
+    <g clipPath="url(#clip0_1001_66)">
       <g filter="url(#filter0_d_1001_66)">
         <path
           d="M13.5112 28L13.5344 36.5101L20.7655 40.7652V45.7475L9.30258 39.0245V25.5114L13.5112 28ZM13.5112 19.4899V24.449L9.3 21.9578V16.9987L13.5112 14.5076L17.7431 16.9987L13.5112 19.4899ZM23.7853 16.9987L27.9965 14.5076L32.2284 16.9987L27.9965 19.4899L23.7853 16.9987Z"
