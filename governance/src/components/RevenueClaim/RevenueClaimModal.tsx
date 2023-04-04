@@ -13,6 +13,7 @@ import { usePendingTransactions } from "shared/lib/hooks/pendingTransactionsCont
 import { ClaimType } from "./model";
 import useFeeDistributor from "../../hooks/useFeeDistributor";
 import moment from "moment";
+import usePenaltyRewardsPostTimestamp from "../../hooks/usePenaltyRewardsPostTimestamp";
 
 interface RewardsCalculatorModalProps {
   show: boolean;
@@ -28,6 +29,7 @@ const RevenueClaimModal: React.FC<RewardsCalculatorModalProps> = ({
 }) => {
   const { account, ethereumProvider } = useWeb3Wallet();
   const penaltyRewards = usePenaltyRewards();
+  const penaltyRewardsPostTimestamp = usePenaltyRewardsPostTimestamp();
   const feeDistributor = useFeeDistributor();
 
   // TODO: - Retrieve vault revenue
@@ -43,6 +45,8 @@ const RevenueClaimModal: React.FC<RewardsCalculatorModalProps> = ({
   // CONTRACT VALUES
   const [vaultRevenue, setVaultRevenue] = useState<BigNumber>();
   const [unlockPenalty, setUnlockPenalty] = useState<BigNumber>();
+  const [unlockPenaltyPostTimestamp, setUnlockPenaltyPostTimestamp] =
+    useState<BigNumber>();
 
   const nextRevenueDistributionDate = useMemo(() => {
     let nearestFriday = moment()
@@ -71,6 +75,16 @@ const RevenueClaimModal: React.FC<RewardsCalculatorModalProps> = ({
     }
   }, [account, penaltyRewards]);
 
+  const fetchClaimablePenaltyPostTimestmap = useCallback(() => {
+    if (penaltyRewardsPostTimestamp && account) {
+      penaltyRewardsPostTimestamp.callStatic["claim()"]().then(
+        (rewards: BigNumber) => {
+          setUnlockPenaltyPostTimestamp(() => rewards);
+        }
+      );
+    }
+  }, [account, penaltyRewardsPostTimestamp]);
+
   // Fetch penalty and fee distribution
   useEffect(() => {
     fetchClaimableRewards();
@@ -80,8 +94,13 @@ const RevenueClaimModal: React.FC<RewardsCalculatorModalProps> = ({
     fetchClaimablePenalty();
   }, [fetchClaimablePenalty]);
 
+  useEffect(() => {
+    fetchClaimablePenaltyPostTimestmap();
+  }, [fetchClaimablePenaltyPostTimestmap]);
+
   const onModalClose = useCallback(() => {
     setCurrentMode("form");
+    setClaimType("revenue");
     onClose();
   }, [onClose]);
 
@@ -108,6 +127,21 @@ const RevenueClaimModal: React.FC<RewardsCalculatorModalProps> = ({
             ? formatBigNumberAmount(unlockPenalty, getAssetDecimals("RBN"))
             : "0",
         };
+      } else if (
+        claimType === "penaltyPostTimestamp" &&
+        penaltyRewardsPostTimestamp
+      ) {
+        const tx = await penaltyRewardsPostTimestamp["claim()"]();
+        pendingTx = {
+          type: "protocolPenaltyClaim",
+          txhash: tx.hash,
+          amountRBN: unlockPenaltyPostTimestamp
+            ? formatBigNumberAmount(
+                unlockPenaltyPostTimestamp,
+                getAssetDecimals("RBN")
+              )
+            : "0",
+        };
       }
 
       if (pendingTx) {
@@ -118,6 +152,7 @@ const RevenueClaimModal: React.FC<RewardsCalculatorModalProps> = ({
         // On transaction completes, refetch
         fetchClaimableRewards();
         fetchClaimablePenalty();
+        fetchClaimablePenaltyPostTimestmap();
         setCurrentPendingTransaction(undefined);
         onModalClose();
       }
@@ -126,22 +161,25 @@ const RevenueClaimModal: React.FC<RewardsCalculatorModalProps> = ({
       setCurrentMode("preview");
     }
   }, [
-    addPendingTransaction,
-    onModalClose,
-    vaultRevenue,
-    unlockPenalty,
     claimType,
-    ethereumProvider,
     feeDistributor,
     penaltyRewards,
-    fetchClaimablePenalty,
+    penaltyRewardsPostTimestamp,
+    vaultRevenue,
+    unlockPenalty,
+    unlockPenaltyPostTimestamp,
+    addPendingTransaction,
+    ethereumProvider,
     fetchClaimableRewards,
+    fetchClaimablePenalty,
+    fetchClaimablePenaltyPostTimestmap,
+    onModalClose,
   ]);
 
   const revenueClaimModalHeight = useMemo(() => {
     switch (currentMode) {
       case "form":
-        return claimType === "penalty" ? 328 : 410;
+        return claimType === "penalty" ? 508 : 410;
       case "preview":
         return 340;
       case "transaction":
@@ -158,6 +196,7 @@ const RevenueClaimModal: React.FC<RewardsCalculatorModalProps> = ({
             onClaimTypeChange={(value) => setClaimType(value)}
             vaultRevenue={vaultRevenue}
             unlockPenalty={unlockPenalty}
+            unlockPenaltyPostTimestamp={unlockPenaltyPostTimestamp}
             nextDistributionDate={nextRevenueDistributionDate}
             onPreviewClaim={() => setCurrentMode("preview")}
           />
@@ -165,7 +204,12 @@ const RevenueClaimModal: React.FC<RewardsCalculatorModalProps> = ({
       case "preview":
         return (
           <RevenueClaimPreview
-            onBack={() => setCurrentMode("form")}
+            onBack={() => {
+              if (claimType === "penaltyPostTimestamp") {
+                setClaimType("penalty");
+              }
+              setCurrentMode("form");
+            }}
             onClaim={onClaim}
             claimType={claimType}
             vaultRevenue={vaultRevenue}
@@ -181,13 +225,14 @@ const RevenueClaimModal: React.FC<RewardsCalculatorModalProps> = ({
         );
     }
   }, [
-    currentPendingTransaction,
     currentMode,
+    claimType,
     vaultRevenue,
     unlockPenalty,
-    onClaim,
-    claimType,
+    unlockPenaltyPostTimestamp,
     nextRevenueDistributionDate,
+    onClaim,
+    currentPendingTransaction?.txhash,
   ]);
 
   return (

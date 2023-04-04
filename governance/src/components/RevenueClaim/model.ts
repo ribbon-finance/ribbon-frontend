@@ -1,1 +1,1 @@
-export type ClaimType = "revenue" | "penalty";
+export type ClaimType = "revenue" | "penalty" | "penaltyPostTimestamp";
