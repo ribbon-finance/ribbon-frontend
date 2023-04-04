@@ -1338,6 +1338,9 @@ export const PenaltyRewardsAddress = isDevelopment()
   ? governanceDeployment.kovan.RBNPenaltyRewards
   : governanceDeployment.mainnet.RBNPenaltyRewards;
 
+export const PenaltyRewardsPostTimestampAddress =
+  governanceDeployment.mainnet.RBNPenaltyRewardsPostTimestamp;
+
 export const FeeDistributorAddress = isDevelopment()
   ? governanceDeployment.kovan.RBNFeeDistributor
   : governanceDeployment.mainnet.RBNFeeDistributor;

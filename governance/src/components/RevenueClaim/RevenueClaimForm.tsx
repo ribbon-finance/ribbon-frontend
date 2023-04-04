@@ -48,17 +48,17 @@ const Highlight = styled.span`
 interface RevenueClaimFormProps {
   claimType: ClaimType;
   onClaimTypeChange: (claimType: ClaimType) => void;
-
   vaultRevenue?: BigNumber;
   unlockPenalty?: BigNumber;
+  unlockPenaltyPostTimestamp?: BigNumber;
   nextDistributionDate?: Date;
-
   onPreviewClaim: () => void;
 }
 
 const RevenueClaimForm: React.FC<RevenueClaimFormProps> = ({
   vaultRevenue,
   unlockPenalty,
+  unlockPenaltyPostTimestamp,
   onPreviewClaim,
   claimType,
   nextDistributionDate,
@@ -94,6 +94,13 @@ const RevenueClaimForm: React.FC<RevenueClaimFormProps> = ({
     return vaultRevenue && vaultRevenue?.gt(0);
   }, [vaultRevenue, unlockPenalty, claimType]);
 
+  const extraCanProceed = useMemo(() => {
+    if (!isProduction()) {
+      return true;
+    }
+    return unlockPenaltyPostTimestamp && unlockPenaltyPostTimestamp?.gt(0);
+  }, [unlockPenaltyPostTimestamp]);
+
   const displayValues = useMemo(() => {
     if (claimType === "penalty") {
       return {
@@ -128,6 +135,18 @@ const RevenueClaimForm: React.FC<RevenueClaimFormProps> = ({
       input: vaultRevenueDisplay,
     };
   }, [claimType, t, unlockPenalty, vaultRevenue]);
+
+  const extraDisplayValues = useMemo(() => {
+    return {
+      Logo: RevenueClaimIcon,
+      label: t("governance:RevenueClaim:shareOfUnlockPenaltyPostTimestamp"),
+      input: unlockPenaltyPostTimestamp
+        ? parseFloat(
+            formatUnits(unlockPenaltyPostTimestamp, getAssetDecimals("RBN"))
+          ).toFixed(2)
+        : "---",
+    };
+  }, [t, unlockPenaltyPostTimestamp]);
 
   return (
     <>
@@ -236,6 +255,68 @@ const RevenueClaimForm: React.FC<RevenueClaimFormProps> = ({
           </ActionButton>
         </ModalColumn>
       </DisableUI>
+      {claimType === "penalty" && (
+        <>
+          <ModalColumn marginTop={24}>
+            <BasicInput
+              size="s"
+              leftContent={
+                <LogoContainer>
+                  {<displayValues.Logo width="100%" height="100%" />}
+                </LogoContainer>
+              }
+              labelProps={{
+                text: extraDisplayValues.label,
+                isInside: true,
+                accessoryComponent:
+                  claimType === "penalty" ? (
+                    <TooltipExplanation
+                      title={t(
+                        "governance:TooltipExplanations:unlockPenaltyPostTimestamp.title"
+                      )}
+                      explanation={t(
+                        "governance:TooltipExplanations:unlockPenaltyPostTimestamp.description"
+                      )}
+                      renderContent={({ ref, ...triggerHandler }) => (
+                        <HelpInfo
+                          containerRef={ref}
+                          {...triggerHandler}
+                          style={{ marginLeft: "0px" }}
+                        >
+                          i
+                        </HelpInfo>
+                      )}
+                    />
+                  ) : undefined,
+              }}
+              inputProps={{
+                type: "text",
+                value: extraDisplayValues.input,
+                contentEditable: false,
+                disabled: true,
+              }}
+            />
+          </ModalColumn>
+          <DisableUI isDisabled={!extraCanProceed}>
+            <ModalColumn marginTop={24}>
+              <ActionButton
+                disabled={!extraCanProceed}
+                onClick={() => {
+                  if (!extraCanProceed) {
+                    return;
+                  }
+                  onClaimTypeChange("penaltyPostTimestamp");
+                  onPreviewClaim();
+                }}
+                className="py-3 mb-2"
+                color={claimType === "penalty" ? colors.red : colors.asset.WETH}
+              >
+                {t("shared:ActionButtons:previewClaim")}
+              </ActionButton>
+            </ModalColumn>
+          </DisableUI>
+        </>
+      )}
       {claimType === "revenue" && (
         <BaseModalWarning color={colors.green}>
           <SecondaryText

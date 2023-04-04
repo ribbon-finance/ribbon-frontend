@@ -25,8 +25,8 @@ interface RevenueClaimPreviewProps {
   onBack: () => void;
   onClaim: () => void;
   claimType: ClaimType;
-
   unlockPenalty?: BigNumber;
+  unlockPenaltyPostTimestamp?: BigNumber;
   vaultRevenue?: BigNumber;
 }
 
@@ -35,6 +35,7 @@ const RevenueClaimPreview: React.FC<RevenueClaimPreviewProps> = ({
   onClaim,
   claimType,
   unlockPenalty,
+  unlockPenaltyPostTimestamp,
   vaultRevenue,
 }) => {
   const { t } = useTranslation();
@@ -63,7 +64,7 @@ const RevenueClaimPreview: React.FC<RevenueClaimPreviewProps> = ({
       </BaseModalContentColumn>
       <BaseModalContentColumn marginTop={16}>
         <Title fontSize={22} lineHeight={28}>
-          {claimType === "penalty"
+          {claimType === "penalty" || claimType === "penaltyPostTimestamp"
             ? t("governance:RevenueClaim:unlockPenaltyClaim")
             : t("governance:RevenueClaim:protocolRevenueClaim")}
         </Title>
@@ -79,6 +80,20 @@ const RevenueClaimPreview: React.FC<RevenueClaimPreviewProps> = ({
               : "---"
           }
         />
+      ) : claimType === "penaltyPostTimestamp" ? (
+        <ModalInfoColumn
+          label={t("governance:RevenueClaim:penaltyDistribution")}
+          data={
+            unlockPenaltyPostTimestamp
+              ? parseFloat(
+                  formatUnits(
+                    unlockPenaltyPostTimestamp,
+                    getAssetDecimals("RBN")
+                  )
+                ).toFixed(2)
+              : "---"
+          }
+        />
       ) : (
         <ModalInfoColumn
           label={t("governance:RevenueClaim:protocolFees")}
@@ -89,7 +104,7 @@ const RevenueClaimPreview: React.FC<RevenueClaimPreviewProps> = ({
         <ActionButton
           className="mb-2"
           onClick={onClaim}
-          color={claimType === "penalty" ? colors.red : colors.asset.WETH}
+          color={claimType !== "revenue" ? colors.red : colors.asset.WETH}
         >
           {t("governance:RevenueClaim:claimRevenue")}
         </ActionButton>
