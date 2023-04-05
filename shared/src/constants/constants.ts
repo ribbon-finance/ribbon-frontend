@@ -89,9 +89,7 @@ export const getVaultNetwork = (vault: string): MAINNET_NAMES => {
 };
 
 export const NATIVE_TOKENS = ["WETH", "WAVAX", "WBNB", "SOL"];
-export const NO_APPROVE_TOKENS = ["WETH", "WAVAX", "SOL"];
-export const isNativeToken = (token: string): boolean =>
-  NATIVE_TOKENS.includes(token);
+export const NO_APPROVE_TOKENS = ["WETH", "WAVAX", "WBNB", "SOL"];
 export const isNoApproveToken = (token: string): boolean =>
   NO_APPROVE_TOKENS.includes(token);
 
@@ -696,7 +694,7 @@ export const VaultNamesList = [
   "T-rETH-C",
   "T-AAVE-C",
   "T-UNI-C",
-  "T-WBNB-C",
+  "T-BNB-C",
   "T-AVAX-C",
   "T-sAVAX-C",
   "T-USDC-P-AVAX",
@@ -724,7 +722,7 @@ export const VaultNameOptionMap: { [name in VaultName]: VaultOptions } = {
   "T-rETH-C": "rrETH-THETA",
   "T-AAVE-C": "rAAVE-THETA",
   "T-UNI-C": "rUNI-THETA",
-  "T-WBNB-C": "rBNB-THETA",
+  "T-BNB-C": "rBNB-THETA",
   "T-AVAX-C": "rAVAX-THETA",
   "T-sAVAX-C": "rsAVAX-THETA",
   "T-USDC-P-AVAX": "rUSDC-AVAX-P-THETA",
