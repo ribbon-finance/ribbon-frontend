@@ -14,7 +14,7 @@ const BNBBanner: React.FC = () => {
       message="BNB Covered Call Vault is now live"
       onClick={() => (isBnbChain ? {} : setShowConnectModal(true))}
       linkURI={isBnbChain ? "/v2/theta-vault/T-BNB-C" : "/"}
-      linkText={isBnbChain ? "Start Depositing" : "Connect to Binance Chain"}
+      linkText="Start Depositing"
     />
   );
 };
