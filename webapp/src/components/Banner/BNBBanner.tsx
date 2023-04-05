@@ -6,7 +6,7 @@ const BNBBanner: React.FC = () => {
     <Banner
       color={colors.asset.WBNB}
       message="BNB Covered Call Vault is now live"
-      linkURI="/v2/theta-vault/T-WBNB-C"
+      linkURI="/v2/theta-vault/T-BNB-C"
       linkText="Start Depositing"
     />
   );

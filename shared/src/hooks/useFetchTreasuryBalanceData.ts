@@ -1,7 +1,10 @@
 import { BigNumber } from "ethers";
 import { useCallback, useEffect, useState } from "react";
 
-import { isNativeToken, RibbonTreasuryAddress } from "../constants/constants";
+import {
+  isNoApproveToken,
+  RibbonTreasuryAddress,
+} from "../constants/constants";
 import { ERC20Token } from "../models/eth";
 import { Assets, AssetsList } from "../store/types";
 import { CHAINID, isDevelopment, isProduction } from "../utils/env";
@@ -45,7 +48,7 @@ const useFetchTreasuryBalanceData = () => {
 
     const responses = await Promise.all(
       TreasuryAssets.map(async (asset): Promise<[Assets, BigNumber]> => {
-        if (isNativeToken(asset)) {
+        if (isNoApproveToken(asset)) {
           return [
             asset,
             await provider.getBalance(RibbonTreasuryAddress[queryChainId]),
