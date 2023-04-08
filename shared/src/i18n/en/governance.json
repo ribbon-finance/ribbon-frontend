@@ -14,11 +14,11 @@
       "description": "Selecting “yes” will allow you to lock the RBN from your share of the early unlock penalty in the claim transaction."
     },
     "unlockPenalty": {
-      "title": "Pre Timestamp Penalty",
+      "title": "Pre Timestamp Reward",
       "description": "Your share of the unlock penalty (in $RBN) collected from veRBN lockers who unlocks their tokens before the lockup expiry before RGP-31 passed"
     },
     "unlockPenaltyPostTimestamp": {
-      "title": "Post Timestamp Penalty",
+      "title": "Post Timestamp Reward",
       "description": "Your share of the unlock penalty (in $RBN) collected from veRBN lockers who unlocks their tokens before the lockup expiry after RGP-31 passed"
     },
     "lockRBN": {
@@ -76,8 +76,8 @@
     "vaultRevenue": "Vault Revenue",
     "claimRibbonRevenue": "CLAIM RIBBON REVENUE",
     "vaultRevenueEarned": "VAULT REVENUE EARNED",
-    "shareOfUnlockPenalty": "PRE TIMESTAMP PENALTY",
-    "shareOfUnlockPenaltyPostTimestamp": "POST TIMESTAMP PENALTY",
+    "shareOfUnlockPenalty": "PRE TIMESTAMP REWARD",
+    "shareOfUnlockPenaltyPostTimestamp": "POST TIMESTAMP REWARD",
     "protocolRevenueClaim": "PROTOCOL REVENUE CLAIM",
     "unlockPenaltyClaim": "UNLOCK PENALTY CLAIM",
     "penaltyDistribution": "Penalty Distribution (RBN)",
