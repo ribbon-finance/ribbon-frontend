@@ -91,6 +91,7 @@ const Payoff: React.FC<PayoffSTETHProps> = ({ vaultOption }) => {
     upperBarrierPercentage,
     performance,
     loading,
+    optionPrice,
   } = useAirtableEarnData(vaultOption);
 
   const loadingText = useLoadingText();
@@ -130,7 +131,8 @@ const Payoff: React.FC<PayoffSTETHProps> = ({ vaultOption }) => {
       upperBarrierPercentage,
       maxYield,
       baseYield,
-      participationRate
+      participationRate,
+      optionPrice
     );
   }, [
     vaultOption,
@@ -139,11 +141,12 @@ const Payoff: React.FC<PayoffSTETHProps> = ({ vaultOption }) => {
     maxYield,
     baseYield,
     participationRate,
+    optionPrice,
   ]);
 
   const maxYieldText = useMemo(() => {
     const commonText =
-      "The max yield is defined as the max payout if the price of the underlying asset is at the barrier at expiry. The formula used to compute the max yield is as follows: ";
+      "The max yield is defined as the max payout if the price of the underlying asset is at the barrier at expiry, fees are not included. Each trade is independent and we display it in APY format for comparison purposes only. The formula used to compute the max yield is as follows: ";
     switch (vaultOption) {
       case "rEARN":
         return (
@@ -159,19 +162,11 @@ const Payoff: React.FC<PayoffSTETHProps> = ({ vaultOption }) => {
   }, [vaultOption]);
 
   const expectedYieldText = useMemo(() => {
-    const commonText =
-      "The expected yield is computed using the current moneyness. The formula used to compute the expected yield is as follows: ";
     switch (vaultOption) {
       case "rEARN":
-        return (
-          commonText +
-          "BASE APY + (CURRENT PERF * 4 * PARTICIPATION RATE + 1)^(365 / 28) - 1"
-        );
+        return "The expected yield is computed using the current moneyness. The formula used to compute the expected yield is as follows: BASE APY + (CURRENT PERF * 4 * PARTICIPATION RATE + 1)^(365 / 28) - 1";
       case "rEARN-stETH":
-        return (
-          commonText +
-          "BASE APY + (CURRENT PERF * PARTICIPATION RATE + 1)^(365 / 7) - 1"
-        );
+        return "The expected weekly yield represents how much of the initial capital the depositor will receive at the end of the trade. 101% means that the depositor is expected to make 1% this week. It is computed using the current spot price, fees are not included. Each trade is independent. It does not incorporate the expectation of future price and the volatility of the asset.";
     }
   }, [vaultOption]);
 
@@ -290,11 +285,11 @@ const Payoff: React.FC<PayoffSTETHProps> = ({ vaultOption }) => {
               fontSize={14}
               color={"rgba(255, 255, 255, 0.48)"}
             >
-              Expected Yield (APY)
+              Expected Principal Returned
             </SecondaryText>
             <div className="mr-auto">
               <TooltipExplanation
-                title="EXPECTED YIELD"
+                title="WEEKLY RETURN"
                 explanation={expectedYieldText}
                 renderContent={({ ref, ...triggerHandler }) => (
                   <HelpInfo containerRef={ref} {...triggerHandler}>
@@ -309,7 +304,7 @@ const Payoff: React.FC<PayoffSTETHProps> = ({ vaultOption }) => {
                 : `+${
                     hoverPrice
                       ? hoverPrice.toFixed(2)
-                      : (expectedYield * 100).toFixed(2)
+                      : expectedYield.toFixed(2)
                   }%`}
             </CalculationData>
           </CalculationColumn>

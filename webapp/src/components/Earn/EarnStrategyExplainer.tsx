@@ -144,13 +144,25 @@ export const EarnStrategyExplainer: React.FC<EarnStrategyExplainerProps> = ({
               return <></>;
           }
         case "step3":
-          return (
-            <>
-              Set it and forget it - deposit and start earning a base APY of{" "}
-              {loading ? "---" : `${(baseYield * 100).toFixed(2)}%`} with{" "}
-              {vaultOption === "rEARN-stETH" && "99.5%"} principal protection
-            </>
-          );
+          switch (vaultOption) {
+            case "rEARN":
+              return (
+                <>
+                  Set it and forget it - deposit and start earning a base APY of{" "}
+                  {loading ? "---" : `${(baseYield * 100).toFixed(2)}%`} with
+                  principal protection
+                </>
+              );
+            case "rEARN-stETH":
+              return (
+                <>
+                  Set it and forget it - deposit and start earning with 99.5%
+                  weekly principal protection
+                </>
+              );
+            default:
+              return <></>;
+          }
       }
     },
     [baseYield, loading, maxYield, vaultOption]

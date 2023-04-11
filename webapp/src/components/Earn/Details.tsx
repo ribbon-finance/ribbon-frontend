@@ -188,14 +188,21 @@ export const Strategy: React.FC<StrategyProps> = ({ setStep, vaultOption }) => {
           <ParagraphText marginTop={8}>
             The weekly barrier options enable the vault to participate in any
             ETH upside from {lowerBarrier}% up to {upperBarrier}% of the ETH's
-            spot level at the start of the week (upside barrier). However, if
-            the price of ETH has increased by more than{" "}
-            {upperBarrierPercentage * 100}% at the end of the week, the barrier
-            options expire worthless and the vault earns the base APY only.
+            spot level at the start of the week. However, if the price of ETH
+            has increased by more than {upperBarrierPercentage * 100}% or
+            decreased by more than {-lowerBarrierPercentage * 100}% at the end
+            of the week, the barrier options expire worthless and the vault
+            loses 0.5% of capital.
           </ParagraphText>
         );
     }
-  }, [lowerBarrier, upperBarrier, upperBarrierPercentage, vaultOption]);
+  }, [
+    lowerBarrier,
+    upperBarrier,
+    upperBarrierPercentage,
+    lowerBarrierPercentage,
+    vaultOption,
+  ]);
 
   const renderLoanTenor = useCallback(() => {
     switch (vaultOption) {
