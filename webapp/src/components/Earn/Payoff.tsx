@@ -14,6 +14,7 @@ import useLoadingText from "shared/lib/hooks/useLoadingText";
 import EarnSTETHChart from "./EarnChart";
 import { VaultOptions } from "shared/lib/constants/constants";
 import {
+  getExpectedPrincipalReturnRange,
   getOptionMoneyness,
   getOptionMoneynessRange,
   getYieldRange,
@@ -91,11 +92,13 @@ const Payoff: React.FC<PayoffSTETHProps> = ({ vaultOption }) => {
     upperBarrierPercentage,
     performance,
     loading,
+    optionPrice,
+    numericalPerformance,
   } = useAirtableEarnData(vaultOption);
-
   const loadingText = useLoadingText();
 
   const [hoverPrice, setHoverPrice] = useState<number>();
+  const [hoverIndex, setHoverIndex] = useState<number>();
   const [hoverPercentage, setHoverPercentage] = useState<number>();
   const [, setChartHovering] = useState(false);
 
@@ -130,7 +133,8 @@ const Payoff: React.FC<PayoffSTETHProps> = ({ vaultOption }) => {
       upperBarrierPercentage,
       maxYield,
       baseYield,
-      participationRate
+      participationRate,
+      optionPrice
     );
   }, [
     vaultOption,
@@ -139,11 +143,32 @@ const Payoff: React.FC<PayoffSTETHProps> = ({ vaultOption }) => {
     maxYield,
     baseYield,
     participationRate,
+    optionPrice,
+  ]);
+
+  const expectedPrincipalReturnRange = useMemo(() => {
+    return getExpectedPrincipalReturnRange(
+      vaultOption,
+      lowerBarrierPercentage,
+      upperBarrierPercentage,
+      maxYield,
+      baseYield,
+      participationRate,
+      optionPrice
+    );
+  }, [
+    vaultOption,
+    lowerBarrierPercentage,
+    upperBarrierPercentage,
+    maxYield,
+    baseYield,
+    participationRate,
+    optionPrice,
   ]);
 
   const maxYieldText = useMemo(() => {
     const commonText =
-      "The max yield is defined as the max payout if the price of the underlying asset is at the barrier at expiry. The formula used to compute the max yield is as follows: ";
+      "The max yield is defined as the max payout if the price of the underlying asset is at the barrier at expiry, fees are not included. Each trade is independent and we display it in APY format for comparison purposes only. The formula used to compute the max yield is as follows: ";
     switch (vaultOption) {
       case "rEARN":
         return (
@@ -158,22 +183,56 @@ const Payoff: React.FC<PayoffSTETHProps> = ({ vaultOption }) => {
     }
   }, [vaultOption]);
 
-  const expectedYieldText = useMemo(() => {
-    const commonText =
-      "The expected yield is computed using the current moneyness. The formula used to compute the expected yield is as follows: ";
+  const expectedYieldTitle = useMemo(() => {
     switch (vaultOption) {
       case "rEARN":
-        return (
-          commonText +
-          "BASE APY + (CURRENT PERF * 4 * PARTICIPATION RATE + 1)^(365 / 28) - 1"
-        );
+        return "Expected Yield";
       case "rEARN-stETH":
-        return (
-          commonText +
-          "BASE APY + (CURRENT PERF * PARTICIPATION RATE + 1)^(365 / 7) - 1"
-        );
+        return "Expected Principal Returned";
     }
   }, [vaultOption]);
+
+  const expectedYieldText = useMemo(() => {
+    switch (vaultOption) {
+      case "rEARN":
+        return "The expected yield is computed using the current moneyness. The formula used to compute the expected yield is as follows: BASE APY + (CURRENT PERF * 4 * PARTICIPATION RATE + 1)^(365 / 28) - 1";
+      case "rEARN-stETH":
+        return "The expected weekly yield represents how much of the initial capital the depositor will receive at the end of the trade. 101% means that the depositor is expected to make 1% this week. It is computed using the current spot price, fees are not included. Each trade is independent. It does not incorporate the expectation of future price and the volatility of the asset.";
+    }
+  }, [vaultOption]);
+
+  const expectedYieldPercentage = useMemo(() => {
+    switch (vaultOption) {
+      case "rEARN":
+        if (loading) {
+          return loadingText;
+        } else {
+          return `+${
+            hoverPrice
+              ? hoverPrice.toFixed(2)
+              : (expectedYield * 100).toFixed(2)
+          }%`;
+        }
+      case "rEARN-stETH":
+        if (loading) {
+          return loadingText;
+        } else {
+          return `${
+            hoverIndex
+              ? expectedPrincipalReturnRange[hoverIndex].toFixed(2)
+              : (expectedYield * 100).toFixed(2)
+          }%`;
+        }
+    }
+  }, [
+    expectedPrincipalReturnRange,
+    expectedYield,
+    hoverIndex,
+    hoverPrice,
+    loading,
+    loadingText,
+    vaultOption,
+  ]);
 
   return (
     <>
@@ -204,8 +263,13 @@ const Payoff: React.FC<PayoffSTETHProps> = ({ vaultOption }) => {
           >
             <EarnSTETHChart
               onHoverPrice={setHoverPrice}
+              onHoverIndex={setHoverIndex}
               onHoverPercentage={setHoverPercentage}
-              performance={performance}
+              performance={
+                vaultOption === "rEARN-stETH"
+                  ? numericalPerformance
+                  : performance
+              }
               baseYield={baseYield}
               lowerBarrierPercentage={lowerBarrierPercentage}
               upperBarrierPercentage={upperBarrierPercentage}
@@ -290,11 +354,11 @@ const Payoff: React.FC<PayoffSTETHProps> = ({ vaultOption }) => {
               fontSize={14}
               color={"rgba(255, 255, 255, 0.48)"}
             >
-              Expected Yield (APY)
+              {expectedYieldTitle}
             </SecondaryText>
             <div className="mr-auto">
               <TooltipExplanation
-                title="EXPECTED YIELD"
+                title="WEEKLY RETURN"
                 explanation={expectedYieldText}
                 renderContent={({ ref, ...triggerHandler }) => (
                   <HelpInfo containerRef={ref} {...triggerHandler}>
@@ -304,13 +368,7 @@ const Payoff: React.FC<PayoffSTETHProps> = ({ vaultOption }) => {
               />
             </div>
             <CalculationData variant={loading ? undefined : "green"}>
-              {loading
-                ? loadingText
-                : `+${
-                    hoverPrice
-                      ? hoverPrice.toFixed(2)
-                      : (expectedYield * 100).toFixed(2)
-                  }%`}
+              {expectedYieldPercentage}
             </CalculationData>
           </CalculationColumn>
         </CalculationContainer>

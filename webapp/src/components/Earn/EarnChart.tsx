@@ -14,6 +14,7 @@ import { VaultOptions } from "shared/lib/constants/constants";
  */
 interface ProfitChartProps {
   onHoverPrice: (price: number | undefined) => void;
+  onHoverIndex: (index: number | undefined) => void;
   onHoverPercentage: (percentage: number | undefined) => void;
   performance: number;
   baseYield: number;
@@ -27,6 +28,7 @@ interface ProfitChartProps {
 
 const EarnSTETHChart: React.FC<ProfitChartProps> = ({
   onHoverPrice,
+  onHoverIndex,
   onHoverPercentage,
   performance,
   baseYield,
@@ -256,10 +258,12 @@ const EarnSTETHChart: React.FC<ProfitChartProps> = ({
       onHover: (a: any, elements: any) => {
         if (elements && elements.length) {
           onHoverPrice(yieldRange[elements[0]._index]);
+          onHoverIndex(elements[0]._index);
           onHoverPercentage(moneynessRange[elements[0]._index]);
           setIndex(elements[0]._index);
         } else {
           onHoverPrice(undefined);
+          onHoverIndex(undefined);
           onHoverPercentage(undefined);
           setIndex(undefined);
         }
@@ -269,6 +273,7 @@ const EarnSTETHChart: React.FC<ProfitChartProps> = ({
     vaultOption,
     onHoverPrice,
     yieldRange,
+    onHoverIndex,
     onHoverPercentage,
     moneynessRange,
   ]);
@@ -323,7 +328,7 @@ const EarnSTETHChart: React.FC<ProfitChartProps> = ({
         if (p === lowerBarrierPercentage * 100) {
           switch (vaultOption) {
             case "rEARN":
-              return maxYield * 100;
+              return baseYield * 100;
             case "rEARN-stETH":
               return baseYield * 100;
             default:
@@ -396,7 +401,7 @@ const EarnSTETHChart: React.FC<ProfitChartProps> = ({
                   case "rEARN":
                     return maxYield * 100;
                   case "rEARN-stETH":
-                    return baseYield * 100;
+                    return yieldRange[0];
                   default:
                     return maxYield * 100;
                 }
@@ -415,14 +420,14 @@ const EarnSTETHChart: React.FC<ProfitChartProps> = ({
       };
     },
     [
-      lowerBarrierPercentage,
-      upperBarrierPercentage,
       moneynessRange,
       yieldRange,
       hoveredIndex,
+      lowerBarrierPercentage,
+      upperBarrierPercentage,
       vaultOption,
-      maxYield,
       baseYield,
+      maxYield,
       findNeighbourPoint,
     ]
   );
