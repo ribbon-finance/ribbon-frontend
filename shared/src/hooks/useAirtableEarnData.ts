@@ -130,15 +130,19 @@ const calculateMaxYield = (
         1
       );
     case "rEARN-stETH":
-      return (
-        baseYield +
-        (((upperBarrierPercentage - lowerBarrierPercentage) /
-          (1 + upperBarrierPercentage)) *
-          participationRate +
-          1) **
-          (365 / 7) -
-        1
-      );
+      const loanAPR = 0.048;
+      const performance =
+        (1 + upperBarrierPercentage - (1 + lowerBarrierPercentage)) /
+        (1 + upperBarrierPercentage);
+      const apy =
+        (1 +
+          ((((performance - optionPrice) * participationRate * 365.25) / 7 +
+            loanAPR) *
+            7) /
+            365.25) **
+          (365.25 / 7) -
+        1;
+      return apy;
     default:
       return 0;
   }
@@ -213,8 +217,6 @@ export const calculateExpectedYieldSTETH = (
         365.25) **
       (365.25 / 7) -
     1;
-  console.log("apy", apy);
-
   const optionPayout = (performance - optionPrice) * participationRate;
   const capitalRetured = 1 + ((loanAPR * 7) / 365.25 + optionPayout);
   return apy;
