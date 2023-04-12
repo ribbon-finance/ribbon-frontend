@@ -144,6 +144,7 @@ const Payoff: React.FC<PayoffSTETHProps> = ({ vaultOption }) => {
     optionPrice,
   ]);
 
+  console.log(yieldRange);
   const maxYieldText = useMemo(() => {
     const commonText =
       "The max yield is defined as the max payout if the price of the underlying asset is at the barrier at expiry, fees are not included. Each trade is independent and we display it in APY format for comparison purposes only. The formula used to compute the max yield is as follows: ";

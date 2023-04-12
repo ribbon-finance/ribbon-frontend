@@ -184,18 +184,10 @@ const calculateExpectedYield = (
     case "rEARN-stETH":
       const loanAPR = 0.048;
       return performanceBetweenBarriers
-        ? 99.5
-        : 100 *
-            (1 +
-              ((loanAPR * 7) / 365.25 +
-                (performance - optionPrice) * participationRate));
-    // : (1 +
-    //     ((((performance - optionPrice) * participationRate * 365.25) / 7 +
-    //       loanAPR) *
-    //       7) /
-    //       365.25) **
-    //     (165.25 / 7) -
-    //     1;
+        ? 0.995
+        : 1 +
+            ((loanAPR * 7) / 365.25 +
+              (performance - optionPrice) * participationRate);
     default:
       return 0;
   }
