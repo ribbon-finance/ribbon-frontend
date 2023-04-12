@@ -1,5 +1,8 @@
 import { VaultOptions } from "shared/lib/constants/constants";
-import { calculateExpectedYieldSTETH } from "shared/lib/hooks/useAirtableEarnData";
+import {
+  calculateExpectedYield,
+  calculateExpectedYieldSTETH,
+} from "shared/lib/hooks/useAirtableEarnData";
 
 export const isPerformanceBelowBarriers = (
   performance: number,
@@ -213,7 +216,7 @@ export const getYieldRange = (
       ];
     case "rEARN-stETH":
       // points that represent the base yield below lower barrier
-      for (let i = 0; i < leftBaseYieldPoints; i += 1) {
+      for (let i = 0; i < leftBaseYieldPoints + 1; i += 1) {
         leftArray.push(
           calculateExpectedYieldSTETH(
             baseYield,
@@ -226,7 +229,7 @@ export const getYieldRange = (
       }
 
       const barriersSum = upperBarrierPercentage - lowerBarrierPercentage;
-      console.log(barriersSum);
+
       // we multiply the number by 10000 to make plotting easier
       const barriersSumLargeNumber = Math.round(barriersSum * 100) * 100;
 
@@ -250,7 +253,7 @@ export const getYieldRange = (
       }
 
       // points that represent the base yield above upper barrier
-      for (let i = 0; i < rightBaseYieldPoints; i += 1) {
+      for (let i = 0; i < rightBaseYieldPoints + 1; i += 1) {
         rightArray.push(
           calculateExpectedYieldSTETH(
             baseYield,
@@ -261,14 +264,83 @@ export const getYieldRange = (
           ) * 100
         );
       }
-      return [
-        ...leftArray,
-        baseYieldPercentage,
-        ...array,
-        baseYieldPercentage,
-        ...rightArray,
-      ];
+      return [...leftArray, ...array, ...rightArray];
     default:
       return [];
   }
+};
+
+export const getExpectedPrincipalReturnRange = (
+  vaultOption: VaultOptions,
+  lowerBarrierPercentage: number,
+  upperBarrierPercentage: number,
+  maxYield: number,
+  baseYield: number,
+  participationRate: number,
+  optionPrice: number
+) => {
+  let leftArray = [];
+  let array = [];
+  let rightArray = [];
+  const leftBaseYieldPoints = getLeftBaseYieldPoints(vaultOption);
+  const rightBaseYieldPoints = getRightBaseYieldPoints(vaultOption);
+  // points that represent the base yield below lower barrier
+  for (let i = 0; i < leftBaseYieldPoints + 1; i += 1) {
+    leftArray.push(
+      calculateExpectedYield(
+        vaultOption,
+        baseYield,
+        lowerBarrierPercentage,
+        upperBarrierPercentage,
+        participationRate,
+        -1,
+        0,
+        optionPrice
+      ) * 100
+    );
+  }
+
+  const barriersSum = upperBarrierPercentage - lowerBarrierPercentage;
+
+  // we multiply the number by 10000 to make plotting easier
+  const barriersSumLargeNumber = Math.round(barriersSum * 100) * 100;
+
+  // points that represent the expected yield between barriers
+  // add incremental amounts of expected yield from base yield to max yield
+  for (let i = 0; i <= barriersSumLargeNumber; i += 1) {
+    const performance =
+      i + Math.round((lowerBarrierPercentage + 1) * 100) * 100;
+    const optionPayout =
+      (performance - Math.round((lowerBarrierPercentage + 1) * 100) * 100) /
+      performance;
+    array.push(
+      calculateExpectedYield(
+        vaultOption,
+        baseYield,
+        lowerBarrierPercentage,
+        upperBarrierPercentage,
+        participationRate,
+        optionPayout,
+        0,
+        optionPrice
+      ) * 100
+    );
+  }
+
+  // points that represent the base yield above upper barrier
+  for (let i = 0; i < rightBaseYieldPoints + 1; i += 1) {
+    rightArray.push(
+      calculateExpectedYield(
+        vaultOption,
+        baseYield,
+        lowerBarrierPercentage,
+        upperBarrierPercentage,
+        participationRate,
+        -1,
+        0,
+        optionPrice
+      ) * 100
+    );
+  }
+  return [...leftArray, ...array, ...rightArray];
 };

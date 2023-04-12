@@ -19,6 +19,7 @@ export type EarnData = {
   upperBarrierETHPrice: number;
   avgPerformance: number;
   optionPrice: number;
+  numericalPerformance: number;
 };
 
 export const defaultEarnUSDCData: EarnData = {
@@ -37,6 +38,7 @@ export const defaultEarnUSDCData: EarnData = {
   upperBarrierETHPrice: 0,
   avgPerformance: 0,
   optionPrice: 0.0267,
+  numericalPerformance: 0,
 };
 
 export const defaultEarnSTETHData: EarnData = {
@@ -55,6 +57,7 @@ export const defaultEarnSTETHData: EarnData = {
   upperBarrierETHPrice: 0,
   avgPerformance: 0,
   optionPrice: 0.087,
+  numericalPerformance: 0,
 };
 
 export const defaultEarnData = (vaultOption: VaultOptions) => {
@@ -148,20 +151,7 @@ const calculateMaxYield = (
   }
 };
 
-const calculateAverageYieldSTETH = (
-  baseYield: number,
-  participationRate: number,
-  averagePayout: number,
-  averageHitRatio: number
-) => {
-  return (
-    baseYield +
-    (averagePayout * participationRate * averageHitRatio + 1) ** (365.25 / 7) -
-    1
-  );
-};
-
-const calculateExpectedYield = (
+export const calculateExpectedYield = (
   vault: VaultOptions,
   baseYield: number,
   lowerBarrierPercentage: number,
@@ -174,6 +164,10 @@ const calculateExpectedYield = (
   const performanceBetweenBarriers =
     performance < lowerBarrierPercentage ||
     performance > upperBarrierPercentage;
+  const performanceBetweenBarriersSteth =
+    performance <=
+      (1 + upperBarrierPercentage - (1 + lowerBarrierPercentage)) /
+        (1 + upperBarrierPercentage) && performance >= 0;
   switch (vault) {
     case "rEARN":
       return performanceBetweenBarriers
@@ -183,11 +177,12 @@ const calculateExpectedYield = (
             1;
     case "rEARN-stETH":
       const loanAPR = 0.048;
-      return performanceBetweenBarriers
-        ? 0.995
-        : 1 +
+      return performanceBetweenBarriersSteth
+        ? 1 +
             ((loanAPR * 7) / 365.25 +
-              (performance - optionPrice) * participationRate);
+              (performance - optionPrice) * participationRate)
+        : 0.995;
+
     default:
       return 0;
   }
@@ -209,8 +204,6 @@ export const calculateExpectedYieldSTETH = (
         365.25) **
       (365.25 / 7) -
     1;
-  const optionPayout = (performance - optionPrice) * participationRate;
-  const capitalRetured = 1 + ((loanAPR * 7) / 365.25 + optionPayout);
   return apy;
 };
 
@@ -262,9 +255,10 @@ export const useAirtableEarnData = (vaultOption: VaultOptions) => {
     lowerBarrierETHPrice,
     upperBarrierETHPrice,
     avgPerformance,
+    numericalPerformance,
   ] = useMemo(() => {
     if (!values) {
-      return [0, 0, 0, 0, 0, 0, 0, 0, 0];
+      return [0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
     }
     let rawPerformance: number;
     switch (vaultOption) {
@@ -327,6 +321,11 @@ export const useAirtableEarnData = (vaultOption: VaultOptions) => {
       avgPerformanceArray.reduce((partialSum, a) => partialSum + a, 0) /
       avgPerformanceArray.length;
 
+    // this performance is just for the graph
+    const numericalPerformance =
+      Math.round(
+        ((ETHPrice - values.strikePrice) / values.strikePrice) * 10000
+      ) / 10000;
     return [
       absolutePerformance,
       performance,
@@ -335,6 +334,7 @@ export const useAirtableEarnData = (vaultOption: VaultOptions) => {
       lowerBarrierETHPrice,
       upperBarrierETHPrice,
       isNaN(avgPerformance) ? 0 : avgPerformance,
+      numericalPerformance,
     ];
   }, [values, ETHPrice, vaultOption, itmRecords]);
 
@@ -357,6 +357,7 @@ export const useAirtableEarnData = (vaultOption: VaultOptions) => {
     lowerBarrierETHPrice,
     upperBarrierETHPrice,
     avgPerformance,
+    numericalPerformance,
     optionPrice: values.optionPrice,
   } as EarnData;
 };

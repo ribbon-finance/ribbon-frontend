@@ -14,6 +14,7 @@ import useLoadingText from "shared/lib/hooks/useLoadingText";
 import EarnSTETHChart from "./EarnChart";
 import { VaultOptions } from "shared/lib/constants/constants";
 import {
+  getExpectedPrincipalReturnRange,
   getOptionMoneyness,
   getOptionMoneynessRange,
   getYieldRange,
@@ -92,11 +93,12 @@ const Payoff: React.FC<PayoffSTETHProps> = ({ vaultOption }) => {
     performance,
     loading,
     optionPrice,
+    numericalPerformance,
   } = useAirtableEarnData(vaultOption);
-
   const loadingText = useLoadingText();
 
   const [hoverPrice, setHoverPrice] = useState<number>();
+  const [hoverIndex, setHoverIndex] = useState<number>();
   const [hoverPercentage, setHoverPercentage] = useState<number>();
   const [, setChartHovering] = useState(false);
 
@@ -144,7 +146,26 @@ const Payoff: React.FC<PayoffSTETHProps> = ({ vaultOption }) => {
     optionPrice,
   ]);
 
-  console.log(yieldRange);
+  const expectedPrincipalReturnRange = useMemo(() => {
+    return getExpectedPrincipalReturnRange(
+      vaultOption,
+      lowerBarrierPercentage,
+      upperBarrierPercentage,
+      maxYield,
+      baseYield,
+      participationRate,
+      optionPrice
+    );
+  }, [
+    vaultOption,
+    lowerBarrierPercentage,
+    upperBarrierPercentage,
+    maxYield,
+    baseYield,
+    participationRate,
+    optionPrice,
+  ]);
+
   const maxYieldText = useMemo(() => {
     const commonText =
       "The max yield is defined as the max payout if the price of the underlying asset is at the barrier at expiry, fees are not included. Each trade is independent and we display it in APY format for comparison purposes only. The formula used to compute the max yield is as follows: ";
@@ -162,6 +183,15 @@ const Payoff: React.FC<PayoffSTETHProps> = ({ vaultOption }) => {
     }
   }, [vaultOption]);
 
+  const expectedYieldTitle = useMemo(() => {
+    switch (vaultOption) {
+      case "rEARN":
+        return "Expected Yield";
+      case "rEARN-stETH":
+        return "Expected Principal Returned";
+    }
+  }, [vaultOption]);
+
   const expectedYieldText = useMemo(() => {
     switch (vaultOption) {
       case "rEARN":
@@ -170,6 +200,39 @@ const Payoff: React.FC<PayoffSTETHProps> = ({ vaultOption }) => {
         return "The expected weekly yield represents how much of the initial capital the depositor will receive at the end of the trade. 101% means that the depositor is expected to make 1% this week. It is computed using the current spot price, fees are not included. Each trade is independent. It does not incorporate the expectation of future price and the volatility of the asset.";
     }
   }, [vaultOption]);
+
+  const expectedYieldPercentage = useMemo(() => {
+    switch (vaultOption) {
+      case "rEARN":
+        if (loading) {
+          return loadingText;
+        } else {
+          return `+${
+            hoverPrice
+              ? hoverPrice.toFixed(2)
+              : (expectedYield * 100).toFixed(2)
+          }%`;
+        }
+      case "rEARN-stETH":
+        if (loading) {
+          return loadingText;
+        } else {
+          return `+${
+            hoverIndex
+              ? expectedPrincipalReturnRange[hoverIndex].toFixed(2)
+              : (expectedYield * 100).toFixed(2)
+          }%`;
+        }
+    }
+  }, [
+    expectedPrincipalReturnRange,
+    expectedYield,
+    hoverIndex,
+    hoverPrice,
+    loading,
+    loadingText,
+    vaultOption,
+  ]);
 
   return (
     <>
@@ -200,8 +263,13 @@ const Payoff: React.FC<PayoffSTETHProps> = ({ vaultOption }) => {
           >
             <EarnSTETHChart
               onHoverPrice={setHoverPrice}
+              onHoverIndex={setHoverIndex}
               onHoverPercentage={setHoverPercentage}
-              performance={performance}
+              performance={
+                vaultOption === "rEARN-stETH"
+                  ? numericalPerformance
+                  : performance
+              }
               baseYield={baseYield}
               lowerBarrierPercentage={lowerBarrierPercentage}
               upperBarrierPercentage={upperBarrierPercentage}
@@ -286,7 +354,7 @@ const Payoff: React.FC<PayoffSTETHProps> = ({ vaultOption }) => {
               fontSize={14}
               color={"rgba(255, 255, 255, 0.48)"}
             >
-              Expected Principal Returned
+              {expectedYieldTitle}
             </SecondaryText>
             <div className="mr-auto">
               <TooltipExplanation
@@ -300,13 +368,7 @@ const Payoff: React.FC<PayoffSTETHProps> = ({ vaultOption }) => {
               />
             </div>
             <CalculationData variant={loading ? undefined : "green"}>
-              {loading
-                ? loadingText
-                : `+${
-                    hoverPrice
-                      ? hoverPrice.toFixed(2)
-                      : expectedYield.toFixed(2)
-                  }%`}
+              {expectedYieldPercentage}
             </CalculationData>
           </CalculationColumn>
         </CalculationContainer>
