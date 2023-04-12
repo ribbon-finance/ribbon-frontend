@@ -524,7 +524,7 @@ export const Risk: React.FC<RiskProps> = ({ vaultOption }) => {
       {renderCreditRisk()}
       {renderCounterpartyRisk()}
       {renderLiquidityRisk()}
-      {renderSPVRisk}
+      {renderSPVRisk()}
       <StyledTitle marginTop={24}>Smart Contract Risk</StyledTitle>
       <ParagraphText marginTop={8}>
         The Ribbon Earn smart contracts have been{" "}

@@ -226,6 +226,27 @@ const sections = [
               Territory. We unconditionally reserve the right to restrict access
               to any Restricted Territory and may implement technical controls
               to prevent access to the Portal or any Services from any
+              Restricted Territory. For https://app.ribbon.finance/earn/R-EARN
+              specifically, users from Cuba, Democratic People’s Republic of
+              Korea (DPRK), Democratic Republic of Congo, Iran, Iraq, Lebanon,
+              Libya, Mali, Myanmar, Nicaragua, Russia, Somalia, South Sudan,
+              Sudan, Syria, and The United States of America will not be be able
+              to access the site.
+            </p>
+            <p>
+              Your access to the Portal and any Services may be restricted based
+              on your jurisdiction or geographical location. You must not use
+              the Protocol if you are located in or a citizen or resident of any
+              state, country, territory or other jurisdiction in which use of
+              the Portal or the Services would be illegal or otherwise violate
+              any applicable law (a "Restricted Territory"). The fact that the
+              Portal is accessible in a Restricted Territory or that the Portal
+              allows the use of the official language of a Restricted Territory
+              or a language commonly used in a Restricted Territory must not be
+              construed as a license to use the Portal in such a Restricted
+              Territory. We unconditionally reserve the right to restrict access
+              to any Restricted Territory and may implement technical controls
+              to prevent access to the Portal or any Services from any
               Restricted Territory.
             </p>
           </span>

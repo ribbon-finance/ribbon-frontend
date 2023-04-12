@@ -5,9 +5,9 @@ import colors from "shared/lib/designSystem/colors";
 import theme from "shared/lib/designSystem/theme";
 import EarnFloatingMenu from "./FloatingMenu";
 import ButtonArrow from "shared/lib/components/Common/ButtonArrow";
-import { BoostIcon } from "shared/lib/assets/icons/icons";
 import { Counterparty, Link } from "./Counterparties";
 import { VaultOptions } from "shared/lib/constants/constants";
+import { BackedLogo } from "shared/lib/assets/icons/backedLogo";
 const BoostLogoContainer = styled.div`
   display: flex;
   align-items: center;
@@ -105,10 +105,7 @@ const CounterpartyDetail: React.FC<VaultStrategyExplainerProps> = ({
       case "Backed":
         return (
           <BoostLogoContainer>
-            <BoostIcon
-              color={colors.primaryText}
-              backgroundColor={colors.red}
-            />
+            <BackedLogo />
           </BoostLogoContainer>
         );
     }
@@ -124,7 +121,7 @@ const CounterpartyDetail: React.FC<VaultStrategyExplainerProps> = ({
   const renderBorrowRate = useCallback((s: Counterparty) => {
     switch (s) {
       case "Backed":
-        return <>{(5).toFixed(2)}%</>;
+        return <>{(4.5).toFixed(2)}%</>;
     }
   }, []);
 
@@ -156,9 +153,18 @@ const CounterpartyDetail: React.FC<VaultStrategyExplainerProps> = ({
                 fontSize={12}
                 marginTop={16}
               >
+                Issuer
+              </FundingSourceData>
+              <Title>Backed Assets GmbH</Title>
+              <FundingSourceData
+                color={colors.tertiaryText}
+                fontSize={12}
+                marginTop={16}
+              >
                 Broker
               </FundingSourceData>
               <Title>Maerki Baumann & Co. AG</Title>
+              <Title>InCore Bank AG</Title>
               <FundingSourceData
                 color={colors.tertiaryText}
                 fontSize={12}
@@ -167,6 +173,7 @@ const CounterpartyDetail: React.FC<VaultStrategyExplainerProps> = ({
                 Custody
               </FundingSourceData>
               <Title>Maerki Baumann & Co. AG</Title>
+              <Title>InCore Bank AG</Title>
               <FundingSourceData
                 color={colors.tertiaryText}
                 fontSize={12}
@@ -175,14 +182,6 @@ const CounterpartyDetail: React.FC<VaultStrategyExplainerProps> = ({
                 Security Agent
               </FundingSourceData>
               <Title>Security Agent Services Ltd.</Title>
-              <FundingSourceData
-                color={colors.tertiaryText}
-                fontSize={12}
-                marginTop={16}
-              >
-                Issuer
-              </FundingSourceData>
-              <Title>Backed Assets GmbH</Title>
             </Detail>
           </Details>
           <Details className="mt-5">
