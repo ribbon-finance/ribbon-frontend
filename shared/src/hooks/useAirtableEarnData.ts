@@ -322,7 +322,7 @@ export const useAirtableEarnData = (vaultOption: VaultOptions) => {
     absolutePerformance,
     performance,
     expectedYield,
-    maxYield,
+    maxYield: vaultOption === "rEARN" ? 0.0991 : maxYield,
     borrowRate: values.borrowRate,
     lowerBarrierETHPrice,
     upperBarrierETHPrice,
