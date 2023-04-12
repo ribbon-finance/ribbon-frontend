@@ -114,14 +114,14 @@ export const Strategy: React.FC<StrategyProps> = ({ setStep, vaultOption }) => {
             ETH movements in either direction while also ensuring their capital
             is{" "}
             <LinkText role={"button"} onClick={() => setStep("risk")}>
-              protected
-            </LinkText>
-            . The vault earns interest by lending capital to our{" "}
-            <LinkText role={"button"} onClick={() => setStep("funding source")}>
-              counterparties
+              protected.
             </LinkText>{" "}
-            and uses part of it to generate a base APY and the remaining funding
-            to purchase{" "}
+            The vault earns interest by purchasing{" "}
+            <LinkText role={"button"} onClick={() => setStep("funding source")}>
+              Backed
+            </LinkText>{" "}
+            IB01 $ Treasury Bond 0-1yr tokens and uses part of it to generate a
+            base APY and the remaining funding to purchase{" "}
             <TooltipExplanation
               title="weekly at-the-money knock-out barrier options"
               explanation={`The options bought are expiring every Friday, with a one week maturity and the strike price is set to the current underlying asset price. The knock-out barriers are used to define when the payoff is inactive, i.e. if the price of the underlying asset at maturity is below the lower barrier or greater than the upper barrier, the option is worthless.`}
@@ -197,22 +197,6 @@ export const Strategy: React.FC<StrategyProps> = ({ setStep, vaultOption }) => {
     }
   }, [lowerBarrier, upperBarrier, upperBarrierPercentage, vaultOption]);
 
-  const renderLoanTenor = useCallback(() => {
-    switch (vaultOption) {
-      case "rEARN":
-        return (
-          <>
-            <ExplainerTitle color={colors.tertiaryText}>
-              <span>Loan Tenor</span>
-            </ExplainerTitle>
-            <StyledTitle marginTop={4}> 7 DAYS</StyledTitle>
-          </>
-        );
-      case "rEARN-stETH":
-        return <></>;
-    }
-  }, [vaultOption]);
-
   const renderCapitalProtection = useCallback(() => {
     switch (vaultOption) {
       case "rEARN":
@@ -242,7 +226,7 @@ export const Strategy: React.FC<StrategyProps> = ({ setStep, vaultOption }) => {
         return (
           <>
             <ExplainerTitle color={colors.tertiaryText}>
-              <span>Loan Allocation</span>
+              <span>bIB01 Allocation</span>
             </ExplainerTitle>
             {/* querying loanAllocationPCT seems to give the wrong value so we use constant here*/}
             <StyledTitle marginTop={4}>100%</StyledTitle>
@@ -299,7 +283,6 @@ export const Strategy: React.FC<StrategyProps> = ({ setStep, vaultOption }) => {
       <StyledTitle marginTop={24}>Key Conditions</StyledTitle>
       {renderKeyConditions()}
       <StyledTitle marginTop={24}>Vault Specifications</StyledTitle>
-      {renderLoanTenor()}
       <ExplainerTitle color={colors.tertiaryText}>
         <span>Option Tenor</span>
       </ExplainerTitle>
@@ -347,7 +330,7 @@ export const Strategy: React.FC<StrategyProps> = ({ setStep, vaultOption }) => {
         {/* 0.44% */}
         {vaultLoading
           ? loadingText
-          : `${(allocationState.optionAllocationPCT / 10000).toFixed(3)}%`}
+          : `${(allocationState.optionAllocationPCT / 10000).toFixed(2)}%`}
       </StyledTitle>
       <ExplainerTitle color={colors.tertiaryText}>
         <span>TVL</span>
@@ -355,10 +338,9 @@ export const Strategy: React.FC<StrategyProps> = ({ setStep, vaultOption }) => {
       <StyledTitle marginTop={4}>
         {vaultLoading
           ? loadingText
-          : parseFloat(formatUnits(totalBalance, decimals)).toFixed(
+          : `${parseFloat(formatUnits(totalBalance, decimals)).toFixed(
               decimalPlaces
-            )}{" "}
-        {getAssetDisplay(asset)}
+            )} ${getAssetDisplay(asset)}`}
       </StyledTitle>
     </>
   );
@@ -396,13 +378,11 @@ export const Risk: React.FC<RiskProps> = ({ vaultOption }) => {
           <>
             <Title>Credit Risk</Title>
             <ParagraphText marginTop={8}>
-              Market makers taking the other side of Ribbon Earn trades carry
-              credit risk and could potentially default in the case of extreme
-              events. This means that both the principal and yield invested
-              could be lost in the event of market makers defaulting. Ribbon
-              works with accredited market makers who have a history of credit
-              worthiness in order to minimize the risk of default for retail
-              investors.
+              Ribbon Earn is exposed to the credit risk of Backed, the Custodian
+              and other parties. A depositors ability to obtain payment is
+              dependent on Backed.Fi’s ability to meet these obligations. In the
+              event of default, insolvency or bankruptcy, investors may not
+              receive the amount owed to them.
             </ParagraphText>
           </>
         );
@@ -454,6 +434,13 @@ export const Risk: React.FC<RiskProps> = ({ vaultOption }) => {
               , sellers of the knock-out options structure may be unable to
               fulfill part of their obligations to the vault.
             </ParagraphText>
+            <ParagraphText marginTop={8}>
+              In general, Backed relies on third parties providing trading on
+              both the Products and any Underlying. Any dysfunction of such
+              third parties or disruption at the exchanges and other platforms
+              may result in a loss of value of the products, which may, in turn
+              negatively impact Backed and/or Ribbon Earn depositors.
+            </ParagraphText>
           </>
         );
       case "rEARN-stETH":
@@ -472,11 +459,72 @@ export const Risk: React.FC<RiskProps> = ({ vaultOption }) => {
     }
   }, [vaultOption]);
 
+  const renderLiquidityRisk = useCallback(() => {
+    switch (vaultOption) {
+      case "rEARN":
+        return (
+          <>
+            <StyledTitle marginTop={24}>Liquidity Risk</StyledTitle>
+            <ParagraphText marginTop={8}>
+              Backed may not have sufficient funds for making payments at any
+              point in time, meaning that the Issuer may have difficulties
+              meeting financial obligations.
+            </ParagraphText>
+          </>
+        );
+      case "rEARN-stETH":
+        return <></>;
+    }
+  }, [vaultOption]);
+
+  const renderSPVRisk = useCallback(() => {
+    switch (vaultOption) {
+      case "rEARN":
+        return (
+          <>
+            <StyledTitle marginTop={24}>
+              Issuer as Special Purpose Vehicle
+            </StyledTitle>
+            <ParagraphText marginTop={8}>
+              The Issuer is a newly established special purpose vehicle ("SPV")
+              with the sole business purpose of the issuance of financial
+              instruments. Thus, the Issuer is currently not profitable and
+              depends on capital from investors. The reserves to maintain the
+              company operations are limited, which may result in the inability
+              of the Issuer to continue as a going concern.
+            </ParagraphText>
+          </>
+        );
+      case "rEARN-stETH":
+        return <></>;
+    }
+  }, [vaultOption]);
+
+  const renderExtraSmartContractRisk = useCallback(() => {
+    switch (vaultOption) {
+      case "rEARN":
+        return (
+          <>
+            <ParagraphText marginTop={8}>
+              The ib01 erc-20 may be susceptible to bugs and smart contract
+              related risks, that might lead to Ribbon Earn losing control over
+              the asset, or a breach that might cause an unintended minting of
+              the asset.
+            </ParagraphText>
+          </>
+        );
+      case "rEARN-stETH":
+        return <></>;
+    }
+  }, [vaultOption]);
+
   return (
     <>
       {renderExchangeRateRisk()}
       {renderCreditRisk()}
       {renderCounterpartyRisk()}
+      {renderLiquidityRisk()}
+      {renderSPVRisk}
       <StyledTitle marginTop={24}>Smart Contract Risk</StyledTitle>
       <ParagraphText marginTop={8}>
         The Ribbon Earn smart contracts have been{" "}
@@ -509,6 +557,7 @@ export const Risk: React.FC<RiskProps> = ({ vaultOption }) => {
         insurance protection, or any other relevant protection in any
         jurisdiction.
       </ParagraphText>
+      {renderExtraSmartContractRisk()}
       {renderUSDCRisk()}
     </>
   );

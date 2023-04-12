@@ -70,4 +70,35 @@ const Geoblocked = () => {
   );
 };
 
+export const REarnGeoblocked = () => {
+  const { t } = useTranslation();
+  const { width } = useScreenSize();
+  const isMobile = width < sizes.md;
+
+  return (
+    <Container>
+      <TextPreview
+        titleStyle={{
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          flexDirection: isMobile ? "column" : "row",
+        }}
+      >
+        <LogoContainer>
+          <RotatingLogo height={80} width={80} />
+        </LogoContainer>
+        <span>
+          {t("shared:GeoblockWarning:title")}{" "}
+          {t("shared:GeoblockWarning:visit")}{" "}
+          <a href={t("shared:GeoblockWarning:url")}>
+            {t("shared:GeoblockWarning:termsAndConditions")}
+          </a>{" "}
+          {t("shared:GeoblockWarning:forMoreDetails")}.
+        </span>
+      </TextPreview>
+    </Container>
+  );
+};
+
 export default Geoblocked;

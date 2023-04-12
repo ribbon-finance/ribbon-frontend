@@ -1,28 +1,13 @@
 import React, { useCallback, useState } from "react";
 import styled from "styled-components";
-import {
-  BaseButton,
-  SecondaryText,
-  Title,
-  BaseLink,
-  PrimaryText,
-} from "shared/lib/designSystem";
+import { BaseButton, SecondaryText, Title } from "shared/lib/designSystem";
 import colors from "shared/lib/designSystem/colors";
 import theme from "shared/lib/designSystem/theme";
 import EarnFloatingMenu from "./FloatingMenu";
 import ButtonArrow from "shared/lib/components/Common/ButtonArrow";
-import { BoostIcon, ExternalIcon } from "shared/lib/assets/icons/icons";
-import { Counterparty } from "./Counterparties";
-import { formatUnits } from "ethers/lib/utils";
-import { useAirtableEarnData } from "shared/lib/hooks/useAirtableEarnData";
-import { useAirtableEarnLoanAllocation } from "shared/lib/hooks/useAirtableEarnLoanAllocation";
-import { useCredoraData } from "shared/lib/hooks/useCredoraData";
-import { useV2VaultData } from "shared/lib/hooks/web3DataContext";
+import { BoostIcon } from "shared/lib/assets/icons/icons";
+import { Counterparty, Link } from "./Counterparties";
 import { VaultOptions } from "shared/lib/constants/constants";
-import { PoolList } from "shared/lib/constants/lendConstants";
-import TooltipExplanation from "shared/lib/components/Common/TooltipExplanation";
-import HelpInfo from "shared/lib/components/Common/HelpInfo";
-import useLoadingText from "shared/lib/hooks/useLoadingText";
 const BoostLogoContainer = styled.div`
   display: flex;
   align-items: center;
@@ -31,15 +16,6 @@ const BoostLogoContainer = styled.div`
   width: 32px;
   border-radius: 50%;
   position: relative;
-`;
-
-const ParagraphText = styled(SecondaryText)`
-  color: rgba(255, 255, 255, 0.64);
-  font-weight: 400;
-  font-size: 14px;
-  line-height: 20px;
-  margin-top: 8px;
-  margin-bottom: 16px;
 `;
 
 const CounterpartyContent = styled.div`
@@ -95,14 +71,14 @@ const CounterpartyContainer = styled.div`
 
 const Details = styled.div`
   display: flex;
-  flex-direction: row;
+  flex-direction: column;
   width: 100%;
 `;
 
 const Detail = styled.div`
   display: flex;
   flex-direction: column;
-  width: 50%;
+  width: 100%;
   margin-top: 16px;
 `;
 
@@ -116,10 +92,6 @@ const CounterpartyDetail: React.FC<VaultStrategyExplainerProps> = ({
   vaultOption,
 }) => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const { borrowRate, loading } = useAirtableEarnData(vaultOption);
-  const { loading: credoraLoading, data } = useCredoraData();
-  const { records } = useAirtableEarnLoanAllocation();
-  const loadingText = useLoadingText();
   const onToggleMenu = useCallback(() => {
     setIsMenuOpen((open) => !open);
   }, []);
@@ -128,14 +100,9 @@ const CounterpartyDetail: React.FC<VaultStrategyExplainerProps> = ({
     onToggleMenu();
   }, [onToggleMenu]);
 
-  const {
-    loading: vaultLoading,
-    data: { totalBalance },
-  } = useV2VaultData(vaultOption);
-
   const renderLogo = useCallback((s: Counterparty) => {
     switch (s) {
-      case "R-EARN DIVERSIFIED":
+      case "Backed":
         return (
           <BoostLogoContainer>
             <BoostIcon
@@ -147,87 +114,19 @@ const CounterpartyDetail: React.FC<VaultStrategyExplainerProps> = ({
     }
   }, []);
 
-  const renderDescription = useCallback(
-    (s: Counterparty) => {
-      switch (s) {
-        case "R-EARN DIVERSIFIED":
-          return (
-            <>
-              R-Earn diversified is a basket of leading accredited crypto market
-              makers whose credit assessment passed strict requirements set by{" "}
-              <BaseLink
-                color="white"
-                target="_blank"
-                rel="noreferrer noopener"
-                to="https://credora.io/"
-              >
-                <PrimaryText lineHeight={20} fontSize={14}>
-                  Credora
-                </PrimaryText>
-              </BaseLink>
-              , the leading real-time credit underwriter in crypto.{" "}
-              {records.loading ? "---" : `${records.responses.wintermute}%`} of
-              the capital assigned to this pool is lent to{" "}
-              <BaseLink
-                color="white"
-                target="_blank"
-                rel="noreferrer noopener"
-                to="https://www.wintermute.com/"
-              >
-                <PrimaryText lineHeight={20} fontSize={14}>
-                  Wintermute
-                </PrimaryText>
-              </BaseLink>{" "}
-              and {records.loading ? "---" : `${records.responses.folkvang}%`}{" "}
-              is lent to{" "}
-              <BaseLink
-                color="white"
-                target="_blank"
-                rel="noreferrer noopener"
-                to="https://folkvang.io/"
-              >
-                <PrimaryText lineHeight={20} fontSize={14}>
-                  Folkvang
-                </PrimaryText>
-              </BaseLink>
-              .
-            </>
-          );
-      }
-    },
-    [records.loading, records.responses.folkvang, records.responses.wintermute]
-  );
+  const renderName = useCallback((s: Counterparty) => {
+    switch (s) {
+      case "Backed":
+        return "Backed IB01";
+    }
+  }, []);
 
-  const renderPrincipleOutstanding = useCallback(
-    (s: Counterparty) => {
-      switch (s) {
-        case "R-EARN DIVERSIFIED":
-          return (
-            <>
-              {vaultLoading
-                ? "---"
-                : (parseFloat(formatUnits(totalBalance, "6")) * 0.9956).toFixed(
-                    2
-                  )}
-            </>
-          );
-      }
-    },
-    [totalBalance, vaultLoading]
-  );
-
-  const renderBorrowRate = useCallback(
-    (s: Counterparty) => {
-      if (loading) {
-        return <>---</>;
-      }
-      switch (s) {
-        case "R-EARN DIVERSIFIED":
-          return <>{(borrowRate * 100).toFixed(2)}%</>;
-      }
-    },
-    [borrowRate, loading]
-  );
+  const renderBorrowRate = useCallback((s: Counterparty) => {
+    switch (s) {
+      case "Backed":
+        return <>{(5).toFixed(2)}%</>;
+    }
+  }, []);
 
   return (
     <>
@@ -235,7 +134,7 @@ const CounterpartyDetail: React.FC<VaultStrategyExplainerProps> = ({
         <OpenCounterpartyButton role="button" onClick={handleButtonClick}>
           {renderLogo(counterparty)}
           <CounterpartyContent>
-            <StyledTitle>{counterparty}</StyledTitle>
+            <StyledTitle>{renderName(counterparty)}</StyledTitle>
             <FundingSourceData>
               {renderBorrowRate(counterparty)} Borrow Rate (APR)
             </FundingSourceData>
@@ -243,90 +142,88 @@ const CounterpartyDetail: React.FC<VaultStrategyExplainerProps> = ({
           <ButtonArrow isOpen={isMenuOpen} color="white"></ButtonArrow>
         </OpenCounterpartyButton>
       </CounterpartyContainer>
-      <div>
+      <div className="mt-2">
         <EarnFloatingMenu isOpen={isMenuOpen}>
-          <ParagraphText>{renderDescription(counterparty)}</ParagraphText>
           <Details>
+            <StyledTitle fontSize={16}>Product</StyledTitle>
             <Detail>
               <FundingSourceData color={colors.tertiaryText} fontSize={12}>
-                Principal Outstanding
+                Tokenizer
               </FundingSourceData>
-              <Title>{renderPrincipleOutstanding(counterparty)}</Title>
+              <Title>Backed Finance AG</Title>
               <FundingSourceData
                 color={colors.tertiaryText}
                 fontSize={12}
                 marginTop={16}
               >
-                Market Maker
+                Broker
               </FundingSourceData>
-              {PoolList.map((pool) => {
-                return <Title>{pool}</Title>;
-              })}
+              <Title>Maerki Baumann & Co. AG</Title>
+              <FundingSourceData
+                color={colors.tertiaryText}
+                fontSize={12}
+                marginTop={16}
+              >
+                Custody
+              </FundingSourceData>
+              <Title>Maerki Baumann & Co. AG</Title>
+              <FundingSourceData
+                color={colors.tertiaryText}
+                fontSize={12}
+                marginTop={16}
+              >
+                Security Agent
+              </FundingSourceData>
+              <Title>Security Agent Services Ltd.</Title>
+              <FundingSourceData
+                color={colors.tertiaryText}
+                fontSize={12}
+                marginTop={16}
+              >
+                Issuer
+              </FundingSourceData>
+              <Title>Backed Assets GmbH</Title>
             </Detail>
+          </Details>
+          <Details className="mt-5">
+            <StyledTitle fontSize={16}>Underlying</StyledTitle>
             <Detail>
               <FundingSourceData color={colors.tertiaryText} fontSize={12}>
-                Borrow Rate (APR)
+                Issuer
               </FundingSourceData>
-              <Title>{renderBorrowRate(counterparty)}</Title>
+              <Title>iShares</Title>
               <FundingSourceData
                 color={colors.tertiaryText}
                 fontSize={12}
                 marginTop={16}
               >
-                <div className="d-flex flex-row">
-                  Credit Rating
-                  <div className="ml-1">
-                    <BaseLink
-                      color="white"
-                      target="_blank"
-                      rel="noreferrer noopener"
-                      to="https://credora.gitbook.io/credit-methodology/SbLmTxogePkrzsF4z9IK/credit-evaluation/credit-score"
-                    >
-                      <ExternalIcon
-                        width={16}
-                        containerStyle={{ display: "flex" }}
-                        color="white"
-                      />
-                    </BaseLink>
-                  </div>
-                </div>
+                Name
               </FundingSourceData>
-              {PoolList.map((pool) => {
-                return (
-                  <div className="d-flex align-items-center">
-                    {credoraLoading ? (
-                      loadingText
-                    ) : (
-                      <>
-                        <Title>{data[pool].creditScoreRating}</Title>
-                        {data[pool].creditScoreRating === "UNRATED" &&
-                          pool === "folkvang" && (
-                            <TooltipExplanation
-                              explanation={
-                                <>
-                                  Lending to Folkvang has been temporarily
-                                  disabled. Loans to the Wintermute pool are
-                                  still open.
-                                </>
-                              }
-                              renderContent={({ ref, ...triggerHandler }) => (
-                                <HelpInfo
-                                  containerRef={ref}
-                                  {...triggerHandler}
-                                >
-                                  i
-                                </HelpInfo>
-                              )}
-                              learnMoreURL={
-                                "https://twitter.com/folkvangtrading/status/1591360107094626304"
-                              }
-                            />
-                          )}
-                      </>
-                    )}
-                  </div>
-                );
-              })}
+              <Title>iShares $ Treasury Bond 0-1yr UCITS ETF</Title>
+              <FundingSourceData
+                color={colors.tertiaryText}
+                fontSize={12}
+                marginTop={16}
+              >
+                ISIN
+              </FundingSourceData>
+              <Title>IE00BGSF1X88</Title>
+              <FundingSourceData
+                color={colors.tertiaryText}
+                fontSize={12}
+                marginTop={16}
+              >
+                Ticker
+              </FundingSourceData>
+              <Title>IB01</Title>
+              <Link
+                href="https://www.blackrock.com/americas-offshore/en/products/307243/ishares-treasury-bond-0-1yr-ucits-etf"
+                target="_blank"
+                rel="noreferrer noopener"
+                className="d-inline-flex mt-3 align-items-center"
+              >
+                <span className="mr-2">Read More</span>
+              </Link>
             </Detail>
           </Details>
         </EarnFloatingMenu>
