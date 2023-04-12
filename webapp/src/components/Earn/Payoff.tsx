@@ -217,7 +217,7 @@ const Payoff: React.FC<PayoffSTETHProps> = ({ vaultOption }) => {
         if (loading) {
           return loadingText;
         } else {
-          return `+${
+          return `${
             hoverIndex
               ? expectedPrincipalReturnRange[hoverIndex].toFixed(2)
               : (expectedYield * 100).toFixed(2)
