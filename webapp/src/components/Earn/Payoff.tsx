@@ -96,7 +96,7 @@ const Payoff: React.FC<PayoffSTETHProps> = ({ vaultOption }) => {
     numericalPerformance,
     lowerBarrierMaxYield,
     upperBarrierMaxYield,
-    isUpperBarrierHigher
+    isUpperBarrierHigher,
   } = useAirtableEarnData(vaultOption);
   const loadingText = useLoadingText();
 
@@ -128,7 +128,12 @@ const Payoff: React.FC<PayoffSTETHProps> = ({ vaultOption }) => {
       upperBarrierPercentage,
       isUpperBarrierHigher
     );
-  }, [isUpperBarrierHigher, lowerBarrierPercentage, upperBarrierPercentage, vaultOption]);
+  }, [
+    isUpperBarrierHigher,
+    lowerBarrierPercentage,
+    upperBarrierPercentage,
+    vaultOption,
+  ]);
 
   const yieldRange = useMemo(() => {
     return getYieldRange(
@@ -143,7 +148,18 @@ const Payoff: React.FC<PayoffSTETHProps> = ({ vaultOption }) => {
       upperBarrierMaxYield,
       isUpperBarrierHigher
     );
-  }, [vaultOption, lowerBarrierPercentage, upperBarrierPercentage, maxYield, baseYield, participationRate, optionPrice, lowerBarrierMaxYield, upperBarrierMaxYield, isUpperBarrierHigher]);
+  }, [
+    vaultOption,
+    lowerBarrierPercentage,
+    upperBarrierPercentage,
+    maxYield,
+    baseYield,
+    participationRate,
+    optionPrice,
+    lowerBarrierMaxYield,
+    upperBarrierMaxYield,
+    isUpperBarrierHigher,
+  ]);
 
   const expectedPrincipalReturnRange = useMemo(() => {
     return getExpectedPrincipalReturnRange(
