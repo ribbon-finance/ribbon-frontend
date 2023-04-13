@@ -195,25 +195,21 @@ export const getYieldRange = (
         i <= Math.round(upperBarrierPercentage * 100) * 100;
         i += 1
       ) {
-        array.push(
-          baseYieldPercentage +
-            Math.abs(i / 100 / (upperBarrierPercentage * 100)) *
-              (maxYield - baseYield) *
-              100
-        );
+        console.log(lowerBarrierPercentage);
+        console.log(i);
+        const perf = Math.abs(i / 10000) * participationRate; // works only because 100% KG
+        const optionApr = perf * (365.25 / 7);
+        const baseApr = ((baseYield + 1) ** (7 / 365.25) - 1) * (365.25 / 7);
+        const combinedApr = optionApr + baseApr;
+        const apy = (1 + (combinedApr * 7) / 365.25) ** (365.25 / 7) - 1;
+        array.push(apy * 100);
       }
 
       // points that represent the base yield above upper barrier
       for (let i = 0; i < rightBaseYieldPoints; i += 1) {
         rightArray.push(baseYieldPercentage);
       }
-      return [
-        ...leftArray,
-        baseYieldPercentage,
-        ...array,
-        baseYieldPercentage,
-        ...rightArray,
-      ];
+      return [...leftArray, ...array, ...rightArray];
     case "rEARN-stETH":
       // points that represent the base yield below lower barrier
       for (let i = 0; i < leftBaseYieldPoints + 1; i += 1) {

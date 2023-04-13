@@ -172,16 +172,29 @@ export const Strategy: React.FC<StrategyProps> = ({ setStep, vaultOption }) => {
     switch (vaultOption) {
       case "rEARN":
         return (
-          <ParagraphText marginTop={8}>
-            The weekly barrier options enable the vault to participate in any
-            ETH upside up to {upperBarrier}% of the ETH's spot level at the
-            start of the week (upside barrier) and any ETH downside down to{" "}
-            {lowerBarrier}% of ETH's spot level at the start of the week
-            (downside barrier). However, if the price of ETH has increased or
-            decreased by more than {upperBarrierPercentage * 100}% at the end of
-            the week, the barrier options expire worthless and the vault earns
-            the base APY only.
-          </ParagraphText>
+          <>
+            <ParagraphText marginTop={8}>
+              We set the barrier levels to the equivalent 10 delta levels. This
+              week, the barrier options enable the vault to participate in any
+              ETH upside up to {upperBarrier}% of the ETH's spot level at the
+              start of the week (upside barrier) and any ETH downside down to{" "}
+              {lowerBarrier}% of ETH's spot level at the start of the week
+              (downside barrier). However, if the price of ETH has increased or
+              decreased by more than these levels at the end of the week, the
+              barrier options expire worthless and the vault earns the base APY
+              only.
+            </ParagraphText>
+            <StyledTitle marginTop={24}>Barrier Selection</StyledTitle>
+            <ParagraphText marginTop={8}>
+              We select the barrier based on a fixed detla rather than a fixed
+              spot move. This allows to adjust the barrier based on volatility
+              and spot price rather than spot price alone. This ensures the
+              barriers moves with the market's expectation of the underlying
+              asset's future movements. This allows to keep the same risk
+              profile every week. We solve for the relevant barrier level
+              corresponding to 10d using our own proprietary volatility models.
+            </ParagraphText>
+          </>
         );
       case "rEARN-stETH":
         return (
@@ -583,7 +596,7 @@ export const Backtest: React.FC<BacktestProps> = ({ vaultOption }) => {
             R-Earn was{" "}
             <TooltipExplanation
               explanation={
-                "Source: Ribbon Finance, as of 17 Aug 2022. Data from 01/01/2021 to 12/08/2022. Backtesting analysis for illustrative purposes only. Ribbon Finance provides no assurance or guarantee that the strategy will operate or would have operated in the past in a manner consistent with the above backtesting analysis. Backtest and/or past performance figures are not a reliable indicator of future results. All data backtested over the entire range. The backtest period is going back to Jan21 only due to lack of options data prior to this date."
+                "Source: Ribbon Finance, as of 12 April 2022. Data from 01/01/2021 to 31/03/2023. Backtesting analysis for illustrative purposes only. Ribbon Finance provides no assurance or guarantee that the strategy will operate or would have operated in the past in a manner consistent with the above backtesting analysis. Backtest and/or past performance figures are not a reliable indicator of future results. All data backtested over the entire range. The backtest period is going back to Jan21 only due to lack of options data prior to this date."
               }
               maxWidth={350}
               renderContent={({ ref, ...triggerHandler }) => (
@@ -593,11 +606,11 @@ export const Backtest: React.FC<BacktestProps> = ({ vaultOption }) => {
               )}
             />{" "}
             since January 2021, and the cumulative yield over the period between
-            January 1st, 2021 and August 18th, 2022 generated 17.23%,
-            corresponding to a realized APY of 10.37%. The vault earned more
-            than the base coupon 51.80% of the time, and the option payoff was
-            4.05% on average in these cases, corresponding to 12% bonus APY in
-            addition to the 4% base APY.
+            January 1st, 2021 and March 31st, 2023 generated 10.70%,
+            corresponding to a realized APY of 4.99%. The vault earned more than
+            the base coupon 85.60% of the time, and the option payoff was 6.98%
+            on average in these cases, corresponding to 3.58% bonus APY in
+            addition to the 2% base APY.
           </ParagraphText>
           <PrimaryText className="d-block mt-3">
             <Link
