@@ -20,6 +20,9 @@ export type EarnData = {
   avgPerformance: number;
   optionPrice: number;
   numericalPerformance: number;
+  lowerBarrierMaxYield: number;
+  upperBarrierMaxYield: number;
+  isUpperBarrierHigher: boolean;
 };
 
 export const defaultEarnUSDCData: EarnData = {
@@ -39,6 +42,9 @@ export const defaultEarnUSDCData: EarnData = {
   avgPerformance: 0,
   optionPrice: 0.0267,
   numericalPerformance: 0,
+  lowerBarrierMaxYield: 0.08,
+  upperBarrierMaxYield: 0.08,
+  isUpperBarrierHigher: true
 };
 
 export const defaultEarnSTETHData: EarnData = {
@@ -58,6 +64,9 @@ export const defaultEarnSTETHData: EarnData = {
   avgPerformance: 0,
   optionPrice: 0.087,
   numericalPerformance: 0,
+  lowerBarrierMaxYield: 0.08,
+  upperBarrierMaxYield: 0.08,
+  isUpperBarrierHigher: true
 };
 
 export const defaultEarnData = (vaultOption: VaultOptions) => {
@@ -256,9 +265,12 @@ export const useAirtableEarnData = (vaultOption: VaultOptions) => {
     upperBarrierETHPrice,
     avgPerformance,
     numericalPerformance,
+    lowerBarrierMaxYield,
+    upperBarrierMaxYield,
+    isUpperBarrierHigher
   ] = useMemo(() => {
     if (!values) {
-      return [0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
+      return [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, true];
     }
     let rawPerformance: number;
     switch (vaultOption) {
@@ -326,6 +338,12 @@ export const useAirtableEarnData = (vaultOption: VaultOptions) => {
       Math.round(
         ((ETHPrice - values.strikePrice) / values.strikePrice) * 10000
       ) / 10000;
+
+    const upperBarrierHigher = values.upperBarrierPercentage > Math.abs(values.lowerBarrierPercentage);
+    // get the lower of the two barrier's max yield
+    const lowerBarrierMaxYield = upperBarrierHigher ? maxYield * Math.abs(values.lowerBarrierPercentage/values.upperBarrierPercentage) : maxYield;
+    const upperBarrierMaxYield = upperBarrierHigher ? maxYield : maxYield * values.upperBarrierPercentage/Math.abs(values.lowerBarrierPercentage);
+
     return [
       absolutePerformance,
       performance,
@@ -335,6 +353,9 @@ export const useAirtableEarnData = (vaultOption: VaultOptions) => {
       upperBarrierETHPrice,
       isNaN(avgPerformance) ? 0 : avgPerformance,
       numericalPerformance,
+      lowerBarrierMaxYield,
+      upperBarrierMaxYield,
+      values.upperBarrierPercentage > Math.abs(values.lowerBarrierPercentage)
     ];
   }, [values, ETHPrice, vaultOption, itmRecords]);
 
@@ -352,12 +373,15 @@ export const useAirtableEarnData = (vaultOption: VaultOptions) => {
     absolutePerformance,
     performance,
     expectedYield,
-    maxYield: vaultOption === "rEARN" ? 0.0991 : maxYield,
+    maxYield: maxYield,
     borrowRate: values.borrowRate,
     lowerBarrierETHPrice,
     upperBarrierETHPrice,
     avgPerformance,
     numericalPerformance,
     optionPrice: values.optionPrice,
+    lowerBarrierMaxYield,
+    upperBarrierMaxYield,
+    isUpperBarrierHigher
   } as EarnData;
 };

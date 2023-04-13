@@ -94,6 +94,9 @@ const Payoff: React.FC<PayoffSTETHProps> = ({ vaultOption }) => {
     loading,
     optionPrice,
     numericalPerformance,
+    lowerBarrierMaxYield,
+    upperBarrierMaxYield,
+    isUpperBarrierHigher
   } = useAirtableEarnData(vaultOption);
   const loadingText = useLoadingText();
 
@@ -122,9 +125,10 @@ const Payoff: React.FC<PayoffSTETHProps> = ({ vaultOption }) => {
     return getOptionMoneynessRange(
       vaultOption,
       lowerBarrierPercentage,
-      upperBarrierPercentage
+      upperBarrierPercentage,
+      isUpperBarrierHigher
     );
-  }, [lowerBarrierPercentage, upperBarrierPercentage, vaultOption]);
+  }, [isUpperBarrierHigher, lowerBarrierPercentage, upperBarrierPercentage, vaultOption]);
 
   const yieldRange = useMemo(() => {
     return getYieldRange(
@@ -134,17 +138,12 @@ const Payoff: React.FC<PayoffSTETHProps> = ({ vaultOption }) => {
       maxYield,
       baseYield,
       participationRate,
-      optionPrice
+      optionPrice,
+      lowerBarrierMaxYield,
+      upperBarrierMaxYield,
+      isUpperBarrierHigher
     );
-  }, [
-    vaultOption,
-    lowerBarrierPercentage,
-    upperBarrierPercentage,
-    maxYield,
-    baseYield,
-    participationRate,
-    optionPrice,
-  ]);
+  }, [vaultOption, lowerBarrierPercentage, upperBarrierPercentage, maxYield, baseYield, participationRate, optionPrice, lowerBarrierMaxYield, upperBarrierMaxYield, isUpperBarrierHigher]);
 
   const expectedPrincipalReturnRange = useMemo(() => {
     return getExpectedPrincipalReturnRange(
@@ -262,6 +261,7 @@ const Payoff: React.FC<PayoffSTETHProps> = ({ vaultOption }) => {
             onMouseLeave={() => setChartHovering(false)}
           >
             <EarnSTETHChart
+              key={`${maxYield}-${lowerBarrierPercentage}-${upperBarrierPercentage}`}
               onHoverPrice={setHoverPrice}
               onHoverIndex={setHoverIndex}
               onHoverPercentage={setHoverPercentage}
@@ -274,6 +274,8 @@ const Payoff: React.FC<PayoffSTETHProps> = ({ vaultOption }) => {
               lowerBarrierPercentage={lowerBarrierPercentage}
               upperBarrierPercentage={upperBarrierPercentage}
               maxYield={maxYield}
+              lowerBarrierMaxYield={lowerBarrierMaxYield}
+              upperBarrierMaxYield={upperBarrierMaxYield}
               moneynessRange={optionMoneynessRange}
               yieldRange={yieldRange}
               vaultOption={vaultOption}

@@ -19,6 +19,8 @@ interface ProfitChartProps {
   performance: number;
   baseYield: number;
   maxYield: number;
+  lowerBarrierMaxYield: number;
+  upperBarrierMaxYield: number;
   lowerBarrierPercentage: number;
   upperBarrierPercentage: number;
   moneynessRange: number[];
@@ -33,6 +35,8 @@ const EarnSTETHChart: React.FC<ProfitChartProps> = ({
   performance,
   baseYield,
   maxYield,
+  lowerBarrierMaxYield,
+  upperBarrierMaxYield,
   lowerBarrierPercentage,
   upperBarrierPercentage,
   moneynessRange,
@@ -399,7 +403,7 @@ const EarnSTETHChart: React.FC<ProfitChartProps> = ({
               if (p === lowerBarrierPercentage * 100) {
                 switch (vaultOption) {
                   case "rEARN":
-                    return maxYield * 100;
+                    return lowerBarrierMaxYield * 100;
                   case "rEARN-stETH":
                     return yieldRange[0];
                   default:
@@ -407,7 +411,14 @@ const EarnSTETHChart: React.FC<ProfitChartProps> = ({
                 }
               }
               if (p === upperBarrierPercentage * 100) {
-                return maxYield * 100;
+                switch (vaultOption) {
+                  case "rEARN":
+                    return upperBarrierMaxYield * 100;
+                  case "rEARN-stETH":
+                    return maxYield * 100;
+                  default:
+                    return maxYield * 100;
+                }
               }
               return null;
             }),
@@ -429,6 +440,8 @@ const EarnSTETHChart: React.FC<ProfitChartProps> = ({
       baseYield,
       maxYield,
       findNeighbourPoint,
+      lowerBarrierMaxYield,
+      upperBarrierMaxYield,
     ]
   );
 
@@ -499,7 +512,6 @@ const EarnSTETHChart: React.FC<ProfitChartProps> = ({
                 const defaultDataIndex = defaultPointDataset?.data?.findIndex(
                   (data: any) => data !== null
                 );
-
                 drawDefaultPricePoint(
                   chart,
                   moneynessRange[defaultDataIndex],
@@ -532,7 +544,6 @@ const EarnSTETHChart: React.FC<ProfitChartProps> = ({
     drawPricePoint,
     drawDefaultPricePoint,
   ]);
-
   return chart;
 };
 
