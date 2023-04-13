@@ -606,8 +606,8 @@ export const Backtest: React.FC<BacktestProps> = ({ vaultOption }) => {
               )}
             />{" "}
             since January 2021, and the cumulative yield over the period between
-            January 1st, 2021 and March 31st, 2023 generated 10.70%,
-            corresponding to a realized APY of 4.99%. The vault earned more than
+            January 1st, 2021 and March 31st, 2023 generated 11.08%,
+            corresponding to a realized APY of 5.16%. The vault earned more than
             the base coupon 85.60% of the time, and the option payoff was 6.98%
             on average in these cases, corresponding to 3.58% bonus APY in
             addition to the 2% base APY.
