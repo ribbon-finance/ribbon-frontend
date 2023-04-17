@@ -46,7 +46,7 @@ import {
 import ActionModal from "../../components/Vault/VaultActionsForm/EarnModal/ActionModal";
 import { usePendingTransactions } from "shared/lib/hooks/pendingTransactionsContext";
 import { useEarnStrategyTime } from "../../constants/constants";
-import useLoadingText from "shared/lib/hooks/useLoadingText";
+import useLoadingText, { LoadingText } from "shared/lib/hooks/useLoadingText";
 import { ACTIONS } from "../../components/Vault/VaultActionsForm/EarnModal/types";
 import {
   fadeIn,
@@ -54,6 +54,12 @@ import {
   rotateClockwise,
   rotateAnticlockwise,
 } from "shared/lib/designSystem/keyframes";
+import {
+  REarnGeofenceCountry,
+  useREarnGeofence,
+} from "shared/lib/hooks/useGeofence";
+import TextPreview from "shared/lib/components/TextPreview/TextPreview";
+import Geoblocked from "shared/lib/components/Geoblocked/Geoblocked";
 
 const delayedFade = css<{ delay?: number }>`
   opacity: 0;
@@ -284,11 +290,22 @@ const Marker = styled.div<{
   margin-right: 8px;
 `;
 
+const GeofenceAbsoluteContainer = styled.div`
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+`;
+
 const EarnPage = () => {
   const { vaultOption, vaultVersion } = useVaultOption();
   const { active, account, chainId } = useWeb3Wallet();
   const loadingText = useLoadingText();
   const { strategyStartTime } = useEarnStrategyTime(vaultOption ?? "rEARN");
+  const { loading: geofenceLoading, rejected } = useREarnGeofence(
+    Object.values(REarnGeofenceCountry)
+  );
 
   useRedirectOnWrongChain(vaultOption, chainId);
   usePullUp();
@@ -443,6 +460,24 @@ const EarnPage = () => {
       (componentRefs.footer?.offsetHeight || 0)
     );
   }, [componentRefs.header?.offsetHeight, componentRefs.footer?.offsetHeight]);
+
+  if (vaultOption === "rEARN") {
+    if (geofenceLoading) {
+      return (
+        <GeofenceAbsoluteContainer>
+          <TextPreview>
+            <LoadingText>Ribbon Finance</LoadingText>
+          </TextPreview>
+        </GeofenceAbsoluteContainer>
+      );
+    } else if (rejected) {
+      return (
+        <GeofenceAbsoluteContainer>
+          <Geoblocked text="You are not allowed to deposit into Ribbon Earn USDC due to the restricted jurisdiction." />
+        </GeofenceAbsoluteContainer>
+      );
+    }
+  }
 
   /**
    * Redirect to homepage if no clear vault is chosen

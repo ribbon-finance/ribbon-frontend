@@ -114,14 +114,14 @@ export const Strategy: React.FC<StrategyProps> = ({ setStep, vaultOption }) => {
             ETH movements in either direction while also ensuring their capital
             is{" "}
             <LinkText role={"button"} onClick={() => setStep("risk")}>
-              protected
-            </LinkText>
-            . The vault earns interest by lending capital to our{" "}
-            <LinkText role={"button"} onClick={() => setStep("funding source")}>
-              counterparties
+              protected.
             </LinkText>{" "}
-            and uses part of it to generate a base APY and the remaining funding
-            to purchase{" "}
+            The vault earns interest by purchasing{" "}
+            <LinkText role={"button"} onClick={() => setStep("funding source")}>
+              Backed
+            </LinkText>{" "}
+            IB01 $ Treasury Bond 0-1yr tokens and uses part of it to generate a
+            base APY and the remaining funding to purchase{" "}
             <TooltipExplanation
               title="weekly at-the-money knock-out barrier options"
               explanation={`The options bought are expiring every Friday, with a one week maturity and the strike price is set to the current underlying asset price. The knock-out barriers are used to define when the payoff is inactive, i.e. if the price of the underlying asset at maturity is below the lower barrier or greater than the upper barrier, the option is worthless.`}
@@ -172,16 +172,29 @@ export const Strategy: React.FC<StrategyProps> = ({ setStep, vaultOption }) => {
     switch (vaultOption) {
       case "rEARN":
         return (
-          <ParagraphText marginTop={8}>
-            The weekly barrier options enable the vault to participate in any
-            ETH upside up to {upperBarrier}% of the ETH's spot level at the
-            start of the week (upside barrier) and any ETH downside down to{" "}
-            {lowerBarrier}% of ETH's spot level at the start of the week
-            (downside barrier). However, if the price of ETH has increased or
-            decreased by more than {upperBarrierPercentage * 100}% at the end of
-            the week, the barrier options expire worthless and the vault earns
-            the base APY only.
-          </ParagraphText>
+          <>
+            <ParagraphText marginTop={8}>
+              We set the barrier levels to the equivalent 10 delta levels. This
+              week, the barrier options enable the vault to participate in any
+              ETH upside up to {upperBarrier}% of the ETH's spot level at the
+              start of the week (upside barrier) and any ETH downside down to{" "}
+              {lowerBarrier}% of ETH's spot level at the start of the week
+              (downside barrier). However, if the price of ETH has increased or
+              decreased by more than these levels at the end of the week, the
+              barrier options expire worthless and the vault earns the base APY
+              only.
+            </ParagraphText>
+            <StyledTitle marginTop={24}>Barrier Selection</StyledTitle>
+            <ParagraphText marginTop={8}>
+              We select the barrier based on a fixed detla rather than a fixed
+              spot move. This allows to adjust the barrier based on volatility
+              and spot price rather than spot price alone. This ensures the
+              barriers moves with the market's expectation of the underlying
+              asset's future movements. This allows to keep the same risk
+              profile every week. We solve for the relevant barrier level
+              corresponding to 10d using our own proprietary volatility models.
+            </ParagraphText>
+          </>
         );
       case "rEARN-stETH":
         return (
@@ -203,22 +216,6 @@ export const Strategy: React.FC<StrategyProps> = ({ setStep, vaultOption }) => {
     lowerBarrierPercentage,
     vaultOption,
   ]);
-
-  const renderLoanTenor = useCallback(() => {
-    switch (vaultOption) {
-      case "rEARN":
-        return (
-          <>
-            <ExplainerTitle color={colors.tertiaryText}>
-              <span>Loan Tenor</span>
-            </ExplainerTitle>
-            <StyledTitle marginTop={4}> 7 DAYS</StyledTitle>
-          </>
-        );
-      case "rEARN-stETH":
-        return <></>;
-    }
-  }, [vaultOption]);
 
   const renderCapitalProtection = useCallback(() => {
     switch (vaultOption) {
@@ -249,7 +246,7 @@ export const Strategy: React.FC<StrategyProps> = ({ setStep, vaultOption }) => {
         return (
           <>
             <ExplainerTitle color={colors.tertiaryText}>
-              <span>Loan Allocation</span>
+              <span>bIB01 Allocation</span>
             </ExplainerTitle>
             {/* querying loanAllocationPCT seems to give the wrong value so we use constant here*/}
             <StyledTitle marginTop={4}>100%</StyledTitle>
@@ -306,7 +303,6 @@ export const Strategy: React.FC<StrategyProps> = ({ setStep, vaultOption }) => {
       <StyledTitle marginTop={24}>Key Conditions</StyledTitle>
       {renderKeyConditions()}
       <StyledTitle marginTop={24}>Vault Specifications</StyledTitle>
-      {renderLoanTenor()}
       <ExplainerTitle color={colors.tertiaryText}>
         <span>Option Tenor</span>
       </ExplainerTitle>
@@ -354,7 +350,7 @@ export const Strategy: React.FC<StrategyProps> = ({ setStep, vaultOption }) => {
         {/* 0.44% */}
         {vaultLoading
           ? loadingText
-          : `${(allocationState.optionAllocationPCT / 10000).toFixed(3)}%`}
+          : `${(allocationState.optionAllocationPCT / 10000).toFixed(2)}%`}
       </StyledTitle>
       <ExplainerTitle color={colors.tertiaryText}>
         <span>TVL</span>
@@ -362,10 +358,9 @@ export const Strategy: React.FC<StrategyProps> = ({ setStep, vaultOption }) => {
       <StyledTitle marginTop={4}>
         {vaultLoading
           ? loadingText
-          : parseFloat(formatUnits(totalBalance, decimals)).toFixed(
+          : `${parseFloat(formatUnits(totalBalance, decimals)).toFixed(
               decimalPlaces
-            )}{" "}
-        {getAssetDisplay(asset)}
+            )} ${getAssetDisplay(asset)}`}
       </StyledTitle>
     </>
   );
@@ -403,13 +398,11 @@ export const Risk: React.FC<RiskProps> = ({ vaultOption }) => {
           <>
             <Title>Credit Risk</Title>
             <ParagraphText marginTop={8}>
-              Market makers taking the other side of Ribbon Earn trades carry
-              credit risk and could potentially default in the case of extreme
-              events. This means that both the principal and yield invested
-              could be lost in the event of market makers defaulting. Ribbon
-              works with accredited market makers who have a history of credit
-              worthiness in order to minimize the risk of default for retail
-              investors.
+              Ribbon Earn is exposed to the credit risk of Backed Assets GmbH
+              and the Custodian. A depositors ability to obtain payment is
+              dependent on the ability of Backed Assets GmbH to meet these
+              obligations. In the event of default, insolvency or bankruptcy,
+              investors may not receive the amount owed to them.
             </ParagraphText>
           </>
         );
@@ -461,6 +454,13 @@ export const Risk: React.FC<RiskProps> = ({ vaultOption }) => {
               , sellers of the knock-out options structure may be unable to
               fulfill part of their obligations to the vault.
             </ParagraphText>
+            <ParagraphText marginTop={8}>
+              In general, Backed relies on third parties providing trading on
+              both the Products and any Underlying. Any dysfunction of such
+              third parties or disruption at the exchanges and other platforms
+              may result in a loss of value of the products, which may, in turn
+              negatively impact Backed and/or Ribbon Earn depositors.
+            </ParagraphText>
           </>
         );
       case "rEARN-stETH":
@@ -479,11 +479,72 @@ export const Risk: React.FC<RiskProps> = ({ vaultOption }) => {
     }
   }, [vaultOption]);
 
+  const renderLiquidityRisk = useCallback(() => {
+    switch (vaultOption) {
+      case "rEARN":
+        return (
+          <>
+            <StyledTitle marginTop={24}>Liquidity Risk</StyledTitle>
+            <ParagraphText marginTop={8}>
+              Backed may not have sufficient funds for making payments at any
+              point in time, meaning that the Issuer may have difficulties
+              meeting financial obligations.
+            </ParagraphText>
+          </>
+        );
+      case "rEARN-stETH":
+        return <></>;
+    }
+  }, [vaultOption]);
+
+  const renderSPVRisk = useCallback(() => {
+    switch (vaultOption) {
+      case "rEARN":
+        return (
+          <>
+            <StyledTitle marginTop={24}>
+              Issuer as Special Purpose Vehicle
+            </StyledTitle>
+            <ParagraphText marginTop={8}>
+              The Issuer is a newly established special purpose vehicle ("SPV")
+              with the sole business purpose of the issuance of financial
+              instruments. Thus, the Issuer is currently not profitable and
+              depends on capital from investors. The reserves to maintain the
+              company operations are limited, which may result in the inability
+              of the Issuer to continue as a going concern.
+            </ParagraphText>
+          </>
+        );
+      case "rEARN-stETH":
+        return <></>;
+    }
+  }, [vaultOption]);
+
+  const renderExtraSmartContractRisk = useCallback(() => {
+    switch (vaultOption) {
+      case "rEARN":
+        return (
+          <>
+            <ParagraphText marginTop={8}>
+              The IB01 ERC-20 may be susceptible to bugs and smart contract
+              related risks, that might lead to Ribbon Earn losing control over
+              the asset, or a breach that might cause an unintended minting of
+              the asset.
+            </ParagraphText>
+          </>
+        );
+      case "rEARN-stETH":
+        return <></>;
+    }
+  }, [vaultOption]);
+
   return (
     <>
       {renderExchangeRateRisk()}
       {renderCreditRisk()}
       {renderCounterpartyRisk()}
+      {renderLiquidityRisk()}
+      {renderSPVRisk()}
       <StyledTitle marginTop={24}>Smart Contract Risk</StyledTitle>
       <ParagraphText marginTop={8}>
         The Ribbon Earn smart contracts have been{" "}
@@ -516,6 +577,7 @@ export const Risk: React.FC<RiskProps> = ({ vaultOption }) => {
         insurance protection, or any other relevant protection in any
         jurisdiction.
       </ParagraphText>
+      {renderExtraSmartContractRisk()}
       {renderUSDCRisk()}
     </>
   );
@@ -534,7 +596,7 @@ export const Backtest: React.FC<BacktestProps> = ({ vaultOption }) => {
             R-Earn was{" "}
             <TooltipExplanation
               explanation={
-                "Source: Ribbon Finance, as of 17 Aug 2022. Data from 01/01/2021 to 12/08/2022. Backtesting analysis for illustrative purposes only. Ribbon Finance provides no assurance or guarantee that the strategy will operate or would have operated in the past in a manner consistent with the above backtesting analysis. Backtest and/or past performance figures are not a reliable indicator of future results. All data backtested over the entire range. The backtest period is going back to Jan21 only due to lack of options data prior to this date."
+                "Source: Ribbon Finance, as of 12 April 2022. Data from 01/01/2021 to 31/03/2023. Backtesting analysis for illustrative purposes only. Ribbon Finance provides no assurance or guarantee that the strategy will operate or would have operated in the past in a manner consistent with the above backtesting analysis. Backtest and/or past performance figures are not a reliable indicator of future results. All data backtested over the entire range. The backtest period is going back to Jan21 only due to lack of options data prior to this date."
               }
               maxWidth={350}
               renderContent={({ ref, ...triggerHandler }) => (
@@ -544,11 +606,11 @@ export const Backtest: React.FC<BacktestProps> = ({ vaultOption }) => {
               )}
             />{" "}
             since January 2021, and the cumulative yield over the period between
-            January 1st, 2021 and August 18th, 2022 generated 17.23%,
-            corresponding to a realized APY of 10.37%. The vault earned more
-            than the base coupon 51.80% of the time, and the option payoff was
-            4.05% on average in these cases, corresponding to 12% bonus APY in
-            addition to the 4% base APY.
+            January 1st, 2021 and March 31st, 2023 generated 11.08%,
+            corresponding to a realized APY of 5.16%. The vault earned more than
+            the base coupon 85.60% of the time, and the option payoff was 6.98%
+            on average in these cases, corresponding to 3.58% bonus APY in
+            addition to the 2% base APY.
           </ParagraphText>
           <PrimaryText className="d-block mt-3">
             <Link

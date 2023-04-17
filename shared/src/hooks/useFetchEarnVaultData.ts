@@ -152,7 +152,7 @@ const useFetchEarnVaultData = (): V2VaultData => {
             }
           ).optionAllocationPCT
             ? _allocationState
-            : { loanAllocationPCT: 0, optionAllocation: 0 }
+            : { loanAllocationPCT: 0, optionAllocationPCT: 0 }
         ) as { loanAllocationPCT: number; optionAllocationPCT: number };
 
         const depositReceipts = (
@@ -198,14 +198,17 @@ const useFetchEarnVaultData = (): V2VaultData => {
       if (counter === currentCounter) {
         setData((prev) => ({
           responses: Object.fromEntries(
-            responses.map(({ vault, withdrawals, ...response }) => [
-              vault,
-              {
-                ...prev.responses[vault],
-                ...response,
-                withdrawals: withdrawals || prev.responses[vault].withdrawals,
-              },
-            ])
+            responses.map(
+              ({ vault, withdrawals, allocationState, ...response }) => [
+                vault,
+                {
+                  ...prev.responses[vault],
+                  ...response,
+                  withdrawals: withdrawals || prev.responses[vault].withdrawals,
+                  allocationState: allocationState,
+                },
+              ]
+            )
           ) as V2VaultDataResponses,
           loading: false,
         }));

@@ -237,7 +237,7 @@ const PreviewStep: React.FC<{
           case "rEARN":
             actionDetails.push({
               key: "Counterparty",
-              value: "Ribbon Diversified",
+              value: "Backed IB01",
               tooltip: {
                 title: "Counterparty",
                 explanation:
