@@ -121,7 +121,7 @@ const CounterpartyDetail: React.FC<VaultStrategyExplainerProps> = ({
   const renderBorrowRate = useCallback((s: Counterparty) => {
     switch (s) {
       case "Backed":
-        return <>{(4.5).toFixed(2)}%</>;
+        return <>{(4.65).toFixed(2)}%</>;
     }
   }, []);
 

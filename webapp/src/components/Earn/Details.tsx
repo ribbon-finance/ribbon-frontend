@@ -398,11 +398,11 @@ export const Risk: React.FC<RiskProps> = ({ vaultOption }) => {
           <>
             <Title>Credit Risk</Title>
             <ParagraphText marginTop={8}>
-              Ribbon Earn is exposed to the credit risk of Backed Assets GmbH,
-              the Custodian, and other parties. A depositors ability to obtain
-              payment is dependent on the ability of Backed Assets GmbH to meet
-              these obligations. In the event of default, insolvency or
-              bankruptcy, investors may not receive the amount owed to them.
+              Ribbon Earn is exposed to the credit risk of Backed Assets GmbH
+              and the Custodian. A depositors ability to obtain payment is
+              dependent on the ability of Backed Assets GmbH to meet these
+              obligations. In the event of default, insolvency or bankruptcy,
+              investors may not receive the amount owed to them.
             </ParagraphText>
           </>
         );
