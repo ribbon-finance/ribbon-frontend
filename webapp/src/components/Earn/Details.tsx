@@ -526,7 +526,7 @@ export const Risk: React.FC<RiskProps> = ({ vaultOption }) => {
         return (
           <>
             <ParagraphText marginTop={8}>
-              The ib01 erc-20 may be susceptible to bugs and smart contract
+              The IB01 ERC-20 may be susceptible to bugs and smart contract
               related risks, that might lead to Ribbon Earn losing control over
               the asset, or a breach that might cause an unintended minting of
               the asset.

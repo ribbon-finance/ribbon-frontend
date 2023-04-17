@@ -39,7 +39,11 @@ const Container = styled.div.attrs({
   }
 `;
 
-const Geoblocked = () => {
+interface GeoblockedProps {
+  text?: string;
+}
+
+const Geoblocked = ({ text }: GeoblockedProps) => {
   const { t } = useTranslation();
   const { width } = useScreenSize();
   const isMobile = width < sizes.md;
@@ -58,7 +62,7 @@ const Geoblocked = () => {
           <RotatingLogo height={80} width={80} />
         </LogoContainer>
         <span>
-          {t("shared:GeoblockWarning:title")}{" "}
+          {text || t("shared:GeoblockWarning:title")}{" "}
           {t("shared:GeoblockWarning:visit")}{" "}
           <a href={t("shared:GeoblockWarning:url")}>
             {t("shared:GeoblockWarning:termsAndConditions")}

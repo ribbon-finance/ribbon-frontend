@@ -294,14 +294,15 @@ export const useAirtableEarnData = (vaultOption: VaultOptions) => {
     const absolutePerformance =
       Math.round(Math.abs(rawPerformance) * 10000) / 10000;
 
-    const maxYield = calculateMaxYield(
-      vaultOption,
-      values.baseYield,
-      values.lowerBarrierPercentage,
-      values.upperBarrierPercentage,
-      values.participationRate,
-      values.optionPrice
-    );
+    // const maxYield = calculateMaxYield(
+    //   vaultOption,
+    //   values.baseYield,
+    //   values.lowerBarrierPercentage,
+    //   values.upperBarrierPercentage,
+    //   values.participationRate,
+    //   values.optionPrice
+    // );
+    const maxYield = 0.0991; // hardcode for first week
 
     const expectedYield = calculateExpectedYield(
       vaultOption,

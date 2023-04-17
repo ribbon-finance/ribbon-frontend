@@ -290,6 +290,14 @@ const Marker = styled.div<{
   margin-right: 8px;
 `;
 
+const GeofenceAbsoluteContainer = styled.div`
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+`;
+
 const EarnPage = () => {
   const { vaultOption, vaultVersion } = useVaultOption();
   const { active, account, chainId } = useWeb3Wallet();
@@ -456,21 +464,17 @@ const EarnPage = () => {
   if (vaultOption === "rEARN") {
     if (geofenceLoading) {
       return (
-        <div
-          style={{ position: "absolute", top: 0, bottom: 0, left: 0, right: 0 }}
-        >
+        <GeofenceAbsoluteContainer>
           <TextPreview>
             <LoadingText>Ribbon Finance</LoadingText>
           </TextPreview>
-        </div>
+        </GeofenceAbsoluteContainer>
       );
     } else if (rejected) {
       return (
-        <div
-          style={{ position: "absolute", top: 0, bottom: 0, left: 0, right: 0 }}
-        >
-          <Geoblocked />
-        </div>
+        <GeofenceAbsoluteContainer>
+          <Geoblocked text="You are not allowed to deposit into Ribbon Earn USDC due to the restricted jurisdiction." />
+        </GeofenceAbsoluteContainer>
       );
     }
   }
