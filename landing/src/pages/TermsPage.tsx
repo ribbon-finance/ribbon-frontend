@@ -230,18 +230,15 @@ const sections = [
               Territory. We unconditionally reserve the right to restrict access
               to any Restricted Territory and may implement technical controls
               to prevent access to the Portal or any Services from any
-              Restricted Territory.{" "}
-              <StyledLink
-                href="https://app.ribbon.finance/earn/R-EARN"
-                style={{ color: "white" }}
-              >
+              Restricted Territory. Users from Cuba, Democratic People’s
+              Republic of Korea (DPRK), Democratic Republic of Congo, Iran,
+              Iraq, Lebanon, Libya, Mali, Myanmar, Nicaragua, Russia, Somalia,
+              South Sudan, Sudan, Syria and The United States of America will
+              not be able to access the{" "}
+              <StyledLink href="https://app.ribbon.finance/earn/R-EARN">
                 Ribbon Earn USDC
               </StyledLink>{" "}
-              users from Cuba, Democratic People’s Republic of Korea (DPRK),
-              Democratic Republic of Congo, Iran, Iraq, Lebanon, Libya, Mali,
-              Myanmar, Nicaragua, Russia, Somalia, South Sudan, Sudan, Syria,
-              and The United States of America will not be be able to access the
-              site.
+              product.
             </p>
             <p>
               Your access to the Portal and any Services may be restricted based
