@@ -294,15 +294,18 @@ export const useAirtableEarnData = (vaultOption: VaultOptions) => {
     const absolutePerformance =
       Math.round(Math.abs(rawPerformance) * 10000) / 10000;
 
-    // const maxYield = calculateMaxYield(
-    //   vaultOption,
-    //   values.baseYield,
-    //   values.lowerBarrierPercentage,
-    //   values.upperBarrierPercentage,
-    //   values.participationRate,
-    //   values.optionPrice
-    // );
-    const maxYield = 0.0991; // hardcode for first week
+    //hardcode rEARN for first week
+    const maxYield =
+      vaultOption === "rEARN"
+        ? 0.0991
+        : calculateMaxYield(
+            vaultOption,
+            values.baseYield,
+            values.lowerBarrierPercentage,
+            values.upperBarrierPercentage,
+            values.participationRate,
+            values.optionPrice
+          );
 
     const expectedYield = calculateExpectedYield(
       vaultOption,
@@ -371,6 +374,7 @@ export const useAirtableEarnData = (vaultOption: VaultOptions) => {
     //placeholder values while values are loading
     return defaultEarnData(vaultOption);
   }
+
   return {
     loading,
     strikePrice: values.strikePrice,
@@ -381,7 +385,7 @@ export const useAirtableEarnData = (vaultOption: VaultOptions) => {
     absolutePerformance,
     performance,
     expectedYield,
-    maxYield: maxYield,
+    maxYield,
     borrowRate: values.borrowRate,
     lowerBarrierETHPrice,
     upperBarrierETHPrice,
