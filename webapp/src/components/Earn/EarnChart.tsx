@@ -5,19 +5,11 @@ import colors from "shared/lib/designSystem/colors";
 import { isPerformanceOutsideBarriers } from "./PayoffHelper";
 import { VaultOptions } from "shared/lib/constants/constants";
 
-/**
- * Strike: Strike price of the option
- * Price: The price of which the profit is to be calculated
- * Premium: Premium of the option, assume per unit over here
- * Quantity: Quantity of which the user has
- * Expiry: Expiry of the option
- */
 interface ProfitChartProps {
-  onHoverPrice: (price: number | undefined) => void;
+  onHoverMoneyness: (moneyness: number | undefined) => void;
   onHoverIndex: (index: number | undefined) => void;
   onHoverPercentage: (percentage: number | undefined) => void;
   performance: number;
-  baseYield: number;
   maxYield: number;
   lowerBarrierMaxYield: number;
   upperBarrierMaxYield: number;
@@ -29,11 +21,10 @@ interface ProfitChartProps {
 }
 
 const EarnSTETHChart: React.FC<ProfitChartProps> = ({
-  onHoverPrice,
+  onHoverMoneyness,
   onHoverIndex,
   onHoverPercentage,
   performance,
-  baseYield,
   maxYield,
   lowerBarrierMaxYield,
   upperBarrierMaxYield,
@@ -45,12 +36,60 @@ const EarnSTETHChart: React.FC<ProfitChartProps> = ({
 }) => {
   const [hoveredIndex, setIndex] = useState<number>();
 
-  const optionMoneynessText = useCallback((price: number) => {
-    return `${price.toFixed(2)}%`;
+  const findNeighbourPoint = useCallback((nums: number[], point: number) => {
+    let closestSmallerNum: number | undefined;
+    let closestBiggerNum: number | undefined;
+
+    for (let i = 0; i < nums.length; i += 1) {
+      const currNum = nums[i];
+
+      // Find closest bigger number
+      if (
+        currNum >= point &&
+        (closestSmallerNum === undefined || currNum < closestSmallerNum)
+      ) {
+        if (closestSmallerNum === undefined || currNum < closestSmallerNum) {
+          closestSmallerNum = currNum;
+        }
+      }
+
+      // Find closest smaller number
+      if (
+        currNum <= point &&
+        (closestBiggerNum === undefined || currNum > closestBiggerNum)
+      ) {
+        closestBiggerNum = currNum;
+      }
+    }
+
+    // return 2 closest point
+    return [closestSmallerNum!, closestBiggerNum!];
   }, []);
 
-  const drawPricePoint = useCallback(
-    (chart: any, price: number, drawIndex: number) => {
+  // Find default point for current performance
+  const defaultMoneynessPoint = useMemo(() => {
+    return findNeighbourPoint(moneynessRange, performance * 100)[0];
+  }, [findNeighbourPoint, moneynessRange, performance]);
+
+  // Find points closest to lowerBarrierPercentage and upperBarrierPercentage
+  const [closestLowerBarrierPoint, closestUpperBarrierPoint] = useMemo(() => {
+    return [
+      findNeighbourPoint(moneynessRange, lowerBarrierPercentage * 100)[0],
+      findNeighbourPoint(moneynessRange, upperBarrierPercentage * 100)[0],
+    ];
+  }, [
+    findNeighbourPoint,
+    lowerBarrierPercentage,
+    moneynessRange,
+    upperBarrierPercentage,
+  ]);
+
+  const optionMoneynessText = useCallback((moneyness: number) => {
+    return `${moneyness.toFixed(2)}%`;
+  }, []);
+
+  const drawMoneynessPoint = useCallback(
+    (chart: any, moneyness: number, drawIndex: number) => {
       const ctx: CanvasRenderingContext2D = chart.chart.ctx;
       // Get breakeven datasaet because of stability over every point
       const datasetIndex = chart.chart.data.datasets.findIndex(
@@ -64,25 +103,25 @@ const EarnSTETHChart: React.FC<ProfitChartProps> = ({
       const topY = chart.chart.scales["y-axis-0"].top;
       const bottomY = chart.chart.scales["y-axis-0"].bottom - 1;
       /**
-       * Draw price point
+       * Draw moneyness point
        */
-      const priceElement = meta.data[drawIndex];
-      const priceX = priceElement._view.x;
+      const moneynessElement = meta.data[drawIndex];
+      const moneynessX = moneynessElement._view.x;
       ctx.globalCompositeOperation = "source-over";
       ctx.save();
       ctx.beginPath();
-      ctx.moveTo(priceX, topY - 25);
-      ctx.lineTo(priceX, bottomY + 34);
+      ctx.moveTo(moneynessX, topY - 25);
+      ctx.lineTo(moneynessX, bottomY + 34);
       ctx.lineWidth = 1;
       ctx.strokeStyle = colors.primaryText;
       ctx.stroke();
       ctx.restore();
 
       /**
-       * Draw price text
+       * Draw moneyness text
        */
       ctx.fillStyle = isPerformanceOutsideBarriers(
-        price / 100,
+        moneyness / 100,
         lowerBarrierPercentage,
         upperBarrierPercentage
       )
@@ -96,11 +135,11 @@ const EarnSTETHChart: React.FC<ProfitChartProps> = ({
       ctx.textBaseline = "middle";
       const padding = 8;
 
-      const text = optionMoneynessText(price);
+      const text = optionMoneynessText(moneyness);
 
       const textLength = ctx.measureText(text).width;
 
-      let xPosition = priceX;
+      let xPosition = moneynessX;
 
       if (xPosition - textLength / 2 < leftX) {
         xPosition = leftX + padding + textLength / 2;
@@ -117,8 +156,8 @@ const EarnSTETHChart: React.FC<ProfitChartProps> = ({
     [lowerBarrierPercentage, optionMoneynessText, upperBarrierPercentage]
   );
 
-  const drawDefaultPricePoint = useCallback(
-    (chart: any, price: number, drawIndex: number) => {
+  const drawDefaultMoneynessPoint = useCallback(
+    (chart: any, moneyness: number, drawIndex: number) => {
       const ctx: CanvasRenderingContext2D = chart.chart.ctx;
       // Get breakeven datasaet because of stability over every point
       const datasetIndex = chart.chart.data.datasets.findIndex(
@@ -132,15 +171,15 @@ const EarnSTETHChart: React.FC<ProfitChartProps> = ({
       const topY = chart.chart.scales["y-axis-0"].top;
       const bottomY = chart.chart.scales["y-axis-0"].bottom - 1;
       /**
-       * Draw price point
+       * Draw moneyness point
        */
-      const priceElement = meta.data[drawIndex];
-      const priceX = priceElement._view.x;
+      const moneynessElement = meta.data[drawIndex];
+      const moneynessX = moneynessElement._view.x;
 
       ctx.save();
       ctx.beginPath();
-      ctx.moveTo(priceX, topY - 25);
-      ctx.lineTo(priceX, bottomY + 34);
+      ctx.moveTo(moneynessX, topY - 25);
+      ctx.lineTo(moneynessX, bottomY + 34);
       ctx.lineWidth = 1;
       ctx.strokeStyle = colors.primaryText + "66";
       ctx.setLineDash([5, 5]);
@@ -148,10 +187,10 @@ const EarnSTETHChart: React.FC<ProfitChartProps> = ({
       ctx.restore();
 
       /**
-       * Draw price text
+       * Draw moneyness text
        */
       ctx.fillStyle = isPerformanceOutsideBarriers(
-        price / 100,
+        moneyness / 100,
         lowerBarrierPercentage,
         upperBarrierPercentage
       )
@@ -165,11 +204,11 @@ const EarnSTETHChart: React.FC<ProfitChartProps> = ({
       ctx.textBaseline = "middle";
       const padding = 8;
 
-      const text = optionMoneynessText(price);
+      const text = optionMoneynessText(moneyness);
 
       const textLength = ctx.measureText(text).width;
 
-      let xPosition = priceX;
+      let xPosition = moneynessX;
 
       if (xPosition - textLength / 2 < leftX) {
         xPosition = leftX + padding + textLength / 2;
@@ -185,7 +224,7 @@ const EarnSTETHChart: React.FC<ProfitChartProps> = ({
   );
 
   const drawDefaultBarriers = useCallback(
-    (chart: any, price: number, drawIndex: number) => {
+    (chart: any, moneyness: number, drawIndex: number) => {
       const ctx: CanvasRenderingContext2D = chart.chart.ctx;
       // Get breakeven datasaet because of stability over every point
       const datasetIndex = chart.chart.data.datasets.findIndex(
@@ -199,12 +238,12 @@ const EarnSTETHChart: React.FC<ProfitChartProps> = ({
       //const topY = chart.chart.scales["y-axis-0"].top;
       const bottomY = chart.chart.scales["y-axis-0"].bottom - 1;
       /**
-       * Draw price point
+       * Draw moneyness point
        */
-      const priceElement = meta.data[drawIndex];
-      const priceX = priceElement._view.x;
+      const moneynessElement = meta.data[drawIndex];
+      const moneynessX = moneynessElement._view.x;
       /**
-       * Draw price text
+       * Draw moneyness text
        */
       ctx.fillStyle = "white";
       const fontSize = 12;
@@ -215,10 +254,10 @@ const EarnSTETHChart: React.FC<ProfitChartProps> = ({
       ctx.textBaseline = "middle";
       const padding = 8;
 
-      const text = `${price.toFixed(2)}%`;
+      const text = `${moneyness.toFixed(2)}%`;
       const textLength = ctx.measureText(text).width;
 
-      let xPosition = priceX;
+      let xPosition = moneynessX;
 
       if (xPosition - textLength / 2 < leftX) {
         xPosition = leftX + padding + textLength / 2;
@@ -261,12 +300,12 @@ const EarnSTETHChart: React.FC<ProfitChartProps> = ({
       },
       onHover: (a: any, elements: any) => {
         if (elements && elements.length) {
-          onHoverPrice(yieldRange[elements[0]._index]);
+          onHoverMoneyness(yieldRange[elements[0]._index]);
           onHoverIndex(elements[0]._index);
           onHoverPercentage(moneynessRange[elements[0]._index]);
           setIndex(elements[0]._index);
         } else {
-          onHoverPrice(undefined);
+          onHoverMoneyness(undefined);
           onHoverIndex(undefined);
           onHoverPercentage(undefined);
           setIndex(undefined);
@@ -275,47 +314,12 @@ const EarnSTETHChart: React.FC<ProfitChartProps> = ({
     };
   }, [
     vaultOption,
-    onHoverPrice,
+    onHoverMoneyness,
     yieldRange,
     onHoverIndex,
     onHoverPercentage,
     moneynessRange,
   ]);
-
-  const findNeighbourPoint = useMemo(() => {
-    let closestSmallerNum: number | undefined;
-    let closestBiggerNum: number | undefined;
-
-    const nums = moneynessRange;
-    const point = performance * 100;
-    for (let i = 0; i < nums.length; i += 1) {
-      const currNum = nums[i];
-
-      // Find closest bigger number
-      if (
-        currNum >= point &&
-        (closestSmallerNum === undefined || currNum < closestSmallerNum)
-      ) {
-        if (closestSmallerNum === undefined || currNum < closestSmallerNum) {
-          closestSmallerNum = currNum;
-        }
-      }
-
-      // Find closest smaller number
-      if (
-        currNum <= point &&
-        (closestBiggerNum === undefined || currNum > closestBiggerNum)
-      ) {
-        closestBiggerNum = currNum;
-      }
-    }
-    const closestStrikePoint =
-      Math.abs(performance * 100 - Math.abs(closestSmallerNum || 0)) <
-      Math.abs(performance * 100 - Math.abs(closestBiggerNum || 0))
-        ? closestSmallerNum || 0
-        : closestBiggerNum || 0;
-    return closestStrikePoint;
-  }, [moneynessRange, performance]);
 
   const getData = useCallback(
     (canvas: any): ChartData => {
@@ -324,26 +328,6 @@ const EarnSTETHChart: React.FC<ProfitChartProps> = ({
       green.addColorStop(1, `transparent`);
       green.addColorStop(0.9, `${colors.green}01`);
       green.addColorStop(0, `${colors.green}20`);
-
-      moneynessRange.map((p) => {
-        if (hoveredIndex) {
-          return null;
-        }
-        if (p === lowerBarrierPercentage * 100) {
-          switch (vaultOption) {
-            case "rEARN":
-              return baseYield * 100;
-            case "rEARN-stETH":
-              return baseYield * 100;
-            default:
-              return maxYield * 100;
-          }
-        }
-        if (p === upperBarrierPercentage * 100) {
-          return maxYield * 100;
-        }
-        return null;
-      });
       return {
         labels: moneynessRange,
         datasets: [
@@ -379,8 +363,8 @@ const EarnSTETHChart: React.FC<ProfitChartProps> = ({
           },
           {
             label: "defaultPoint",
-            data: moneynessRange.map((price, index) => {
-              if (price === findNeighbourPoint) {
+            data: moneynessRange.map((moneyness, index) => {
+              if (moneyness === defaultMoneynessPoint) {
                 return yieldRange[index];
               } else {
                 return null;
@@ -400,7 +384,7 @@ const EarnSTETHChart: React.FC<ProfitChartProps> = ({
               if (hoveredIndex) {
                 return null;
               }
-              if (p === lowerBarrierPercentage * 100) {
+              if (p === closestLowerBarrierPoint) {
                 switch (vaultOption) {
                   case "rEARN":
                     return lowerBarrierMaxYield * 100;
@@ -410,7 +394,7 @@ const EarnSTETHChart: React.FC<ProfitChartProps> = ({
                     return maxYield * 100;
                 }
               }
-              if (p === upperBarrierPercentage * 100) {
+              if (p === closestUpperBarrierPoint) {
                 switch (vaultOption) {
                   case "rEARN":
                     return upperBarrierMaxYield * 100;
@@ -434,13 +418,12 @@ const EarnSTETHChart: React.FC<ProfitChartProps> = ({
       moneynessRange,
       yieldRange,
       hoveredIndex,
-      lowerBarrierPercentage,
-      upperBarrierPercentage,
+      defaultMoneynessPoint,
+      closestLowerBarrierPoint,
+      closestUpperBarrierPoint,
       vaultOption,
-      baseYield,
-      maxYield,
-      findNeighbourPoint,
       lowerBarrierMaxYield,
+      maxYield,
       upperBarrierMaxYield,
     ]
   );
@@ -501,7 +484,7 @@ const EarnSTETHChart: React.FC<ProfitChartProps> = ({
               );
 
               if (dataIndex >= 0) {
-                drawPricePoint(chart, moneynessRange[dataIndex], dataIndex);
+                drawMoneynessPoint(chart, moneynessRange[dataIndex], dataIndex);
               } else {
                 // Draw the default line
                 const defaultPointIndex = chart.chart.data.datasets.findIndex(
@@ -512,22 +495,21 @@ const EarnSTETHChart: React.FC<ProfitChartProps> = ({
                 const defaultDataIndex = defaultPointDataset?.data?.findIndex(
                   (data: any) => data !== null
                 );
-                drawDefaultPricePoint(
+                drawDefaultMoneynessPoint(
                   chart,
                   moneynessRange[defaultDataIndex],
                   defaultDataIndex
                 );
               }
-
               drawDefaultBarriers(
                 chart,
                 lowerBarrierPercentage * 100,
-                moneynessRange.indexOf(lowerBarrierPercentage * 100)
+                moneynessRange.indexOf(closestLowerBarrierPoint)
               );
               drawDefaultBarriers(
                 chart,
                 upperBarrierPercentage * 100,
-                moneynessRange.indexOf(upperBarrierPercentage * 100)
+                moneynessRange.indexOf(closestUpperBarrierPoint)
               );
             },
           },
@@ -535,14 +517,16 @@ const EarnSTETHChart: React.FC<ProfitChartProps> = ({
       />
     );
   }, [
-    moneynessRange,
     getData,
     options,
     drawDefaultBarriers,
     lowerBarrierPercentage,
+    moneynessRange,
+    closestLowerBarrierPoint,
     upperBarrierPercentage,
-    drawPricePoint,
-    drawDefaultPricePoint,
+    closestUpperBarrierPoint,
+    drawMoneynessPoint,
+    drawDefaultMoneynessPoint,
   ]);
   return chart;
 };
