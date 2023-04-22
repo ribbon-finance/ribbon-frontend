@@ -100,7 +100,7 @@ const Payoff: React.FC<PayoffSTETHProps> = ({ vaultOption }) => {
   } = useAirtableEarnData(vaultOption);
   const loadingText = useLoadingText();
 
-  const [hoverPrice, setHoverPrice] = useState<number>();
+  const [hoverMoneyness, setHoverMoneyness] = useState<number>();
   const [hoverIndex, setHoverIndex] = useState<number>();
   const [hoverPercentage, setHoverPercentage] = useState<number>();
   const [, setChartHovering] = useState(false);
@@ -223,8 +223,8 @@ const Payoff: React.FC<PayoffSTETHProps> = ({ vaultOption }) => {
           return loadingText;
         } else {
           return `+${
-            hoverPrice
-              ? hoverPrice.toFixed(2)
+            hoverMoneyness
+              ? hoverMoneyness.toFixed(2)
               : (expectedYield * 100).toFixed(2)
           }%`;
         }
@@ -243,7 +243,7 @@ const Payoff: React.FC<PayoffSTETHProps> = ({ vaultOption }) => {
     expectedPrincipalReturnRange,
     expectedYield,
     hoverIndex,
-    hoverPrice,
+    hoverMoneyness,
     loading,
     loadingText,
     vaultOption,
@@ -278,7 +278,7 @@ const Payoff: React.FC<PayoffSTETHProps> = ({ vaultOption }) => {
           >
             <EarnSTETHChart
               key={`${maxYield}-${lowerBarrierPercentage}-${upperBarrierPercentage}`}
-              onHoverPrice={setHoverPrice}
+              onHoverMoneyness={setHoverMoneyness}
               onHoverIndex={setHoverIndex}
               onHoverPercentage={setHoverPercentage}
               performance={
@@ -286,7 +286,6 @@ const Payoff: React.FC<PayoffSTETHProps> = ({ vaultOption }) => {
                   ? numericalPerformance
                   : performance
               }
-              baseYield={baseYield}
               lowerBarrierPercentage={lowerBarrierPercentage}
               upperBarrierPercentage={upperBarrierPercentage}
               maxYield={maxYield}

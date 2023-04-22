@@ -99,6 +99,25 @@ const getRightBaseYieldPoints = (vaultOption: VaultOptions) => {
   }
 };
 
+// precalculate difference between
+// number of points between lowerBarrierPercentage and 0 and
+// number of points between 0 and upperBarrierpercentage
+const getExtraPoints = (
+  lowerBarrierPercentage: number,
+  upperBarrierPercentage: number,
+  isUpperBarrier: boolean,
+  isUpperBarrierHigher: boolean
+) => {
+  const differenceInPoints = Math.round(
+    Math.abs(lowerBarrierPercentage + upperBarrierPercentage) * 10000
+  );
+  if (isUpperBarrier) {
+    return isUpperBarrierHigher ? 0 : differenceInPoints;
+  } else {
+    return isUpperBarrierHigher ? differenceInPoints : 0;
+  }
+};
+
 export const getOptionMoneynessRange = (
   vaultOption: VaultOptions,
   lowerBarrierPercentage: number,
@@ -108,19 +127,19 @@ export const getOptionMoneynessRange = (
   let leftArray = [];
   let array = [];
   let rightArray = [];
-  // precalculate difference between
-  // number of points between lowerBarrierPercentage and 0 and
-  // number of points between 0 and upperBarrierpercentage
-  const differenceInPoints =
-    Math.round(
-      Math.abs(lowerBarrierPercentage + upperBarrierPercentage) * 100
-    ) * 100;
-  const extraLeftBaseYieldPoints = isUpperBarrierHigher
-    ? differenceInPoints
-    : 0;
-  const extraRightBaseYieldPoints = isUpperBarrierHigher
-    ? 0
-    : differenceInPoints;
+
+  const extraLeftBaseYieldPoints = getExtraPoints(
+    lowerBarrierPercentage,
+    upperBarrierPercentage,
+    false,
+    isUpperBarrierHigher
+  );
+  const extraRightBaseYieldPoints = getExtraPoints(
+    lowerBarrierPercentage,
+    upperBarrierPercentage,
+    true,
+    isUpperBarrierHigher
+  );
   const leftBaseYieldPoints = getLeftBaseYieldPoints(vaultOption);
   const rightBaseYieldPoints = getRightBaseYieldPoints(vaultOption);
   switch (vaultOption) {
@@ -132,15 +151,15 @@ export const getOptionMoneynessRange = (
         i += 1
       ) {
         leftArray.push(
-          Math.round(lowerBarrierPercentage * 100) -
+          Math.round(lowerBarrierPercentage * 10000) / 100 -
             (leftBaseYieldPoints + extraLeftBaseYieldPoints - i) / 100
         );
       }
 
       // points that represent the moneyness between barriers
       for (
-        let i = Math.round(lowerBarrierPercentage * 100) * 100;
-        i <= Math.round(upperBarrierPercentage * 100) * 100;
+        let i = Math.round(lowerBarrierPercentage * 10000);
+        i <= Math.round(upperBarrierPercentage * 10000);
         i += 1
       ) {
         array.push(i / 100);
@@ -153,7 +172,7 @@ export const getOptionMoneynessRange = (
         i += 1
       ) {
         rightArray.push(
-          Math.round(upperBarrierPercentage * 100) + (i + 1) / 100
+          Math.round(upperBarrierPercentage * 10000) / 100 + (i + 1) / 100
         );
       }
 
@@ -162,15 +181,15 @@ export const getOptionMoneynessRange = (
       // points that represent the moneyness below lower barrier
       for (let i = 0; i < leftBaseYieldPoints; i += 1) {
         leftArray.push(
-          Math.round(lowerBarrierPercentage * 100) -
+          Math.round(lowerBarrierPercentage * 10000) / 100 -
             (leftBaseYieldPoints - i) / 100
         );
       }
 
       // points that represent the moneyness when between barriers
       for (
-        let i = Math.round(lowerBarrierPercentage * 100) * 100;
-        i <= Math.round(upperBarrierPercentage * 100) * 100;
+        let i = Math.round(lowerBarrierPercentage * 10000);
+        i <= Math.round(upperBarrierPercentage * 10000);
         i += 1
       ) {
         array.push(i / 100);
@@ -179,7 +198,7 @@ export const getOptionMoneynessRange = (
       // points that represent the moneyness above upper barrier
       for (let i = 0; i < rightBaseYieldPoints; i += 1) {
         rightArray.push(
-          Math.round(upperBarrierPercentage * 100) + (i + 1) / 100
+          Math.round(upperBarrierPercentage * 10000) / 100 + (i + 1) / 100
         );
       }
 
@@ -212,17 +231,19 @@ export const getYieldRange = (
       // precalculate difference between
       // number of points between lowerBarrierPercentage and 0 and
       // number of points between 0 and upperBarrierpercentage
+      const extraLeftBaseYieldPoints = getExtraPoints(
+        lowerBarrierPercentage,
+        upperBarrierPercentage,
+        false,
+        isUpperBarrierHigher
+      );
+      const extraRightBaseYieldPoints = getExtraPoints(
+        lowerBarrierPercentage,
+        upperBarrierPercentage,
+        true,
+        isUpperBarrierHigher
+      );
       const absoluteLowerBarrierPercentage = Math.abs(lowerBarrierPercentage);
-      const differenceInPoints =
-        Math.round(
-          Math.abs(lowerBarrierPercentage + upperBarrierPercentage) * 100
-        ) * 100;
-      const extraLeftBaseYieldPoints = isUpperBarrierHigher
-        ? differenceInPoints
-        : 0;
-      const extraRightBaseYieldPoints = isUpperBarrierHigher
-        ? 0
-        : differenceInPoints;
       // points that represent the base yield below lower barrier
       // add extra base yield points if the side's barrier is smaller
       // to keep the graph centered
@@ -237,13 +258,13 @@ export const getYieldRange = (
       // lowerBarrierPercentage to 0
       for (
         let i = 0;
-        i <= Math.round(absoluteLowerBarrierPercentage * 100) * 100;
+        i < Math.round(absoluteLowerBarrierPercentage * 10000);
         i += 1
       ) {
         const maxYieldBaseYieldDiff = lowerBarrierMaxYield - baseYield;
         array.push(
           maxYieldBaseYieldDiff * 100 -
-            (i / (Math.round(absoluteLowerBarrierPercentage * 100) * 100)) *
+            (i / Math.round(absoluteLowerBarrierPercentage * 10000)) *
               maxYieldBaseYieldDiff *
               100 +
             baseYield * 100
@@ -251,15 +272,11 @@ export const getYieldRange = (
       }
       // points that represent the expected yield as spotPrice goes from
       // 0 to upperBarrierPercentage
-      for (
-        let i = 0;
-        i <= Math.round(upperBarrierPercentage * 100) * 100;
-        i += 1
-      ) {
+      for (let i = 0; i <= Math.round(upperBarrierPercentage * 10000); i += 1) {
         const maxYieldBaseYieldDiff = upperBarrierMaxYield - baseYield;
         array.push(
           baseYield * 100 +
-            (i / (Math.round(upperBarrierPercentage * 100) * 100)) *
+            (i / Math.round(upperBarrierPercentage * 10000)) *
               maxYieldBaseYieldDiff *
               100
         );
@@ -293,15 +310,15 @@ export const getYieldRange = (
       const barriersSum = upperBarrierPercentage - lowerBarrierPercentage;
 
       // we multiply the number by 10000 to make plotting easier
-      const barriersSumLargeNumber = Math.round(barriersSum * 100) * 100;
+      const barriersSumLargeNumber = Math.round(barriersSum * 10000);
 
       // points that represent the expected yield between barriers
       // add incremental amounts of expected yield from base yield to max yield
       for (let i = 0; i <= barriersSumLargeNumber; i += 1) {
         const performance =
-          i + Math.round((lowerBarrierPercentage + 1) * 100) * 100;
+          i + Math.round((lowerBarrierPercentage + 1) * 10000);
         const optionPayout =
-          (performance - Math.round((lowerBarrierPercentage + 1) * 100) * 100) /
+          (performance - Math.round((lowerBarrierPercentage + 1) * 10000)) /
           performance;
         array.push(
           calculateExpectedYieldSTETH(
@@ -365,15 +382,14 @@ export const getExpectedPrincipalReturnRange = (
   const barriersSum = upperBarrierPercentage - lowerBarrierPercentage;
 
   // we multiply the number by 10000 to make plotting easier
-  const barriersSumLargeNumber = Math.round(barriersSum * 100) * 100;
+  const barriersSumLargeNumber = Math.round(barriersSum * 10000);
 
   // points that represent the expected yield between barriers
   // add incremental amounts of expected yield from base yield to max yield
   for (let i = 0; i <= barriersSumLargeNumber; i += 1) {
-    const performance =
-      i + Math.round((lowerBarrierPercentage + 1) * 100) * 100;
+    const performance = i + Math.round((lowerBarrierPercentage + 1) * 10000);
     const optionPayout =
-      (performance - Math.round((lowerBarrierPercentage + 1) * 100) * 100) /
+      (performance - Math.round((lowerBarrierPercentage + 1) * 10000)) /
       performance;
     array.push(
       calculateExpectedYield(

@@ -295,17 +295,14 @@ export const useAirtableEarnData = (vaultOption: VaultOptions) => {
       Math.round(Math.abs(rawPerformance) * 10000) / 10000;
 
     //hardcode rEARN for first week
-    const maxYield =
-      vaultOption === "rEARN"
-        ? 0.0991
-        : calculateMaxYield(
-            vaultOption,
-            values.baseYield,
-            values.lowerBarrierPercentage,
-            values.upperBarrierPercentage,
-            values.participationRate,
-            values.optionPrice
-          );
+    const maxYield = calculateMaxYield(
+      vaultOption,
+      values.baseYield,
+      values.lowerBarrierPercentage,
+      values.upperBarrierPercentage,
+      values.participationRate,
+      values.optionPrice
+    );
 
     const expectedYield = calculateExpectedYield(
       vaultOption,
