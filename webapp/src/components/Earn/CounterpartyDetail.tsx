@@ -8,6 +8,7 @@ import ButtonArrow from "shared/lib/components/Common/ButtonArrow";
 import { Counterparty, Link } from "./Counterparties";
 import { VaultOptions } from "shared/lib/constants/constants";
 import { BackedLogo } from "shared/lib/assets/icons/backedLogo";
+import { useAirtableEarnData } from "shared/lib/hooks/useAirtableEarnData";
 const BoostLogoContainer = styled.div`
   display: flex;
   align-items: center;
@@ -95,7 +96,7 @@ const CounterpartyDetail: React.FC<VaultStrategyExplainerProps> = ({
   const onToggleMenu = useCallback(() => {
     setIsMenuOpen((open) => !open);
   }, []);
-
+  const { borrowRate, loading } = useAirtableEarnData(vaultOption);
   const handleButtonClick = useCallback(async () => {
     onToggleMenu();
   }, [onToggleMenu]);
@@ -118,12 +119,18 @@ const CounterpartyDetail: React.FC<VaultStrategyExplainerProps> = ({
     }
   }, []);
 
-  const renderBorrowRate = useCallback((s: Counterparty) => {
-    switch (s) {
-      case "Backed":
-        return <>{(4.65).toFixed(2)}%</>;
-    }
-  }, []);
+  const renderBorrowRate = useCallback(
+    (s: Counterparty) => {
+      if (loading) {
+        return <>---</>;
+      }
+      switch (s) {
+        case "Backed":
+          return <>{(borrowRate * 100).toFixed(2)}%</>;
+      }
+    },
+    [borrowRate, loading]
+  );
 
   return (
     <>
