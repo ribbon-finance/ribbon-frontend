@@ -51,7 +51,7 @@ const getPriceHistoryFromPeriod = (
     nextPeriodStartTimestamp,
     nextPeriodEndTimestamp,
   ] = [
-    periodStart.subtract(5, "hours").unix(),
+    periodStart.clone().subtract(5, "hours").unix(),
     periodStart.clone().add(1, "week").add(5, "hours").unix(),
     periodStart.clone().add(1, "week").subtract(5, "hours").unix(),
     periodStart.clone().add(2, "week").add(5, "hours").unix(),
