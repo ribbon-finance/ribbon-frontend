@@ -471,9 +471,6 @@ const YieldCard: React.FC<YieldCardProps> = ({
 
   const totalProjectedYield = useMemo(() => {
     if (!isActiveVault) return "0%";
-    if (vault === "rBNB-THETA") {
-      return "20.00%";
-    }
     if (isEVMVault(vault)) {
       return latestAPY.fetched && !lg5DataLoading
         ? `${(latestAPY.res + baseAPY).toFixed(2)}%`

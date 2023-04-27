@@ -142,12 +142,9 @@ const YieldFrame: React.FC<YieldFrameProps> = ({
   );
   const latestAPY = useLatestAPY(vault, vaultVersion);
   const loadingText = useLoadingText();
-  const perfStr =
-    vault === "rBNB-THETA"
-      ? "20.00%"
-      : latestAPY.fetched
-      ? `${latestAPY.res.toFixed(2)}%`
-      : loadingText;
+  const perfStr = latestAPY.fetched
+    ? `${latestAPY.res.toFixed(2)}%`
+    : loadingText;
   const color = getVaultColor(vault);
   const Logo = getAssetLogo(displayAsset);
 
