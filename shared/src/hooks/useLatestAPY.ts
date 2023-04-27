@@ -43,9 +43,17 @@ const getPriceHistoryFromPeriod = (
     return undefined;
   }
 
-  const [periodStartTimestamp, periodEndTimestamp, nextPeriodEndTimestamp] = [
-    periodStart.unix(),
+  // add buffer of 5 hours for periodStartTime and periodEndTimestamp
+  // to catch any early or late settle events
+  const [
+    periodStartTimestamp,
+    periodEndTimestamp,
+    periodEndTimestampWithBuffer,
+    nextPeriodEndTimestamp,
+  ] = [
+    periodStart.subtract(5, "hours").unix(),
     periodStart.clone().add(1, "week").unix(),
+    periodStart.clone().subtract(5, "hours").add(1, "week").unix(),
     periodStart.clone().add(2, "week").unix(),
   ];
 
@@ -56,7 +64,7 @@ const getPriceHistoryFromPeriod = (
   );
   const priceHistoryInNextPeriod = priceHistory.filter(
     (historyItem) =>
-      historyItem.timestamp >= periodEndTimestamp &&
+      historyItem.timestamp >= periodEndTimestampWithBuffer &&
       historyItem.timestamp < nextPeriodEndTimestamp
   );
 
@@ -122,7 +130,7 @@ export const calculateAPYFromPriceHistory = (
   const periodStart = moment()
     .isoWeekday("friday")
     .utc()
-    .set("hour", 18)
+    .set("hour", 15)
     .set("minute", 0)
     .set("second", 0)
     .set("millisecond", 0);
