@@ -122,7 +122,7 @@ export const calculateAPYFromPriceHistory = (
   const periodStart = moment()
     .isoWeekday("friday")
     .utc()
-    .set("hour", 10)
+    .set("hour", 18)
     .set("minute", 0)
     .set("second", 0)
     .set("millisecond", 0);
