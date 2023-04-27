@@ -43,10 +43,18 @@ const getPriceHistoryFromPeriod = (
     return undefined;
   }
 
-  const [periodStartTimestamp, periodEndTimestamp, nextPeriodEndTimestamp] = [
-    periodStart.unix(),
-    periodStart.clone().add(1, "week").unix(),
-    periodStart.clone().add(2, "week").unix(),
+  // add buffers of 5 hours
+  // to catch any early or late settle events
+  const [
+    periodStartTimestamp,
+    periodEndTimestamp,
+    nextPeriodStartTimestamp,
+    nextPeriodEndTimestamp,
+  ] = [
+    periodStart.clone().subtract(5, "hours").unix(),
+    periodStart.clone().add(1, "week").add(5, "hours").unix(),
+    periodStart.clone().add(1, "week").subtract(5, "hours").unix(),
+    periodStart.clone().add(2, "week").add(5, "hours").unix(),
   ];
 
   const priceHistoryInPeriod = priceHistory.filter(
@@ -56,7 +64,7 @@ const getPriceHistoryFromPeriod = (
   );
   const priceHistoryInNextPeriod = priceHistory.filter(
     (historyItem) =>
-      historyItem.timestamp >= periodEndTimestamp &&
+      historyItem.timestamp >= nextPeriodStartTimestamp &&
       historyItem.timestamp < nextPeriodEndTimestamp
   );
 
