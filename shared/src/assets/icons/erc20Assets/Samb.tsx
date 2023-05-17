@@ -10,7 +10,7 @@ export const Samb: React.FC<SVGProps> = ({ ...props }) => (
     {...props}
   >
     <rect width="56" height="56" rx="28" fill="#457EFF" fillOpacity="0.12" />
-    <g clip-path="url(#clip0_802_54)">
+    <g clipPath="url(#clip0_802_54)">
       <path
         fillRule="evenodd"
         clipRule="evenodd"

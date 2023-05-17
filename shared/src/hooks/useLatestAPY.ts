@@ -18,6 +18,7 @@ import { getAssetDecimals } from "../utils/asset";
 import useLidoAPY from "./useLidoOracle";
 import { useV2VaultData, useV2VaultsData } from "./web3DataContext";
 import { apyFromPricePerShare } from "../utils/math";
+import { useSTETHStakingApr } from "../hooks/useSTETHStakingApr";
 
 /**
  *
@@ -62,12 +63,17 @@ const getPriceHistoryFromPeriod = (
       historyItem.timestamp >= periodStartTimestamp &&
       historyItem.timestamp < periodEndTimestamp
   );
+
   const priceHistoryInNextPeriod = priceHistory.filter(
     (historyItem) =>
       historyItem.timestamp >= nextPeriodStartTimestamp &&
       historyItem.timestamp < nextPeriodEndTimestamp
   );
 
+  // if (priceHistory.length === 24) {
+  //   console.log(priceHistoryInPeriod);
+  //   console.log(priceHistoryInNextPeriod);
+  // }
   /**
    * Check if one of the period is empty
    */
@@ -243,14 +249,13 @@ export const useLatestAPY = (
     loading: vaultDataLoading,
   } = useV2VaultData(vaultOption);
   const loading = vaultPriceHistoryLoading || vaultDataLoading;
-
-  const lidoAPY = useLidoAPY();
+  const { currentApr } = useSTETHStakingApr();
 
   let underlyingYieldAPR = 0;
 
   switch (vaultOption) {
     case "rstETH-THETA":
-      underlyingYieldAPR = lidoAPY * 100;
+      underlyingYieldAPR = currentApr;
       break;
   }
 
