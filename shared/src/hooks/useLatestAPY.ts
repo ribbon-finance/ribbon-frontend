@@ -70,10 +70,6 @@ const getPriceHistoryFromPeriod = (
       historyItem.timestamp < nextPeriodEndTimestamp
   );
 
-  // if (priceHistory.length === 24) {
-  //   console.log(priceHistoryInPeriod);
-  //   console.log(priceHistoryInNextPeriod);
-  // }
   /**
    * Check if one of the period is empty
    */
