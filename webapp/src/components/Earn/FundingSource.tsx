@@ -8,7 +8,7 @@ import { getAssetDecimals, getAssetLogo } from "shared/lib/utils/asset";
 import { Title } from "shared/lib/designSystem";
 import { useV2VaultData } from "shared/lib/hooks/web3DataContext";
 import { formatUnits } from "ethers/lib/utils";
-import { useSTETHStakingApr } from "../../hooks/useSTETHStakingApr";
+import { useSTETHStakingApr } from "shared/lib/hooks/useSTETHStakingApr";
 import useLoadingText from "shared/lib/hooks/useLoadingText";
 
 const ParagraphText = styled(SecondaryText)`

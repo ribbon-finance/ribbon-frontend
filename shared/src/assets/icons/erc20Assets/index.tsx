@@ -389,7 +389,7 @@ export const UNILogo: React.FC<SVGProps & { showBackground?: boolean }> = ({
         fillOpacity="0.16"
       />
     )}
-    <g clip-path="url(#clip0_904_112)">
+    <g clipPath="url(#clip0_904_112)">
       <path
         d="M28 56C43.464 56 56 43.464 56 28C56 12.536 43.464 0 28 0C12.536 0 0 12.536 0 28C0 43.464 12.536 56 28 56Z"
         fill="#FF007A"
@@ -464,8 +464,8 @@ export const BNBLogo: React.FC<SVGProps & { showBackground?: boolean }> = ({
     xmlns="http://www.w3.org/2000/svg"
     {...props}
   >
-    <rect width="56" height="56" rx="28" fill="#FBC828" fill-opacity="0.12" />
-    <g clip-path="url(#clip0_1001_80)">
+    <rect width="56" height="56" rx="28" fill="#FBC828" fillOpacity="0.12" />
+    <g clipPath="url(#clip0_1001_80)">
       <path
         d="M20.2318 24.8084L27.9998 17.0406L35.7718 24.8124L40.2918 20.2924L27.9998 8L15.712 20.2884L20.2318 24.8084ZM8.00008 27.9994L12.5202 23.4792L17.0401 27.9991L12.52 32.5192L8.00008 27.9994ZM20.2318 31.1916L27.9998 38.9594L35.7716 31.1878L40.294 35.7054L40.2918 35.7078L27.9998 48L15.7116 35.712L15.7052 35.7056L20.2318 31.1916ZM38.9602 28.0019L43.4804 23.4817L48.0002 28.0016L43.4801 32.5217L38.9602 28.0019Z"
         fill="#FBC828"
