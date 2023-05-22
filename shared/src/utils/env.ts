@@ -99,13 +99,13 @@ export const getENSSubgraphURI = () =>
   isDevelopment()
     ? ""
     : process.env.REACT_APP_ENS_SUBGRAPHQL_URL ||
-      "https://api.thegraph.com/subgraphs/name/ensdomains/ens";
+      "https://api.goldsky.com/api/public/project_clch40o0v0d510huoey7g5yaz/subgraphs/ribbon-ens/prod/gn";
 
 export const getGovernanceSubgraphURI = () =>
   isDevelopment()
     ? "https://api.thegraph.com/subgraphs/name/ribbon-finance/ribbon-governance-kovan"
     : process.env.REACT_APP_GOVERNANCE_SUBGRAPHQL_URL ||
-      "https://api.thegraph.com/subgraphs/name/ribbon-finance/ribbon-governance";
+      "https://api.goldsky.com/api/public/project_clch40o0v0d510huoey7g5yaz/subgraphs/ribbon-governance/prod/gn";
 
 const STAKING_ENABLED_CHAINID: CHAINID[] = [CHAINID.ETH_MAINNET];
 
