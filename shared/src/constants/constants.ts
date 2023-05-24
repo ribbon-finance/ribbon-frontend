@@ -1461,7 +1461,11 @@ export const COINGECKO_CURRENCIES: { [key in Assets]: string | undefined } = {
   APE: "apecoin",
 };
 
-const DISABLED_VAULTS: VaultOptions[] = ["rAPE-THETA", "rUSDC-AVAX-P-THETA", "rUNI-THETA"];
+const DISABLED_VAULTS: VaultOptions[] = [
+  "rAPE-THETA",
+  "rUSDC-AVAX-P-THETA",
+  "rUNI-THETA",
+];
 
 export const isDisabledVault = (vaultOption: VaultOptions) => {
   return DISABLED_VAULTS.includes(vaultOption);
