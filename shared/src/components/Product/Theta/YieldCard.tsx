@@ -954,24 +954,30 @@ const YieldCard: React.FC<YieldCardProps> = ({
                     </Subtitle>
                   </ProductTag>
                   {vaultLogo}
-                  <div className="d-flex">
-                    {/* Version tags */}
-                    {VaultVersionList.map((version) =>
-                      hasVaultVersion(vault, version) ? (
-                        <ProductVersionTag
-                          key={version}
-                          color={color}
-                          active={vaultVersion === version}
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            onVaultVersionChange(version);
-                          }}
-                        >
-                          <Subtitle>{version}</Subtitle>
-                        </ProductVersionTag>
-                      ) : null
-                    )}
-                  </div>
+                  {isDisabledVault(vault) ? (
+                    <ProductTag color={color}>
+                      <Subtitle>INACTIVE</Subtitle>
+                    </ProductTag>
+                  ) : (
+                    <div className="d-flex">
+                      {/* Version tags */}
+                      {VaultVersionList.map((version) =>
+                        hasVaultVersion(vault, version) ? (
+                          <ProductVersionTag
+                            key={version}
+                            color={color}
+                            active={vaultVersion === version}
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              onVaultVersionChange(version);
+                            }}
+                          >
+                            <Subtitle>{version}</Subtitle>
+                          </ProductVersionTag>
+                        ) : null
+                      )}
+                    </div>
+                  )}
                 </TagContainer>
               </TopContainer>
               <ProductInfo>
