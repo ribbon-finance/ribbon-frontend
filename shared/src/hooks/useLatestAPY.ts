@@ -16,7 +16,7 @@ import useVaultPriceHistory, {
 import { VaultPriceHistory } from "../models/vault";
 import { getAssetDecimals } from "../utils/asset";
 import useLidoAPY from "./useLidoOracle";
-import { useV2VaultData, useV2VaultsData } from "./web3DataContext";
+import { useV2VaultsData } from "./web3DataContext";
 import { apyFromPricePerShare } from "../utils/math";
 import { useSTETHStakingApr } from "../hooks/useSTETHStakingApr";
 
@@ -240,13 +240,8 @@ export const useLatestAPY = (
 ) => {
   const { priceHistory, loading: vaultPriceHistoryLoading } =
     useVaultPriceHistory(vaultOption, vaultVersion);
-  const {
-    data: { round, pricePerShare },
-    loading: vaultDataLoading,
-  } = useV2VaultData(vaultOption);
-  const loading = vaultPriceHistoryLoading || vaultDataLoading;
+  const loading = vaultPriceHistoryLoading;
   const { currentApr } = useSTETHStakingApr();
-
   let underlyingYieldAPR = 0;
 
   switch (vaultOption) {
@@ -260,9 +255,7 @@ export const useLatestAPY = (
     res: loading
       ? 0
       : calculateAPYFromPriceHistory(
-          priceHistory.map((history) =>
-            history.round === round ? { ...history, pricePerShare } : history
-          ),
+          priceHistory,
           getAssetDecimals(getAssets(vaultOption)),
           { vaultOption, vaultVersion },
           underlyingYieldAPR

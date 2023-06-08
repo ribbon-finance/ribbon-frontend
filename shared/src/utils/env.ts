@@ -12,7 +12,7 @@ export enum CHAINID {
 export const SUBGRAPH_URI: Record<number, string> = {
   [CHAINID.ETH_MAINNET]:
     process.env.REACT_APP_V2_SUBGRAPHQL_URL ||
-    "https://api.thegraph.com/subgraphs/name/ribbon-finance/ribbon-v2",
+    "https://api.goldsky.com/api/public/project_clch40o0v0d510huoey7g5yaz/subgraphs/ribbon-v2/prod/gn",
   [CHAINID.ETH_KOVAN]:
     process.env.REACT_APP_KOVAN_V2_SUBGRAPHQL_URL ||
     "https://api.thegraph.com/subgraphs/name/ribbon-finance/ribbon-v2-kovan",
@@ -21,7 +21,7 @@ export const SUBGRAPH_URI: Record<number, string> = {
     "https://api.thegraph.com/subgraphs/name/ribbon-finance/ribbon-avax",
   [CHAINID.AVAX_MAINNET]:
     process.env.REACT_APP_AVAX_SUBGRAPHQL_URL ||
-    "https://api.thegraph.com/subgraphs/name/ribbon-finance/ribbon-avax",
+    "https://api.goldsky.com/api/public/project_clch40o0v0d510huoey7g5yaz/subgraphs/ribbon-avax/prod/gn",
   [CHAINID.BINANCE_MAINNET]:
     process.env.REACT_APP_BINANCE_SUBGRAPHQL_URL ||
     "https://api.goldsky.com/api/public/project_clch40o0v0d510huoey7g5yaz/subgraphs/ribbon-binance/prod/gn",
