@@ -21,7 +21,6 @@ import TextPreview from "shared/lib/components/TextPreview/TextPreview";
 import Geoblocked from "shared/lib/components/Geoblocked/Geoblocked";
 import { LoadingText } from "shared/lib/hooks/useLoadingText";
 import "shared/lib/i18n/config";
-import { DeribitContextProvider } from "./hooks/deribitContext";
 const SOLANA_WALLETS = [getPhantomWallet(), getSolflareWallet()];
 
 function App() {
@@ -51,9 +50,7 @@ function App() {
                 <Web3DataContextProvider>
                   <SubgraphDataContextProvider>
                     <ExternalAPIDataContextProvider>
-                      <DeribitContextProvider>
-                        <RootApp />
-                      </DeribitContextProvider>
+                      <RootApp />
                     </ExternalAPIDataContextProvider>
                   </SubgraphDataContextProvider>
                 </Web3DataContextProvider>
