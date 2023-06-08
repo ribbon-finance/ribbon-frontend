@@ -206,7 +206,7 @@ const WeeklyStrategySnapshot: React.FC<WeeklyStrategySnapshotProps> = ({
 
   const strikePriceText = useMemo(() => {
     if (isSolanaVault(vaultOption)) {
-      return "---"
+      return "---";
     }
 
     return v2DataLoading
