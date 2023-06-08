@@ -28,7 +28,6 @@ import TooltipExplanation from "shared/lib/components/Common/TooltipExplanation"
 import HelpInfo from "shared/lib/components/Common/HelpInfo";
 import { Assets } from "shared/lib/store/types";
 import { useV2VaultData } from "shared/lib/hooks/web3DataContext";
-import { useSolNextIndicativeStrike } from "../../hooks/useSolNextIndicativeStrike";
 const VaultPerformanceChartContainer = styled.div`
   display: flex;
   align-items: center;
@@ -118,7 +117,6 @@ const WeeklyStrategySnapshot: React.FC<WeeklyStrategySnapshotProps> = ({
   const asset = getAssets(vaultOption);
   const optionAsset = getOptionAssets(vaultOption);
   const { prices } = useAssetsPrice();
-  const solStrikePrice = useSolNextIndicativeStrike();
   const {
     data: { strikePrice },
     loading: v2DataLoading,
@@ -208,20 +206,13 @@ const WeeklyStrategySnapshot: React.FC<WeeklyStrategySnapshotProps> = ({
 
   const strikePriceText = useMemo(() => {
     if (isSolanaVault(vaultOption)) {
-      return !solStrikePrice ? loadingText : currency(solStrikePrice).format();
+      return "---"
     }
 
     return v2DataLoading
       ? loadingText
       : currency(formatOptionStrike(strikePrice, chain)).format();
-  }, [
-    chain,
-    loadingText,
-    solStrikePrice,
-    strikePrice,
-    v2DataLoading,
-    vaultOption,
-  ]);
+  }, [chain, loadingText, strikePrice, v2DataLoading, vaultOption]);
 
   const strikeChart = useMemo(() => {
     if (loading || !prices[optionAsset]) {
