@@ -18,6 +18,7 @@ import { usePendingTransactions } from "./pendingTransactionsContext";
 import { useEVMWeb3Context } from "./useEVMWeb3Context";
 import { isVaultSupportedOnChain } from "../utils/vault";
 import { RibbonEarnVault } from "../codegen";
+import { calculatePricePerShare } from "../utils/math";
 
 const useFetchEarnVaultData = (): V2VaultData => {
   const {
@@ -80,15 +81,21 @@ const useFetchEarnVaultData = (): V2VaultData => {
           | BigNumber
           | number
           | { amount: BigNumber; round: number }
+          | {
+              totalPending: BigNumber;
+              queuedWithdrawShares: BigNumber;
+              round: number;
+            }
           | { round: number }
           | { share: BigNumber; round: number }
           | { loanAllocationPCT: number; optionAllocationPCT: number }
         >[] = [
           contract.totalBalance(),
           contract.cap(),
-          contract.decimals(),
-          contract.pricePerShare(),
           contract.vaultState(),
+          contract.lastQueuedWithdrawAmount(),
+          contract.totalSupply(),
+          contract.decimals(),
           contract.allocationState(),
         ];
         /**
@@ -100,7 +107,6 @@ const useFetchEarnVaultData = (): V2VaultData => {
           active
             ? [
                 contract.depositReceipts(account!),
-                contract.accountVaultBalance(account!),
                 contract.shares(account!),
                 contract.withdrawals(account!),
               ]
@@ -115,12 +121,12 @@ const useFetchEarnVaultData = (): V2VaultData => {
         const [
           totalBalance,
           cap,
-          decimals,
-          pricePerShare,
           _vaultState,
+          lastQueuedWithdrawAmount,
+          totalSupply,
+          decimals,
           _allocationState,
           _depositReceipts,
-          accountVaultBalance,
           shares,
           _withdrawals,
         ] = await Promise.all(
@@ -132,16 +138,34 @@ const useFetchEarnVaultData = (): V2VaultData => {
           )
         );
 
-        const vaultState = (
-          (_vaultState as { round?: number }).round ? _vaultState : { round: 1 }
-        ) as { round: number };
+        const {
+          totalPending = BigNumber.from(1),
+          queuedWithdrawShares = BigNumber.from(1),
+          round = 1,
+        } = (_vaultState || {}) as {
+          totalPending?: BigNumber;
+          queuedWithdrawShares?: BigNumber;
+          round?: number;
+        };
 
+        const actualPricePerShare = calculatePricePerShare(
+          decimals as BigNumber,
+          totalBalance as BigNumber,
+          totalPending,
+          lastQueuedWithdrawAmount as BigNumber,
+          totalSupply as BigNumber,
+          queuedWithdrawShares
+        );
+
+        const accountVaultBalance = (shares as BigNumber)
+          .mul(actualPricePerShare)
+          .div(BigNumber.from("10").pow(decimals as BigNumber));
         // we use roundPricePerShare for earn treasury because pricePerShare goes down
         // during the round itself
 
         const roundPricePerShare =
-          (isTreasury() || isVIP()) && vaultState.round
-            ? await contract.roundPricePerShare(vaultState.round - 1)
+          (isTreasury() || isVIP()) && round
+            ? await contract.roundPricePerShare(round - 1)
             : BigNumber.from(0);
 
         const allocationState = (
@@ -179,13 +203,13 @@ const useFetchEarnVaultData = (): V2VaultData => {
           vault,
           totalBalance,
           cap,
-          pricePerShare,
-          round: vaultState.round,
+          pricePerShare: actualPricePerShare,
+          round: round,
           roundPricePerShare,
           lockedBalanceInAsset: accountVaultBalance,
           shares,
           depositBalanceInAsset:
-            depositReceipts.round === vaultState.round
+            depositReceipts.round === round
               ? depositReceipts.amount
               : BigNumber.from(0),
           withdrawals,

@@ -21,7 +21,7 @@ import {
 import { usePendingTransactions } from "./pendingTransactionsContext";
 import { useEVMWeb3Context } from "./useEVMWeb3Context";
 import { isVaultSupportedOnChain } from "../utils/vault";
-import { getNextFridayTimestamp } from "../utils/math";
+import { calculatePricePerShare, getNextFridayTimestamp } from "../utils/math";
 import { RibbonV2ThetaVault } from "../codegen";
 
 const useFetchV2VaultData = (): V2VaultData => {
@@ -103,15 +103,23 @@ const useFetchV2VaultData = (): V2VaultData => {
          */
         const unconnectedPromises: Promise<
           | BigNumber
+          | number
           | { amount: BigNumber; round: number }
+          | {
+              totalPending: BigNumber;
+              queuedWithdrawShares: BigNumber;
+              round: number;
+            }
           | { round: number }
           | { share: BigNumber; round: number }
           | { newStrikePrice: BigNumber; newDelta: BigNumber }
         >[] = [
           contract.totalBalance(),
           contract.cap(),
-          contract.pricePerShare(),
           contract.vaultState(),
+          contract.lastQueuedWithdrawAmount(),
+          contract.totalSupply(),
+          contract.decimals(),
           strikeSelectionContract
             ? strikeSelectionContract.getStrikePrice(
                 expiryTimestamp,
@@ -132,7 +140,7 @@ const useFetchV2VaultData = (): V2VaultData => {
           active
             ? [
                 contract.depositReceipts(account!),
-                contract.accountVaultBalance(account!),
+                contract.shares(account!),
                 contract.withdrawals(account!),
               ]
             : [
@@ -146,11 +154,13 @@ const useFetchV2VaultData = (): V2VaultData => {
         const [
           totalBalance,
           cap,
-          pricePerShare,
           _vaultState,
+          lastQueuedWithdrawAmount,
+          totalSupply,
+          decimals,
           _getStrikePrice,
           _depositReceipts,
-          accountVaultBalance,
+          shares,
           _withdrawals,
         ] = await Promise.all(
           // Default to 0 when error
@@ -161,15 +171,35 @@ const useFetchV2VaultData = (): V2VaultData => {
           )
         );
 
+        const {
+          totalPending = BigNumber.from(1),
+          queuedWithdrawShares = BigNumber.from(1),
+          round = 1,
+        } = (_vaultState || {}) as {
+          totalPending?: BigNumber;
+          queuedWithdrawShares?: BigNumber;
+          round?: number;
+        };
+
+        const actualPricePerShare = calculatePricePerShare(
+          decimals as BigNumber,
+          totalBalance as BigNumber,
+          totalPending,
+          lastQueuedWithdrawAmount as BigNumber,
+          totalSupply as BigNumber,
+          queuedWithdrawShares
+        );
+
+        const accountVaultBalance = (shares as BigNumber)
+          .mul(actualPricePerShare)
+          .div(BigNumber.from("10").pow(decimals as BigNumber));
+
         const getStrikePrice = (
           (_getStrikePrice as { newStrikePrice: BigNumber }).newStrikePrice
             ? _getStrikePrice
             : { newStrikePrice: BigNumber.from(0) }
         ) as { newStrikePrice: BigNumber };
 
-        const vaultState = (
-          (_vaultState as { round?: number }).round ? _vaultState : { round: 1 }
-        ) as { round: number };
         const depositReceipts = (
           (
             _depositReceipts as {
@@ -193,12 +223,12 @@ const useFetchV2VaultData = (): V2VaultData => {
           vault,
           totalBalance,
           cap,
-          pricePerShare,
-          round: vaultState.round,
+          pricePerShare: actualPricePerShare,
+          round,
           strikePrice: getStrikePrice.newStrikePrice,
           lockedBalanceInAsset: accountVaultBalance,
           depositBalanceInAsset:
-            depositReceipts.round === vaultState.round
+            depositReceipts.round === round
               ? depositReceipts.amount
               : BigNumber.from(0),
           withdrawals,
