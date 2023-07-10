@@ -241,3 +241,18 @@ export const getNextFridayTimestamp = () => {
   }
   return (friday as Moment).hours(8).minutes(0).seconds(0).unix();
 };
+
+// use this as calculation for pricePerShare because contract pricePerShare
+// does not take into account withdrawals
+export const calculatePricePerShare = (
+  decimals: BigNumber,
+  totalBalance: BigNumber,
+  totalPending: BigNumber,
+  lastQueuedWithdrawAmount: BigNumber,
+  totalSupply: BigNumber,
+  queuedWithdrawShares: BigNumber
+) =>
+  BigNumber.from("10")
+    .pow(decimals)
+    .mul(totalBalance.sub(totalPending).sub(lastQueuedWithdrawAmount))
+    .div(totalSupply.sub(queuedWithdrawShares));

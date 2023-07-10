@@ -26,7 +26,6 @@ import {
 import { ERC20Token } from "shared/lib/models/eth";
 import { isVaultFull } from "shared/lib/utils/vault";
 import { getAssetDisplay, getAssetColor } from "shared/lib/utils/asset";
-import { formatBigNumber } from "shared/lib/utils/math";
 import VaultApprovalForm from "../common/VaultApprovalForm";
 import ButtonArrow from "shared/lib/components/Common/ButtonArrow";
 import theme from "shared/lib/designSystem/theme";
@@ -453,16 +452,9 @@ const VaultV2DepositWithdrawForm: React.FC<VaultV2DepositWithdrawFormProps> = ({
           </FormInfoText>
         );
       case "maxDeposited":
-        return (
-          <FormInfoText color={colors.red}>
-            {t("shared:VaultV2DepositWithdrawForm:maxDeposit:explanation", {
-              maxDeposit: formatBigNumber(vaultMaxDepositAmount, decimals),
-              asset: getAssetDisplay(asset),
-            })}
-          </FormInfoText>
-        );
+        return <></>;
     }
-  }, [asset, decimals, error, vaultMaxDepositAmount, t]);
+  }, [error, t]);
 
   const bridgeAvaxCTA = useMemo(() => {
     if (
