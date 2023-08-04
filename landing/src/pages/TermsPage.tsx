@@ -53,12 +53,12 @@ const sections = [
             <p>
               These Terms of Use, together with any documents and additional
               terms they, by reference, expressly incorporate (collectively,
-              these "Terms"), are entered into between Apogee Technologies Pte
-              Ltd (hereinafter referred to as "Ribbon", "we", "our" or "us") and
-              the person making use of Ribbon's services (hereinafter referred
-              to as the "User", "you" or "your"). These Terms constitute a
-              binding legal agreement between Ribbon and the User following such
-              User's acceptance of such Terms.
+              these "Terms"), are entered into between Ribbon Research LLC
+              (hereinafter referred to as "Ribbon", "we", "our" or "us") and the
+              person making use of Ribbon's services (hereinafter referred to as
+              the "User", "you" or "your"). These Terms constitute a binding
+              legal agreement between Ribbon and the User following such User's
+              acceptance of such Terms.
             </p>
             <p>
               Within these Terms, words of any gender shall be held and
@@ -222,7 +222,7 @@ const sections = [
               the Protocol if you are located in or a citizen or resident of any
               state, country, territory or other jurisdiction in which use of
               the Portal or the Services would be illegal or otherwise violate
-              any applicable law (a "Restricted Territory"). The fact that the
+              any applicable law (a “Restricted Territory”). The fact that the
               Portal is accessible in a Restricted Territory or that the Portal
               allows the use of the official language of a Restricted Territory
               or a language commonly used in a Restricted Territory must not be
@@ -230,31 +230,19 @@ const sections = [
               Territory. We unconditionally reserve the right to restrict access
               to any Restricted Territory and may implement technical controls
               to prevent access to the Portal or any Services from any
-              Restricted Territory. Users from Cuba, Democratic People’s
-              Republic of Korea (DPRK), Democratic Republic of Congo, Iran,
-              Iraq, Lebanon, Libya, Mali, Myanmar, Nicaragua, Russia, Somalia,
-              South Sudan, Sudan, Syria and The United States of America will
-              not be able to access the{" "}
-              <StyledLink href="https://app.ribbon.finance/earn/R-EARN">
-                Ribbon Earn USDC
-              </StyledLink>{" "}
-              product.
-            </p>
-            <p>
-              Your access to the Portal and any Services may be restricted based
-              on your jurisdiction or geographical location. You must not use
-              the Protocol if you are located in or a citizen or resident of any
-              state, country, territory or other jurisdiction in which use of
-              the Portal or the Services would be illegal or otherwise violate
-              any applicable law (a "Restricted Territory"). The fact that the
-              Portal is accessible in a Restricted Territory or that the Portal
-              allows the use of the official language of a Restricted Territory
-              or a language commonly used in a Restricted Territory must not be
-              construed as a license to use the Portal in such a Restricted
-              Territory. We unconditionally reserve the right to restrict access
-              to any Restricted Territory and may implement technical controls
-              to prevent access to the Portal or any Services from any
-              Restricted Territory.
+              Restricted Territory. No services are offered to persons or
+              entities who reside in, are citizens of, are located in, are
+              incorporated in, or have a registered office in any restricted
+              territory (as defined below). (a) Belarus, Cuba, Democratic
+              People’s Republic of Korea (DPRK), Democratic Republic of Congo,
+              Iran, Lebanon, Libya, Mali, Myanmar, Nicaragua, Russia, Somalia,
+              South Sudan, Sudan, Syria, the following regions of Ukraine:
+              Crimea, Donetsk and Luhansk, or any other country or region that
+              is the subject of comprehensive country-wide or region-wide or
+              economic sanctions by the United Nations, United States of
+              America, the European Union or the United Kingdom; and (b) United
+              States of America, the United Kingdom, Canada, and the People’s
+              Republic of China.
             </p>
           </span>
         ),
