@@ -30,5 +30,11 @@
     "*/src/**/*.(ts|tsx)": [
       "yarn prettier:all"
     ]
+  },
+  "resolutions": {
+    "@solana/wallet-adapter-react": "0.15.34",
+    "@solana/wallet-adapter-wallets": "0.19.20",
+    "@solana/wallet-adapter-base": "0.9.23",
+    "@types/react": "^17.0.38"
   }
 }

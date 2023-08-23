@@ -12,7 +12,6 @@ import useScreenSize from "../../hooks/useScreenSize";
 import { capitalize } from "../../utils/text";
 import ButtonArrow from "./ButtonArrow";
 import ExternalLink from "../../assets/icons/externalLink";
-import { useRouteMatch } from "react-router-dom";
 
 interface FilterDropdownButtonConfig {
   background?: string;

@@ -1,6 +1,5 @@
 import React, { useCallback, useEffect, useRef, useState } from "react";
 import styled from "styled-components";
-import { setTimeout } from "timers";
 
 import sizes from "../../designSystem/sizes";
 import { Title, BaseButton } from "../../designSystem";

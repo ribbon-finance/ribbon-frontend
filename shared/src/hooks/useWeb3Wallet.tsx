@@ -8,9 +8,12 @@ import {
 import { providers } from "ethers";
 import { useCallback, useEffect, useState } from "react";
 import { WalletConnectConnector } from "@web3-react/walletconnect-connector";
-import { Wallet as SolanaWalletInterface } from "@solana/wallet-adapter-wallets";
 import { useWallet as useSolanaWallet } from "@solana/wallet-adapter-react";
-import { WalletName } from "@solana/wallet-adapter-wallets";
+import {
+  PhantomWalletName,
+  SolflareWalletName,
+} from "@solana/wallet-adapter-wallets";
+import { WalletName } from "@solana/wallet-adapter-base";
 import { useChain } from "./chainContext";
 import {
   EthereumWallet,
@@ -34,7 +37,7 @@ interface Web3WalletData {
   connectedWallet: Wallet | undefined;
   ethereumProvider: providers.Web3Provider | undefined;
   ethereumConnector?: AbstractConnector;
-  solanaWallet: SolanaWalletInterface | undefined;
+  solanaWallet: any;
   // True if is embeded in ledger live
   isLedgerLive: boolean;
 }
@@ -112,13 +115,13 @@ export const useWeb3Wallet = (): Web3WalletData => {
           setChainToSwitch(chain);
           setConnectedWallet(wallet as EthereumWallet);
         } else if (isSolanaWallet(wallet)) {
-          let walletName: WalletName = WalletName.Phantom;
+          let walletName: WalletName = PhantomWalletName;
           switch (wallet) {
             case SolanaWallet.Phantom:
-              walletName = WalletName.Phantom;
+              walletName = PhantomWalletName;
               break;
             case SolanaWallet.Solflare:
-              walletName = WalletName.Solflare;
+              walletName = SolflareWalletName;
               break;
           }
 
