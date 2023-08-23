@@ -89,7 +89,7 @@ export const getSOLPricePerShare = async (): Promise<number> => {
   );
   const vaultAddress = vaultUtils.getVaultAddress("rSOL-THETA")[0];
   const vaultInfo = Vault.getVault(vaultAddress);
-  const vaultUnderlyingTokenAccount = await spl.getAccount(
+  const vaultUnderlyingTokenAccount = await spl.AccountLayout(
     connection,
     vaultInfo.vaultUnderlyingTokenAccount
   );
@@ -98,14 +98,14 @@ export const getSOLPricePerShare = async (): Promise<number> => {
 
   // If the option is initialized, we know that a portion of the vault balance is in the option collateral.
   if (vaultInfo.option !== null) {
-    const optionVault = await spl.getAccount(
+    const optionVault = await spl.AccountLayout(
       connection,
       vaultInfo.option.vault
     );
     totalBalance += Number(optionVault.amount);
   }
 
-  const redeemableMint = await spl.getMint(
+  const redeemableMint = await spl.MintLayout(
     connection,
     vaultInfo.redeemableMint
   );

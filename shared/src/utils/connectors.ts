@@ -29,7 +29,6 @@ export const getWalletConnectConnector = () =>
           [CHAINID.AVAX_MAINNET]: process.env.REACT_APP_AVAX_URI || "",
         },
     qrcode: true,
-    pollingInterval: 5000,
   });
 
 export const walletlinkConnector = new WalletLinkConnector({

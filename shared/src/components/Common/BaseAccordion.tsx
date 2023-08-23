@@ -56,7 +56,9 @@ const BaseAccordionToggleWithMenu: React.FC<any> = ({
   eventKey,
   callback,
 }) => {
-  const currentEventKey = useContext(AccordionContext);
+  const currentEventKey = useContext(
+    AccordionContext as React.Context<string | null>
+  );
 
   const decoratedOnClick = useAccordionToggle(
     eventKey,

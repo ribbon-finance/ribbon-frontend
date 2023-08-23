@@ -15,7 +15,7 @@
     "url": "https://github.com/ribbon-finance/ribbon-frontend.git"
   },
   "dependencies": {
-    "@project-serum/anchor": "0.24.2",
+    "@project-serum/anchor": "^0.26.0",
     "@rooks/use-mutation-observer": "^4.11.2",
     "@rooks/use-on-window-scroll": "^4.11.2",
     "@testing-library/jest-dom": "^5.11.4",
@@ -29,7 +29,7 @@
     "@web3-react/injected-connector": "^6.0.7",
     "@web3-react/walletconnect-connector": "^6.2.4",
     "@web3-react/walletlink-connector": "^6.2.2",
-    "@zetamarkets/flex-sdk": "0.8.2",
+    "@zetamarkets/flex-sdk": "^0.14.0",
     "airtable": "^0.11.4",
     "currency.js": "^2.0.3",
     "ethers": "5.4.0",
@@ -75,8 +75,8 @@
     "@typechain/ethers-v5": "^9.0.0",
     "@types/react-router-dom": "^5.1.7",
     "@types/styled-components": "^5.1.9",
-    "eslint-plugin-react-hooks": "^4.6.0",
     "copyfiles": "^2.4.1",
+    "eslint-plugin-react-hooks": "^4.6.0",
     "typechain": "^7.0.0"
   }
 }
