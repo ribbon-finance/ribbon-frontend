@@ -8,7 +8,6 @@ import {
 import { getAssetColor } from "./asset";
 import { Connection, PublicKey } from "@solana/web3.js";
 import { Vault, vaultTypes, vaultUtils } from "@zetamarkets/flex-sdk";
-import * as spl from "@solana/spl-token";
 
 export const isVaultFull = (
   deposits: BigNumber,
@@ -89,29 +88,39 @@ export const getSOLPricePerShare = async (): Promise<number> => {
   );
   const vaultAddress = vaultUtils.getVaultAddress("rSOL-THETA")[0];
   const vaultInfo = Vault.getVault(vaultAddress);
-  const vaultUnderlyingTokenAccount = await spl.AccountLayout(
-    connection,
-    vaultInfo.vaultUnderlyingTokenAccount
+
+  // Get the vault's underlying token account
+  const vaultUnderlyingTokenAccountInfo = await connection.getBalance(
+    new PublicKey(vaultInfo.vaultUnderlyingTokenAccount)
   );
 
-  let totalBalance = Number(vaultUnderlyingTokenAccount.amount);
-
-  // If the option is initialized, we know that a portion of the vault balance is in the option collateral.
-  if (vaultInfo.option !== null) {
-    const optionVault = await spl.AccountLayout(
-      connection,
-      vaultInfo.option.vault
-    );
-    totalBalance += Number(optionVault.amount);
+  if (!vaultUnderlyingTokenAccountInfo) {
+    return 0;
   }
 
-  const redeemableMint = await spl.MintLayout(
-    connection,
-    vaultInfo.redeemableMint
-  );
+  let totalBalance = Number(vaultUnderlyingTokenAccountInfo); // Adjust according to your data layout if necessary
 
-  // Price per share = total vault balance / redeemable mint supply
-  const pricePerShare = totalBalance / Number(redeemableMint.supply);
+  if (vaultInfo.option !== null) {
+    // If the option is initialized, get the option's vault balance
+    const optionVaultBalance = await connection.getBalance(
+      new PublicKey(vaultInfo.option.vault)
+    );
+    if (!optionVaultBalance) {
+      return 0;
+    }
+    totalBalance += Number(optionVaultBalance); // Adjust according to your data layout if necessary
+  }
+
+  // Fetch mint information using Connection
+  const redeemableMintAccountInfo = await connection.getTokenSupply(
+    new PublicKey(vaultInfo.redeemableMint)
+  );
+  if (!redeemableMintAccountInfo) {
+    throw new Error("Failed to fetch the redeemable mint account info.");
+  }
+
+  const redeemableMintSupply = redeemableMintAccountInfo.value.amount;
+  const pricePerShare = totalBalance / Number(redeemableMintSupply);
 
   return pricePerShare;
 };
