@@ -3805,11 +3805,7 @@
     "@jnwng/walletconnect-solana" "^0.2.0"
     "@solana/wallet-adapter-base" "^0.9.23"
 
-<<<<<<< HEAD
 "@solana/wallet-adapter-wallets@0.19.20", "@solana/wallet-adapter-wallets@^0.11.3":
-=======
-"@solana/wallet-adapter-wallets@0.19.20":
->>>>>>> master
   version "0.19.20"
   resolved "https://registry.yarnpkg.com/@solana/wallet-adapter-wallets/-/wallet-adapter-wallets-0.19.20.tgz#25bbbbf2349f9c8ee169de1db34c74900f0e8a35"
   integrity sha512-bE7tS6UykCSiWmudo8DYe/mZV0HoyqI+XifIjPaY/BNSgXQ3u1cwbqvqcLURuixBRnOka7FE6VuT90PhRsosqA==
