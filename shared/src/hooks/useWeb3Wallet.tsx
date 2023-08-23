@@ -8,7 +8,6 @@ import {
 import { providers } from "ethers";
 import { useCallback, useEffect, useState } from "react";
 import { WalletConnectConnector } from "@web3-react/walletconnect-connector";
-import { Wallet as SolanaWalletInterface } from "@solana/wallet-adapter-wallets";
 import { useWallet as useSolanaWallet } from "@solana/wallet-adapter-react";
 import {
   PhantomWalletName,
@@ -38,7 +37,7 @@ interface Web3WalletData {
   connectedWallet: Wallet | undefined;
   ethereumProvider: providers.Web3Provider | undefined;
   ethereumConnector?: AbstractConnector;
-  solanaWallet: SolanaWalletInterface | undefined;
+  solanaWallet: any;
   // True if is embeded in ledger live
   isLedgerLive: boolean;
 }
