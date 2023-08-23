@@ -6,7 +6,6 @@ import React, {
   useState,
 } from "react";
 import styled from "styled-components";
-import { setTimeout } from "timers";
 import { WalletConnectConnector } from "@web3-react/walletconnect-connector";
 
 import Indicator from "shared/lib/components/Indicator/Indicator";

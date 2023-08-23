@@ -2,8 +2,8 @@ import { Web3ReactProvider } from "@web3-react/core";
 import { useEffect } from "react";
 import smoothscroll from "smoothscroll-polyfill";
 import {
-  getPhantomWallet,
-  getSolflareWallet,
+  PhantomWalletAdapter,
+  SolflareWalletAdapter,
 } from "@solana/wallet-adapter-wallets";
 import { WalletProvider as SolanaWalletProvider } from "@solana/wallet-adapter-react";
 import RootApp from "./components/RootApp";
@@ -21,7 +21,11 @@ import TextPreview from "shared/lib/components/TextPreview/TextPreview";
 import Geoblocked from "shared/lib/components/Geoblocked/Geoblocked";
 import { LoadingText } from "shared/lib/hooks/useLoadingText";
 import "shared/lib/i18n/config";
-const SOLANA_WALLETS = [getPhantomWallet(), getSolflareWallet()];
+
+const SOLANA_WALLETS = [
+  new PhantomWalletAdapter(),
+  new SolflareWalletAdapter(),
+];
 
 function App() {
   const { loading, rejected } = useGeofence(GeofenceCountry.SINGAPORE);

@@ -20,8 +20,8 @@
     "@davatar/react": "^1.8.1",
     "@project-serum/anchor": "0.24.2",
     "@solana/wallet-adapter-base": "^0.7.1",
-    "@solana/wallet-adapter-react": "^0.13.1",
-    "@solana/wallet-adapter-wallets": "^0.11.3",
+    "@solana/wallet-adapter-react": "0.15.3",
+    "@solana/wallet-adapter-wallets": "0.19.20",
     "@solana/web3.js": "1.43.6",
     "@testing-library/jest-dom": "^5.11.4",
     "@testing-library/react": "^11.1.0",
@@ -94,6 +94,14 @@
     "@types/react-router-dom": "^5.1.7",
     "@types/smoothscroll-polyfill": "^0.3.1",
     "@types/styled-components": "^5.1.9",
+    "buffer": "npm:buffer@6.0.3",
+    "crypto": "npm:crypto-browserify@3.12.0",
+    "http": "npm:stream-http@3.2.0",
+    "https": "npm:https-browserify@1.0.0",
+    "stream": "npm:stream-browserify@3.0.0",
+    "util": "npm:util@0.12.5",
+    "zlib": "npm:browserify-zlib@0.2.0",
+    "os": "npm:os-browserify@0.3.0",
     "yarn-audit-fix": "^10.0.0"
   }
 }

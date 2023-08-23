@@ -7,7 +7,6 @@ import React, {
 } from "react";
 import styled from "styled-components";
 import { useWeb3Wallet } from "shared/lib/hooks/useWeb3Wallet";
-import { setTimeout } from "timers";
 import Davatar from "@davatar/react";
 
 import sizes from "shared/lib/designSystem/sizes";
