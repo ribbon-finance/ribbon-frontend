@@ -1,23 +1,24 @@
 import { useEffect, useState } from "react";
-import { useConnection, useWallet } from "@solana/wallet-adapter-react";
+import { useConnection } from "@solana/wallet-adapter-react";
 import { vaultUtils, vaultData } from "@zetamarkets/flex-sdk";
 import { defaultSolanaVaultData, SolanaVaultData } from "../models/vault";
 import { BigNumber } from "@ethersproject/bignumber";
 import { parseUnits } from "ethers/lib/utils";
 import { getAssetDecimals } from "../utils/asset";
 import { useFlexVault } from "./useFlexVault";
-import { PublicKey } from "@solana/web3.js";
+import { PublicKey, Keypair } from "@solana/web3.js";
 import {
   getSOLPricePerShare,
   getUserDepositQueueAmount,
   getUserWithdrawQueueAmount,
 } from "../utils/vault";
-import { getSolanaVaultInstance } from "../constants/constants";
+import { TOKEN_PROGRAM_ID, Token } from "@solana/spl-token";
+import useWeb3Wallet from "./useWeb3Wallet";
 
 const useFetchSolVaultData = (): SolanaVaultData => {
   const { connection } = useConnection();
   const { vault, client } = useFlexVault();
-  const { publicKey } = useWallet();
+  const { publicKey } = useWeb3Wallet();
   const [data, setData] = useState<SolanaVaultData>();
 
   useEffect(() => {
@@ -53,17 +54,37 @@ const useFetchSolVaultData = (): SolanaVaultData => {
 
         lockedBalanceInAsset = BigNumber.from(0);
 
-        if (client) {
-          const pricePerShare = await getSOLPricePerShare();
+        const token = new Token(
+          connection,
+          vault?.redeemableMint,
+          TOKEN_PROGRAM_ID,
+          Keypair.generate()
+        ); // "payer" is a Keypair or other Signer
 
-          const balance = Math.round(
-            (client.getRedeemableTokenAmount(
-              getSolanaVaultInstance("rSOL-THETA")
-            ) || 0) * Number(pricePerShare)
+        const associatedTokenAccounts =
+          await connection.getTokenAccountsByOwner(publicKey, {
+            mint: vault?.redeemableMint,
+            programId: TOKEN_PROGRAM_ID,
+          });
+
+        let redeemableAmount = BigNumber.from(0);
+
+        for (let tokenAccountInfo of associatedTokenAccounts.value) {
+          const detailedAccountInfo = await token.getAccountInfo(
+            tokenAccountInfo.pubkey
           );
 
-          lockedBalanceInAsset = BigNumber.from(balance);
+          if (detailedAccountInfo.mint.equals(vault?.redeemableMint)) {
+            redeemableAmount = redeemableAmount.add(
+              BigNumber.from(detailedAccountInfo.amount.toString())
+            );
+          }
         }
+
+        const pricePerShare = await getSOLPricePerShare();
+        lockedBalanceInAsset = BigNumber.from(
+          Math.round(parseFloat(redeemableAmount.toString()) * pricePerShare)
+        );
       }
 
       setData({

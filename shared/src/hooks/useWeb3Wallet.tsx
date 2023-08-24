@@ -26,6 +26,7 @@ import { Chains, CHAINS_TO_ID, ID_TO_CHAINS } from "../constants/constants";
 import { switchChains } from "../utils/chainSwitching";
 import { impersonateAddress } from "../utils/development";
 import { isLedgerDappBrowserProvider } from "web3-ledgerhq-frame-connector";
+import { PublicKey } from "@solana/web3.js";
 
 interface Web3WalletData {
   chainId: number | undefined;
@@ -33,6 +34,7 @@ interface Web3WalletData {
   activate: (wallet: Wallet, chain: Chains) => Promise<void>;
   deactivate: () => Promise<void>;
   account: string | null | undefined;
+  publicKey: PublicKey | undefined;
   connectingWallet: Wallet | undefined;
   connectedWallet: Wallet | undefined;
   ethereumProvider: providers.Web3Provider | undefined;
@@ -151,6 +153,7 @@ export const useWeb3Wallet = (): Web3WalletData => {
       chainId: undefined,
       active: isActiveSolana,
       account: publicKeySolana && publicKeySolana.toString(),
+      publicKey: publicKeySolana || undefined,
       activate,
       deactivate: deactivateSolana,
       connectingWallet,
@@ -168,6 +171,7 @@ export const useWeb3Wallet = (): Web3WalletData => {
     activate,
     deactivate: deactivateEth,
     account: impersonateAddress ?? accountEth,
+    publicKey: undefined,
     connectingWallet,
     connectedWallet,
     ethereumProvider: libraryEth,
