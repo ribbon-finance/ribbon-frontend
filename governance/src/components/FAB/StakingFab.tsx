@@ -1,4 +1,4 @@
-import React, { useCallback, useMemo } from "react";
+import { useCallback, useMemo } from "react";
 import styled from "styled-components";
 import { useWeb3React } from "@web3-react/core";
 import { useTranslation } from "react-i18next";
@@ -7,18 +7,11 @@ import { SecondaryText, Title } from "shared/lib/designSystem";
 import colors from "shared/lib/designSystem/colors";
 import theme from "shared/lib/designSystem/theme";
 import { useGovernanceGlobalState } from "../../store/store";
-import {
-  GovernanceApproveUnstakeTransactions,
-  GovernanceStakeTransactions,
-} from "shared/lib/store/types";
-import useTokenAllowance from "shared/lib/hooks/useTokenAllowance";
 import sizes from "shared/lib/designSystem/sizes";
 import { formatBigNumber } from "shared/lib/utils/math";
 import useLoadingText, { LoadingText } from "shared/lib/hooks/useLoadingText";
 import { useRBNTokenAccount } from "shared/lib/hooks/useRBNTokenSubgraph";
-import { VotingEscrowAddress } from "shared/lib/constants/constants";
 import { useAssetBalance } from "shared/lib/hooks/web3DataContext";
-import { BigNumber } from "ethers";
 import TooltipExplanation from "shared/lib/components/Common/TooltipExplanation";
 import HelpInfo from "shared/lib/components/Common/HelpInfo";
 import { usePendingTransactions } from "shared/lib/hooks/pendingTransactionsContext";
@@ -84,11 +77,7 @@ const FABOffsetContainer = styled.div`
 const StakingFAB = () => {
   const { active } = useWeb3React();
   const { t } = useTranslation();
-  const [, setStakingModal] = useGovernanceGlobalState("stakingModal");
   const [, setUnstakingModal] = useGovernanceGlobalState("unstakingModal");
-
-  const rbnAllowance =
-    useTokenAllowance("rbn", VotingEscrowAddress) || BigNumber.from(0);
 
   const { data: rbnTokenAccount, loading: rbnTokenAccountLoading } =
     useRBNTokenAccount();
@@ -97,28 +86,6 @@ const StakingFAB = () => {
   const loading = rbnTokenAccountLoading || votingPowerLoading;
   const loadingText = useLoadingText();
   const { pendingTransactions } = usePendingTransactions();
-
-  // Lock already ended, user can no longer increase stake duration,
-  // and must unlock RBN before locking more.
-  const lockExpired = useMemo(() => {
-    return Boolean(
-      rbnTokenAccount?.lockEndTimestamp &&
-        Date.now() > rbnTokenAccount.lockEndTimestamp * 1000
-    );
-  }, [rbnTokenAccount]);
-
-  const stakeMode = useMemo(() => {
-    // If has current locked RBN and it has not expired, user can only increase
-    if (rbnTokenAccount && rbnTokenAccount.lockEndTimestamp && !lockExpired) {
-      return "increase";
-    }
-
-    if (rbnAllowance.isZero()) {
-      return "approve";
-    }
-
-    return "stake";
-  }, [rbnAllowance, rbnTokenAccount, lockExpired]);
 
   const fabInfo: {
     veRBNAmount: JSX.Element | string;
@@ -151,23 +118,6 @@ const StakingFAB = () => {
         : "0.00",
     };
   }, [active, loading, loadingText, rbnTokenAccount, veRBNBalance]);
-
-  const lockButtonContent = useMemo(() => {
-    const stakeIncreaseOrApprovalTypes: string[] = [
-      ...GovernanceStakeTransactions,
-      GovernanceApproveUnstakeTransactions[0],
-    ];
-    const pendingTx = pendingTransactions.find(
-      (tx) => stakeIncreaseOrApprovalTypes.includes(tx.type) && !tx.status
-    );
-    if (pendingTx) {
-      if (pendingTx.type === "governanceApproval") {
-        return <LoadingText text="APPROVING RBN" />;
-      }
-      return <LoadingText text="LOCKING RBN" />;
-    }
-    return "LOCK RBN";
-  }, [pendingTransactions]);
 
   const unlockButtonContent = useMemo(() => {
     const isPending = pendingTransactions.find(
@@ -262,45 +212,10 @@ const StakingFAB = () => {
             color={`${colors.red}1F`}
             role="button"
             onClick={() => {
-              if (!lockExpired) {
-                setStakingModal((prev) => ({
-                  ...prev,
-                  show: true,
-                  mode: stakeMode,
-                }));
-              }
-            }}
-            isDisabled={lockExpired}
-          >
-            <Title
-              fontSize={14}
-              lineHeight={24}
-              color={lockExpired ? colors.tertiaryText : colors.red}
-            >
-              {lockButtonContent}
-            </Title>
-            {lockExpired && (
-              <TooltipExplanation
-                title={t("governance:TooltipExplanations:lockRBN:title")}
-                explanation={t(
-                  "governance:TooltipExplanations:lockRBN:description"
-                )}
-                renderContent={({ ref, ...triggerHandler }) => (
-                  <HelpInfo containerRef={ref} {...triggerHandler}>
-                    i
-                  </HelpInfo>
-                )}
-              />
-            )}
-          </StakingButton>
-          <StakingButton
-            color={`${colors.primaryText}0A`}
-            role="button"
-            onClick={() => {
               setUnstakingModal((prev) => ({ ...prev, show: true }));
             }}
           >
-            <Title fontSize={14} lineHeight={24} color={colors.text}>
+            <Title fontSize={14} lineHeight={24} color={colors.red}>
               {unlockButtonContent}
             </Title>
           </StakingButton>
