@@ -12,6 +12,7 @@ import PerformanceChart, {
 import {
   getAssets,
   getDisplayAssets,
+  isDisabledVault,
   VaultOptions,
   VaultVersion,
 } from "shared/lib/constants/constants";
@@ -489,10 +490,16 @@ const VaultPerformanceChart: React.FC<VaultPerformanceChartProps> = ({
                 <Title
                   fontSize={16}
                   lineHeight={24}
-                  color={colors.green}
+                  color={
+                    isDisabledVault(vaultOption)
+                      ? colors.tertiaryText
+                      : colors.green
+                  }
                   className="mt-1"
                 >
-                  {latestAPY.fetched
+                  {isDisabledVault(vaultOption)
+                    ? "---"
+                    : latestAPY.fetched
                     ? `+${latestAPY.res.toFixed(2)}%`
                     : loadingText}
                 </Title>
@@ -556,12 +563,22 @@ const VaultPerformanceChart: React.FC<VaultPerformanceChartProps> = ({
                 <Title
                   fontSize={16}
                   lineHeight={24}
-                  color={isPrevWeekPerfPositive ? colors.green : colors.red}
+                  color={
+                    isDisabledVault(vaultOption)
+                      ? colors.tertiaryText
+                      : isPrevWeekPerfPositive
+                      ? colors.green
+                      : colors.red
+                  }
                   className="mt-1"
                 >
-                  {`${isPrevWeekPerfPositive ? "+" : ""}${prevWeekPerformance[
-                    vaultPerformanceTerm
-                  ].toFixed(2)}%`}
+                  {isDisabledVault(vaultOption)
+                    ? "---"
+                    : `${
+                        isPrevWeekPerfPositive ? "+" : ""
+                      }${prevWeekPerformance[vaultPerformanceTerm].toFixed(
+                        2
+                      )}%`}
                 </Title>
               </DataCol>
               <DataCol xs="6">

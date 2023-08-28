@@ -1465,6 +1465,7 @@ const DISABLED_VAULTS: VaultOptions[] = [
   "rAPE-THETA",
   "rUSDC-AVAX-P-THETA",
   "rUNI-THETA",
+  "rSOL-THETA",
 ];
 
 export const isDisabledVault = (vaultOption: VaultOptions) => {
