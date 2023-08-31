@@ -1,4 +1,3 @@
-import { useWeb3React } from "@web3-react/core";
 import React, { useMemo } from "react";
 import { Col, Container, Row } from "react-bootstrap";
 
@@ -7,9 +6,10 @@ import theme from "shared/lib/designSystem/theme";
 import useScreenSize from "shared/lib/hooks/useScreenSize";
 import ProfileActivity from "../components/Profile/ProfileActivity";
 import StakingSummary from "../components/Profile/StakingSummary";
+import useWeb3Wallet from "shared/lib/hooks/useWeb3Wallet";
 
 const ProfilePage = () => {
-  const { active } = useWeb3React();
+  const { active } = useWeb3Wallet();
   const { height, width } = useScreenSize();
 
   const containerHeight = useMemo(() => {

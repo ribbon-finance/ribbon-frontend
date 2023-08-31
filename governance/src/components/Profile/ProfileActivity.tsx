@@ -2,7 +2,6 @@ import React, { useCallback, useMemo, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import styled from "styled-components";
 import moment from "moment";
-import { useWeb3React } from "@web3-react/core";
 
 import { Title, SecondaryText, BaseLink } from "shared/lib/designSystem";
 import FilterDropdown from "shared/lib/components/Common/FilterDropdown";
@@ -30,6 +29,7 @@ import { GovernanceChainID } from "../../constants/constants";
 import useGovernanceTransactions from "shared/lib/hooks/useGovernanceTransactions";
 import { GovernanceTransaction } from "shared/lib/models/governance";
 import useLoadingText from "shared/lib/hooks/useLoadingText";
+import useWeb3Wallet from "shared/lib/hooks/useWeb3Wallet";
 
 const ActivityContainer = styled.div`
   display: flex;
@@ -76,7 +76,7 @@ const ExternalLinkIcon = styled(ExternalIcon)`
 const perPage = 5;
 
 const ProfileActivity = () => {
-  const { active } = useWeb3React();
+  const { active } = useWeb3Wallet();
   const { width } = useScreenSize();
   // const { activities } = useGovernanceActivity();
   const { transactions, loading } = useGovernanceTransactions();

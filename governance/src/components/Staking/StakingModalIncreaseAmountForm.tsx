@@ -2,8 +2,6 @@ import React, { useMemo, useState } from "react";
 import styled from "styled-components";
 import { BigNumber } from "ethers";
 import moment, { Duration } from "moment";
-import { useWeb3React } from "@web3-react/core";
-
 import { StakeIcon } from "shared/lib/assets/icons/icons";
 import {
   BaseInput,
@@ -21,6 +19,7 @@ import { formatUnits, parseUnits } from "ethers/lib/utils";
 import { formatBigNumber, formatBigNumberAmount } from "shared/lib/utils/math";
 import { calculateInitialveRBNAmount } from "shared/lib/utils/governanceMath";
 import { ActionButton } from "shared/lib/components/Common/buttons";
+import useWeb3Wallet from "shared/lib/hooks/useWeb3Wallet";
 
 const LogoContainer = styled.div`
   display: flex;
@@ -47,7 +46,7 @@ interface StakingModalncreaseAmountFormProps {
 const StakingModalncreaseAmountForm: React.FC<
   StakingModalncreaseAmountFormProps
 > = ({ initialStakingData, proceedToPreview }) => {
-  const { active } = useWeb3React();
+  const { active } = useWeb3Wallet();
   const { data: rbnTokenAccount } = useRBNTokenAccount();
 
   const [expiryMoment, durationToExpiry] = useMemo(() => {

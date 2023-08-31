@@ -3,6 +3,8 @@ import { useWeb3React } from "@web3-react/core";
 import { CurveFeeDistributionAddress } from "shared/lib/constants/constants";
 import { CurveFeeDistribution } from "shared/lib/codegen/CurveFeeDistribution";
 import { CurveFeeDistribution__factory } from "shared/lib/codegen/factories/CurveFeeDistribution__factory";
+import useWeb3Wallet from "shared/lib/hooks/useWeb3Wallet";
+import { useWeb3Context } from "shared/lib/hooks/web3Context";
 export const getCurveFeeDistribution = (
   library: any,
   useSigner: boolean = true
@@ -15,12 +17,14 @@ export const getCurveFeeDistribution = (
 };
 
 const useCurveFeeDistribution = (): CurveFeeDistribution | undefined => {
-  const { library, active } = useWeb3React();
+  const { provider } = useWeb3React();
+  const { active } = useWeb3Wallet();
+  const { provider: defaultProvider } = useWeb3Context();
   const [contract, setContract] = useState<CurveFeeDistribution>();
 
   useEffect(() => {
-    setContract(getCurveFeeDistribution(library));
-  }, [library, active]);
+    setContract(getCurveFeeDistribution(provider || defaultProvider));
+  }, [active, provider, defaultProvider]);
 
   return contract;
 };

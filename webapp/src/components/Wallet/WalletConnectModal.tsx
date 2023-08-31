@@ -97,6 +97,11 @@ const WalletConnectModal: React.FC = () => {
   const onActivate = async () => {
     if (selectedWallet && selectedChain) {
       try {
+        if (selectedWallet === EthereumWallet.WalletConnect) {
+          setTimeout(() => {
+            onClose();
+          }, 1000);
+        }
         await activate(
           selectedWallet as EthereumWallet | SolanaWallet,
           selectedChain

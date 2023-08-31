@@ -1,3 +1,5 @@
+import { Chains } from "./constants";
+
 interface AddEthereumChainParameter {
   chainId: string; // A 0x-prefixed hexadecimal string
   chainName: string;
@@ -45,4 +47,16 @@ export const AVALANCHE_TESTNET_PARAMS: AddEthereumChainParameter = {
   },
   rpcUrls: ["https://api.avax-test.network/ext/bc/C/rpc"],
   blockExplorerUrls: ["https://testnet.snowtrace.io/"],
+};
+
+type ChainIdToChainParam = {
+  [chainId in Chains]: AddEthereumChainParameter | undefined;
+};
+
+export const CHAIN_PARAMS: ChainIdToChainParam = {
+  [Chains.NotSelected]: undefined,
+  [Chains.Ethereum]: undefined,
+  [Chains.Avalanche]: AVALANCHE_MAINNET_PARAMS,
+  [Chains.Binance]: BINANCE_MAINNET_PARAMS,
+  [Chains.Solana]: undefined,
 };

@@ -17,6 +17,7 @@ import UnstakingModal from "./Unstaking/UnstakingModal";
 import { TxStatusToast } from "./Common/toast";
 import sizes from "shared/lib/designSystem/sizes";
 import Faqs from "../pages/Faqs";
+import { Chains } from "shared/lib/constants/constants";
 
 const Root = styled.div<{ screenHeight: number }>`
   background-color: ${colors.background.one};
@@ -30,7 +31,7 @@ const RootApp = () => {
 
   return (
     <Root id="appRoot" screenHeight={screenHeight}>
-      <WalletConnectModal />
+      <WalletConnectModal specificChain={Chains.Ethereum} />
       <StakingModal />
       <UnstakingModal />
 

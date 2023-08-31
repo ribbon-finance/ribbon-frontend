@@ -19,14 +19,11 @@ import { useEVMWeb3Context } from "./useEVMWeb3Context";
 import { isVaultSupportedOnChain } from "../utils/vault";
 import { RibbonEarnVault } from "../codegen";
 import { calculatePricePerShare } from "../utils/math";
+import useWeb3Wallet from "./useWeb3Wallet";
 
 const useFetchEarnVaultData = (): V2VaultData => {
-  const {
-    chainId,
-    active: web3Active,
-    account: web3Account,
-    library,
-  } = useWeb3React();
+  const { chainId, account: web3Account, provider } = useWeb3React();
+  const { active: web3Active } = useWeb3Wallet();
   const account = impersonateAddress ? impersonateAddress : web3Account;
   const { transactionsCounter } = usePendingTransactions();
   const { getProviderForNetwork } = useEVMWeb3Context();
@@ -64,7 +61,7 @@ const useFetchEarnVaultData = (): V2VaultData => {
         );
 
         const contract = getVaultContract(
-          library || inferredProviderFromVault,
+          active ? provider : inferredProviderFromVault,
           vault,
           active
         ) as RibbonEarnVault;
@@ -240,11 +237,8 @@ const useFetchEarnVaultData = (): V2VaultData => {
 
       return counter;
     });
-
-    if (!isProduction()) {
-      console.timeEnd("V2 Vault Data Fetch"); // eslint-disable-line
-    }
-  }, [account, chainId, library, web3Active, getProviderForNetwork]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [getProviderForNetwork, web3Active, chainId, account]);
 
   useEffect(() => {
     doMulticall();

@@ -9,7 +9,7 @@ import { usePendingTransactions } from "shared/lib/hooks/pendingTransactionsCont
 import { formatUnits } from "@ethersproject/units";
 import { impersonateAddress } from "shared/lib/utils/development";
 import { useGlobalState } from "shared/lib/store/store";
-import { CHAINID } from "shared/lib/utils/env";
+import { CHAINID } from "shared/lib/constants/constants";
 
 const useAirdrop = () => {
   const web3Context = useWeb3Wallet();

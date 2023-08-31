@@ -40,7 +40,7 @@ import {
   VaultVersion,
   isEarnVault,
 } from "shared/lib/constants/constants";
-import { CHAINID } from "shared/lib/utils/env";
+import { CHAINID } from "shared/lib/constants/constants";
 import { getVaultColor } from "shared/lib/utils/vault";
 import { truncateAddress } from "shared/lib/utils/address";
 import { useVaultData } from "shared/lib/hooks/web3DataContext";

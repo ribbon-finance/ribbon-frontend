@@ -157,7 +157,7 @@ const BaseToast: React.FC<ToastProps> = ({
       onClose={onClose}
       {...props}
     >
-      <Body clickable={Boolean(onClick)} onClick={onClick}>
+      <Body clickable={String(Boolean(onClick))} onClick={onClick}>
         <IconCircle
           type={type}
           color={

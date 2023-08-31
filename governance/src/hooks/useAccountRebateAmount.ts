@@ -4,9 +4,11 @@ import { useCallback, useEffect, useState } from "react";
 import { useWeb3Context } from "shared/lib/hooks/web3Context";
 import { getCurveFeeDistribution } from "./useCurveFeeDistribution";
 import { impersonateAddress } from "shared/lib/utils/development";
+import useWeb3Wallet from "shared/lib/hooks/useWeb3Wallet";
 export const useAccountRebateAmount = () => {
-  const { library, active: web3Active, account: web3Account } = useWeb3React();
-  const { provider } = useWeb3Context();
+  const { provider, account: web3Account } = useWeb3React();
+  const { active: web3Active } = useWeb3Wallet();
+  const { provider: defaultProvider } = useWeb3Context();
 
   const account = impersonateAddress ? impersonateAddress : web3Account;
 
@@ -16,7 +18,10 @@ export const useAccountRebateAmount = () => {
 
   const [loading, setLoading] = useState<boolean>(true);
   const getData = useCallback(async () => {
-    const contract = getCurveFeeDistribution(library || provider, web3Active);
+    const contract = getCurveFeeDistribution(
+      provider || defaultProvider,
+      web3Active
+    );
 
     if (!contract || !account) {
       return;
@@ -29,7 +34,7 @@ export const useAccountRebateAmount = () => {
     setRbnRebateAmount(penaltyRebateOf);
 
     setLoading(false);
-  }, [account, library, provider, web3Active]);
+  }, [account, defaultProvider, provider, web3Active]);
 
   useEffect(() => {
     getData();

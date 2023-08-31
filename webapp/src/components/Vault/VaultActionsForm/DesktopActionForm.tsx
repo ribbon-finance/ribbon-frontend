@@ -16,6 +16,8 @@ import { BaseLink, Title } from "shared/lib/designSystem";
 import { getVaultColor } from "shared/lib/utils/vault";
 import { truncateAddress } from "shared/lib/utils/address";
 import { ExternalIcon } from "shared/lib/assets/icons/icons";
+import useVaultActionForm from "../../../hooks/useVaultActionForm";
+import { ACTIONS } from "./Modal/types";
 
 const ContractButton = styled.div<{ color: string }>`
   display: flex;
@@ -40,6 +42,9 @@ interface DesktopActionFormProps {
 const DesktopActionForm: React.FC<DesktopActionFormProps> = ({ vault }) => {
   const [showActionModal, setShowActionModal] = useState(false);
 
+  const { vaultActionForm, handleActionTypeChange } = useVaultActionForm(
+    vault.vaultOption
+  );
   const renderForm = useCallback(() => {
     switch (vault.vaultVersion) {
       case "v1":
@@ -61,13 +66,23 @@ const DesktopActionForm: React.FC<DesktopActionFormProps> = ({ vault }) => {
     }
   }, [vault]);
 
+  const reset = useCallback(() => {
+    if (vaultActionForm.withdrawOption === "complete") {
+      handleActionTypeChange(ACTIONS.withdraw, "v2", {
+        withdrawOption: "standard",
+      });
+    }
+    setShowActionModal(false);
+  }, [handleActionTypeChange, vaultActionForm.withdrawOption]);
   return (
     <>
       <ActionModal
         vault={vault}
         variant={"desktop"}
         show={showActionModal}
-        onClose={() => setShowActionModal(false)}
+        onClose={() => {
+          reset();
+        }}
       />
       {renderForm()}
 

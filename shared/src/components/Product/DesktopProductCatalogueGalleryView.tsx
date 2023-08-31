@@ -129,7 +129,7 @@ const DesktopProductCatalogueGalleryView: React.FC<
   setVaultDisplayVersion,
 }) => {
   const [chain] = useChain();
-  const { active } = useWeb3React();
+  const { isActive } = useWeb3React();
   const { t } = useTranslation();
   const { height } = useScreenSize();
   const [page, setPage] = useState(1);
@@ -192,7 +192,7 @@ const DesktopProductCatalogueGalleryView: React.FC<
           {/* Description */}
           <SecondaryText className="mt-3">{renderDescription()}</SecondaryText>
 
-          {active &&
+          {isActive &&
             (currentVault && isEarnVault(currentVault) ? (
               <div className="mt-4">
                 <YourPosition
@@ -224,7 +224,7 @@ const DesktopProductCatalogueGalleryView: React.FC<
     currentVault,
     t,
     renderDescription,
-    active,
+    isActive,
     vaultsDisplayVersion,
     onVaultPress,
     setFilterAssets,
