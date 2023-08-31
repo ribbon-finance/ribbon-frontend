@@ -14,15 +14,16 @@ import {
 import { isProduction } from "../utils/env";
 import { usePendingTransactions } from "./pendingTransactionsContext";
 import { isVaultSupportedOnChain } from "../utils/vault";
+import useWeb3Wallet from "./useWeb3Wallet";
 
 const useFetchVaultData = (): VaultData => {
   const {
     chainId,
-    library,
-    active: web3Active,
+    provider,
     account: web3Account,
   } = useWeb3React();
-  const { provider } = useWeb3Context();
+  const { active: web3Active } = useWeb3Wallet();
+  const { provider: defaultProvider } = useWeb3Context();
   const account = impersonateAddress ? impersonateAddress : web3Account;
   const { transactionsCounter } = usePendingTransactions();
 
@@ -49,7 +50,7 @@ const useFetchVaultData = (): VaultData => {
         const active = Boolean(
           web3Active && isVaultSupportedOnChain(vault, chainId || 1)
         );
-        const contract = getVault(library || provider, vault, active);
+        const contract = getVault(provider || defaultProvider, vault, active);
 
         if (!contract) {
           return { vault };
@@ -146,7 +147,7 @@ const useFetchVaultData = (): VaultData => {
     if (!isProduction()) {
       console.timeEnd("V1 Vault Data Fetch"); // eslint-disable-line
     }
-  }, [account, web3Active, library, provider, chainId]);
+  }, [web3Active, chainId, provider, defaultProvider, account]);
 
   useEffect(() => {
     doMulticall();

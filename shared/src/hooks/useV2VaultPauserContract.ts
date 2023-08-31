@@ -5,6 +5,8 @@ import { RibbonVaultPauser } from "../codegen/RibbonVaultPauser";
 import { RibbonVaultPauserAddress } from "../constants/constants";
 import { RibbonVaultPauser__factory } from "../codegen/factories/RibbonVaultPauser__factory";
 import { CHAINID } from "../constants/constants"
+import useWeb3Wallet from "./useWeb3Wallet";
+import { useWeb3Context } from "./web3Context";
 
 export const getVaultPauser = (
   library: any,
@@ -23,15 +25,17 @@ export const getVaultPauser = (
 };
 
 const useVaultPauser = (chainId: CHAINID): RibbonVaultPauser | undefined => {
-  const { library, active } = useWeb3React();
+  const { provider } = useWeb3React();
+  const { active } = useWeb3Wallet();
+  const { provider: defaultProvider } = useWeb3Context();
   const [contract, setContract] = useState<RibbonVaultPauser>();
 
   useEffect(() => {
-    const pauser = getVaultPauser(library, chainId);
+    const pauser = getVaultPauser(provider || defaultProvider, chainId);
     if (pauser) {
       setContract(pauser);
     }
-  }, [library, active, chainId]);
+  }, [active, chainId, provider, defaultProvider]);
 
   return contract;
 };

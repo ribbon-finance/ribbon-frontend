@@ -5,14 +5,14 @@ import { getLendContract } from "./getLendContract";
 import { PoolAddressMap, PoolList } from "../constants/lendConstants";
 
 export const useFetchPoolData = () => {
-  const { library } = useWeb3React();
+  const { provider } = useWeb3React();
   const [data, setData] = useState<any>();
   const [loading, setLoading] = useState<boolean>(true);
   const doMulticall = useCallback(async () => {
     const responses = await Promise.all(
       PoolList.map(async (pool) => {
         const contract = getLendContract(
-          library,
+          provider,
           PoolAddressMap[pool].lend,
           false
         );
@@ -58,7 +58,7 @@ export const useFetchPoolData = () => {
     );
     setData(mapping);
     setLoading(false);
-  }, [library]);
+  }, [provider]);
 
   useEffect(() => {
     doMulticall();

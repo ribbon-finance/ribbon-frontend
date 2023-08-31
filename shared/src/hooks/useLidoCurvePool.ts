@@ -4,6 +4,8 @@ import { useCallback, useEffect, useState } from "react";
 import { CurveLidoPool, CurveLidoPool__factory } from "../codegen";
 import { CurveLidoPoolAddress } from "../constants/constants";
 import { amountAfterSlippage } from "../utils/math";
+import useWeb3Wallet from "./useWeb3Wallet";
+import { useWeb3Context } from "./web3Context";
 
 export const getLidoCurvePool = (library: any) => {
   if (library) {
@@ -15,13 +17,15 @@ export const getLidoCurvePool = (library: any) => {
 };
 
 const useLidoCurvePool = () => {
-  const { library, active } = useWeb3React();
+  const { provider } = useWeb3React();
+  const { active } = useWeb3Wallet();
+  const { provider: defaultProvider } = useWeb3Context();
   const [lidoCurvePool, setLidoCurvePool] = useState<CurveLidoPool>();
 
   useEffect(() => {
-    const pool = getLidoCurvePool(library);
+    const pool = getLidoCurvePool(provider || defaultProvider);
     setLidoCurvePool(pool);
-  }, [active, library]);
+  }, [active, defaultProvider, provider]);
 
   // Get the exchange rate for converting ETH -> stETH
   // amountETH is eth in 18 decimals

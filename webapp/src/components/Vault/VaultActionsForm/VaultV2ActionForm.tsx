@@ -175,6 +175,9 @@ const VaultV2ActionsForm: React.FC<FormStepProps> = ({
             className="py-3 mt-4"
             onClick={() => {
               setHideCompleteWithdrawReminder(true);
+              handleActionTypeChange(ACTIONS.withdraw, "v2", {
+                withdrawOption: "complete",
+              });
               /**
                * Push complete withdraw history
                */
@@ -205,19 +208,7 @@ const VaultV2ActionsForm: React.FC<FormStepProps> = ({
         onFormSubmit={onFormSubmit}
       />
     );
-  }, [
-    asset,
-    canCompleteWithdraw,
-    migrateSourceVault,
-    color,
-    decimals,
-    hideCompleteWithdrawReminder,
-    hideMigrationForm,
-    history,
-    onFormSubmit,
-    vaultOption,
-    withdrawalAmount,
-  ]);
+  }, [migrateSourceVault, hideMigrationForm, canCompleteWithdraw, hideCompleteWithdrawReminder, vaultOption, onFormSubmit, color, withdrawalAmount, decimals, asset, handleActionTypeChange, history]);
 
   const formExtra = useMemo(() => {
     let formExtraText: JSX.Element | undefined = undefined;

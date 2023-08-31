@@ -6,23 +6,24 @@ import { ERC20Token } from "../models/eth";
 import { impersonateAddress } from "../utils/development";
 import { useWeb3Context } from "./web3Context";
 import { getERC20Token } from "./useERC20Token";
+import useWeb3Wallet from "./useWeb3Wallet";
 
 const useTokenAllowance = (token: ERC20Token | undefined, address?: string) => {
-  const { account: acc, chainId, library } = useWeb3React();
+  const { account: acc, chainId, provider } = useWeb3React();
+  const { provider: defaultProvider } = useWeb3Context();
   const account = impersonateAddress ? impersonateAddress : acc;
-  const { provider } = useWeb3Context();
   const tokenContract = useMemo(() => {
     if (!token || !chainId) {
       return undefined;
     }
 
-    return getERC20Token(library, token, chainId);
-  }, [chainId, library, token]);
+    return getERC20Token(provider || defaultProvider, token, chainId);
+  }, [chainId, defaultProvider, provider, token]);
 
   const [allowance, setAllowance] = useState<BigNumber>();
 
   useEffect(() => {
-    if (!account || !tokenContract || !address) {
+    if (!account || !tokenContract || !address || !provider) {
       setAllowance(undefined);
       return;
     }

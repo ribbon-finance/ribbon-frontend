@@ -5,6 +5,7 @@ import { LiquidityGaugeController } from "../codegen/LiquidityGaugeController";
 import { LiquidityGaugeControllerFactory } from "../codegen/LiquidityGaugeControllerFactory";
 import { LiquidityGaugeControllerAddress } from "../constants/constants";
 import { useWeb3Context } from "./web3Context";
+import useWeb3Wallet from "./useWeb3Wallet";
 
 export const getLiquidityGaugeController = (
   library: any,
@@ -19,17 +20,18 @@ export const getLiquidityGaugeController = (
 };
 
 const useLiquidityGaugeController = () => {
-  const { active, library } = useWeb3React();
-  const { provider } = useWeb3Context();
+  const { provider } = useWeb3React();
+  const { active } = useWeb3Wallet();
+  const { provider: defaultProvider } = useWeb3Context();
   const [contract, setContract] = useState<LiquidityGaugeController | null>(
     null
   );
 
   useEffect(() => {
     if (provider) {
-      setContract(getLiquidityGaugeController(library || provider, active));
+      setContract(getLiquidityGaugeController(provider || defaultProvider, active));
     }
-  }, [provider, active, library]);
+  }, [provider, active, defaultProvider]);
 
   return contract;
 };

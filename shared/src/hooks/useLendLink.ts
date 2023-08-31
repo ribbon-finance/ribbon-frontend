@@ -11,8 +11,9 @@ import { PoolAddressMap, PoolList } from "../constants/lendConstants";
 export const useLendLink = () => {
   const [hasLendPosition, setHasLendPosition] = useState(false);
   const { account } = useWeb3Wallet();
-  const { active, library } = useWeb3React();
-  const { provider } = useWeb3Context();
+  const { provider } = useWeb3React();
+  const { active } = useWeb3Wallet();
+  const { provider: defaultProvider } = useWeb3Context();
 
   useEffect(() => {
     if (!account) {
@@ -20,7 +21,7 @@ export const useLendLink = () => {
     }
     PoolList.forEach((pool) => {
       const poolContract = getLendContract(
-        library || provider,
+        provider || defaultProvider,
         PoolAddressMap[pool].lend,
         active
       );
@@ -32,7 +33,7 @@ export const useLendLink = () => {
         });
       }
     });
-  }, [account, active, library, provider]);
+  }, [account, active, defaultProvider, provider]);
 
   return hasLendPosition ? URLS.lendApp : URLS.lend;
 };

@@ -8,6 +8,7 @@ import {
   VaultLiquidityMiningMap,
 } from "../constants/constants";
 import { useWeb3Context } from "./web3Context";
+import useWeb3Wallet from "./useWeb3Wallet";
 
 export const getStakingReward = (
   library: any,
@@ -27,17 +28,18 @@ export const getStakingReward = (
 };
 
 const useStakingReward = (vaultOption: StakingVaultOptions) => {
-  const { active, library } = useWeb3React();
-  const { provider } = useWeb3Context();
+  const { provider } = useWeb3React();
+  const { active } = useWeb3Wallet();
+  const { provider: defaultProvider } = useWeb3Context();
   const [stakingReward, setStakingReward] =
     useState<RibbonStakingRewards | null>(null);
 
   useEffect(() => {
     if (provider) {
-      const vault = getStakingReward(library || provider, vaultOption, active);
+      const vault = getStakingReward(provider || defaultProvider, vaultOption, active);
       setStakingReward(vault);
     }
-  }, [provider, active, library, vaultOption]);
+  }, [provider, active, vaultOption, defaultProvider]);
 
   return stakingReward;
 };

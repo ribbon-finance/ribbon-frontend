@@ -4,6 +4,7 @@ import { useEffect, useMemo, useState } from "react";
 import { RibbonVaultPauser } from "../codegen";
 import {
   isBinanceVault,
+  isEarnVault,
   isSolanaVault,
   VaultAddressMap,
   VaultOptions,
@@ -43,25 +44,28 @@ export const usePausedPosition = (
       account &&
       !isVIP() &&
       !isBinanceVault(vaultOption) &&
-      !isSolanaVault(vaultOption)
+      !isSolanaVault(vaultOption) &&       
+      !isEarnVault(vaultOption)
     ) {
       pauseContract
         .getPausePosition(vaultAddress, account)
         .then(([pauseRound, pauseAmount]) => {
-          setPausedShares(pauseAmount);
-          setCanResume(pauseRound !== 0 && pauseRound < round); // edge case round returns 0
-          setCanPause(
-            isPracticallyZero(pauseAmount, decimals) &&
-              !isPracticallyZero(lockedBalanceInAsset, decimals)
-          );
-          if (pauseRound === round) {
-            v2Contract.pricePerShare().then((val) => {
-              setRoundPricePerShare(val);
-            });
-          } else {
-            v2Contract.roundPricePerShare(pauseRound).then((val) => {
-              setRoundPricePerShare(val);
-            });
+          if (pauseRound !== 0) {
+            setPausedShares(pauseAmount);
+            setCanResume(pauseRound !== 0 && pauseRound < round); // edge case round returns 0
+            setCanPause(
+              isPracticallyZero(pauseAmount, decimals) &&
+                !isPracticallyZero(lockedBalanceInAsset, decimals)
+            );
+            if (pauseRound === round) {
+              v2Contract.pricePerShare().then((val) => {
+                setRoundPricePerShare(val);
+              });
+            } else {
+              v2Contract.roundPricePerShare(pauseRound).then((val) => {
+                setRoundPricePerShare(val);
+              });
+            }
           }
         });
     }

@@ -19,10 +19,12 @@ import { getERC20Token } from "./useERC20Token";
 import { getStakingReward } from "./useStakingReward";
 import { usePendingTransactions } from "./pendingTransactionsContext";
 import { getERC20TokenNameFromVault } from "../models/eth";
+import useWeb3Wallet from "./useWeb3Wallet";
 
 const useFetchLiquidityMiningData = (): LiquidityMiningPoolData => {
-  const { active, chainId, account: web3Account, library } = useWeb3React();
-  const { provider } = useWeb3Context();
+  const { chainId, account: web3Account, provider } = useWeb3React();
+  const { active } = useWeb3Wallet();
+  const { provider: defaultProvider } = useWeb3Context();
   const account = impersonateAddress ? impersonateAddress : web3Account;
   const { transactionsCounter } = usePendingTransactions();
 
@@ -52,7 +54,7 @@ const useFetchLiquidityMiningData = (): LiquidityMiningPoolData => {
     const responses = await Promise.all(
       StakingVaultList.map(async (vault) => {
         const tokenContract = getERC20Token(
-          library || provider,
+          provider || defaultProvider,
           getERC20TokenNameFromVault(vault, "v1"),
           chainId,
           active
@@ -60,7 +62,7 @@ const useFetchLiquidityMiningData = (): LiquidityMiningPoolData => {
         if (!tokenContract) {
           return { vault };
         }
-        const contract = getStakingReward(library || provider, vault, active);
+        const contract = getStakingReward(provider || defaultProvider, vault, active);
         if (!contract || !VaultLiquidityMiningMap.lm[vault]) {
           return { vault };
         }
@@ -161,7 +163,7 @@ const useFetchLiquidityMiningData = (): LiquidityMiningPoolData => {
     if (!isProduction()) {
       console.timeEnd("Liquidity Mining Pool Data Fetch"); // eslint-disable-line
     }
-  }, [account, active, chainId, library, provider]);
+  }, [account, active, chainId, defaultProvider, provider]);
 
   useEffect(() => {
     doMulticall();

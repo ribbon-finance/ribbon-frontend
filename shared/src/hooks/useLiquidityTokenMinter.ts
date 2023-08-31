@@ -7,7 +7,8 @@ import {
   isEthNetwork,
   LiquidityTokenMinterAddress,
 } from "../constants/constants";
-import { useETHWeb3Context } from "./web3Context";
+import { useETHWeb3Context, useWeb3Context } from "./web3Context";
+import useWeb3Wallet from "./useWeb3Wallet";
 
 export const getLiquidityTokenMinter = (
   library: any,
@@ -22,18 +23,19 @@ export const getLiquidityTokenMinter = (
 };
 
 const useLiquidityTokenMinter = () => {
-  const { active, chainId, library } = useWeb3React();
-  const { provider } = useETHWeb3Context();
+  const { chainId, provider } = useWeb3React();
+  const { active } = useWeb3Wallet();
+  const { provider: defaultProvider } = useWeb3Context();
   const [contract, setContract] = useState<LiquidityTokenMinter | null>(null);
 
   useEffect(() => {
     if (active && chainId && isEthNetwork(chainId)) {
-      setContract(getLiquidityTokenMinter(library, active));
+      setContract(getLiquidityTokenMinter(provider || defaultProvider, active));
       return;
     }
 
     setContract(getLiquidityTokenMinter(provider, false));
-  }, [provider, chainId, active, library]);
+  }, [provider, chainId, active, defaultProvider]);
 
   return contract;
 };

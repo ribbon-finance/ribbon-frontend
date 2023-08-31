@@ -6,6 +6,8 @@ import {
   EarnSTETHDepositHelperAddress,
   VaultVersion,
 } from "../constants/constants";
+import useWeb3Wallet from "./useWeb3Wallet";
+import { useWeb3Context } from "./web3Context";
 
 export const getSTETHDepositHelper = (
   vaultVersion: VaultVersion,
@@ -24,13 +26,15 @@ export const getSTETHDepositHelper = (
 };
 
 const useSTETHDepositHelper = (vaultVersion: VaultVersion) => {
-  const { library, active } = useWeb3React();
+  const { provider } = useWeb3React();
+  const { active } = useWeb3Wallet();
+  const { provider: defaultProvider } = useWeb3Context();
   const [depositHelper, setDepositHelper] = useState<STETHDepositHelper>();
 
   useEffect(() => {
-    const helper = getSTETHDepositHelper(vaultVersion, library);
+    const helper = getSTETHDepositHelper(vaultVersion, provider || defaultProvider);
     setDepositHelper(helper);
-  }, [active, library, vaultVersion]);
+  }, [active, defaultProvider, provider, vaultVersion]);
 
   return depositHelper;
 };

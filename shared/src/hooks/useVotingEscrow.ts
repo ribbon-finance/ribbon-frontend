@@ -4,6 +4,8 @@ import { useWeb3React } from "@web3-react/core";
 import { VotingEscrowFactory } from "../codegen/VotingEscrowFactory";
 import { VotingEscrow } from "../codegen";
 import { VotingEscrowAddress } from "../constants/constants";
+import useWeb3Wallet from "./useWeb3Wallet";
+import { useWeb3Context } from "./web3Context";
 
 export const getVotingEscrow = (library: any): VotingEscrow | undefined => {
   if (library) {
@@ -15,12 +17,15 @@ export const getVotingEscrow = (library: any): VotingEscrow | undefined => {
 };
 
 const useVotingEscrow = (): VotingEscrow | undefined => {
-  const { library, active } = useWeb3React();
+  const { provider } = useWeb3React();
+  const { active } = useWeb3Wallet();
+  const { provider: defaultProvider } = useWeb3Context();
+
   const [contract, setContract] = useState<VotingEscrow>();
 
   useEffect(() => {
-    setContract(getVotingEscrow(library));
-  }, [library, active]);
+    setContract(getVotingEscrow(provider || defaultProvider));
+  }, [active, provider, defaultProvider]);
 
   return contract;
 };
