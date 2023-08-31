@@ -11,11 +11,11 @@ import { useGlobalState } from "../store/store";
 import { PendingTransaction } from "../store/types";
 import { isEVMChain, isSolanaChain } from "../utils/chains";
 import { useChain } from "./chainContext";
-import useWeb3Wallet from "./useWeb3Wallet";
 import { useConnection } from "@solana/wallet-adapter-react";
 import { useFlexVault } from "./useFlexVault";
 import { Web3ReactProvider } from "@web3-react/core";
 import { allConnectors } from "../utils/wallet/connectors";
+import { useWeb3Context } from "./web3Context";
 
 export type PendingTransactionsContextType = {
   pendingTransactions: PendingTransaction[];
@@ -56,7 +56,7 @@ export const PendingTransactionsContextProvider: React.FC<{
   const [chain] = useChain();
   const { update } = useFlexVault();
   const { connection } = useConnection();
-
+  const { provider } = useWeb3Context();
   /**
    * Keep track with first confirmation
    */
@@ -65,9 +65,9 @@ export const PendingTransactionsContextProvider: React.FC<{
       if (!transaction.status) {
         let receipt: any;
         if (isEVMChain(chain)) {
-          // receipt = await (
-          //   ethereumProvider as Web3Provider
-          // ).waitForTransaction(transaction.txhash, 2);
+          receipt = await (
+            provider as Web3Provider
+          ).waitForTransaction(transaction.txhash, 2);
         } else if (isSolanaChain(chain)) {
           receipt = await connection.confirmTransaction(
             transaction.txhash,
@@ -100,7 +100,7 @@ export const PendingTransactionsContextProvider: React.FC<{
         if (isSolanaChain(chain)) update();
       }
     }, []);
-  }, [chain, connection, update, pendingTransactions, setPendingTransactions]);
+  }, [chain, connection, update, pendingTransactions, setPendingTransactions, provider]);
 
   return (
     <Web3ReactProvider connectors={allConnectors}>

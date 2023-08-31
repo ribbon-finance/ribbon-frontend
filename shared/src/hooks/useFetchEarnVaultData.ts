@@ -241,11 +241,8 @@ const useFetchEarnVaultData = (): V2VaultData => {
 
       return counter;
     });
-
-    if (!isProduction()) {
-      console.timeEnd("V2 Vault Data Fetch"); // eslint-disable-line
-    }
-  }, [getProviderForNetwork, web3Active, chainId, provider, account]);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [getProviderForNetwork, web3Active, chainId, account]);
 
   useEffect(() => {
     doMulticall();
