@@ -1,4 +1,4 @@
-import { providers } from "ethers";
+import { Web3Provider } from "@ethersproject/providers";
 import React, {
   ReactElement,
   useCallback,
@@ -14,6 +14,8 @@ import { useChain } from "./chainContext";
 import useWeb3Wallet from "./useWeb3Wallet";
 import { useConnection } from "@solana/wallet-adapter-react";
 import { useFlexVault } from "./useFlexVault";
+import { Web3ReactProvider } from "@web3-react/core";
+import { allConnectors } from "../utils/wallet/connectors";
 
 export type PendingTransactionsContextType = {
   pendingTransactions: PendingTransaction[];
@@ -50,7 +52,7 @@ export const PendingTransactionsContextProvider: React.FC<{
     "pendingTransactions"
   );
   const [transactionsCounter, setTransactionsCounter] = useState(0);
-  const { ethereumProvider } = useWeb3Wallet();
+  // const { ethereumProvider } = useWeb3Wallet();
   const [chain] = useChain();
   const { update } = useFlexVault();
   const { connection } = useConnection();
@@ -63,9 +65,9 @@ export const PendingTransactionsContextProvider: React.FC<{
       if (!transaction.status) {
         let receipt: any;
         if (isEVMChain(chain)) {
-          receipt = await (
-            ethereumProvider as providers.Web3Provider
-          ).waitForTransaction(transaction.txhash, 2);
+          // receipt = await (
+          //   ethereumProvider as Web3Provider
+          // ).waitForTransaction(transaction.txhash, 2);
         } else if (isSolanaChain(chain)) {
           receipt = await connection.confirmTransaction(
             transaction.txhash,
@@ -98,23 +100,18 @@ export const PendingTransactionsContextProvider: React.FC<{
         if (isSolanaChain(chain)) update();
       }
     }, []);
-  }, [
-    chain,
-    connection,
-    update,
-    pendingTransactions,
-    ethereumProvider,
-    setPendingTransactions,
-  ]);
+  }, [chain, connection, update, pendingTransactions, setPendingTransactions]);
 
   return (
-    <PendingTransactionsContext.Provider
-      value={{
-        pendingTransactions,
-        transactionsCounter,
-      }}
-    >
-      {children}
-    </PendingTransactionsContext.Provider>
+    <Web3ReactProvider connectors={allConnectors}>
+      <PendingTransactionsContext.Provider
+        value={{
+          pendingTransactions,
+          transactionsCounter,
+        }}
+      >
+        {children}
+      </PendingTransactionsContext.Provider>
+    </Web3ReactProvider>
   );
 };

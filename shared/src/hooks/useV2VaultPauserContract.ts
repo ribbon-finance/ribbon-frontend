@@ -4,7 +4,7 @@ import { useWeb3React } from "@web3-react/core";
 import { RibbonVaultPauser } from "../codegen/RibbonVaultPauser";
 import { RibbonVaultPauserAddress } from "../constants/constants";
 import { RibbonVaultPauser__factory } from "../codegen/factories/RibbonVaultPauser__factory";
-import { CHAINID } from "../utils/env";
+import { CHAINID } from "../constants/constants"
 
 export const getVaultPauser = (
   library: any,

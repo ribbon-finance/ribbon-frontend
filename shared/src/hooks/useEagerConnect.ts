@@ -1,11 +1,13 @@
 import { useWeb3React } from "@web3-react/core";
 import { useEffect, useState } from "react";
-import { injectedConnector, ledgerConnector } from "../utils/connectors";
-import { addConnectEvent } from "../utils/analytics";
-import { isLedgerDappBrowserProvider } from "web3-ledgerhq-frame-connector";
+import { LAST_CONNECTED_WALLET_LOCAL_STORAGE_KEY } from "../utils/wallet/connectors";
+import { metaMask } from "../utils/wallet/connectors/metamask";
+import { walletConnectV2 } from "../utils/wallet/connectors/walletConnectV2";
+import { coinbaseWallet } from "../utils/wallet/connectors/coinbaseWallet";
+import { EthereumWallet, Wallet } from "../models/wallets";
 
 const useEagerConnect = () => {
-  const { activate, active, account } = useWeb3React();
+  const { isActive } = useWeb3React();
 
   const [tried, setTried] = useState(false);
 
@@ -14,33 +16,41 @@ const useEagerConnect = () => {
       return;
     }
 
-    // If is ledger dapp, use ledger connector. Else use injected connector
-    if (isLedgerDappBrowserProvider()) {
-      activate(ledgerConnector, undefined, true).catch(() => {
-        setTried(true);
-      });
-    } else {
-      injectedConnector.isAuthorized().then((isAuthorized: boolean) => {
-        if (isAuthorized) {
-          activate(injectedConnector, undefined, true).catch(() => {
-            setTried(true);
-          });
-        } else {
-          setTried(true);
-        }
-      });
+    const lastConnectedWalletString = localStorage.getItem(
+      LAST_CONNECTED_WALLET_LOCAL_STORAGE_KEY
+    );
+    const lastConnectedWallet: Wallet | undefined = Number.isNaN(
+      Number(lastConnectedWalletString)
+    )
+      ? undefined
+      : (Number(lastConnectedWalletString) as Wallet);
+
+    // Connects to last connected connector if valid
+    const promises: Promise<any>[] = [];
+    switch (lastConnectedWallet) {
+      case EthereumWallet.Metamask:
+        promises.push(metaMask.connectEagerly?.());
+        break;
+      case EthereumWallet.WalletConnect:
+        promises.push(walletConnectV2.connectEagerly?.());
+        break;
+      case EthereumWallet.WalletLink:
+        promises.push(coinbaseWallet.connectEagerly?.());
+        break;
+      default:
+        break;
     }
-  }, [activate, tried]); // intentionally only running on mount (make sure it's only mounted once :))
+    Promise.all(promises).catch(() => {
+      setTried(true);
+    });
+  }, [tried]); // intentionally only running on mount (make sure it's only mounted once :))
 
   // if the connection worked, wait until we get confirmation of that to flip the flag
   useEffect(() => {
-    if (!tried && active) {
-      if (account) {
-        addConnectEvent("background", account);
-      }
+    if (!tried && isActive) {
       setTried(true);
     }
-  }, [tried, active, activate, account]);
+  }, [tried, isActive]);
 
   return tried;
 };

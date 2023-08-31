@@ -15,6 +15,7 @@ import {
   VaultOptions,
 } from "../constants/constants";
 import { useWeb3Context } from "./web3Context";
+import useWeb3Wallet from "./useWeb3Wallet";
 
 export const getVaultContract = (
   library: any,
@@ -46,17 +47,20 @@ export const getVaultContract = (
 };
 
 const useVaultContract = (vaultOption: VaultOptions) => {
-  const { active, library } = useWeb3React();
-  const { provider } = useWeb3Context();
+  const { provider } = useWeb3React();
+  const { active } = useWeb3Wallet();
+  const { provider: defaultProvider } = useWeb3Context();
   const [vault, setVault] = useState<
     RibbonV2ThetaVault | RibbonV2stETHThetaVault | RibbonEarnVault | null
   >(null);
 
+
+
   useEffect(() => {
     if (isSolanaVault(vaultOption)) return;
-    const vault = getVaultContract(library || provider, vaultOption, active);
+    const vault = getVaultContract(provider || defaultProvider, vaultOption, active);
     setVault(vault);
-  }, [active, library, provider, vaultOption]);
+  }, [active, defaultProvider, provider, vaultOption]);
 
   return vault;
 };

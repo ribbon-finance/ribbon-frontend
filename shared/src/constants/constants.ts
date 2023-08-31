@@ -3,7 +3,6 @@ import { ERC20Token } from "../models/eth";
 import { Assets } from "../store/types";
 import { getAssetDecimals } from "../utils/asset";
 import {
-  CHAINID,
   SUBGRAPH_URI,
   getSubgraphqlURI,
   isDevelopment,
@@ -32,6 +31,25 @@ export enum Chains {
   Solana,
 }
 
+export enum CHAINID {
+  NOT_SELECTED = -1,
+  ETH_MAINNET = 1,
+  ETH_KOVAN = 42,
+  AVAX_FUJI = 43113,
+  AVAX_MAINNET = 43114,
+  BINANCE_MAINNET = 56,
+}
+
+export const ChainsToCHAINID: Record<number, CHAINID> = {
+  [Chains.NotSelected]: CHAINID.NOT_SELECTED,
+  [Chains.Ethereum]: CHAINID.ETH_MAINNET,
+  [Chains.Avalanche]: CHAINID.AVAX_MAINNET,
+  [Chains.Binance]: CHAINID.BINANCE_MAINNET,
+};
+export const AllChains: CHAINID[] = Object.values(CHAINID).filter(
+  (v) => !Number.isNaN(Number(v))
+) as CHAINID[];
+
 export const NETWORKS: Record<number, NETWORK_NAMES> = {
   [CHAINID.ETH_MAINNET]: "mainnet",
   [CHAINID.ETH_KOVAN]: "kovan",
@@ -41,6 +59,7 @@ export const NETWORKS: Record<number, NETWORK_NAMES> = {
 };
 
 export const CHAINID_TO_NATIVE_TOKENS: Record<CHAINID, Assets> = {
+  [CHAINID.NOT_SELECTED]: "WETH",
   [CHAINID.ETH_MAINNET]: "WETH",
   [CHAINID.ETH_KOVAN]: "WETH",
   [CHAINID.AVAX_MAINNET]: "WAVAX",
@@ -48,6 +67,7 @@ export const CHAINID_TO_NATIVE_TOKENS: Record<CHAINID, Assets> = {
   [CHAINID.BINANCE_MAINNET]: "WBNB",
 };
 export const READABLE_NETWORK_NAMES: Record<CHAINID, string> = {
+  [CHAINID.NOT_SELECTED]: "No Chain Selected",
   [CHAINID.ETH_MAINNET]: "Ethereum",
   [CHAINID.ETH_KOVAN]: "Kovan",
   [CHAINID.AVAX_MAINNET]: "Avalanche",

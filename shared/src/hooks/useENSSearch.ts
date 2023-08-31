@@ -3,7 +3,8 @@ import { isAddress } from "ethers/lib/utils";
 import axios from "axios";
 import { useWeb3React } from "@web3-react/core";
 import { BaseProvider } from "@ethersproject/providers";
-import { CHAINID, getENSSubgraphURI, isDevelopment } from "../utils/env";
+import { getENSSubgraphURI, isDevelopment } from "../utils/env";
+import { CHAINID } from "../constants/constants"
 import { useWeb3Context } from "./web3Context";
 
 export interface ENSSearchResult {

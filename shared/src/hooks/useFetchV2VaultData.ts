@@ -27,9 +27,9 @@ import { RibbonV2ThetaVault } from "../codegen";
 const useFetchV2VaultData = (): V2VaultData => {
   const {
     chainId,
-    active: web3Active,
+    isActive: web3Active,
     account: web3Account,
-    library,
+    provider,
   } = useWeb3React();
   const account = impersonateAddress ? impersonateAddress : web3Account;
   const expiryTimestamp = getNextFridayTimestamp();
@@ -67,12 +67,12 @@ const useFetchV2VaultData = (): V2VaultData => {
           web3Active &&
             isVaultSupportedOnChain(
               vault,
-              chainId || inferredProviderFromVault?._network?.chainId
+              chainId || inferredProviderFromVault._network.chainId
             )
         );
 
         const contract = getVaultContract(
-          library || inferredProviderFromVault,
+          active ? provider : inferredProviderFromVault,
           vault,
           active
         ) as RibbonV2ThetaVault;
@@ -89,7 +89,7 @@ const useFetchV2VaultData = (): V2VaultData => {
 
         const strikeSelectionContract = strikeSelectionAddress
           ? getStrikeSelectionContract(
-              library || inferredProviderFromVault,
+              provider || inferredProviderFromVault,
               strikeSelectionAddress,
               active
             )
@@ -263,7 +263,7 @@ const useFetchV2VaultData = (): V2VaultData => {
     getProviderForNetwork,
     web3Active,
     chainId,
-    library,
+    provider,
     expiryTimestamp,
     account,
   ]);

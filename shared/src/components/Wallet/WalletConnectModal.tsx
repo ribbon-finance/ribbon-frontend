@@ -25,6 +25,9 @@ import useLoadingText from "../../hooks/useLoadingText";
 import BasicModal from "../Common/BasicModal";
 import useConnectWalletModal from "../../hooks/useConnectWalletModal";
 import LearnMoreWallet from "./LearnMoreWallet";
+import { EthereumWallet, Wallet } from "../../models/wallets";
+import useWeb3Wallet from "../../hooks/useWeb3Wallet";
+import { useChain } from "../../hooks/chainContext";
 
 const ConnectorButton = styled(BaseButton)<ConnectorButtonProps>`
   background-color: ${colors.background.three};
@@ -80,15 +83,17 @@ const StyledWalletLinkIcon = styled(WalletLinkIcon)`
 const WalletConnectModal: React.FC = () => {
   const {
     connector,
-    activate: activateWeb3,
-    library,
+    provider,
     account,
-    active,
+    isActive,
   } = useWeb3React();
 
+  const { activate } = useWeb3Wallet();
   const [connectingConnector, setConnectingConnector] =
     useState<connectorType>();
+  const [selectedWallet, setWallet] = useState<Wallet | undefined>();
 
+  const [ chain ] = useChain();
   const initializingText = useLoadingText();
 
   const [show, setShow] = useConnectWalletModal();
@@ -100,37 +105,32 @@ const WalletConnectModal: React.FC = () => {
   const handleConnect = useCallback(
     async (type: connectorType) => {
       setConnectingConnector(type);
-
-      // Disconnect wallet if currently connected already
-      if (active && connector instanceof WalletConnectConnector)
-        await connector.close();
-
       // Connect wallet
       switch (type) {
         case "metamask":
-          await activateWeb3(injectedConnector);
+          await activate(EthereumWallet.Metamask, chain);
           break;
         case "walletConnect":
-          await activateWeb3(getWalletConnectConnector());
+          await activate(EthereumWallet.WalletConnect, chain);
           break;
         case "walletLink":
-          await activateWeb3(walletlinkConnector);
+          await activate(EthereumWallet.WalletLink, chain);
       }
       setConnectingConnector(undefined);
     },
-    [activateWeb3, connector, active]
+    [activate, chain]
   );
 
   useEffect(() => {
-    if (library && account) {
+    if (provider && account) {
       onClose();
     }
-  }, [library, account, onClose]);
+  }, [provider, account, onClose]);
 
   const getConnectorStatus = useCallback(
     (connectorType: connectorType) => {
       // If connected, check if current button is connected
-      if (active) {
+      if (provider) {
         switch (connectorType) {
           case "metamask":
             if (connector instanceof InjectedConnector) return "connected";
@@ -152,7 +152,7 @@ const WalletConnectModal: React.FC = () => {
       }
       return "neglected";
     },
-    [active, connector, connectingConnector]
+    [provider, connectingConnector, connector]
   );
 
   const renderConnectorIcon = useCallback((type: connectorType) => {
@@ -179,19 +179,12 @@ const WalletConnectModal: React.FC = () => {
         </ConnectorButtonText>
         {getConnectorStatus(type) === "connected" && (
           <IndicatorContainer>
-            <Indicator connected={active} />
+            <Indicator connected={isActive} />
           </IndicatorContainer>
         )}
       </ConnectorButton>
     ),
-    [
-      active,
-      connectingConnector,
-      getConnectorStatus,
-      initializingText,
-      renderConnectorIcon,
-      handleConnect,
-    ]
+    [getConnectorStatus, renderConnectorIcon, connectingConnector, initializingText, isActive, handleConnect]
   );
 
   return (

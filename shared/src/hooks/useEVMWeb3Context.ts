@@ -1,4 +1,5 @@
-import { CHAINID, isDevelopment } from "../utils/env";
+import { isDevelopment } from "../utils/env";
+import { CHAINID } from "../constants/constants"
 import { useWeb3Context } from "./web3Context";
 import { MAINNET_NAMES } from "../constants/constants";
 import { useCallback } from "react";

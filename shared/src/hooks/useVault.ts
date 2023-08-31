@@ -4,6 +4,7 @@ import { RibbonCoveredCall } from "../codegen";
 import { RibbonCoveredCallFactory } from "../codegen/RibbonCoveredCallFactory";
 import { VaultAddressMap, VaultOptions } from "../constants/constants";
 import { useWeb3Context } from "./web3Context";
+import useWeb3Wallet from "./useWeb3Wallet";
 
 export const getVault = (
   library: any,
@@ -14,7 +15,7 @@ export const getVault = (
     return null;
   }
 
-  const provider = useSigner ? library.getSigner() : library;
+  const provider = library;
 
   const vault = RibbonCoveredCallFactory.connect(
     VaultAddressMap[vaultOption].v1!,
@@ -24,14 +25,15 @@ export const getVault = (
 };
 
 const useVault = (vaultOption: VaultOptions) => {
-  const { library, active } = useWeb3React();
-  const { provider } = useWeb3Context();
+  const { provider } = useWeb3React();
+  const { active } = useWeb3Wallet();
+  const { provider: defaultProvider } = useWeb3Context();
   const [vault, setVault] = useState<RibbonCoveredCall | null>(null);
 
   useEffect(() => {
-    const vault = getVault(library || provider, vaultOption, active);
+    const vault = getVault(provider || defaultProvider, vaultOption, active);
     setVault(vault);
-  }, [active, library, provider, vaultOption]);
+  }, [active, defaultProvider, provider, vaultOption]);
 
   return vault;
 };

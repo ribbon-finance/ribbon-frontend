@@ -1,5 +1,5 @@
 import { Assets } from "../store/types";
-import { CHAINID } from "../utils/env";
+import { CHAINID } from "../constants/constants"
 import deployment from "./lendDeployments.json";
 import { NETWORK_NAMES } from "./constants";
 

@@ -9,7 +9,6 @@ import { WalletProvider as SolanaWalletProvider } from "@solana/wallet-adapter-r
 import RootApp from "./components/RootApp";
 import { Web3ContextProvider } from "shared/lib/hooks/web3Context";
 import { ConnectionProvider } from "@solana/wallet-adapter-react";
-import { getLibrary } from "shared/lib/utils/getLibrary";
 import { getSolanaClusterURI } from "shared/lib/utils/env";
 import { Web3DataContextProvider } from "shared/lib/hooks/web3DataContext";
 import { SubgraphDataContextProvider } from "shared/lib/hooks/subgraphDataContext";
@@ -20,6 +19,7 @@ import { GeofenceCountry, useGeofence } from "shared/lib/hooks/useGeofence";
 import TextPreview from "shared/lib/components/TextPreview/TextPreview";
 import Geoblocked from "shared/lib/components/Geoblocked/Geoblocked";
 import { LoadingText } from "shared/lib/hooks/useLoadingText";
+import { allConnectors } from "shared/lib/utils/wallet/connectors";
 import "shared/lib/i18n/config";
 
 const SOLANA_WALLETS = [
@@ -49,7 +49,7 @@ function App() {
         {/* TODO: We only enable autoConnect when Solana is production ready as to not prompt the user */}
         <SolanaWalletProvider wallets={SOLANA_WALLETS} autoConnect={true}>
           <Web3ContextProvider>
-            <Web3ReactProvider getLibrary={getLibrary}>
+            <Web3ReactProvider connectors={allConnectors}>
               <PendingTransactionsContextProvider>
                 <Web3DataContextProvider>
                   <SubgraphDataContextProvider>

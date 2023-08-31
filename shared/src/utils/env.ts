@@ -1,7 +1,9 @@
 import { Network } from "@zetamarkets/flex-sdk";
 import SolanaDeployments from "../constants/solanaDeployments.json";
+// import { CHAINID } from "../constants/constants";
 
-export enum CHAINID {
+enum CHAINID {
+  NOT_SELECTED = -1,
   ETH_MAINNET = 1,
   ETH_KOVAN = 42,
   AVAX_FUJI = 43113,
@@ -48,6 +50,7 @@ export const isVIP = () =>
   process.env.REACT_APP_VAULT_COLLECTION === "treasury";
 
 export const NODE_URI: Record<number, string> = {
+  [CHAINID.NOT_SELECTED]: process.env.REACT_APP_MAINNET_URI || "",
   [CHAINID.ETH_MAINNET]: process.env.REACT_APP_MAINNET_URI || "",
   [CHAINID.ETH_KOVAN]: process.env.REACT_APP_TESTNET_URI || "",
   [CHAINID.AVAX_MAINNET]: process.env.REACT_APP_AVAX_URI || "",

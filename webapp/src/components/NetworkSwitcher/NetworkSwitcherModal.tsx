@@ -5,8 +5,9 @@ import styled from "styled-components";
 import BasicModal from "shared/lib/components/Common/BasicModal";
 import { getAssetColor, getAssetLogo } from "shared/lib/utils/asset";
 import { Title, Subtitle, BaseIndicator } from "shared/lib/designSystem";
-import { CHAINID, ENABLED_CHAINID } from "shared/lib/utils/env";
+import { ENABLED_CHAINID } from "shared/lib/utils/env";
 import {
+  CHAINID,
   CHAINID_TO_NATIVE_TOKENS,
   READABLE_NETWORK_NAMES,
 } from "shared/lib/constants/constants";

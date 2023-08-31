@@ -1,20 +1,18 @@
 import React, { ReactElement, useContext } from "react";
-import { ethers } from "ethers";
-import { BaseProvider } from "@ethersproject/providers";
-import { CHAINID, NODE_URI, isDevelopment } from "../utils/env";
-import { isAvaxNetwork, isBinanceNetwork } from "../constants/constants";
-
+import { StaticJsonRpcProvider } from "@ethersproject/providers";
+import { NODE_URI, isDevelopment } from "../utils/env";
+import { CHAINID, isAvaxNetwork, isBinanceNetwork } from "../constants/constants";
 export type Web3ContextData = {
-  provider: BaseProvider;
+  provider: StaticJsonRpcProvider;
 };
 
-const defaultProvider = new ethers.providers.StaticJsonRpcProvider(
+const defaultProvider = new StaticJsonRpcProvider(
   NODE_URI[isDevelopment() ? CHAINID.ETH_KOVAN : CHAINID.ETH_MAINNET]
 );
-const avaxProvider = new ethers.providers.StaticJsonRpcProvider(
+const avaxProvider = new StaticJsonRpcProvider(
   NODE_URI[isDevelopment() ? CHAINID.AVAX_FUJI : CHAINID.AVAX_MAINNET]
 );
-const binanceProvider = new ethers.providers.StaticJsonRpcProvider(
+const binanceProvider = new StaticJsonRpcProvider(
   NODE_URI[CHAINID.BINANCE_MAINNET]
 );
 

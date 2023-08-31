@@ -1,11 +1,12 @@
-import { providers } from "ethers";
+
 import {
   AVALANCHE_MAINNET_PARAMS,
   AVALANCHE_TESTNET_PARAMS,
   BINANCE_MAINNET_PARAMS,
 } from "../constants/chainParameters";
+import { Web3Provider } from "@ethersproject/providers";
 import { isAvaxNetwork, isBinanceNetwork } from "../constants/constants";
-import { CHAINID } from "./env";
+import { CHAINID } from "../constants/constants"
 
 // This error code indicates that
 enum ChainCodeErrorEnum {
@@ -18,7 +19,7 @@ enum ChainCodeErrorEnum {
  * error code 4902 refers to chain being available in the wallet
  */
 export const switchChains = async (
-  provider: providers.Web3Provider,
+  provider: Web3Provider,
   chainId: number
 ) => {
   const hexChainId = "0x" + chainId.toString(16);
