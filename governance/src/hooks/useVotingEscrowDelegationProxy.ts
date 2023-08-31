@@ -6,6 +6,8 @@ import {
   VotingEscrowDelegationProxy__factory,
 } from "shared/lib/codegen";
 import { VotingEscrowDelegationProxyAddress } from "shared/lib/constants/constants";
+import useWeb3Wallet from "shared/lib/hooks/useWeb3Wallet";
+import { useWeb3Context } from "shared/lib/hooks/web3Context";
 
 export const getVotingEscrowDelegationProxy = (
   library: any
@@ -24,12 +26,14 @@ export const getVotingEscrowDelegationProxy = (
 const useVotingEscrowDelegationProxy = ():
   | VotingEscrowDelegationProxy
   | undefined => {
-  const { library, active } = useWeb3React();
+  const { provider } = useWeb3React();
+  const { active } = useWeb3Wallet();
+  const { provider: defaultProvider } = useWeb3Context();
   const [contract, setContract] = useState<VotingEscrowDelegationProxy>();
 
   useEffect(() => {
-    setContract(getVotingEscrowDelegationProxy(library));
-  }, [library, active]);
+    setContract(getVotingEscrowDelegationProxy(provider || defaultProvider));
+  }, [active, provider, defaultProvider]);
 
   return contract;
 };

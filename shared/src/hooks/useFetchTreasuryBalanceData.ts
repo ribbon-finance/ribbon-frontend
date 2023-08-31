@@ -8,7 +8,7 @@ import {
 import { ERC20Token } from "../models/eth";
 import { Assets, AssetsList } from "../store/types";
 import { isDevelopment, isProduction } from "../utils/env";
-import { CHAINID } from "../constants/constants"
+import { CHAINID } from "../constants/constants";
 import { getERC20Token } from "./useERC20Token";
 import { useETHWeb3Context } from "./web3Context";
 

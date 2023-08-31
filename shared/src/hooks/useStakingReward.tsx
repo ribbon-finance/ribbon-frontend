@@ -36,7 +36,11 @@ const useStakingReward = (vaultOption: StakingVaultOptions) => {
 
   useEffect(() => {
     if (provider) {
-      const vault = getStakingReward(provider || defaultProvider, vaultOption, active);
+      const vault = getStakingReward(
+        provider || defaultProvider,
+        vaultOption,
+        active
+      );
       setStakingReward(vault);
     }
   }, [provider, active, vaultOption, defaultProvider]);

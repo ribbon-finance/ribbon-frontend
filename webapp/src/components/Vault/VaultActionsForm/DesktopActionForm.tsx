@@ -42,7 +42,9 @@ interface DesktopActionFormProps {
 const DesktopActionForm: React.FC<DesktopActionFormProps> = ({ vault }) => {
   const [showActionModal, setShowActionModal] = useState(false);
 
-  const { vaultActionForm, handleActionTypeChange } = useVaultActionForm(vault.vaultOption);
+  const { vaultActionForm, handleActionTypeChange } = useVaultActionForm(
+    vault.vaultOption
+  );
   const renderForm = useCallback(() => {
     switch (vault.vaultVersion) {
       case "v1":
@@ -79,7 +81,7 @@ const DesktopActionForm: React.FC<DesktopActionFormProps> = ({ vault }) => {
         variant={"desktop"}
         show={showActionModal}
         onClose={() => {
-         reset();
+          reset();
         }}
       />
       {renderForm()}

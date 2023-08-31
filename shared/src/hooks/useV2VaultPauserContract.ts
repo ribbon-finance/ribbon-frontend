@@ -4,7 +4,7 @@ import { useWeb3React } from "@web3-react/core";
 import { RibbonVaultPauser } from "../codegen/RibbonVaultPauser";
 import { RibbonVaultPauserAddress } from "../constants/constants";
 import { RibbonVaultPauser__factory } from "../codegen/factories/RibbonVaultPauser__factory";
-import { CHAINID } from "../constants/constants"
+import { CHAINID } from "../constants/constants";
 import useWeb3Wallet from "./useWeb3Wallet";
 import { useWeb3Context } from "./web3Context";
 

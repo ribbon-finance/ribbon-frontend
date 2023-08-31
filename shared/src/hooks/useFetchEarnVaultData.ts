@@ -22,11 +22,7 @@ import { calculatePricePerShare } from "../utils/math";
 import useWeb3Wallet from "./useWeb3Wallet";
 
 const useFetchEarnVaultData = (): V2VaultData => {
-  const {
-    chainId,
-    account: web3Account,
-    provider,
-  } = useWeb3React();
+  const { chainId, account: web3Account, provider } = useWeb3React();
   const { active: web3Active } = useWeb3Wallet();
   const account = impersonateAddress ? impersonateAddress : web3Account;
   const { transactionsCounter } = usePendingTransactions();
@@ -241,7 +237,7 @@ const useFetchEarnVaultData = (): V2VaultData => {
 
       return counter;
     });
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [getProviderForNetwork, web3Active, chainId, account]);
 
   useEffect(() => {

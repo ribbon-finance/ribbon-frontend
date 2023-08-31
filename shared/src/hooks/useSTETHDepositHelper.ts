@@ -32,7 +32,10 @@ const useSTETHDepositHelper = (vaultVersion: VaultVersion) => {
   const [depositHelper, setDepositHelper] = useState<STETHDepositHelper>();
 
   useEffect(() => {
-    const helper = getSTETHDepositHelper(vaultVersion, provider || defaultProvider);
+    const helper = getSTETHDepositHelper(
+      vaultVersion,
+      provider || defaultProvider
+    );
     setDepositHelper(helper);
   }, [active, defaultProvider, provider, vaultVersion]);
 

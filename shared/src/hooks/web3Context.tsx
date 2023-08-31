@@ -1,7 +1,11 @@
 import React, { ReactElement, useContext } from "react";
 import { StaticJsonRpcProvider } from "@ethersproject/providers";
 import { NODE_URI, isDevelopment } from "../utils/env";
-import { CHAINID, isAvaxNetwork, isBinanceNetwork } from "../constants/constants";
+import {
+  CHAINID,
+  isAvaxNetwork,
+  isBinanceNetwork,
+} from "../constants/constants";
 export type Web3ContextData = {
   provider: StaticJsonRpcProvider;
 };

@@ -44,7 +44,7 @@ export const usePausedPosition = (
       account &&
       !isVIP() &&
       !isBinanceVault(vaultOption) &&
-      !isSolanaVault(vaultOption) &&       
+      !isSolanaVault(vaultOption) &&
       !isEarnVault(vaultOption)
     ) {
       pauseContract

@@ -20,7 +20,7 @@ import {
   RibbonTreasuryAddress,
 } from "shared/lib/constants/constants";
 import { isDevelopment } from "shared/lib/utils/env";
-import { CHAINID } from "shared/lib/constants/constants"
+import { CHAINID } from "shared/lib/constants/constants";
 import { ExternalIcon } from "shared/lib/assets/icons/icons";
 
 const SectionLabel = styled.div`

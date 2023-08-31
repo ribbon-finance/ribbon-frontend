@@ -4,7 +4,7 @@ import axios from "axios";
 import { useWeb3React } from "@web3-react/core";
 import { BaseProvider } from "@ethersproject/providers";
 import { getENSSubgraphURI, isDevelopment } from "../utils/env";
-import { CHAINID } from "../constants/constants"
+import { CHAINID } from "../constants/constants";
 import { useWeb3Context } from "./web3Context";
 
 export interface ENSSearchResult {

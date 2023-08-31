@@ -1,6 +1,5 @@
 import React, { useEffect, useMemo, useState } from "react";
 import styled from "styled-components";
-import { useWeb3React } from "@web3-react/core";
 import { formatUnits, parseUnits } from "@ethersproject/units";
 import { BigNumber } from "@ethersproject/bignumber";
 
@@ -24,6 +23,7 @@ import moment, { duration, Duration } from "moment";
 import StakingModalFormCalendarOverlay from "./StakingModalFormCalendarOverlay";
 import { calculateInitialveRBNAmount } from "shared/lib/utils/governanceMath";
 import { ActionButton } from "shared/lib/components/Common/buttons";
+import useWeb3Wallet from "shared/lib/hooks/useWeb3Wallet";
 
 const durationSelectOptions = [
   "1W",
@@ -86,7 +86,7 @@ const StakingModalForm: React.FC<StakingModalFormProps> = ({
   initialStakingData,
   proceedToPreview,
 }) => {
-  const { active } = useWeb3React();
+  const { active } = useWeb3Wallet();
   const { data: rbnTokenAccount } = useRBNTokenAccount();
 
   const [showCalendarPicker, setShowCalendarPicker] = useState(false);

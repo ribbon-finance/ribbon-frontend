@@ -17,11 +17,7 @@ import { isVaultSupportedOnChain } from "../utils/vault";
 import useWeb3Wallet from "./useWeb3Wallet";
 
 const useFetchVaultData = (): VaultData => {
-  const {
-    chainId,
-    provider,
-    account: web3Account,
-  } = useWeb3React();
+  const { chainId, provider, account: web3Account } = useWeb3React();
   const { active: web3Active } = useWeb3Wallet();
   const { provider: defaultProvider } = useWeb3Context();
   const account = impersonateAddress ? impersonateAddress : web3Account;

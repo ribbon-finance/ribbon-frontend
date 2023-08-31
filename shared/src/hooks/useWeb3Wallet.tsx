@@ -10,16 +10,16 @@ import {
 } from "@solana/wallet-adapter-wallets";
 import { WalletName } from "@solana/wallet-adapter-base";
 import { useChain } from "./chainContext";
-import {
-  isSolanaWallet,
-  SolanaWallet,
-  Wallet,
-} from "../models/wallets";
+import { isSolanaWallet, SolanaWallet, Wallet } from "../models/wallets";
 import { Chains, ChainsToCHAINID, ID_TO_CHAINS } from "../constants/constants";
 import { impersonateAddress } from "../utils/development";
 import { isLedgerDappBrowserProvider } from "web3-ledgerhq-frame-connector";
 import { PublicKey } from "@solana/web3.js";
-import { LAST_CONNECTED_WALLET_LOCAL_STORAGE_KEY, allConnectors, walletToConnector } from "../utils/wallet/connectors";
+import {
+  LAST_CONNECTED_WALLET_LOCAL_STORAGE_KEY,
+  allConnectors,
+  walletToConnector,
+} from "../utils/wallet/connectors";
 
 interface Web3WalletData {
   chainId: number | undefined;
@@ -54,7 +54,7 @@ export const useWeb3Wallet = (): Web3WalletData => {
     isActive: isActiveEth,
     account: accountEth,
     connector: connectorEth,
-    provider
+    provider,
   } = useEVMWallet();
 
   const {
@@ -113,7 +113,7 @@ export const useWeb3Wallet = (): Web3WalletData => {
       console.log("Error deactivating", error);
     }
   }, []);
-  
+
   const activate = useCallback(
     async (wallet: Wallet, chainId: Chains) => {
       setConnectingWallet(wallet);

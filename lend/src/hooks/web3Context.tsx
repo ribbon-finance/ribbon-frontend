@@ -1,7 +1,7 @@
 import React, { ReactElement, useContext } from "react";
 import { ethers } from "ethers";
 import { BaseProvider } from "@ethersproject/providers";
-import { CHAINID } from "shared/lib/constants/constants"
+import { CHAINID } from "shared/lib/constants/constants";
 import { NODE_URI } from "shared/lib/utils/env";
 
 export type Web3ContextData = {

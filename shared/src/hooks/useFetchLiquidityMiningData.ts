@@ -62,7 +62,11 @@ const useFetchLiquidityMiningData = (): LiquidityMiningPoolData => {
         if (!tokenContract) {
           return { vault };
         }
-        const contract = getStakingReward(provider || defaultProvider, vault, active);
+        const contract = getStakingReward(
+          provider || defaultProvider,
+          vault,
+          active
+        );
         if (!contract || !VaultLiquidityMiningMap.lm[vault]) {
           return { vault };
         }

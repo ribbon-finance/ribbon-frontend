@@ -29,7 +29,9 @@ const useLiquidityGaugeController = () => {
 
   useEffect(() => {
     if (provider) {
-      setContract(getLiquidityGaugeController(provider || defaultProvider, active));
+      setContract(
+        getLiquidityGaugeController(provider || defaultProvider, active)
+      );
     }
   }, [provider, active, defaultProvider]);
 

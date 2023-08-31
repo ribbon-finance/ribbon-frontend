@@ -15,9 +15,9 @@ import {
   Chart,
   HoverInfo,
 } from "shared/lib/components/Common/PerformanceChart";
-import { useWeb3React } from "@web3-react/core";
 import sizes from "shared/lib/designSystem/sizes";
 import { useTranslation } from "react-i18next";
+import useWeb3Wallet from "shared/lib/hooks/useWeb3Wallet";
 
 const SummaryContainer = styled.div`
   display: flex;
@@ -81,7 +81,7 @@ const ChartContainer = styled.div`
 `;
 
 const StakingSummary = () => {
-  const { active } = useWeb3React();
+  const { active } = useWeb3Wallet();
   const { t } = useTranslation();
   const { data: rbnTokenAccount, loading: rbnTokenAccountLoading } =
     useRBNTokenAccount();

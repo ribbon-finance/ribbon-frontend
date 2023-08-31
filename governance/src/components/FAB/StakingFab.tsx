@@ -1,6 +1,5 @@
 import { useCallback, useMemo } from "react";
 import styled from "styled-components";
-import { useWeb3React } from "@web3-react/core";
 import { useTranslation } from "react-i18next";
 
 import { SecondaryText, Title } from "shared/lib/designSystem";
@@ -15,6 +14,7 @@ import { useAssetBalance } from "shared/lib/hooks/web3DataContext";
 import TooltipExplanation from "shared/lib/components/Common/TooltipExplanation";
 import HelpInfo from "shared/lib/components/Common/HelpInfo";
 import { usePendingTransactions } from "shared/lib/hooks/pendingTransactionsContext";
+import useWeb3Wallet from "shared/lib/hooks/useWeb3Wallet";
 
 const FABContainer = styled.div.attrs({
   className: "d-flex align-items-center",
@@ -75,7 +75,7 @@ const FABOffsetContainer = styled.div`
   }
 `;
 const StakingFAB = () => {
-  const { active } = useWeb3React();
+  const { active } = useWeb3Wallet();
   const { t } = useTranslation();
   const [, setUnstakingModal] = useGovernanceGlobalState("unstakingModal");
 

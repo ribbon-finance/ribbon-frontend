@@ -1,7 +1,7 @@
 import { initializeConnector } from "@web3-react/core";
 import { Network } from "@web3-react/network";
 
-import { CHAINID, Chains } from "../../../constants/constants"
+import { CHAINID, Chains } from "../../../constants/constants";
 import { CHAIN_PARAMS } from "../../../constants/chainParameters";
 
 const allRpcUrls = {

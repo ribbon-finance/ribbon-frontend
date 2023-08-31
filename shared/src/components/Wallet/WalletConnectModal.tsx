@@ -4,13 +4,6 @@ import styled from "styled-components";
 import { InjectedConnector } from "@web3-react/injected-connector";
 import { WalletConnectConnector } from "@web3-react/walletconnect-connector";
 import { WalletLinkConnector } from "@web3-react/walletlink-connector";
-
-import {
-  injectedConnector,
-  getWalletConnectConnector,
-  walletlinkConnector,
-} from "../../utils/connectors";
-
 import { ConnectorButtonProps, connectorType } from "./types";
 import Indicator from "../Indicator/Indicator";
 import { BaseButton, BaseModalContentColumn, Title } from "../../designSystem";
@@ -25,9 +18,10 @@ import useLoadingText from "../../hooks/useLoadingText";
 import BasicModal from "../Common/BasicModal";
 import useConnectWalletModal from "../../hooks/useConnectWalletModal";
 import LearnMoreWallet from "./LearnMoreWallet";
-import { EthereumWallet, Wallet } from "../../models/wallets";
+import { EthereumWallet } from "../../models/wallets";
 import useWeb3Wallet from "../../hooks/useWeb3Wallet";
 import { useChain } from "../../hooks/chainContext";
+import { Chains } from "../../constants/constants";
 
 const ConnectorButton = styled(BaseButton)<ConnectorButtonProps>`
   background-color: ${colors.background.three};
@@ -80,20 +74,19 @@ const StyledWalletLinkIcon = styled(WalletLinkIcon)`
   }
 `;
 
-const WalletConnectModal: React.FC = () => {
-  const {
-    connector,
-    provider,
-    account,
-    isActive,
-  } = useWeb3React();
+interface WalletConnectModalProps {
+  specificChain?: Chains;
+}
+
+const WalletConnectModal: React.FC<WalletConnectModalProps> = ({
+  specificChain,
+}) => {
+  const { connector, provider, account, isActive } = useWeb3React();
 
   const { activate } = useWeb3Wallet();
   const [connectingConnector, setConnectingConnector] =
     useState<connectorType>();
-  const [selectedWallet, setWallet] = useState<Wallet | undefined>();
-
-  const [ chain ] = useChain();
+  const [chain] = useChain();
   const initializingText = useLoadingText();
 
   const [show, setShow] = useConnectWalletModal();
@@ -108,17 +101,20 @@ const WalletConnectModal: React.FC = () => {
       // Connect wallet
       switch (type) {
         case "metamask":
-          await activate(EthereumWallet.Metamask, chain);
+          await activate(EthereumWallet.Metamask, specificChain || chain);
           break;
         case "walletConnect":
-          await activate(EthereumWallet.WalletConnect, chain);
+          setTimeout(() => {
+            onClose();
+          }, 1000);
+          await activate(EthereumWallet.WalletConnect, specificChain || chain);
           break;
         case "walletLink":
-          await activate(EthereumWallet.WalletLink, chain);
+          await activate(EthereumWallet.WalletLink, specificChain || chain);
       }
       setConnectingConnector(undefined);
     },
-    [activate, chain]
+    [activate, chain, onClose, specificChain]
   );
 
   useEffect(() => {
@@ -184,7 +180,14 @@ const WalletConnectModal: React.FC = () => {
         )}
       </ConnectorButton>
     ),
-    [getConnectorStatus, renderConnectorIcon, connectingConnector, initializingText, isActive, handleConnect]
+    [
+      getConnectorStatus,
+      renderConnectorIcon,
+      connectingConnector,
+      initializingText,
+      isActive,
+      handleConnect,
+    ]
   );
 
   return (

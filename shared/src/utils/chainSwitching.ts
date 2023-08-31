@@ -1,4 +1,3 @@
-
 import {
   AVALANCHE_MAINNET_PARAMS,
   AVALANCHE_TESTNET_PARAMS,
@@ -6,7 +5,7 @@ import {
 } from "../constants/chainParameters";
 import { Web3Provider } from "@ethersproject/providers";
 import { isAvaxNetwork, isBinanceNetwork } from "../constants/constants";
-import { CHAINID } from "../constants/constants"
+import { CHAINID } from "../constants/constants";
 
 // This error code indicates that
 enum ChainCodeErrorEnum {
@@ -18,10 +17,7 @@ enum ChainCodeErrorEnum {
  * Function copied and modified from https://docs.metamask.io/guide/rpc-api.html#other-rpc-methods
  * error code 4902 refers to chain being available in the wallet
  */
-export const switchChains = async (
-  provider: Web3Provider,
-  chainId: number
-) => {
+export const switchChains = async (provider: Web3Provider, chainId: number) => {
   const hexChainId = "0x" + chainId.toString(16);
 
   if (!provider.provider.request) return;

@@ -22,14 +22,16 @@ export const getERC20Token = (
 };
 
 const useERC20Token = (token: ERC20Token) => {
-  const {chainId, provider } = useWeb3React();
+  const { chainId, provider } = useWeb3React();
   const { active } = useWeb3Wallet();
   const { provider: defaultProvider } = useWeb3Context();
   const [contract, setContract] = useState<IERC20>();
 
   useEffect(() => {
     if (provider && chainId) {
-      setContract(getERC20Token(provider || defaultProvider, token, chainId, active));
+      setContract(
+        getERC20Token(provider || defaultProvider, token, chainId, active)
+      );
     }
   }, [chainId, provider, active, token, defaultProvider]);
 

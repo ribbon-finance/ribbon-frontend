@@ -1,6 +1,6 @@
 import { NETWORKS } from "../constants/constants";
 import { isDevelopment } from "../utils/env";
-import { CHAINID } from "../constants/constants"
+import { CHAINID } from "../constants/constants";
 import { SAVAXDepositHelperFactory } from "../codegen/SAVAXDepositHelperFactory";
 import addresses from "../constants/externalAddresses.json";
 

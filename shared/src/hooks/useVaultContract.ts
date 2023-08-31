@@ -54,11 +54,13 @@ const useVaultContract = (vaultOption: VaultOptions) => {
     RibbonV2ThetaVault | RibbonV2stETHThetaVault | RibbonEarnVault | null
   >(null);
 
-
-
   useEffect(() => {
     if (isSolanaVault(vaultOption)) return;
-    const vault = getVaultContract(provider || defaultProvider, vaultOption, active);
+    const vault = getVaultContract(
+      provider || defaultProvider,
+      vaultOption,
+      active
+    );
     setVault(vault);
   }, [active, defaultProvider, provider, vaultOption]);
 

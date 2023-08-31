@@ -65,9 +65,10 @@ export const PendingTransactionsContextProvider: React.FC<{
       if (!transaction.status) {
         let receipt: any;
         if (isEVMChain(chain)) {
-          receipt = await (
-            provider as Web3Provider
-          ).waitForTransaction(transaction.txhash, 2);
+          receipt = await (provider as Web3Provider).waitForTransaction(
+            transaction.txhash,
+            2
+          );
         } else if (isSolanaChain(chain)) {
           receipt = await connection.confirmTransaction(
             transaction.txhash,
@@ -100,7 +101,14 @@ export const PendingTransactionsContextProvider: React.FC<{
         if (isSolanaChain(chain)) update();
       }
     }, []);
-  }, [chain, connection, update, pendingTransactions, setPendingTransactions, provider]);
+  }, [
+    chain,
+    connection,
+    update,
+    pendingTransactions,
+    setPendingTransactions,
+    provider,
+  ]);
 
   return (
     <Web3ReactProvider connectors={allConnectors}>

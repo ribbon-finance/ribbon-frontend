@@ -50,7 +50,7 @@ export const AVALANCHE_TESTNET_PARAMS: AddEthereumChainParameter = {
 };
 
 type ChainIdToChainParam = {
-  [chainId in Chains] : AddEthereumChainParameter | undefined;
+  [chainId in Chains]: AddEthereumChainParameter | undefined;
 };
 
 export const CHAIN_PARAMS: ChainIdToChainParam = {
@@ -58,5 +58,5 @@ export const CHAIN_PARAMS: ChainIdToChainParam = {
   [Chains.Ethereum]: undefined,
   [Chains.Avalanche]: AVALANCHE_MAINNET_PARAMS,
   [Chains.Binance]: BINANCE_MAINNET_PARAMS,
-  [Chains.Solana]: undefined
+  [Chains.Solana]: undefined,
 };
