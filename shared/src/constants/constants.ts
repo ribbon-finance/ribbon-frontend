@@ -1520,9 +1520,9 @@ export const URLS = {
   treasury: "https://treasury.ribbon.finance",
 
   // socials
-  twitter: "https://twitter.com/ribbonfinance",
+  twitter: "https://twitter.com/aevoxyz",
   github: "https://github.com/ribbon-finance",
-  discord: "https://discord.com/invite/ribbon-finance",
+  discord: "https://discord.com/invite/aevo",
   medium: "https://www.research.ribbon.finance",
 
   // docs
