@@ -8,9 +8,7 @@ import {
 } from "react-router-dom";
 import { Web3ReactProvider } from "@web3-react/core";
 import { ConnectionProvider } from "@solana/wallet-adapter-react";
-
 import { Web3ContextProvider } from "shared/lib/hooks/web3Context";
-import { getLibrary } from "shared/lib/utils/getLibrary";
 import { Web3DataContextProvider } from "shared/lib/hooks/web3DataContext";
 import { SubgraphDataContextProvider } from "shared/lib/hooks/subgraphDataContext";
 import { ExternalAPIDataContextProvider } from "shared/lib/hooks/externalAPIDataContext";
@@ -27,6 +25,7 @@ import TermsPage from "./pages/TermsPage";
 import colors from "shared/lib/designSystem/colors";
 import { getSolanaClusterURI } from "shared/lib/utils/env";
 import StickyFooter from "./components/StickyFooter/StickyFooter";
+import { allConnectors } from "shared/lib/utils/wallet/connectors";
 import "shared/lib/i18n/config";
 
 const Body = styled.div`
@@ -44,7 +43,7 @@ function App() {
     <ChainContextProvider>
       <ConnectionProvider endpoint={getSolanaClusterURI()}>
         <Web3ContextProvider>
-          <Web3ReactProvider getLibrary={getLibrary}>
+          <Web3ReactProvider connectors={allConnectors}>
             <Web3DataContextProvider>
               <SubgraphDataContextProvider>
                 <ExternalAPIDataContextProvider>
