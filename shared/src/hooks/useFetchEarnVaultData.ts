@@ -5,6 +5,7 @@ import {
   getVaultNetwork,
   EarnVaultList,
   VIPVaultList,
+  isEarnVault,
 } from "../constants/constants";
 import { isProduction, isTreasury, isVIP } from "../utils/env";
 import { getVaultContract } from "./useVaultContract";
@@ -154,16 +155,18 @@ const useFetchEarnVaultData = (): V2VaultData => {
           queuedWithdrawShares
         );
 
+        const roundPricePerShare = round
+          ? await contract.roundPricePerShare(round - 1)
+          : BigNumber.from(0);
+
+        const usedPricePerShare =
+          vault === "rEARN" ? roundPricePerShare : actualPricePerShare;
+
         const accountVaultBalance = (shares as BigNumber)
-          .mul(actualPricePerShare)
+          .mul(usedPricePerShare)
           .div(BigNumber.from("10").pow(decimals as BigNumber));
         // we use roundPricePerShare for earn treasury because pricePerShare goes down
         // during the round itself
-
-        const roundPricePerShare =
-          (isTreasury() || isVIP()) && round
-            ? await contract.roundPricePerShare(round - 1)
-            : BigNumber.from(0);
 
         const allocationState = (
           (
