@@ -735,6 +735,7 @@ const YourPosition: React.FC<YourPositionProps> = ({
     }
   }, [
     vaultAccount,
+    vaultOption,
     positionState,
     positionWidget,
     pausedPositionWidget,
