@@ -866,7 +866,7 @@ const YieldCard: React.FC<YieldCardProps> = ({
               {positionState === "partiallyPaused" && "Partially Paused"}
             </SecondaryText>
             <Title fontSize={14}>
-              {vaultAccount
+              {vaultAccount && vault !== "rSOL-THETA"
                 ? `${formatBigNumber(
                     vaultAccount.totalBalance.add(pausedAmount),
                     decimals
@@ -886,6 +886,7 @@ const YieldCard: React.FC<YieldCardProps> = ({
     positionState,
     color,
     vaultAccount,
+    vault,
     pausedAmount,
     asset,
   ]);
