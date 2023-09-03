@@ -5,7 +5,6 @@ import {
   getVaultNetwork,
   EarnVaultList,
   VIPVaultList,
-  isEarnVault,
 } from "../constants/constants";
 import { isProduction, isTreasury, isVIP } from "../utils/env";
 import { getVaultContract } from "./useVaultContract";
@@ -203,7 +202,7 @@ const useFetchEarnVaultData = (): V2VaultData => {
           vault,
           totalBalance,
           cap,
-          pricePerShare: actualPricePerShare,
+          pricePerShare: usedPricePerShare,
           round: round,
           roundPricePerShare,
           lockedBalanceInAsset: accountVaultBalance,

@@ -716,7 +716,7 @@ const YourPosition: React.FC<YourPositionProps> = ({
   ]);
 
   const render = useMemo(() => {
-    if (!vaultAccount) {
+    if (!vaultAccount || vaultOption === "rSOL-THETA") {
       return <></>;
     }
     // return paused widget if account has paused balance and no vault balance
@@ -735,6 +735,7 @@ const YourPosition: React.FC<YourPositionProps> = ({
     }
   }, [
     vaultAccount,
+    vaultOption,
     positionState,
     positionWidget,
     pausedPositionWidget,
