@@ -14,6 +14,7 @@ import {
 } from "webapp/lib/components/Common/toasts";
 import WalletConnectModal from "shared/lib/components/Wallet/WalletConnectModal";
 import NotFound from "shared/lib/pages/NotFound";
+import { Chains } from "shared/lib/constants/constants";
 
 const Root = styled.div<{ screenHeight: number }>`
   max-height: 100vh;
@@ -26,7 +27,7 @@ const RootApp = () => {
 
   return (
     <Root id="appRoot" screenHeight={screenHeight}>
-      <WalletConnectModal />
+      <WalletConnectModal specificChain={Chains.Ethereum} />
       <WithdrawReminderToast />
 
       <Router>
