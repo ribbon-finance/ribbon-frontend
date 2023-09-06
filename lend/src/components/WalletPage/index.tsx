@@ -26,7 +26,6 @@ import { useAssetsBalance } from "../../hooks/web3DataContext";
 import Indicator from "shared/lib/components/Indicator/Indicator";
 import { truncateAddress } from "shared/lib/utils/address";
 import { formatUnits } from "ethers/lib/utils";
-import { useChain } from "../../hooks/chainContext";
 
 const borderStyle = `1px solid ${colors.primaryText}1F`;
 
@@ -253,7 +252,6 @@ export const WalletPage = ({ onHide }: WalletPageProps) => {
   );
   const [selectedWallet, setWallet] = useState<EthereumWallet>();
   const balances = useAssetsBalance();
-  const [chain] = useChain();
   useEffect(() => {
     setTimeout(() => {
       if (active) setWalletStep(WalletPageEnum.ACCOUNT);
@@ -263,13 +261,18 @@ export const WalletPage = ({ onHide }: WalletPageProps) => {
   const onActivate = useCallback(async () => {
     if (selectedWallet) {
       try {
-        await activate(selectedWallet as EthereumWallet, chain);
+        if (selectedWallet === EthereumWallet.WalletConnect) {
+          setTimeout(() => {
+            onHide();
+          }, 1000);
+        }
+        await activate(selectedWallet as EthereumWallet, Chains.Ethereum);
         onHide();
       } catch (error) {
         console.error(error);
       }
     }
-  }, [activate, chain, onHide, selectedWallet]);
+  }, [activate, onHide, selectedWallet]);
 
   const modalTitle = useMemo(() => {
     if (walletStep === WalletPageEnum.ACCOUNT) {

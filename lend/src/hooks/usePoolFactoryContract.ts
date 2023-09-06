@@ -4,6 +4,7 @@ import { PoolFactory } from "../codegen";
 import { PoolFactory__factory } from "../codegen/factories/PoolFactory__factory";
 import { useWeb3Context } from "shared/lib/hooks/web3Context";
 import deployment from "../constants/deployments.json";
+import useWeb3Wallet from "./useWeb3Wallet";
 
 export const getPoolFactoryContract = (
   library: any,
@@ -15,14 +16,18 @@ export const getPoolFactoryContract = (
 };
 
 const usePoolFactoryContract = () => {
-  const { active, library } = useWeb3React();
-  const { provider } = useWeb3Context();
+  const { provider } = useWeb3React();
+  const { active } = useWeb3Wallet();
+  const { provider: defaultProvider } = useWeb3Context();
   const [poolFactory, setPoolFactory] = useState<PoolFactory | null>(null);
 
   useEffect(() => {
-    const poolFactory = getPoolFactoryContract(library || provider, active);
+    const poolFactory = getPoolFactoryContract(
+      provider || defaultProvider,
+      active
+    );
     setPoolFactory(poolFactory);
-  }, [active, library, provider]);
+  }, [active, defaultProvider, provider]);
 
   return poolFactory;
 };

@@ -10,16 +10,13 @@ import { defaultPoolData, PoolData, PoolDataResponses } from "../models/pool";
 import { isProduction } from "shared/lib/utils/env";
 import { usePendingTransactions } from "./pendingTransactionsContext";
 import { isPoolSupportedOnChain } from "../utils/pool";
+import useWeb3Wallet from "./useWeb3Wallet";
 
 const useFetchPoolData = (): PoolData => {
-  const {
-    chainId,
-    library,
-    active: web3Active,
-    account: web3Account,
-  } = useWeb3React();
+  const { chainId, provider, account: web3Account } = useWeb3React();
 
-  const { provider } = useWeb3Context();
+  const { active: web3Active } = useWeb3Wallet();
+  const { provider: defaultProvider } = useWeb3Context();
   const account = impersonateAddress ? impersonateAddress : web3Account;
   const { transactionsCounter } = usePendingTransactions();
 
@@ -47,7 +44,11 @@ const useFetchPoolData = (): PoolData => {
           web3Active && isPoolSupportedOnChain(pool, chainId || 1)
         );
 
-        const contract = getLendContract(library || provider, pool, active);
+        const contract = getLendContract(
+          provider || defaultProvider,
+          pool,
+          active
+        );
 
         if (!contract) {
           return { pool };
@@ -205,7 +206,7 @@ const useFetchPoolData = (): PoolData => {
     if (!isProduction()) {
       console.timeEnd("Pool Data Fetch"); // eslint-disable-line
     }
-  }, [account, web3Active, library, provider, chainId]);
+  }, [web3Active, chainId, provider, defaultProvider, account]);
 
   useEffect(() => {
     doMulticall();

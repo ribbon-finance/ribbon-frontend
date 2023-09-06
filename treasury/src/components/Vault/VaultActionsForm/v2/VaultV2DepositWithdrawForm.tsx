@@ -1,6 +1,5 @@
 import React, { useEffect, useMemo, useState } from "react";
 import styled from "styled-components";
-import { useWeb3React } from "@web3-react/core";
 import { parseUnits } from "@ethersproject/units";
 import { useLocation } from "react-router-dom";
 
