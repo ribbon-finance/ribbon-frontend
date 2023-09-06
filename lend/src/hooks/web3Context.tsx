@@ -1,15 +1,13 @@
 import React, { ReactElement, useContext } from "react";
-import { ethers } from "ethers";
-import { BaseProvider } from "@ethersproject/providers";
+import { StaticJsonRpcProvider } from "@ethersproject/providers";
+import { NODE_URI, isDevelopment } from "shared/lib/utils/env";
 import { CHAINID } from "shared/lib/constants/constants";
-import { NODE_URI } from "shared/lib/utils/env";
-
 export type Web3ContextData = {
-  provider: BaseProvider;
+  provider: StaticJsonRpcProvider;
 };
 
-const defaultProvider = new ethers.providers.StaticJsonRpcProvider(
-  NODE_URI[CHAINID.ETH_MAINNET]
+const defaultProvider = new StaticJsonRpcProvider(
+  NODE_URI[isDevelopment() ? CHAINID.ETH_KOVAN : CHAINID.ETH_MAINNET]
 );
 
 export const Web3Context = React.createContext<Web3ContextData>({

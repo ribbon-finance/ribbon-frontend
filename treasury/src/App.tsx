@@ -4,12 +4,12 @@ import smoothscroll from "smoothscroll-polyfill";
 
 import RootApp from "./components/RootApp";
 import { Web3ContextProvider } from "shared/lib/hooks/web3Context";
-import { getLibrary } from "shared/lib/utils/getLibrary";
 import { Web3DataContextProvider } from "shared/lib/hooks/web3DataContext";
 import { SubgraphDataContextProvider } from "shared/lib/hooks/subgraphDataContext";
 import { PendingTransactionsContextProvider } from "shared/lib/hooks/pendingTransactionsContext";
 import { ExternalAPIDataContextProvider } from "shared/lib/hooks/externalAPIDataContext";
 import { ChainContextProvider } from "shared/lib/hooks/chainContext";
+import { allConnectors } from "shared/lib/utils/wallet/connectors";
 import "shared/lib/i18n/config";
 
 function App() {
@@ -20,7 +20,7 @@ function App() {
   return (
     <ChainContextProvider>
       <Web3ContextProvider>
-        <Web3ReactProvider getLibrary={getLibrary}>
+        <Web3ReactProvider connectors={allConnectors}>
           <PendingTransactionsContextProvider>
             <Web3DataContextProvider>
               <SubgraphDataContextProvider>

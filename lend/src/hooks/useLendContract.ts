@@ -7,6 +7,7 @@ import {
   PoolOptions,
 } from "shared/lib/constants/lendConstants";
 import { useWeb3Context } from "shared/lib/hooks/web3Context";
+import useWeb3Wallet from "./useWeb3Wallet";
 
 export const getLendContract = (
   library: any,
@@ -22,14 +23,19 @@ export const getLendContract = (
 };
 
 const useLendContract = (poolOption: PoolOptions) => {
-  const { active, library } = useWeb3React();
-  const { provider } = useWeb3Context();
+  const { provider } = useWeb3React();
+  const { active } = useWeb3Wallet();
+  const { provider: defaultProvider } = useWeb3Context();
   const [pool, setPool] = useState<RibbonLendPool | null>(null);
 
   useEffect(() => {
-    const pool = getLendContract(library || provider, poolOption, active);
+    const pool = getLendContract(
+      provider || defaultProvider,
+      poolOption,
+      active
+    );
     setPool(pool);
-  }, [active, library, provider, poolOption]);
+  }, [active, provider, poolOption, defaultProvider]);
 
   return pool;
 };

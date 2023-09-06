@@ -1,6 +1,5 @@
 import React, { useEffect, useMemo, useState } from "react";
 import styled from "styled-components";
-import { useWeb3React } from "@web3-react/core";
 import { parseUnits } from "@ethersproject/units";
 import { useLocation } from "react-router-dom";
 
@@ -35,6 +34,7 @@ import {
 } from "../../../../constants/constants";
 import useVaultPriceHistory from "shared/lib/hooks/useVaultPerformanceUpdate";
 import { BigNumber } from "ethers";
+import useWeb3Wallet from "shared/lib/hooks/useWeb3Wallet";
 
 const FormTabContainer = styled.div`
   display: flex;
@@ -123,7 +123,7 @@ const VaultV2DepositWithdrawForm: React.FC<VaultV2DepositWithdrawFormProps> = ({
   const vaultVersion = isEarnVault(vaultOption) ? "earn" : "v2";
   const vaultBalanceInAsset = depositBalanceInAsset.add(lockedBalanceInAsset);
   const { priceHistory } = useVaultPriceHistory(vaultOption, vaultVersion);
-  const { active } = useWeb3React();
+  const { active } = useWeb3Wallet();
 
   const vaultMaxDepositAmount = VaultMaxDeposit[vaultOption];
   const isInputNonZero = parseFloat(vaultActionForm.inputAmount) > 0;

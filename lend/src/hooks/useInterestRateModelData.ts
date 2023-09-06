@@ -6,12 +6,12 @@ import { getInterestRateModelContract } from "./useInterestRateModelContract";
 import { useWeb3Context } from "./web3Context";
 
 export const useInterestRateModelData = () => {
-  const { library } = useWeb3React();
-  const { provider } = useWeb3Context();
+  const { provider } = useWeb3React();
+  const { provider: defaultProvider } = useWeb3Context();
   const [data, setData] = useState<InterestData>(defaultInterestData);
   const [loading, setLoading] = useState<boolean>(true);
   const getData = useCallback(async () => {
-    const contract = getInterestRateModelContract(library || provider);
+    const contract = getInterestRateModelContract(provider || defaultProvider);
 
     if (!contract) {
       return;
@@ -40,7 +40,7 @@ export const useInterestRateModelData = () => {
     } as InterestData);
 
     setLoading(false);
-  }, [library, provider]);
+  }, [defaultProvider, provider]);
 
   useEffect(() => {
     getData();

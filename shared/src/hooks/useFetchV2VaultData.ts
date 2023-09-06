@@ -115,6 +115,7 @@ const useFetchV2VaultData = (): V2VaultData => {
           | { newStrikePrice: BigNumber; newDelta: BigNumber }
         >[] = [
           contract.totalBalance(),
+          contract.pricePerShare(),
           contract.cap(),
           contract.vaultState(),
           contract.lastQueuedWithdrawAmount(),
@@ -153,6 +154,7 @@ const useFetchV2VaultData = (): V2VaultData => {
 
         const [
           totalBalance,
+          pricePerShare,
           cap,
           _vaultState,
           lastQueuedWithdrawAmount,
@@ -181,14 +183,18 @@ const useFetchV2VaultData = (): V2VaultData => {
           round?: number;
         };
 
-        const actualPricePerShare = calculatePricePerShare(
-          decimals as BigNumber,
-          totalBalance as BigNumber,
-          totalPending,
-          lastQueuedWithdrawAmount as BigNumber,
-          totalSupply as BigNumber,
-          queuedWithdrawShares
-        );
+        let actualPricePerShare = pricePerShare as BigNumber;
+
+        if (!isTreasury) {
+          actualPricePerShare = calculatePricePerShare(
+            decimals as BigNumber,
+            totalBalance as BigNumber,
+            totalPending,
+            lastQueuedWithdrawAmount as BigNumber,
+            totalSupply as BigNumber,
+            queuedWithdrawShares
+          );
+        }
 
         const accountVaultBalance = (shares as BigNumber)
           .mul(actualPricePerShare)

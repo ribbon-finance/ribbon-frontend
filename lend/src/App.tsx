@@ -5,7 +5,6 @@ import { Web3ReactProvider } from "@web3-react/core";
 import { Web3DataContextProvider } from "./hooks/web3DataContext";
 import "shared/lib/i18n/config";
 import { Web3ContextProvider } from "./hooks/web3Context";
-import { getLibrary } from "shared/lib/utils/getLibrary";
 import { SubgraphDataContextProvider } from "./hooks/subgraphDataContext";
 import { PendingTransactionsContextProvider } from "./hooks/pendingTransactionsContext";
 import { ExternalAPIDataContextProvider } from "shared/lib/hooks/externalAPIDataContext";
@@ -16,6 +15,7 @@ import Geoblocked from "shared/lib/components/Geoblocked/Geoblocked";
 import { LoadingText } from "shared/lib/hooks/useLoadingText";
 import RootApp from "./pages/RootApp";
 import colors from "shared/lib/designSystem/colors";
+import { allConnectors } from "shared/lib/utils/wallet/connectors";
 import "shared/lib/i18n/config";
 
 const Body = styled.div`
@@ -48,7 +48,7 @@ function App() {
   return (
     <ChainContextProvider>
       <Web3ContextProvider>
-        <Web3ReactProvider getLibrary={getLibrary}>
+        <Web3ReactProvider connectors={allConnectors}>
           <PendingTransactionsContextProvider>
             <Web3DataContextProvider>
               <SubgraphDataContextProvider>

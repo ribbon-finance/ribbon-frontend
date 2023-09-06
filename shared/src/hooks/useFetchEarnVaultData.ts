@@ -1,11 +1,7 @@
 import { useCallback, useEffect, useState } from "react";
 import { useWeb3React } from "@web3-react/core";
 import { BigNumber } from "ethers";
-import {
-  getVaultNetwork,
-  EarnVaultList,
-  VIPVaultList,
-} from "../constants/constants";
+import { getVaultNetwork, EarnVaultList } from "../constants/constants";
 import { isProduction, isTreasury, isVIP } from "../utils/env";
 import { getVaultContract } from "./useVaultContract";
 import { impersonateAddress } from "../utils/development";
@@ -45,7 +41,7 @@ const useFetchEarnVaultData = (): V2VaultData => {
       return currentCounter;
     });
 
-    const vaultList = isTreasury() || isVIP() ? VIPVaultList : EarnVaultList;
+    const vaultList = isTreasury() || isVIP() ? [] : EarnVaultList;
 
     const responses = await Promise.all(
       vaultList.map(async (vault) => {
