@@ -48,13 +48,13 @@ const ASSETS: {
 const PROVIDERS: { [chainId: number]: ethers.providers.StaticJsonRpcProvider } =
   {
     1: new ethers.providers.StaticJsonRpcProvider(
-      "https://eth-mainnet.alchemyapi.io/v2/vI8OBZj4Wue9yNPSDVa7Klqt-UeRywrx"
+      process.env.REACT_APP_MAINNET_URI
     ),
     43114: new ethers.providers.StaticJsonRpcProvider(
-      "https://api.avax.network/ext/bc/C/rpc"
+      process.env.REACT_APP_AVAX_URI
     ),
     777: new ethers.providers.StaticJsonRpcProvider(
-      "https://eth-mainnet.alchemyapi.io/v2/vI8OBZj4Wue9yNPSDVa7Klqt-UeRywrx"
+      process.env.REACT_APP_MAINNET_URI
     ),
   };
 
