@@ -185,7 +185,7 @@ const useFetchV2VaultData = (): V2VaultData => {
 
         let actualPricePerShare = pricePerShare as BigNumber;
 
-        if (!isTreasury) {
+        if (!isTreasury()) {
           actualPricePerShare = calculatePricePerShare(
             decimals as BigNumber,
             totalBalance as BigNumber,
