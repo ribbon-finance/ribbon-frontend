@@ -118,7 +118,6 @@ export type VaultVersion = typeof VaultVersionList[number];
 export type VaultVersionExcludeV1 = Exclude<VaultVersion, "v1">;
 
 export const EVMVaultList = [
-  "rBNB-THETA",
   "rEARN-stETH",
   "rEARN",
   "rsAVAX-THETA",
@@ -129,6 +128,7 @@ export const EVMVaultList = [
   "rBTC-THETA",
   "rAVAX-THETA",
   "rAAVE-THETA",
+  "rBNB-THETA",
   "rUSDC-AVAX-P-THETA",
   "rUNI-THETA",
   "rAPE-THETA",
@@ -1486,6 +1486,7 @@ const DISABLED_VAULTS: VaultOptions[] = [
   "rUSDC-AVAX-P-THETA",
   "rUNI-THETA",
   "rSOL-THETA",
+  "rBNB-THETA",
 ];
 
 export const isDisabledVault = (vaultOption: VaultOptions) => {
