@@ -1525,6 +1525,7 @@ export const URLS = {
   github: "https://github.com/ribbon-finance",
   discord: "https://discord.com/invite/aevo",
   medium: "https://www.research.ribbon.finance",
+  pyth: "https://pyth.network/",
 
   // docs
   docs: "https://docs.ribbon.finance",
