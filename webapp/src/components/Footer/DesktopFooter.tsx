@@ -7,6 +7,7 @@ import colors from "shared/lib/designSystem/colors";
 import sizes from "shared/lib/designSystem/sizes";
 import theme from "shared/lib/designSystem/theme";
 import { isVIP } from "shared/lib/utils/env";
+import { Pyth } from "shared/lib/assets/icons/pyth";
 
 const FooterContainer = styled.div`
   display: flex;
@@ -64,6 +65,11 @@ const DesktopFooter = () => {
         {renderLinkItem("DISCORD", URLS.discord)}
         {renderLinkItem("TWITTER", URLS.twitter)}
         {renderLinkItem("GITHUB", URLS.github)}
+        <BaseLink to={URLS.pyth} target="_blank" rel="noreferrer noopener">
+          <LinkItem style={{ opacity: 1 }}>
+            <Pyth />
+          </LinkItem>
+        </BaseLink>
       </LinksContainer>
     </FooterContainer>
   );

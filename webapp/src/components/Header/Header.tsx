@@ -20,7 +20,7 @@ import { useGlobalState } from "shared/lib/store/store";
 import FilterDropdown from "shared/lib/components/Common/FilterDropdown";
 import { useHistory } from "react-router-dom";
 import { BuyButton } from "../Wallet/BuyButton";
-
+import { Pyth } from "shared/lib/assets/icons/pyth";
 export const HeaderContainer = styled.div<MobileMenuOpenProps>`
   height: ${theme.header.height}px;
   position: sticky;
@@ -188,7 +188,8 @@ const Header = () => {
     isSelected: boolean,
     primary: boolean = true,
     external: boolean = false,
-    isHighlighted: boolean = false
+    isHighlighted: boolean = false,
+    image?: JSX.Element
   ) => {
     return (
       <BaseLink
@@ -218,6 +219,7 @@ const Header = () => {
             <Title fontSize={18} color={`${colors.primaryText}7A`}>
               {title}
             </Title>
+            {image && image}
           </SecondaryMobileNavItem>
         )}
       </BaseLink>
@@ -348,6 +350,7 @@ const Header = () => {
             )}
 
             {renderLinkItem("AUCTIONS", URLS.auction, false, false, true)}
+            {renderLinkItem("", URLS.pyth, false, false, true, false, <Pyth />)}
           </MobileMenuContainer>
         </MobileOverlayMenu>
       </MobileOnly>
