@@ -4,7 +4,7 @@ import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 import { Container } from "react-bootstrap";
 
-import { Title, BaseText } from "../../designSystem";
+import { Title, BaseText, BaseLink } from "../../designSystem";
 import sizes from "../../designSystem/sizes";
 import colors from "shared/lib/designSystem/colors";
 import { SubgraphDataContext } from "shared/lib/hooks/subgraphDataContext";
@@ -15,7 +15,8 @@ import { ExternalAPIDataContext } from "shared/lib/hooks/externalAPIDataContext"
 import { Assets } from "shared/lib/store/types";
 import { getAssetDecimals } from "shared/lib/utils/asset";
 import { formatUnits } from "ethers/lib/utils";
-
+import { Pyth } from "shared/lib/assets/icons/pyth";
+import { URLS } from "shared/lib/constants/constants";
 const MainContainer = styled(Container)`
   padding: 80px 0;
   position: relative;
@@ -131,6 +132,19 @@ const Bar = styled.div<{ delay: number }>`
 
   animation: 4s ${glow} infinite;
   animation-delay: ${(props) => props.delay}s;
+`;
+
+const LogoContainer = styled(BaseLink)`
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  margin: auto;
+  color: white;
+  &:hover {
+    color: white;
+  }
+  width: fit-content;
 `;
 
 const Mission = () => {
@@ -254,6 +268,9 @@ const Mission = () => {
           </Container>
         </Col>
       </MissionSubtitleRow>
+      <LogoContainer to={URLS.pyth} target="_blank" rel="noreferrer noopener">
+        <Pyth />
+      </LogoContainer>
     </MainContainer>
   );
 };

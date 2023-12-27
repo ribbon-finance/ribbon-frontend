@@ -1,7 +1,7 @@
 export const Pyth: React.FC = (props) => (
   <svg
-    width="60"
-    height="20"
+    width="90"
+    height="30"
     fill="white"
     xmlns="http://www.w3.org/2000/svg"
     viewBox="0 0 370.99 127.93"
