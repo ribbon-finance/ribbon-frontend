@@ -357,7 +357,11 @@ const VaultV2WithdrawForm: React.FC<VaultV2WithdrawFormProps> = ({
     if (active) {
       return (
         <ActionButton
-          disabled={!isInputNonZero}
+          disabled={
+            vaultOption === "rSOL-THETA"
+              ? !isInputNonZero
+              : Boolean(error) || !isInputNonZero
+          }
           onClick={() => {
             onFormSubmit();
           }}
@@ -389,6 +393,7 @@ const VaultV2WithdrawForm: React.FC<VaultV2WithdrawFormProps> = ({
     onFormSubmit,
     setShowConnectModal,
     vaultActionForm.withdrawOption,
+    vaultOption,
   ]);
 
   const formFooter = useMemo(() => {
