@@ -357,7 +357,7 @@ const VaultV2WithdrawForm: React.FC<VaultV2WithdrawFormProps> = ({
     if (active) {
       return (
         <ActionButton
-          disabled={Boolean(error) || !isInputNonZero}
+          disabled={!isInputNonZero}
           onClick={() => {
             onFormSubmit();
           }}
