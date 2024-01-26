@@ -524,7 +524,7 @@ const EarnPage = () => {
         <AbsoluteContainer>
           <Banner
             color={color}
-            message={"R-EARN vault is now inactive and do not accept deposits"}
+            message={"R-EARN vault is now inactive and does not accept deposits"}
           ></Banner>
         </AbsoluteContainer>
         <PageContainer offset={pageOffset}>
