@@ -60,11 +60,18 @@ import {
 } from "shared/lib/hooks/useGeofence";
 import TextPreview from "shared/lib/components/TextPreview/TextPreview";
 import Geoblocked from "shared/lib/components/Geoblocked/Geoblocked";
+import Banner from "shared/lib/components/Banner/Banner";
 
 const delayedFade = css<{ delay?: number }>`
   opacity: 0;
   animation: ${fadeIn} 1s ease-in-out forwards;
   animation-delay: ${({ delay }) => `${delay || 0}s`};
+`;
+
+const AbsoluteContainer = styled.div`
+  position: absolute;
+  width: 100%;
+  top: 0;
 `;
 
 const { formatUnits } = ethers.utils;
@@ -513,160 +520,171 @@ const EarnPage = () => {
           <StyledEarnInnerRing color={colors.green} />
         </FadeDiv>
       </CirclesContainer>
-      <PageContainer offset={pageOffset}>
-        <AnimatePresence exitBeforeEnter>
-          {showVault.show ? (
-            <motion.div
-              key={"showVault"}
-              initial={{
-                opacity: 0,
-              }}
-              animate={{
-                opacity: 1,
-              }}
-              exit={{
-                opacity: 0,
-              }}
-              transition={{
-                duration: 0.25,
-                type: "keyframes",
-                ease: "easeInOut",
-              }}
-            >
-              <VaultContainer>
-                <PendingOrLogoContainer delay={0.1}>
-                  {hasPendingDeposits ? (
-                    <PendingDepositsContainer color={color}>
+      <div style={{ position: "relative", width: "100%" }}>
+        <AbsoluteContainer>
+          <Banner
+            color={color}
+            message={"R-EARN vault is now inactive and does not accept deposits"}
+          ></Banner>
+        </AbsoluteContainer>
+        <PageContainer offset={pageOffset}>
+          <AnimatePresence exitBeforeEnter>
+            {showVault.show ? (
+              <motion.div
+                key={"showVault"}
+                initial={{
+                  opacity: 0,
+                }}
+                animate={{
+                  opacity: 1,
+                }}
+                exit={{
+                  opacity: 0,
+                }}
+                transition={{
+                  duration: 0.25,
+                  type: "keyframes",
+                  ease: "easeInOut",
+                }}
+              >
+                <VaultContainer>
+                  <PendingOrLogoContainer delay={0.1}>
+                    {hasPendingDeposits ? (
+                      <PendingDepositsContainer color={color}>
+                        <ProductAssetLogoContainer color={color}>
+                          {logo}
+                        </ProductAssetLogoContainer>
+                        <TextContainer>
+                          <p>
+                            Your deposit will deployed in the vault in{" "}
+                            <span style={{ color: colors.primaryText }}>
+                              {strategyStartTime}
+                            </span>
+                          </p>
+                        </TextContainer>
+                      </PendingDepositsContainer>
+                    ) : (
                       <ProductAssetLogoContainer color={color}>
                         {logo}
                       </ProductAssetLogoContainer>
-                      <TextContainer>
-                        <p>
-                          Your deposit will deployed in the vault in{" "}
-                          <span style={{ color: colors.primaryText }}>
-                            {strategyStartTime}
-                          </span>
-                        </p>
-                      </TextContainer>
-                    </PendingDepositsContainer>
-                  ) : (
-                    <ProductAssetLogoContainer color={color}>
-                      {logo}
-                    </ProductAssetLogoContainer>
-                  )}
-                </PendingOrLogoContainer>
-                <BalanceTitle delay={0.2}>Your Balance ({asset})</BalanceTitle>
-                <HeroText delay={0.3}>
-                  {isLoading || !account
-                    ? "---"
-                    : formatBigNumber(
-                        BigNumber.from(investedInStrategy),
-                        decimals,
-                        decimalPlaces
-                      )}
-                </HeroText>
-                <HeroSubtitle color={yieldColor} delay={0.4}>
-                  {roi > 0 && "+"}
-                  {isLoading || roi === 0 ? "0.00" : roi.toFixed(4)}%
-                </HeroSubtitle>
-                <ViewDetailsButton
-                  role="button"
-                  onClick={() => {
-                    setShowDetailsModal(true);
-                  }}
-                  delay={0.5}
-                >
-                  View Details
-                </ViewDetailsButton>
-                <ButtonContainer delay={0.6}>
-                  {active && account ? (
-                    <>
-                      <StyledActionButton
-                        className={`mt-5 py-3 mb-0 w-100`}
-                        color={color}
-                        onClick={() => {
-                          setShowDepositModal(true);
-                        }}
-                      >
-                        Deposit
-                      </StyledActionButton>
-                      <StyledActionButton
-                        className={`py-3 mb-1 w-100`}
-                        color={"white"}
-                        disabled={!showInitiateWithdraw}
-                        onClick={() => {
-                          setShowWithdrawModal(true);
-                        }}
-                      >
-                        Withdraw
-                      </StyledActionButton>
-                      {showCompleteWithdraw && (
-                        <CompleteWithdrawButton
-                          className={`py-3 mb-1 w-100`}
+                    )}
+                  </PendingOrLogoContainer>
+                  <BalanceTitle delay={0.2}>
+                    Your Balance ({asset})
+                  </BalanceTitle>
+                  <HeroText delay={0.3}>
+                    {isLoading || !account
+                      ? "---"
+                      : formatBigNumber(
+                          BigNumber.from(investedInStrategy),
+                          decimals,
+                          decimalPlaces
+                        )}
+                  </HeroText>
+                  <HeroSubtitle color={yieldColor} delay={0.4}>
+                    {roi > 0 && "+"}
+                    {isLoading || roi === 0 ? "0.00" : roi.toFixed(4)}%
+                  </HeroSubtitle>
+                  <ViewDetailsButton
+                    role="button"
+                    onClick={() => {
+                      setShowDetailsModal(true);
+                    }}
+                    delay={0.5}
+                  >
+                    View Details
+                  </ViewDetailsButton>
+                  <ButtonContainer delay={0.6}>
+                    {active && account ? (
+                      <>
+                        <StyledActionButton
+                          className={`mt-5 py-3 mb-0 w-100`}
                           color={color}
                           onClick={() => {
-                            setShowCompleteModal(true);
+                            setShowDepositModal(true);
+                          }}
+                          disabled
+                        >
+                          Deposit
+                        </StyledActionButton>
+                        <StyledActionButton
+                          className={`py-3 mb-1 w-100`}
+                          color={"white"}
+                          disabled={!showInitiateWithdraw}
+                          onClick={() => {
+                            setShowWithdrawModal(true);
                           }}
                         >
-                          <div className="d-flex flex-row justify-content-around align-items-center">
-                            <Marker color={color} />
-                            <SecondaryText>
-                              Complete your withdrawals
-                            </SecondaryText>
-                          </div>
-                        </CompleteWithdrawButton>
-                      )}
-                    </>
-                  ) : (
-                    <StyledActionButton
-                      className={`mt-5 py-3 w-100`}
-                      color={color}
-                      onClick={() => setShowConnectModal(true)}
-                    >
-                      Connect Wallet
-                    </StyledActionButton>
-                  )}
-                </ButtonContainer>
-                <EarnCapacityText delay={0.7}>
-                  {isLoading || isVaultMaxCapacity === undefined ? (
-                    loadingText
-                  ) : isVaultMaxCapacity ? (
-                    <VaultFullText>Vault is currently full</VaultFullText>
-                  ) : (
-                    formatAmount(totalDepositStr) +
-                    " " +
-                    asset +
-                    " / " +
-                    formatAmount(depositLimitStr) +
-                    " " +
-                    asset
-                  )}
-                </EarnCapacityText>
-              </VaultContainer>
-            </motion.div>
-          ) : (
-            <motion.div
-              key={"showIntro"}
-              initial={{
-                opacity: 0,
-              }}
-              animate={{
-                opacity: 1,
-              }}
-              exit={{
-                opacity: 0,
-              }}
-              transition={{
-                duration: 0.25,
-                type: "keyframes",
-                ease: "easeInOut",
-              }}
-            >
-              <EarnStrategyExplainer vaultOption={vaultOption} />
-            </motion.div>
-          )}
-        </AnimatePresence>
-      </PageContainer>
+                          Withdraw
+                        </StyledActionButton>
+                        {showCompleteWithdraw && (
+                          <CompleteWithdrawButton
+                            className={`py-3 mb-1 w-100`}
+                            color={color}
+                            onClick={() => {
+                              setShowCompleteModal(true);
+                            }}
+                          >
+                            <div className="d-flex flex-row justify-content-around align-items-center">
+                              <Marker color={color} />
+                              <SecondaryText>
+                                Complete your withdrawals
+                              </SecondaryText>
+                            </div>
+                          </CompleteWithdrawButton>
+                        )}
+                      </>
+                    ) : (
+                      <StyledActionButton
+                        className={`mt-5 py-3 w-100`}
+                        color={color}
+                        onClick={() => setShowConnectModal(true)}
+                      >
+                        Connect Wallet
+                      </StyledActionButton>
+                    )}
+                  </ButtonContainer>
+                  <EarnCapacityText delay={0.7}>
+                    {isLoading || isVaultMaxCapacity === undefined ? (
+                      loadingText
+                    ) : isVaultMaxCapacity ? (
+                      <VaultFullText>Vault is currently full</VaultFullText>
+                    ) : (
+                      formatAmount(totalDepositStr) +
+                      " " +
+                      asset +
+                      " / " +
+                      formatAmount(depositLimitStr) +
+                      " " +
+                      asset
+                    )}
+                  </EarnCapacityText>
+                </VaultContainer>
+              </motion.div>
+            ) : (
+              <motion.div
+                key={"showIntro"}
+                initial={{
+                  opacity: 0,
+                }}
+                animate={{
+                  opacity: 1,
+                }}
+                exit={{
+                  opacity: 0,
+                }}
+                transition={{
+                  duration: 0.25,
+                  type: "keyframes",
+                  ease: "easeInOut",
+                }}
+              >
+                <EarnStrategyExplainer vaultOption={vaultOption} />
+              </motion.div>
+            )}
+          </AnimatePresence>
+        </PageContainer>
+      </div>
       <EarnDetailsModal
         show={showDetailsModal}
         onClose={() => setShowDetailsModal(false)}

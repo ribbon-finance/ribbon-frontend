@@ -17,6 +17,7 @@ import YourPositionModal from "./Vault/Modal/YourPositionModal";
 import PausePositionModal from "./Vault/Modal/PausePositionModal";
 import ResumePositionModal from "./Vault/Modal/ResumePositionModal";
 import EarnPage from "../pages/DepositPage/EarnPage";
+
 const Root = styled.div<{ screenHeight: number }>`
   background-color: ${colors.background.one};
   min-height: ${(props) =>
