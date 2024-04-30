@@ -110,6 +110,7 @@ export const useWeb3Wallet = (): Web3WalletData => {
       // Remove last connected wallet from local storage so we don't eagerly connect to anything
       localStorage.removeItem(LAST_CONNECTED_WALLET_LOCAL_STORAGE_KEY);
     } catch (error) {
+      // eslint-disable-next-line no-console
       console.log("Error deactivating", error);
     }
   }, []);
