@@ -26,7 +26,7 @@ const ButtonContainer = styled.div`
 
   &:hover {
     ${ClaimText} {
-      color: #fff; 
+      color: #fff;
     }
   }
 `;
@@ -36,7 +36,6 @@ const LogoContainer = styled.div`
   align-items: center;
   margin-right: 8px;
 `;
-
 
 const RedLogo = styled(Logo)`
   circle {

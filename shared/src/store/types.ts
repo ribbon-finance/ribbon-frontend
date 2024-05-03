@@ -143,7 +143,7 @@ type CommonMerkleProofData = {
     amount: BigNumber;
     proof: string[];
   };
-}
+};
 
 export type AirdropInfoData = CommonMerkleProofData & {
   breakdown: {
@@ -152,10 +152,9 @@ export type AirdropInfoData = CommonMerkleProofData & {
   claimed: boolean;
 };
 
-
 export enum AirdropBreakdownKeys {
   maxStaked = "max_staked_rbn",
-  heldRbnAfterTGE = "held_after_tge"
+  heldRbnAfterTGE = "held_after_tge",
 }
 
 export type GovernanceAirdropInfoData = CommonMerkleProofData & {

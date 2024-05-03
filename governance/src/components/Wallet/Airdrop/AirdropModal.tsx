@@ -52,7 +52,7 @@ const AirdropModal: React.FC<AirdropModalProps> = ({ show, onClose }) => {
       await provider.waitForTransaction(txhash, 2);
       setStep("claimed");
     } catch (err) {
-      console.error(err)
+      console.error(err);
       setStep("info");
     }
   }, [
@@ -86,28 +86,32 @@ const AirdropModal: React.FC<AirdropModalProps> = ({ show, onClose }) => {
         initial:
           step === "info" || step === "claim"
             ? {
-              x: 50,
-              opacity: 0,
-            }
+                x: 50,
+                opacity: 0,
+              }
             : {},
         animate:
           step === "info" || step === "claim"
             ? {
-              x: 0,
-              opacity: 1,
-            }
+                x: 0,
+                opacity: 1,
+              }
             : {},
         exit:
           step === "info"
             ? {
-              x: -50,
-              opacity: 0,
-            }
+                x: -50,
+                opacity: 0,
+              }
             : {},
       }}
     >
       {step === "info" ? (
-        <AirdropInfo loading={loading} airdropInfo={airdropInfo} onClaim={claimAirdrop} />
+        <AirdropInfo
+          loading={loading}
+          airdropInfo={airdropInfo}
+          onClaim={claimAirdrop}
+        />
       ) : (
         <RBNClaimModalContent step={step} type="rbn" />
       )}

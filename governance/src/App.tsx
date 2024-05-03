@@ -8,7 +8,10 @@ import {
   SolflareWalletAdapter,
 } from "@solana/wallet-adapter-wallets";
 
-import { WalletProvider as SolanaWalletProvider, ConnectionProvider } from "@solana/wallet-adapter-react";
+import {
+  WalletProvider as SolanaWalletProvider,
+  ConnectionProvider,
+} from "@solana/wallet-adapter-react";
 import { SubgraphDataContextProvider } from "shared/lib/hooks/subgraphDataContext";
 import RootApp from "./components/RootApp";
 import { Web3ContextProvider } from "shared/lib/hooks/web3Context";
@@ -43,10 +46,10 @@ function App() {
     <ChainContextProvider>
       <ConnectionProvider endpoint={getSolanaClusterURI()}>
         {/* This is just to prevent useWeb3Wallet from breaking */}
-        <SolanaWalletProvider wallets={[
-          new PhantomWalletAdapter(),
-          new SolflareWalletAdapter(),
-        ]} autoConnect={false}>
+        <SolanaWalletProvider
+          wallets={[new PhantomWalletAdapter(), new SolflareWalletAdapter()]}
+          autoConnect={false}
+        >
           <Web3ContextProvider>
             <Web3ReactProvider connectors={allConnectors}>
               <PendingTransactionsContextProvider>

@@ -8,7 +8,10 @@ import { usePendingTransactions } from "shared/lib/hooks/pendingTransactionsCont
 import { impersonateAddress } from "shared/lib/utils/development";
 import useMerkleDistributor from "../useMerkleDistributor";
 
-import { AirdropBreakdownKeys, GovernanceAirdropInfoData } from "shared/lib/store/types";
+import {
+  AirdropBreakdownKeys,
+  GovernanceAirdropInfoData,
+} from "shared/lib/store/types";
 import { isProduction } from "shared/lib/utils/env";
 import ProofData from "./proof-mainnet.json";
 import ProofTestnetData from "./proof-testnet.json";
@@ -20,7 +23,7 @@ export type AirdropClaim = {
   index: number;
   amount: string;
   proof: string[];
-}
+};
 
 export type AirdropProof = {
   merkleRoot: string;
@@ -34,17 +37,17 @@ export type AirdropBreakdownData = {
   [address: string]: {
     rbnAmount: number;
     heldRbnAfterTGE: boolean;
-  }
+  };
 };
 
-const proof = isProduction() 
-  ? ProofData as AirdropProof 
-  : ProofTestnetData as AirdropProof;
-const airdropBreakdown = isProduction() 
-  ? BreakdownData as AirdropBreakdownData 
-  : BreakdownTestnetData as AirdropBreakdownData;
+const proof = isProduction()
+  ? (ProofData as AirdropProof)
+  : (ProofTestnetData as AirdropProof);
+const airdropBreakdown = isProduction()
+  ? (BreakdownData as AirdropBreakdownData)
+  : (BreakdownTestnetData as AirdropBreakdownData);
 
-const rbnDecimals = getAssetDecimals("RBN")
+const rbnDecimals = getAssetDecimals("RBN");
 
 const useAirdrop = () => {
   const web3Context = useWeb3Wallet();
@@ -54,7 +57,7 @@ const useAirdrop = () => {
   const [airdropInfo, setAirdropInfo] = useState<GovernanceAirdropInfoData>();
   const { pendingTransactions } = usePendingTransactions();
 
-  const [loading, setLoading] = useState(false)
+  const [loading, setLoading] = useState(false);
 
   const updateAirdropInfo = useCallback(async () => {
     if (chainId !== CHAINID.ETH_MAINNET || !account || !merkleDistributor) {
@@ -63,8 +66,8 @@ const useAirdrop = () => {
     }
 
     const airdropClaim = proof["claims"][account];
-    const totalBn = BigNumber.from(airdropClaim?.amount || 0)
-    const total = parseFloat(formatUnits(totalBn, rbnDecimals))
+    const totalBn = BigNumber.from(airdropClaim?.amount || 0);
+    const total = parseFloat(formatUnits(totalBn, rbnDecimals));
 
     if (!airdropClaim || !total) {
       setAirdropInfo(undefined);
@@ -75,7 +78,7 @@ const useAirdrop = () => {
     try {
       claimedAmount = await merkleDistributor.claimed(account);
     } catch (error) {
-      console.error("Unable to get claimed amount")
+      console.error("Unable to get claimed amount");
     }
 
     setAirdropInfo({
@@ -84,17 +87,18 @@ const useAirdrop = () => {
       proof: { ...airdropClaim, amount: BigNumber.from(airdropClaim.amount) },
       breakdown: {
         [AirdropBreakdownKeys.maxStaked]: !totalBn.isZero(),
-        [AirdropBreakdownKeys.heldRbnAfterTGE]: airdropBreakdown[account.toLowerCase()]?.heldRbnAfterTGE
+        [AirdropBreakdownKeys.heldRbnAfterTGE]:
+          airdropBreakdown[account.toLowerCase()]?.heldRbnAfterTGE,
       },
-      unclaimedAmount: totalBn.sub(claimedAmount)
+      unclaimedAmount: totalBn.sub(claimedAmount),
     });
   }, [account, merkleDistributor, setAirdropInfo, chainId]);
 
   useEffect(() => {
     if (!airdropInfo || airdropInfo.account !== account) {
-      setLoading(true)
+      setLoading(true);
       updateAirdropInfo().finally(() => {
-        setLoading(false)
+        setLoading(false);
       });
     }
   }, [account, airdropInfo, updateAirdropInfo]);

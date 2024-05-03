@@ -227,7 +227,7 @@ const AccountStatus: React.FC<AccountStatusProps> = ({ variant }) => {
   const [copyState, setCopyState] = useState<"visible" | "hiding" | "hidden">(
     "hidden"
   );
-  const [showAirdropModal, setShowAirdropModal] = useState(false)
+  const [showAirdropModal, setShowAirdropModal] = useState(false);
 
   const { data: ensData } = useENSSearch(account || "");
 
@@ -342,7 +342,10 @@ const AccountStatus: React.FC<AccountStatusProps> = ({ variant }) => {
 
   return (
     <>
-      <AirdropModal show={showAirdropModal} onClose={() => setShowAirdropModal(false)}/>
+      <AirdropModal
+        show={showAirdropModal}
+        onClose={() => setShowAirdropModal(false)}
+      />
 
       {/* Main Button and Desktop Menu */}
       <WalletContainer variant={variant} ref={desktopMenuRef}>
@@ -396,7 +399,7 @@ const AccountStatus: React.FC<AccountStatusProps> = ({ variant }) => {
             <MenuItem title="DISCONNECT" onClick={handleDisconnect} />
           )}
 
-          <AirdropButton onClick={() => setShowAirdropModal(true)}/>
+          <AirdropButton onClick={() => setShowAirdropModal(true)} />
         </DesktopFloatingMenu>
       </WalletContainer>
 

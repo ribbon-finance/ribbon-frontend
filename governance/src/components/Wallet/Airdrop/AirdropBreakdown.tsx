@@ -1,8 +1,5 @@
 import { useCallback } from "react";
-import {
-  BaseIndicator,
-  Subtitle
-} from "shared/lib/designSystem";
+import { BaseIndicator, Subtitle } from "shared/lib/designSystem";
 import { CloseIcon } from "shared/lib/assets/icons/icons";
 import colors from "shared/lib/designSystem/colors";
 import theme from "shared/lib/designSystem/theme";
@@ -10,8 +7,8 @@ import { AirdropBreakdownKeys } from "shared/lib/store/types";
 import styled from "styled-components";
 
 export const getQualifiedColor = (qualified: boolean) => {
-  return qualified ? colors.green : colors.red
-}
+  return qualified ? colors.green : colors.red;
+};
 
 const getAirdropTitle = (variant: AirdropBreakdownKeys) => {
   switch (variant) {
@@ -48,7 +45,7 @@ const BreakdownPill = styled.div<{
   border-radius: 100px;
 `;
 
-const BreakdownPillToken = styled(Subtitle) <{
+const BreakdownPillToken = styled(Subtitle)<{
   qualified: boolean;
 }>`
   color: ${(props) => getQualifiedColor(props.qualified)};
@@ -57,8 +54,8 @@ const BreakdownPillToken = styled(Subtitle) <{
 
 interface AirdropBreakdownProps {
   breakdown?: {
-    [key in AirdropBreakdownKeys]: boolean
-  }
+    [key in AirdropBreakdownKeys]: boolean;
+  };
 }
 
 const AirdropBreakdown = ({ breakdown }: AirdropBreakdownProps) => {
@@ -69,17 +66,15 @@ const AirdropBreakdown = ({ breakdown }: AirdropBreakdownProps) => {
           <BreakdownPillToken qualified={qualified}>
             {getAirdropTitle(key)}
           </BreakdownPillToken>
-          {
-            qualified
-              ? (
-                <BaseIndicator
-                  size={8}
-                  color={getQualifiedColor(qualified)}
-                />
-              ) : (
-                <CloseIcon width={8} height={8} stroke={getQualifiedColor(qualified)} />
-              )
-          }
+          {qualified ? (
+            <BaseIndicator size={8} color={getQualifiedColor(qualified)} />
+          ) : (
+            <CloseIcon
+              width={8}
+              height={8}
+              stroke={getQualifiedColor(qualified)}
+            />
+          )}
         </BreakdownPill>
       </BreakdownBackground>
     ),
@@ -88,31 +83,19 @@ const AirdropBreakdown = ({ breakdown }: AirdropBreakdownProps) => {
 
   return (
     <BreakdownContainer>
-      {
-        breakdown
-          ? Object.keys(breakdown).map((key) =>
-            renderBreakdownPill(
-              key as AirdropBreakdownKeys,
-              breakdown[key as AirdropBreakdownKeys]
-            )
+      {breakdown ? (
+        Object.keys(breakdown).map((key) =>
+          renderBreakdownPill(
+            key as AirdropBreakdownKeys,
+            breakdown[key as AirdropBreakdownKeys]
           )
-          : (
-            <>
-              {
-                renderBreakdownPill(
-                  AirdropBreakdownKeys.maxStaked,
-                  false
-                )
-              }
-              {
-                renderBreakdownPill(
-                  AirdropBreakdownKeys.heldRbnAfterTGE,
-                  false
-                )
-              }
-            </>
-          )
-      }
+        )
+      ) : (
+        <>
+          {renderBreakdownPill(AirdropBreakdownKeys.maxStaked, false)}
+          {renderBreakdownPill(AirdropBreakdownKeys.heldRbnAfterTGE, false)}
+        </>
+      )}
     </BreakdownContainer>
   );
 };

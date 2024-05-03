@@ -50,7 +50,6 @@ const Description = styled(SecondaryText)`
   text-align: center;
 `;
 
-
 const ViewBreakdownPill = styled.div`
   display: flex;
   background: ${colors.green}14;
@@ -158,12 +157,16 @@ interface AirdropInfoProps {
   onClaim: () => void;
 }
 
-const AirdropInfo: React.FC<AirdropInfoProps> = ({ loading, airdropInfo, onClaim }) => {
+const AirdropInfo: React.FC<AirdropInfoProps> = ({
+  loading,
+  airdropInfo,
+  onClaim,
+}) => {
   const { account } = useWeb3Wallet();
   const [, setShowConnectModal] = useConnectWalletModal();
   const [showBreakdown, setShowBreakdown] = useState(false);
 
-  const loadingText = useLoadingText("")
+  const loadingText = useLoadingText("");
 
   const airdropAmountStr = useMemo(() => {
     if (!airdropInfo) {
@@ -248,7 +251,8 @@ const AirdropInfo: React.FC<AirdropInfoProps> = ({ loading, airdropInfo, onClaim
         </BaseModalContentColumn>
         <BaseModalContentColumn marginTop={16}>
           <AirdropExplanationText>
-            A total of 1,933,802 RBN was distributed to accounts that locked their $RBN for two years.
+            A total of 1,933,802 RBN was distributed to accounts that locked
+            their $RBN for two years.
           </AirdropExplanationText>
         </BaseModalContentColumn>
         <BaseModalContentColumn marginTop={16}>

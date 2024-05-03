@@ -1,7 +1,10 @@
 import { useEffect, useState } from "react";
 import { useWeb3Wallet } from "shared/lib/hooks/useWeb3Wallet";
 
-import { MerkleDistributorAdjustable, MerkleDistributorAdjustable__factory } from "shared/lib/codegen";
+import {
+  MerkleDistributorAdjustable,
+  MerkleDistributorAdjustable__factory,
+} from "shared/lib/codegen";
 import deployments from "shared/lib/constants/v1Deployments.json";
 import { isProduction } from "shared/lib/utils/env";
 
