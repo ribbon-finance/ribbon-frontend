@@ -12,7 +12,7 @@ import {
   BaseModalContentColumn,
   SecondaryText,
   Subtitle,
-  Title
+  Title,
 } from "shared/lib/designSystem";
 import colors from "shared/lib/designSystem/colors";
 import theme from "shared/lib/designSystem/theme";
