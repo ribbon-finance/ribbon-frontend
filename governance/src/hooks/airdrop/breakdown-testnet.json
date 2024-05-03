@@ -1,0 +1,14 @@
+{
+  "0x7bb992F84f055C868E1da4eaeD44E50749d2124f": {
+    "rbnAmount": 1.036589698211986,
+    "heldRbnAfterTGE": false
+  },
+  "0xF8368119Bb1073Cf01B841848725d81b542A4c19": {
+    "rbnAmount": 21,
+    "heldRbnAfterTGE": true
+  },
+  "0xF38E0498194c2E8d90724cFaC7e40B757237c514": {
+    "rbnAmount": 4,
+    "heldRbnAfterTGE": false
+  }
+}

@@ -36,6 +36,8 @@ import { BigNumber } from "ethers";
 import useWeb3Wallet from "shared/lib/hooks/useWeb3Wallet";
 import { MenuCloseItem, MenuItem } from "shared/lib/components/Menu/MenuItem";
 import DesktopFloatingMenu from "shared/lib/components/Menu/DesktopFloatingMenu";
+import AirdropButton from "./Airdrop/AirdropButton";
+import AirdropModal from "./Airdrop/AirdropModal";
 
 const walletButtonWidth = 55;
 
@@ -225,6 +227,8 @@ const AccountStatus: React.FC<AccountStatusProps> = ({ variant }) => {
   const [copyState, setCopyState] = useState<"visible" | "hiding" | "hidden">(
     "hidden"
   );
+  const [showAirdropModal, setShowAirdropModal] = useState(false)
+
   const { data: ensData } = useENSSearch(account || "");
 
   const [, setStakingModal] = useGovernanceGlobalState("stakingModal");
@@ -338,6 +342,8 @@ const AccountStatus: React.FC<AccountStatusProps> = ({ variant }) => {
 
   return (
     <>
+      <AirdropModal show={showAirdropModal} onClose={() => setShowAirdropModal(false)}/>
+
       {/* Main Button and Desktop Menu */}
       <WalletContainer variant={variant} ref={desktopMenuRef}>
         <WalletButton
@@ -389,6 +395,8 @@ const AccountStatus: React.FC<AccountStatusProps> = ({ variant }) => {
           {!isLedgerLive && (
             <MenuItem title="DISCONNECT" onClick={handleDisconnect} />
           )}
+
+          <AirdropButton onClick={() => setShowAirdropModal(true)}/>
         </DesktopFloatingMenu>
       </WalletContainer>
 

@@ -1,0 +1,29 @@
+{
+  "merkleRoot": "0xbdc097e9b3e5dcb922405e73e5823e6923f1a91037b0002124dd5bd98b8ab8b1",
+  "tokenTotal": "0x0169548c61fc853a80",
+  "claims": {
+    "0x7bb992F84f055C868E1da4eaeD44E50749d2124f": {
+      "index": 0,
+      "amount": "0x0e62b4d6a3c13a80",
+      "proof": [
+        "0xc2c19d77e8e7976b6b07e95b66c5544ca9bdfe0d22f98e324c09b2238783b469"
+      ]
+    },
+    "0xF38E0498194c2E8d90724cFaC7e40B757237c514": {
+      "index": 1,
+      "amount": "0x3782dace9d900000",
+      "proof": [
+        "0xd649bef70c3b24cd754d81c44651ac973a4a285e826e72fb5ce6fe7c1e3e3805",
+        "0xf64260f01add4903ed793fb3113a6eb97ce7149cacb2436e383d2d7fa18e3a70"
+      ]
+    },
+    "0xF8368119Bb1073Cf01B841848725d81b542A4c19": {
+      "index": 2,
+      "amount": "0x01236efcbcbb340000",
+      "proof": [
+        "0xa9402f2aacaa397e2674471b5f1284d231387ee2c7e432451b468738b8fd8b02",
+        "0xf64260f01add4903ed793fb3113a6eb97ce7149cacb2436e383d2d7fa18e3a70"
+      ]
+    }
+  }
+}

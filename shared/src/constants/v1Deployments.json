@@ -21,6 +21,9 @@
     "RibbonYearnETHPutLogic": "0x01f862bd44d3251F1E2EBE1a2509C5c23c11BfAd",
     "RibbonYearnETHPut": "0x526624Ac3b2d409816fB95D49a9512e5674b052e"
   },
+  "sepolia": {
+    "MerkleDistributorStakingAirdrop": "0x21dc9d7fab08a6f0a333125b66584d327434ea20"
+  },
   "development": {
     "DataProvider": "0xA586074FA4Fe3E546A132a16238abe37951D41fE",
     "LiquidatorProxy": "0x970e8f18ebfEa0B08810f33a5A40438b9530FBCF",
@@ -46,6 +49,7 @@
     "RibbonETHPutStakingReward": "0xe79734461499246b6A8C8e768B96bebd0C891f63",
     "RibbonToken": "0x6123B0049F904d730dB3C36a31167D9d4121fA6B",
     "RibbonYearnETHPutLogic": "0x5f0E84f525FF14E1F29176Ad7b0d951E87FA00D2",
-    "RibbonYearnETHPut": "0x8FE74471F198E426e96bE65f40EeD1F8BA96e54f"
+    "RibbonYearnETHPut": "0x8FE74471F198E426e96bE65f40EeD1F8BA96e54f",
+    "MerkleDistributorStakingAirdrop": ""
   }
 }

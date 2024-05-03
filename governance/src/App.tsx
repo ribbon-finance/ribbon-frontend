@@ -46,7 +46,7 @@ function App() {
         <SolanaWalletProvider wallets={[
           new PhantomWalletAdapter(),
           new SolflareWalletAdapter(),
-        ]} autoConnect={true}>
+        ]} autoConnect={false}>
           <Web3ContextProvider>
             <Web3ReactProvider connectors={allConnectors}>
               <PendingTransactionsContextProvider>

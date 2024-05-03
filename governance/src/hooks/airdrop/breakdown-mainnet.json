@@ -1,0 +1,1918 @@
+{
+  "0xe00714751f1c79f7111be3c72012641b30573698": {
+    "rbnAmount": 9999999.999305874,
+    "heldRbnAfterTGE": true
+  },
+  "0xca86d57519dbfe34a25eef0923b259ab07986b71": {
+    "rbnAmount": 1761745.4827101852,
+    "heldRbnAfterTGE": false
+  },
+  "0x31d3243cfb54b34fc9c73e1cb1137124bd6b13e1": {
+    "rbnAmount": 999999.9999997724,
+    "heldRbnAfterTGE": false
+  },
+  "0x40aa3e443b3667f5f8b8048fec89262bbf0171c5": {
+    "rbnAmount": 680000,
+    "heldRbnAfterTGE": true
+  },
+  "0x9159d34f4616f5a7f54faeea5943d0c665d7d10b": {
+    "rbnAmount": 629257.073778,
+    "heldRbnAfterTGE": true
+  },
+  "0x7527557858b4b40f9199a49ab3746179f36bd9d8": {
+    "rbnAmount": 576131.2574286577,
+    "heldRbnAfterTGE": false
+  },
+  "0xbe0affe00de6bbdb717d2c7af7f9feb45311320d": {
+    "rbnAmount": 551139.4104900473,
+    "heldRbnAfterTGE": false
+  },
+  "0xce23d2d2e2d52b728b649518c5fc9b45cc0ca512": {
+    "rbnAmount": 500000,
+    "heldRbnAfterTGE": true
+  },
+  "0x34602f1b438497e2adb436d3b05922d97a3d895e": {
+    "rbnAmount": 500000,
+    "heldRbnAfterTGE": true
+  },
+  "0x02b79df8c38f29f39888557c0a89917fd99ddf77": {
+    "rbnAmount": 383253.9029315618,
+    "heldRbnAfterTGE": false
+  },
+  "0x80845058350b8c3df5c3015d8a717d64b3bf9267": {
+    "rbnAmount": 336998.21891277254,
+    "heldRbnAfterTGE": false
+  },
+  "0x7944642920df33bae461f86aa0cd0b4b8284330e": {
+    "rbnAmount": 302170.5575887669,
+    "heldRbnAfterTGE": false
+  },
+  "0x31f45f2278a23ef31a5485d3aa98178e7f39710d": {
+    "rbnAmount": 212525.5383764546,
+    "heldRbnAfterTGE": false
+  },
+  "0x73051a64044fea61a6100eb0b55c9087be32cca3": {
+    "rbnAmount": 200000,
+    "heldRbnAfterTGE": false
+  },
+  "0x09cf50574504d9dcf127e848a6058e8e0bb814aa": {
+    "rbnAmount": 194650.1005118789,
+    "heldRbnAfterTGE": false
+  },
+  "0x974dd3b4e5e00bc3117fbba15e521b6b5afc151c": {
+    "rbnAmount": 189247.17889183585,
+    "heldRbnAfterTGE": false
+  },
+  "0x79c4213a328e3b4f1d87b4953c14759399db25e2": {
+    "rbnAmount": 174185.5601406003,
+    "heldRbnAfterTGE": false
+  },
+  "0x9455b22685036d89874296460fb28de8a70a6a66": {
+    "rbnAmount": 172164.651,
+    "heldRbnAfterTGE": true
+  },
+  "0xcf63e1c31805254b6fb3ed7829206c2b2505e3a7": {
+    "rbnAmount": 169260.85147405975,
+    "heldRbnAfterTGE": false
+  },
+  "0x39635098bb4ba04388508e1ed1dacf18b372d525": {
+    "rbnAmount": 161045.993060372,
+    "heldRbnAfterTGE": false
+  },
+  "0xfed5b6f65d42af35b87795f5c05da2ac07a8aa4e": {
+    "rbnAmount": 158104.720649012,
+    "heldRbnAfterTGE": true
+  },
+  "0xf3bfe0bb0dab720ea251dde573fe1d16c9145e1e": {
+    "rbnAmount": 153706.60690786265,
+    "heldRbnAfterTGE": false
+  },
+  "0xfb7c1d49e006eaddff2385c7ef8b0c5cf49d038a": {
+    "rbnAmount": 150000,
+    "heldRbnAfterTGE": false
+  },
+  "0x35a34be7fbbf8327e48d262482bac388e7ca5319": {
+    "rbnAmount": 131466.63385362792,
+    "heldRbnAfterTGE": false
+  },
+  "0x6f9bb7e454f5b3eb2310343f0e99269dc2bb8a1d": {
+    "rbnAmount": 125360.93171413126,
+    "heldRbnAfterTGE": true
+  },
+  "0xa1ba71a032bd935274223e86c6bfbab6b815b465": {
+    "rbnAmount": 113962.79316449606,
+    "heldRbnAfterTGE": true
+  },
+  "0x74f2fef5d1c24f8b7237740a507a97098615a0a6": {
+    "rbnAmount": 109532.48923904843,
+    "heldRbnAfterTGE": true
+  },
+  "0x740c21ca7d3a4bac00b52eb275126d81bf2093f9": {
+    "rbnAmount": 109191.6885110196,
+    "heldRbnAfterTGE": false
+  },
+  "0xaf11495f021c5c2c5f5230f40d5d57ebe4059700": {
+    "rbnAmount": 105380.83854775036,
+    "heldRbnAfterTGE": false
+  },
+  "0x8f60d79fe3df6cd0e3a44288ad2f41af134d813e": {
+    "rbnAmount": 100525.89641915492,
+    "heldRbnAfterTGE": true
+  },
+  "0xf49d2bcc52f0b46a98204721f98ce9d4e6730bed": {
+    "rbnAmount": 99999.99999999999,
+    "heldRbnAfterTGE": false
+  },
+  "0xca7a055c438cb30f748fb571418b4653ed50ed5f": {
+    "rbnAmount": 99999.99999999999,
+    "heldRbnAfterTGE": false
+  },
+  "0x9adcdc109dc88adc2e1493829e1bdf59635a4692": {
+    "rbnAmount": 94027.31602662982,
+    "heldRbnAfterTGE": false
+  },
+  "0x3363c43b0685eae668237e0fc6f5248b83ad6adb": {
+    "rbnAmount": 90645.71402287685,
+    "heldRbnAfterTGE": true
+  },
+  "0xbe74daf0930dfab7d8396eead251a4a21106797d": {
+    "rbnAmount": 90205.75191367729,
+    "heldRbnAfterTGE": false
+  },
+  "0xf5e962c4df3c870266aeab048335184ee0d9ad66": {
+    "rbnAmount": 90115.93025729712,
+    "heldRbnAfterTGE": true
+  },
+  "0x7bdfe11c4981dd4c33e1aa62457b8773253791b3": {
+    "rbnAmount": 89445.76535057815,
+    "heldRbnAfterTGE": false
+  },
+  "0xe5350e927b904fdb4d2af55c566e269bb3df1941": {
+    "rbnAmount": 87948.8723896435,
+    "heldRbnAfterTGE": false
+  },
+  "0xbdfa4f4492dd7b7cf211209c4791af8d52bf5c50": {
+    "rbnAmount": 81642.54662311076,
+    "heldRbnAfterTGE": false
+  },
+  "0xdcb7943f8454a5742b2b881b6ecfc8c7d198f631": {
+    "rbnAmount": 78397.31994638,
+    "heldRbnAfterTGE": false
+  },
+  "0x285b7eea81a5b66b62e7276a24c1e0f83f7409c1": {
+    "rbnAmount": 76665.23146499699,
+    "heldRbnAfterTGE": true
+  },
+  "0x166eff7888be941645a31dbca9910e95a7632509": {
+    "rbnAmount": 75864.72334450719,
+    "heldRbnAfterTGE": true
+  },
+  "0x8d605e606b3aee143ff0d039f63100a52f17d85f": {
+    "rbnAmount": 71356.84540299015,
+    "heldRbnAfterTGE": false
+  },
+  "0xa527ec807541553bfa5c99c1097bda0293c7aa5e": {
+    "rbnAmount": 71221.59167315451,
+    "heldRbnAfterTGE": false
+  },
+  "0x298afe764ceade43ba80ac4390195e8d9451d6ef": {
+    "rbnAmount": 68318.80280461932,
+    "heldRbnAfterTGE": true
+  },
+  "0x461fe10abc6fcd8bea56e20d36912b76cfda8de3": {
+    "rbnAmount": 64386.139348017554,
+    "heldRbnAfterTGE": true
+  },
+  "0xf6aef1044028907c86eb8581b1671e924392d3b4": {
+    "rbnAmount": 63877.07477218733,
+    "heldRbnAfterTGE": false
+  },
+  "0x25bc4cc0b6dc2a1e67e29eb9180175c7d187cb6c": {
+    "rbnAmount": 62430.50587641764,
+    "heldRbnAfterTGE": false
+  },
+  "0x0c8bfc46c4fb39b6eed7814e8830fac0a45f8d6d": {
+    "rbnAmount": 56936.80521899955,
+    "heldRbnAfterTGE": true
+  },
+  "0xc95c069f83b8e9eaeebf813a4fcf6762b881e35f": {
+    "rbnAmount": 51087.974079997795,
+    "heldRbnAfterTGE": true
+  },
+  "0xba48ff2445708f99d0b349b357b4b38eb40bc562": {
+    "rbnAmount": 50140.96276662339,
+    "heldRbnAfterTGE": false
+  },
+  "0x8cdf1b6cfb693db9e171a1b9dda88c257e68638c": {
+    "rbnAmount": 50008.877259489294,
+    "heldRbnAfterTGE": false
+  },
+  "0x5de64238da2d7a5f1949c1bb1958273c22c5ee01": {
+    "rbnAmount": 50000.102765842195,
+    "heldRbnAfterTGE": false
+  },
+  "0xe3939654deae5f54fd3e6b84b3a7f75f245062d8": {
+    "rbnAmount": 50000.00005815548,
+    "heldRbnAfterTGE": true
+  },
+  "0x582c34536d7f4a2a5d96118d5d80ba3000c6b5af": {
+    "rbnAmount": 49999.99999999999,
+    "heldRbnAfterTGE": true
+  },
+  "0xb9eb24a2e77a18f54ff9b7fc941ee9085a130d9d": {
+    "rbnAmount": 49912.141816696356,
+    "heldRbnAfterTGE": false
+  },
+  "0xcbe66a273f8d9b454a05801801fd7cd5d2eb6543": {
+    "rbnAmount": 49234.47642525498,
+    "heldRbnAfterTGE": false
+  },
+  "0xe5691dfc88e01c16f46560e1a5e6a5ebf0678bf9": {
+    "rbnAmount": 48830.03171593768,
+    "heldRbnAfterTGE": true
+  },
+  "0x9a82aa6edbc473a883b8906bf41084c9c1b760f2": {
+    "rbnAmount": 47817.33648569133,
+    "heldRbnAfterTGE": false
+  },
+  "0x8f688a91695f7d2a1e93e57cedcbf5c5202f617b": {
+    "rbnAmount": 47552.730547853505,
+    "heldRbnAfterTGE": true
+  },
+  "0xa362a6b387a80180286ef40d8e6ec6ca2657a9fa": {
+    "rbnAmount": 46853.42495184873,
+    "heldRbnAfterTGE": true
+  },
+  "0x7bfee91193d9df2ac0bfe90191d40f23c773c060": {
+    "rbnAmount": 46044.88021512351,
+    "heldRbnAfterTGE": true
+  },
+  "0x519e19eac9ead404343c68224dd2a22c5c25f992": {
+    "rbnAmount": 45720.990551218114,
+    "heldRbnAfterTGE": false
+  },
+  "0x3ca31c9cfef27fd3d5ae59caadcc33b9aaf09c22": {
+    "rbnAmount": 45158.34479387145,
+    "heldRbnAfterTGE": false
+  },
+  "0x1200eb4fa3df9903fc6eff1d7a4a5d17502329b2": {
+    "rbnAmount": 43620.46698326618,
+    "heldRbnAfterTGE": false
+  },
+  "0x79293291cd70edf2663190783e0a69dacf42cf92": {
+    "rbnAmount": 41631.70421586288,
+    "heldRbnAfterTGE": true
+  },
+  "0x1eab59685f36b9eebc1d4287c3a402035a5ee7eb": {
+    "rbnAmount": 38800.52753183026,
+    "heldRbnAfterTGE": false
+  },
+  "0x996f047f5ca79c7a1cfb92a534add66520d9c2b1": {
+    "rbnAmount": 38593.01454319463,
+    "heldRbnAfterTGE": false
+  },
+  "0xbeeb0a18fbc441db480bb9b7f522bb57d6abc557": {
+    "rbnAmount": 36987.84034633,
+    "heldRbnAfterTGE": false
+  },
+  "0x918558df5a12ba43657222bbcf1a735494a5024f": {
+    "rbnAmount": 36696.14028877478,
+    "heldRbnAfterTGE": false
+  },
+  "0xa0766fd5ecd0f472de2a77f9048653724fe2780f": {
+    "rbnAmount": 36529,
+    "heldRbnAfterTGE": true
+  },
+  "0x9e2634834a27189f17c257081f47010e655d4c36": {
+    "rbnAmount": 36120.33604477936,
+    "heldRbnAfterTGE": false
+  },
+  "0x7d7fea3cea7bfa805006b9ce1a842054b8490052": {
+    "rbnAmount": 35886.226542072196,
+    "heldRbnAfterTGE": false
+  },
+  "0x70bf51137ab1b4b6de396fa2fa157b98b1cb6313": {
+    "rbnAmount": 35390,
+    "heldRbnAfterTGE": true
+  },
+  "0x00008818c0edb78f98184f01b4cb483f0044d990": {
+    "rbnAmount": 35049.767985356324,
+    "heldRbnAfterTGE": false
+  },
+  "0x1bd658c933d592519d57fd728a1afb659f474d3b": {
+    "rbnAmount": 34659.1847168933,
+    "heldRbnAfterTGE": false
+  },
+  "0x4515957daf1c5a1cd2e24d000e909a0ff6be1975": {
+    "rbnAmount": 30001.117476255826,
+    "heldRbnAfterTGE": false
+  },
+  "0xd862f8687fd6d2ca1a327d1c2cb118c29f25d9a5": {
+    "rbnAmount": 30000,
+    "heldRbnAfterTGE": false
+  },
+  "0x709283020b1ccac42413903c6dbbe3e523a4b41d": {
+    "rbnAmount": 30000,
+    "heldRbnAfterTGE": true
+  },
+  "0x22322380ba90c486320cec43620d9dc540004586": {
+    "rbnAmount": 29672.536071829145,
+    "heldRbnAfterTGE": true
+  },
+  "0xc99bcab0daaf45f86ef8787c6577ee9d973b817f": {
+    "rbnAmount": 29030.88610194596,
+    "heldRbnAfterTGE": false
+  },
+  "0x118c8a0f46dec72cea725cfb0f70ce0edd554011": {
+    "rbnAmount": 28796.031200199024,
+    "heldRbnAfterTGE": true
+  },
+  "0x48444712a0b97f0775ad575b1a744aaf54f625dc": {
+    "rbnAmount": 27677.312975383466,
+    "heldRbnAfterTGE": false
+  },
+  "0x4e5471235e5077057f1ce35938d4a5ba54dd1487": {
+    "rbnAmount": 26563.862608273812,
+    "heldRbnAfterTGE": true
+  },
+  "0x5170d7c08dbbaefd89dc8d0d8fec57c373fdf79d": {
+    "rbnAmount": 26561.060539315287,
+    "heldRbnAfterTGE": false
+  },
+  "0xa2d79e07e13035f33b440c33154f0a7edf0eb9ef": {
+    "rbnAmount": 24948.3999402926,
+    "heldRbnAfterTGE": true
+  },
+  "0x4f532e0ae9954a85e5396f3e8d1876556317bfba": {
+    "rbnAmount": 24730.404256593756,
+    "heldRbnAfterTGE": true
+  },
+  "0xf69ea6646cf682262e84cd7c67133eac59cef07b": {
+    "rbnAmount": 24482.190586488156,
+    "heldRbnAfterTGE": false
+  },
+  "0xeb417be70529d525485a9c71ce428166be86e8d2": {
+    "rbnAmount": 23789.115521380707,
+    "heldRbnAfterTGE": false
+  },
+  "0x23d7c2fb9f163441874d72399b28d677f47020b0": {
+    "rbnAmount": 23776.038464629095,
+    "heldRbnAfterTGE": false
+  },
+  "0x8fe3ad6de766ebe60629a3972298a1f7304557f1": {
+    "rbnAmount": 23687.837117173818,
+    "heldRbnAfterTGE": true
+  },
+  "0xa7d44b434213becfc355048784d4c77d6447c979": {
+    "rbnAmount": 23119.39105533222,
+    "heldRbnAfterTGE": false
+  },
+  "0x2fcecd1a122e5e218f57348e43b377c92740bebb": {
+    "rbnAmount": 22366.267534098453,
+    "heldRbnAfterTGE": true
+  },
+  "0x0ef25ad333a465910a0c469627523903a28e320a": {
+    "rbnAmount": 22213.09365701318,
+    "heldRbnAfterTGE": false
+  },
+  "0x584baa4b71b0a3fa522658128f36a6a4abeac2ae": {
+    "rbnAmount": 21938.682335639816,
+    "heldRbnAfterTGE": false
+  },
+  "0x0cf776d57e0223f47ed3a101927bb78d41ad8a13": {
+    "rbnAmount": 21667.75545197473,
+    "heldRbnAfterTGE": false
+  },
+  "0x2880a6bb2cd1df6e03dc8bbfbed009de586c2603": {
+    "rbnAmount": 21413.87123331387,
+    "heldRbnAfterTGE": false
+  },
+  "0x2298718f8c34adb143bdcc017feae24de4a62653": {
+    "rbnAmount": 20765.26794360853,
+    "heldRbnAfterTGE": true
+  },
+  "0xd5d7ec0c74c401835bd87820afc21b5a207d7ebc": {
+    "rbnAmount": 20728.327512442833,
+    "heldRbnAfterTGE": true
+  },
+  "0x0c1e99991dd2f7d374bff13f9f52284ce6cfdae5": {
+    "rbnAmount": 20693.763569791303,
+    "heldRbnAfterTGE": true
+  },
+  "0xf13081c2fd2b9fece2e084174ef35dac9a05267c": {
+    "rbnAmount": 20592.896668,
+    "heldRbnAfterTGE": false
+  },
+  "0x6cd6604bef8786ba11d5b04777916d3ddfa313fd": {
+    "rbnAmount": 20092.61294376083,
+    "heldRbnAfterTGE": false
+  },
+  "0x628d896988f2c56921f09df2aed3549cac359774": {
+    "rbnAmount": 20000,
+    "heldRbnAfterTGE": true
+  },
+  "0xfe555f7e9e67598319f0303321363bec7d79e50f": {
+    "rbnAmount": 20000,
+    "heldRbnAfterTGE": false
+  },
+  "0x65877be34c0c3c3a317d97028fd91bd261410026": {
+    "rbnAmount": 19976.478932349353,
+    "heldRbnAfterTGE": true
+  },
+  "0x53e213da8c28d85dc6663c3b5e35bb0ffbb05752": {
+    "rbnAmount": 19955.80753624011,
+    "heldRbnAfterTGE": false
+  },
+  "0x530defd6c816809f54f6cfa6fe873646f6ecf930": {
+    "rbnAmount": 19889.345536260287,
+    "heldRbnAfterTGE": false
+  },
+  "0x4cb6f9197c3b7e1c7b0b7b0bf39b9697a5cf4e3f": {
+    "rbnAmount": 19717.0830175641,
+    "heldRbnAfterTGE": true
+  },
+  "0x12478d1a60a910c9cbffb90648766a2bdd5918f5": {
+    "rbnAmount": 19301.435818894617,
+    "heldRbnAfterTGE": true
+  },
+  "0x04be74f44e452f2fe6c757f19f90b92cfc9f9aea": {
+    "rbnAmount": 19208.08453726751,
+    "heldRbnAfterTGE": false
+  },
+  "0xb21b02cc14711c96021b38746ecba5b4288b07c9": {
+    "rbnAmount": 19128.309842399744,
+    "heldRbnAfterTGE": true
+  },
+  "0xc290067ef915116e31ce171097d4697da36c8c43": {
+    "rbnAmount": 18597.75131548229,
+    "heldRbnAfterTGE": true
+  },
+  "0x050a2af16d500bcdb5ce7a21fbd95a5c831210ab": {
+    "rbnAmount": 18446.683663900552,
+    "heldRbnAfterTGE": true
+  },
+  "0xf7599b9237680ea12df90cdccc79f37956a68086": {
+    "rbnAmount": 18337.569697574167,
+    "heldRbnAfterTGE": true
+  },
+  "0x5bff1a68663ff91b0650327d83d4230cd00023ad": {
+    "rbnAmount": 18299.383327566757,
+    "heldRbnAfterTGE": false
+  },
+  "0xc219cafde6855f60da76d9cacc3873fda65516e6": {
+    "rbnAmount": 18150.75645183992,
+    "heldRbnAfterTGE": false
+  },
+  "0x15bdd87fe60e212c150d18d205766bda86350152": {
+    "rbnAmount": 18078.21613557851,
+    "heldRbnAfterTGE": false
+  },
+  "0x42d02f4cd48bdac116b7e3a4895f586777948fae": {
+    "rbnAmount": 18000,
+    "heldRbnAfterTGE": false
+  },
+  "0xc4b3a3c22012c3e672b781a106dfc260b78e253c": {
+    "rbnAmount": 17629.725945158916,
+    "heldRbnAfterTGE": false
+  },
+  "0x16c19dcc764767909059b29cccd0448f4c8819df": {
+    "rbnAmount": 17015.536756891222,
+    "heldRbnAfterTGE": false
+  },
+  "0x57d98609d623b9885721a58b896d40c7871e1573": {
+    "rbnAmount": 16332.346396611703,
+    "heldRbnAfterTGE": true
+  },
+  "0x0d703ccd7debd7f6f4b0ffb29d2d710d19b09025": {
+    "rbnAmount": 16272.250973888764,
+    "heldRbnAfterTGE": false
+  },
+  "0x879fbc694a0e10eadb9dae8fc591c02d27598880": {
+    "rbnAmount": 15501.224804231697,
+    "heldRbnAfterTGE": false
+  },
+  "0x7f517b33eaa9c5cf3beba046c2aa51c2fc8bcc32": {
+    "rbnAmount": 15187.030690379106,
+    "heldRbnAfterTGE": false
+  },
+  "0x02ef8147e2d0997cca48d99f01bad846d16558fa": {
+    "rbnAmount": 15127.786699999999,
+    "heldRbnAfterTGE": true
+  },
+  "0xa2e4e81666dd397fd899c0f8c84c1f2f1ba054d0": {
+    "rbnAmount": 15015.226316130002,
+    "heldRbnAfterTGE": false
+  },
+  "0xf126584fb561e05072c6d0f184d9e24846a40f37": {
+    "rbnAmount": 14923.50909567291,
+    "heldRbnAfterTGE": false
+  },
+  "0xc40cb966a08638d71ed4537bc2f5267558061137": {
+    "rbnAmount": 14603,
+    "heldRbnAfterTGE": false
+  },
+  "0xc41a57f9b87494c57aa557578b08d75d44e9e737": {
+    "rbnAmount": 14158.062772988826,
+    "heldRbnAfterTGE": true
+  },
+  "0x57a78222b02b05a2341d5dcfa9a68a2d314ccfee": {
+    "rbnAmount": 14031.187940615668,
+    "heldRbnAfterTGE": false
+  },
+  "0x25125e438b7ae0f9ae8511d83abb0f4574217c7a": {
+    "rbnAmount": 14000,
+    "heldRbnAfterTGE": true
+  },
+  "0xa4fa8199091a806e1e53fc42c8fd035e4f9bdb6a": {
+    "rbnAmount": 13988.444558749448,
+    "heldRbnAfterTGE": false
+  },
+  "0xf3c8d744a34b74feca1b740b025ae124b42d56ea": {
+    "rbnAmount": 13359.696925583856,
+    "heldRbnAfterTGE": true
+  },
+  "0xb0b57738f1a0752d860aa39c07955bc960284aa8": {
+    "rbnAmount": 13250.09251020275,
+    "heldRbnAfterTGE": false
+  },
+  "0xadeed59f446cb0a141837e8f7c22710d759cba65": {
+    "rbnAmount": 12867.773094887518,
+    "heldRbnAfterTGE": true
+  },
+  "0xc3d2bc827b2ddddee0ec1917a898024e66d4eb83": {
+    "rbnAmount": 12285.386689147977,
+    "heldRbnAfterTGE": true
+  },
+  "0xb470cd77568f9aa051417b8063c83255895b0e99": {
+    "rbnAmount": 12247.923779734272,
+    "heldRbnAfterTGE": false
+  },
+  "0x2fa11ef008c4b585ccf0a76861794ac7ae5a3a67": {
+    "rbnAmount": 12188.36395561854,
+    "heldRbnAfterTGE": false
+  },
+  "0x7c84727b2bf556bca3b77dc18fb9ca17e024242c": {
+    "rbnAmount": 12106.686359764077,
+    "heldRbnAfterTGE": true
+  },
+  "0xca1a7ecd9e0cf8330f71fbf5facf78890644f058": {
+    "rbnAmount": 12006.02496253551,
+    "heldRbnAfterTGE": true
+  },
+  "0xc1178d5bada448126a5054eaf4e7c2f3fca5e974": {
+    "rbnAmount": 11544,
+    "heldRbnAfterTGE": false
+  },
+  "0xdf67361193d52ee42cb759eb98ce2c7978dd440e": {
+    "rbnAmount": 11514.36385684248,
+    "heldRbnAfterTGE": false
+  },
+  "0xebdb626c95a25f4e304336b1adcad0521a1bdca1": {
+    "rbnAmount": 11417.092173123876,
+    "heldRbnAfterTGE": false
+  },
+  "0xf32fc1113f4769f59984d615e91a8e94548f2790": {
+    "rbnAmount": 11195.899867941105,
+    "heldRbnAfterTGE": false
+  },
+  "0x1d7a3a25ec3eb937a7846575cd36ad01d67a01dd": {
+    "rbnAmount": 11155.36518450355,
+    "heldRbnAfterTGE": false
+  },
+  "0xf7ab71f8a1e4dab1237ed1218bf12c19cc51a953": {
+    "rbnAmount": 11114.98839991395,
+    "heldRbnAfterTGE": false
+  },
+  "0x359b0ceb2dabcbb6588645de3b480c8203aa5b76": {
+    "rbnAmount": 10961.146755277772,
+    "heldRbnAfterTGE": false
+  },
+  "0x5d81416de258fa01cca5072561abf53f1ad0d453": {
+    "rbnAmount": 10820.577321896068,
+    "heldRbnAfterTGE": false
+  },
+  "0xbe81c9958ebb744f9e5fb9c08cdbc794160e62e7": {
+    "rbnAmount": 10579.126632355266,
+    "heldRbnAfterTGE": false
+  },
+  "0x8dba03f9b5018effc8d7620ef235760383c17f8f": {
+    "rbnAmount": 10437.962363783561,
+    "heldRbnAfterTGE": false
+  },
+  "0x52dc01082fc06a78ef3910c101b7823df3277355": {
+    "rbnAmount": 10208.47147503304,
+    "heldRbnAfterTGE": true
+  },
+  "0x0c4bfb585c72ec0ef88f3fc7ff9c0d05438ef9e7": {
+    "rbnAmount": 10187.308781924305,
+    "heldRbnAfterTGE": true
+  },
+  "0x2c5abc767ab347a852112b80bf62b221f15a6fe7": {
+    "rbnAmount": 10177.216576126948,
+    "heldRbnAfterTGE": false
+  },
+  "0x87b6c1e90087d6a0fc392e5250a6203eb09e1b54": {
+    "rbnAmount": 10117.253796595762,
+    "heldRbnAfterTGE": false
+  },
+  "0xf4a845aa78dadd56e075d4e6664258ea308ba5ab": {
+    "rbnAmount": 10111.169006268665,
+    "heldRbnAfterTGE": true
+  },
+  "0x47caa285d4b23c2c791e8d088d27a9a300b52e7b": {
+    "rbnAmount": 10101.570947563241,
+    "heldRbnAfterTGE": true
+  },
+  "0xfda1215797d29414e588b2e62fc390ee2949aaaa": {
+    "rbnAmount": 10021.548992297474,
+    "heldRbnAfterTGE": false
+  },
+  "0x364800dc3a300451cf0b59169dea6eeee05c45d7": {
+    "rbnAmount": 10000.000000335927,
+    "heldRbnAfterTGE": false
+  },
+  "0x70350bc2245c256732c4f0a92ff9a8c65b6fce5b": {
+    "rbnAmount": 10000,
+    "heldRbnAfterTGE": false
+  },
+  "0x7420cc223e132bb04adc64db001314ab15439cb2": {
+    "rbnAmount": 9639.663349694341,
+    "heldRbnAfterTGE": false
+  },
+  "0x08f53326d22840242dae403d62c866eb80c4251a": {
+    "rbnAmount": 9354.434911216596,
+    "heldRbnAfterTGE": true
+  },
+  "0x5abd0ffea71da700905c359ce0d0408fa78d120a": {
+    "rbnAmount": 9225.017900201186,
+    "heldRbnAfterTGE": false
+  },
+  "0x6cc76d20646af5e6944bc6bfe60d21ea3fee63a5": {
+    "rbnAmount": 9115.084353313174,
+    "heldRbnAfterTGE": false
+  },
+  "0x8af9642d07302ef83ed392c3734e63e9dedca635": {
+    "rbnAmount": 8888,
+    "heldRbnAfterTGE": true
+  },
+  "0xcd3b77a071ec90610b90d6a232e25deb5741859f": {
+    "rbnAmount": 8832.13971384205,
+    "heldRbnAfterTGE": true
+  },
+  "0x920eb8ca79f07eb3bfc39c324c8113948ed3104c": {
+    "rbnAmount": 8774.276281932254,
+    "heldRbnAfterTGE": true
+  },
+  "0x273c25abd33eca095e228fde0f15e8f7ec4eb4d9": {
+    "rbnAmount": 8771.784683060823,
+    "heldRbnAfterTGE": true
+  },
+  "0x704d40d9212e511842fee1b667020a471ebe9ce0": {
+    "rbnAmount": 8461.029648617941,
+    "heldRbnAfterTGE": false
+  },
+  "0x6cdd03d102c53d09570c095eda3e3fc76aedfd1a": {
+    "rbnAmount": 8424.580784946862,
+    "heldRbnAfterTGE": false
+  },
+  "0x97d1defb653643379db57c39203ea26644984b2d": {
+    "rbnAmount": 8319.346130411283,
+    "heldRbnAfterTGE": true
+  },
+  "0x2197cd0cf54e627419a3eda7189f25eb2186a468": {
+    "rbnAmount": 8245,
+    "heldRbnAfterTGE": true
+  },
+  "0x47c7901b7eb9db736da98b957ca3a7f8e6c984e1": {
+    "rbnAmount": 8127.295569445688,
+    "heldRbnAfterTGE": false
+  },
+  "0x0cfdfb55841bf953097d8f41b9bfd985a6bfadd9": {
+    "rbnAmount": 8056.023575230114,
+    "heldRbnAfterTGE": false
+  },
+  "0x29e3ddf94d76c97fcd43d07fc8b15a03ad233a40": {
+    "rbnAmount": 7934.997390421995,
+    "heldRbnAfterTGE": false
+  },
+  "0x575957e047d5264512af6ae591817fad51e5e9b2": {
+    "rbnAmount": 7884.911623718275,
+    "heldRbnAfterTGE": false
+  },
+  "0x3dfe6524963a99d030cda681450e4792b7847163": {
+    "rbnAmount": 7795.991414458183,
+    "heldRbnAfterTGE": true
+  },
+  "0x7803ab56769dda5432cdbd63749a6beeb3180008": {
+    "rbnAmount": 7775.330438674448,
+    "heldRbnAfterTGE": false
+  },
+  "0x50a708e5dfe836601931af3ff6169e5f4e5536ea": {
+    "rbnAmount": 7740.995589296452,
+    "heldRbnAfterTGE": false
+  },
+  "0x3abe492925611c4a6f1da4fc62e30bb48f5fcd91": {
+    "rbnAmount": 7714.192727060705,
+    "heldRbnAfterTGE": false
+  },
+  "0x135dc3f68e9547dfed20e2276bf4e00055573f5e": {
+    "rbnAmount": 7573.1822917300005,
+    "heldRbnAfterTGE": false
+  },
+  "0xb4e39f6d3d386e98af0c064e087acbc9a8f08944": {
+    "rbnAmount": 7453.170350458995,
+    "heldRbnAfterTGE": false
+  },
+  "0x51a125f89cbe0bfbfd62fee8a750aaec8fabc441": {
+    "rbnAmount": 7409.145488271894,
+    "heldRbnAfterTGE": false
+  },
+  "0x46c9f763b2f9c3e6d632a75642edb6c24fdabd21": {
+    "rbnAmount": 7362.21704882488,
+    "heldRbnAfterTGE": false
+  },
+  "0x823bf98d9f1119ae040aaef8118f13a612324112": {
+    "rbnAmount": 7320.693076014244,
+    "heldRbnAfterTGE": false
+  },
+  "0xaafdd768fa83ef7af0e19707f2be9d1db1924766": {
+    "rbnAmount": 7320.539423823326,
+    "heldRbnAfterTGE": true
+  },
+  "0x6c6c4877308e1efcaef184f71a56012b894a469e": {
+    "rbnAmount": 7317.906875772435,
+    "heldRbnAfterTGE": false
+  },
+  "0xd76be5cd9aac57eeb1ad1ed6b44fb3772bfc5186": {
+    "rbnAmount": 7217.852532080141,
+    "heldRbnAfterTGE": true
+  },
+  "0xdf2e0a3c668379e1b25901b3f719ebfd00f0bfbd": {
+    "rbnAmount": 7203.330062887635,
+    "heldRbnAfterTGE": false
+  },
+  "0xb75ada8cc810c8b1c32ef64cf7dff4b21b12305a": {
+    "rbnAmount": 7170.118328874396,
+    "heldRbnAfterTGE": true
+  },
+  "0x4d4ef453cf782926825f5768499c7e02daa3a9e7": {
+    "rbnAmount": 7049.98827196,
+    "heldRbnAfterTGE": true
+  },
+  "0x1e2fce2e2a821c254fc4e53b373586af07ed0008": {
+    "rbnAmount": 7013.27653514466,
+    "heldRbnAfterTGE": false
+  },
+  "0x90b3654e6eeb6b062de39008593c5f5a9843830b": {
+    "rbnAmount": 6978.949898850921,
+    "heldRbnAfterTGE": true
+  },
+  "0x3707ad3fb74ed4c87a795894a3de890c2be5a9fc": {
+    "rbnAmount": 6834.181787620129,
+    "heldRbnAfterTGE": false
+  },
+  "0x8b3095b960ee4c95954ca6e84c464b79cadff655": {
+    "rbnAmount": 6800.321767699999,
+    "heldRbnAfterTGE": false
+  },
+  "0x9e20e559fc0c2437709257a67b895480e55213d8": {
+    "rbnAmount": 6762.898700000001,
+    "heldRbnAfterTGE": false
+  },
+  "0x08e1a6b795829dbeb5cc730f40c2ccaa3eade6f4": {
+    "rbnAmount": 6689.166309536778,
+    "heldRbnAfterTGE": false
+  },
+  "0x1125917201ed36700f86c3cecec8c5dafae280d1": {
+    "rbnAmount": 6664.937216843717,
+    "heldRbnAfterTGE": true
+  },
+  "0x3920a48056df2b52d4cc0dbdc6e750164f92b495": {
+    "rbnAmount": 6620.64278158719,
+    "heldRbnAfterTGE": true
+  },
+  "0x32a59b87352e980dd6ab1baf462696d28e63525d": {
+    "rbnAmount": 6598.270015707885,
+    "heldRbnAfterTGE": true
+  },
+  "0xba9d854c4b9ae5eef3dad86e1b65d661938b27a1": {
+    "rbnAmount": 6564.139740491943,
+    "heldRbnAfterTGE": true
+  },
+  "0xfb505aa37508b641ce4d8f066867db3b3f66185d": {
+    "rbnAmount": 6534.318228757252,
+    "heldRbnAfterTGE": false
+  },
+  "0xc9b7718f491fb5272c76fa3a82bff031926b3d4a": {
+    "rbnAmount": 6273.139431210486,
+    "heldRbnAfterTGE": false
+  },
+  "0x5b335a6b238e13bbd00a7bc04dfe810534da02f7": {
+    "rbnAmount": 6211.95687105375,
+    "heldRbnAfterTGE": false
+  },
+  "0x6265ef4a9f29c96e1702ea9913aae07637ee705a": {
+    "rbnAmount": 6137.5705323307375,
+    "heldRbnAfterTGE": false
+  },
+  "0x3e7393c1717b59544517579d224317197b71346b": {
+    "rbnAmount": 6135.765837325292,
+    "heldRbnAfterTGE": false
+  },
+  "0x53ae93006a3ffb28b39f12382025bdda6eb0f102": {
+    "rbnAmount": 5772,
+    "heldRbnAfterTGE": true
+  },
+  "0x6326b8d132ae255e011fa5107576deeb86abd2f3": {
+    "rbnAmount": 5772,
+    "heldRbnAfterTGE": false
+  },
+  "0xf77fce2903675397b61d11290d1d795060d71575": {
+    "rbnAmount": 5772,
+    "heldRbnAfterTGE": true
+  },
+  "0x20a05ae8efe1eb91be0cd07356bc20eda9c2e298": {
+    "rbnAmount": 5772,
+    "heldRbnAfterTGE": false
+  },
+  "0x1ba3b51d19ac5db17dddf66d1393b8019c744c9a": {
+    "rbnAmount": 5772,
+    "heldRbnAfterTGE": true
+  },
+  "0x2b61750cc7fa814f206b77edc84525337d3ecde2": {
+    "rbnAmount": 5772,
+    "heldRbnAfterTGE": false
+  },
+  "0x18e053e62a0f1d3701585ca85ded8c4222b00670": {
+    "rbnAmount": 5771.9999,
+    "heldRbnAfterTGE": true
+  },
+  "0x9d916eb8dda4ab54573f2fd20bbe19e534a9ce4a": {
+    "rbnAmount": 5760.320371138856,
+    "heldRbnAfterTGE": true
+  },
+  "0xef49733d2febb48e9d25c1427716ff0e21460145": {
+    "rbnAmount": 5630.344045566929,
+    "heldRbnAfterTGE": false
+  },
+  "0x81acba11a66e9edeabaa2ff28101153724892eb7": {
+    "rbnAmount": 5486.048317602745,
+    "heldRbnAfterTGE": true
+  },
+  "0xbd72008d301cb9c1c283c6abddd5d32bce6a2abc": {
+    "rbnAmount": 5425,
+    "heldRbnAfterTGE": true
+  },
+  "0xd0e72c1b2eb87e3dc0445b7f689cadcfc872b293": {
+    "rbnAmount": 5277.593318802089,
+    "heldRbnAfterTGE": false
+  },
+  "0x41f0ab034f636dd68dc1ab225c37d8b43e249c49": {
+    "rbnAmount": 5213.80223329514,
+    "heldRbnAfterTGE": false
+  },
+  "0x1b95b8a82966615a084397932bcbf514e2be6f20": {
+    "rbnAmount": 5130.033241104463,
+    "heldRbnAfterTGE": false
+  },
+  "0x90eb355a85ea5324529224945bb55f1960da1b47": {
+    "rbnAmount": 5038.733453627224,
+    "heldRbnAfterTGE": true
+  },
+  "0xf5b347c6f050bd6163504d8e693be7a349b9503b": {
+    "rbnAmount": 5000.785907066952,
+    "heldRbnAfterTGE": false
+  },
+  "0x9b616ac1d31f17be9b23560d93699ca7732e2808": {
+    "rbnAmount": 5000,
+    "heldRbnAfterTGE": true
+  },
+  "0x51c58fa771505d0defb1a98c1de2c31994abfc3a": {
+    "rbnAmount": 4968.5948,
+    "heldRbnAfterTGE": false
+  },
+  "0x30bf85e1d0bc7fdedcbeeff39225d8037cb0cb7c": {
+    "rbnAmount": 4943.49308006797,
+    "heldRbnAfterTGE": true
+  },
+  "0x03fb1fd0fec2fb4d979b2e30a4adfaf868f85f0f": {
+    "rbnAmount": 4921.558284172841,
+    "heldRbnAfterTGE": false
+  },
+  "0x799e7471c4114d466e9051f7c5f68b3f64759e3f": {
+    "rbnAmount": 4825.0194012335305,
+    "heldRbnAfterTGE": false
+  },
+  "0xf0e12c7218cb38df7a3a231bb91ee82f732625b6": {
+    "rbnAmount": 4811.4724775299455,
+    "heldRbnAfterTGE": false
+  },
+  "0x9bc782118f3d275a941f0842ef09c67ba7d0b5b6": {
+    "rbnAmount": 4758.436369404189,
+    "heldRbnAfterTGE": false
+  },
+  "0x81324a39570bba1722a3cbe4a4cd372c24d084d4": {
+    "rbnAmount": 4683.623243916174,
+    "heldRbnAfterTGE": true
+  },
+  "0x78f7df4732c4aecbd92a4f8948311e8ea11c8352": {
+    "rbnAmount": 4649.19888262248,
+    "heldRbnAfterTGE": true
+  },
+  "0xf40f793ba6bf4ff3b7a7180e4da9c721bea85c69": {
+    "rbnAmount": 4632.056072019645,
+    "heldRbnAfterTGE": false
+  },
+  "0x8a490f3b460c7d6d29f850b403cfd9eea4d819d5": {
+    "rbnAmount": 4503.732568222339,
+    "heldRbnAfterTGE": false
+  },
+  "0xb52ef2b0ff95c8f7968170e1b2506b59abe74501": {
+    "rbnAmount": 4502.249130843575,
+    "heldRbnAfterTGE": true
+  },
+  "0x7df990ce0c08cb7fbcb145dbf0e9beefed34b7cf": {
+    "rbnAmount": 4474.4084250863725,
+    "heldRbnAfterTGE": false
+  },
+  "0x2400a45243e6b13dbaf549fcac88eda203df80d2": {
+    "rbnAmount": 4457.52449571,
+    "heldRbnAfterTGE": true
+  },
+  "0x717c05bb13b3b50c0996ca3067c7bf93528353a4": {
+    "rbnAmount": 4387.928481216787,
+    "heldRbnAfterTGE": true
+  },
+  "0xd110421a743a19a6dee233c32417c089b2684f1c": {
+    "rbnAmount": 4265.265153604234,
+    "heldRbnAfterTGE": false
+  },
+  "0x0fa7744874bfedfc3d67ab57253d840be685fdc2": {
+    "rbnAmount": 4239.853319213755,
+    "heldRbnAfterTGE": false
+  },
+  "0x943228378d4f29252ddd317faee5b86e01cff2b1": {
+    "rbnAmount": 4217.651600226553,
+    "heldRbnAfterTGE": false
+  },
+  "0x93212f3f255f07450e2f3177ca0f24bdee54234d": {
+    "rbnAmount": 4215.944529041247,
+    "heldRbnAfterTGE": false
+  },
+  "0x65b4f70084d86590c52d93cc9080e4f4d92ea61a": {
+    "rbnAmount": 4166.202081732179,
+    "heldRbnAfterTGE": false
+  },
+  "0x2e9bdece5db845063b4d7a666b6d9a4099093c32": {
+    "rbnAmount": 4110.19656991,
+    "heldRbnAfterTGE": true
+  },
+  "0xd54f7ab07175d9effc4b72581517800b47ee7094": {
+    "rbnAmount": 4017,
+    "heldRbnAfterTGE": true
+  },
+  "0x42773f980c3a4aa9cdcad465aa2988fe38f0fb81": {
+    "rbnAmount": 4000,
+    "heldRbnAfterTGE": true
+  },
+  "0x7c218fc943e54b82ed027cec922d364859bf1ead": {
+    "rbnAmount": 4000,
+    "heldRbnAfterTGE": true
+  },
+  "0xb1dad6ac501be089bbb39fd01ddfe841aa8abd9d": {
+    "rbnAmount": 4000,
+    "heldRbnAfterTGE": false
+  },
+  "0xbe12932340d9af6cee8a168dbd453b2c2f76e439": {
+    "rbnAmount": 3599.7441932877255,
+    "heldRbnAfterTGE": false
+  },
+  "0xa9ec08edd196b91bc9177420137804be1d6efda0": {
+    "rbnAmount": 3466.5489082744252,
+    "heldRbnAfterTGE": false
+  },
+  "0x14f13f150a810e70a168bf377a452b9c741a0641": {
+    "rbnAmount": 3448.365298134901,
+    "heldRbnAfterTGE": false
+  },
+  "0x8b371f753584c276845f59179d9687c3ec4026a0": {
+    "rbnAmount": 3302.609776243669,
+    "heldRbnAfterTGE": false
+  },
+  "0x03bb5efe308d31c1fe6eb15927471d76bf451573": {
+    "rbnAmount": 3216.0985788910207,
+    "heldRbnAfterTGE": false
+  },
+  "0x8437a6d1bfecd8710405169fa03194b3d1248f43": {
+    "rbnAmount": 3205.9594347395196,
+    "heldRbnAfterTGE": true
+  },
+  "0xc233ba744629b4004cf3d573f67a45f49cfe3c08": {
+    "rbnAmount": 3144.972050716927,
+    "heldRbnAfterTGE": false
+  },
+  "0x358b40beaa062300417400e40eaa30ac8ce316f3": {
+    "rbnAmount": 3124.9999999999995,
+    "heldRbnAfterTGE": false
+  },
+  "0x2891b78092310ce8219fe8298bb0fe7afa69f43f": {
+    "rbnAmount": 3065.9289130819875,
+    "heldRbnAfterTGE": false
+  },
+  "0xf87942ce59edef3a99a1ed0b9cdd05377d5e08d0": {
+    "rbnAmount": 3047.914026908936,
+    "heldRbnAfterTGE": false
+  },
+  "0xf2d5c3bef55534ade66e91be2ba8c46e2ddd1bee": {
+    "rbnAmount": 2920.5082193819912,
+    "heldRbnAfterTGE": false
+  },
+  "0x364f7fd945b8c76c3c77d6ac253f1fea3b65e00d": {
+    "rbnAmount": 2750.7541939242337,
+    "heldRbnAfterTGE": false
+  },
+  "0x688b5c7b549339922c0d2243debe2fe921a1a488": {
+    "rbnAmount": 2683.14795137,
+    "heldRbnAfterTGE": false
+  },
+  "0xf0754756e71aac7ad2b6497e7006f5e44d68d592": {
+    "rbnAmount": 2656.8816513713623,
+    "heldRbnAfterTGE": false
+  },
+  "0x358c84faa7f860ab41b93edccb7e64f7eb330bb1": {
+    "rbnAmount": 2534.405734234693,
+    "heldRbnAfterTGE": true
+  },
+  "0x6b49a8085b04aad974a1abbc29b54c6de5e242b5": {
+    "rbnAmount": 2534.1735369337375,
+    "heldRbnAfterTGE": false
+  },
+  "0x93ee78b4bfafc05d9eb51714bfbf6c2335ec066c": {
+    "rbnAmount": 2436.5335018758483,
+    "heldRbnAfterTGE": true
+  },
+  "0x9a8c3a3e841d46148bf4ac422c97c8740a23d197": {
+    "rbnAmount": 2429.3961090094836,
+    "heldRbnAfterTGE": false
+  },
+  "0x52fe678bb145d6f0a72ab8138286c6a0fa726388": {
+    "rbnAmount": 2408.4078424706026,
+    "heldRbnAfterTGE": false
+  },
+  "0x75428661ad4f91f609451b72de2603d875ff1a56": {
+    "rbnAmount": 2330.080563197825,
+    "heldRbnAfterTGE": true
+  },
+  "0x1825b9faf7c3ab0efbbd927cd1a8fe2c86c933fd": {
+    "rbnAmount": 2329.951220228869,
+    "heldRbnAfterTGE": false
+  },
+  "0x77b691dec38da63b60b4adb4c153a17c18e29ce7": {
+    "rbnAmount": 2300.0424291484983,
+    "heldRbnAfterTGE": false
+  },
+  "0xc851ed6f7b9e0b0bc20998c9fd6a133fe978ac1b": {
+    "rbnAmount": 2293.771385201687,
+    "heldRbnAfterTGE": false
+  },
+  "0xf116569b3f888d639372a5485685a6d8ee28a593": {
+    "rbnAmount": 2211.599899439746,
+    "heldRbnAfterTGE": false
+  },
+  "0x6977e753e022f65ebeb170d8267b2ea54a431523": {
+    "rbnAmount": 2206.543414107698,
+    "heldRbnAfterTGE": true
+  },
+  "0xcb4c31b4dfc506c30d4e8e1f8a5f8955cbfc0373": {
+    "rbnAmount": 2200,
+    "heldRbnAfterTGE": false
+  },
+  "0x7a44834d4dec3f21a341de51365fdefdd41faa98": {
+    "rbnAmount": 2173.3600027728507,
+    "heldRbnAfterTGE": false
+  },
+  "0x569d327288d8354f16813afb01bba0e60c1301f9": {
+    "rbnAmount": 2112.8437033841133,
+    "heldRbnAfterTGE": false
+  },
+  "0x03ef040e2bf78593e49d58447044c50b5b3475a1": {
+    "rbnAmount": 2083.1706798404953,
+    "heldRbnAfterTGE": false
+  },
+  "0xbca23a35425f4eed385ac46c4e8c28ae996fff4d": {
+    "rbnAmount": 2043.29256339432,
+    "heldRbnAfterTGE": false
+  },
+  "0xfb4f025ed50e3a200d520c2cf60a198ecb584d6c": {
+    "rbnAmount": 2002.71673483,
+    "heldRbnAfterTGE": false
+  },
+  "0x00ecf74758569f66d2d70399bfc68d83c05873d4": {
+    "rbnAmount": 2000,
+    "heldRbnAfterTGE": false
+  },
+  "0x1775a13ddee0231080eb9662cf3ac25041ce1427": {
+    "rbnAmount": 1989.8084310600075,
+    "heldRbnAfterTGE": false
+  },
+  "0x113608c71593de502ddd9253ef4f170110056829": {
+    "rbnAmount": 1988.87158302,
+    "heldRbnAfterTGE": true
+  },
+  "0x6ab791754298d6d6d7c182dc1572126b4ed24897": {
+    "rbnAmount": 1912.6984416641603,
+    "heldRbnAfterTGE": true
+  },
+  "0x22f5413c075ccd56d575a54763831c4c27a37bdb": {
+    "rbnAmount": 1910.782174906984,
+    "heldRbnAfterTGE": false
+  },
+  "0xb3a7fbc2fa38c18ad4433ae93fe7f215fd2d057f": {
+    "rbnAmount": 1870.9285114557547,
+    "heldRbnAfterTGE": true
+  },
+  "0x416cfadaba6ead3f759fc50574ab0cd342832fb5": {
+    "rbnAmount": 1853.4177620133883,
+    "heldRbnAfterTGE": false
+  },
+  "0xe65130c719584a68d48e2968e79e19d5daf1e983": {
+    "rbnAmount": 1698.1202477820384,
+    "heldRbnAfterTGE": false
+  },
+  "0xee6a11695a33358b08c75684805770aca89cdb95": {
+    "rbnAmount": 1675.81445531,
+    "heldRbnAfterTGE": false
+  },
+  "0x2eb6a0a495e21139f3b831812028dac03f9543e4": {
+    "rbnAmount": 1668.3545743991078,
+    "heldRbnAfterTGE": false
+  },
+  "0xf8b23f746c1d8f11818db6bf28ef857c693c9dd1": {
+    "rbnAmount": 1614.7370977972412,
+    "heldRbnAfterTGE": false
+  },
+  "0x899e6d9f1746be441b457175f8d339ad5462c943": {
+    "rbnAmount": 1611.2570964368033,
+    "heldRbnAfterTGE": false
+  },
+  "0xcab62e7d3994b0dd38a9724e695f824674dda130": {
+    "rbnAmount": 1607.1122939943634,
+    "heldRbnAfterTGE": true
+  },
+  "0x86341e73d9deb4696b1ae50dbce8f2d62fa06023": {
+    "rbnAmount": 1598.3824,
+    "heldRbnAfterTGE": true
+  },
+  "0x09ecf3f9423d2c60869eece947ec8199f788d1f8": {
+    "rbnAmount": 1534.7884341080285,
+    "heldRbnAfterTGE": false
+  },
+  "0x256f9c6598bdae0068e60b59033c81254f66d84a": {
+    "rbnAmount": 1517.11001673,
+    "heldRbnAfterTGE": true
+  },
+  "0xfb7eb0427c687f706485dae0b9f8d278684fc7a2": {
+    "rbnAmount": 1509.3625970246617,
+    "heldRbnAfterTGE": false
+  },
+  "0x8aba0cc08ad63a2a6c7849db40c30128bb0916cd": {
+    "rbnAmount": 1474.4103921984033,
+    "heldRbnAfterTGE": false
+  },
+  "0x9f6f5c875c5b03dad822376eeb0fb006296d6f43": {
+    "rbnAmount": 1474.36,
+    "heldRbnAfterTGE": false
+  },
+  "0x2303fd39e04cf4d6471df5ee945bd0e2cfb6c7a2": {
+    "rbnAmount": 1439.7273369517525,
+    "heldRbnAfterTGE": false
+  },
+  "0x0e43c2ebb8bbfbd724a2ccc0f8e0ea336a00c401": {
+    "rbnAmount": 1400,
+    "heldRbnAfterTGE": true
+  },
+  "0x317dddb30c46146e6f598ceca82931978542dfd1": {
+    "rbnAmount": 1381.7146728233956,
+    "heldRbnAfterTGE": true
+  },
+  "0xaf79312eb821871208ac76a80c8e282f8796964e": {
+    "rbnAmount": 1369.22047543,
+    "heldRbnAfterTGE": false
+  },
+  "0x236884bb674067c96fcbcc5dff728141e05be99d": {
+    "rbnAmount": 1304.7096470747133,
+    "heldRbnAfterTGE": false
+  },
+  "0x8b71451681500a49d1e82e617a13898dfae91e7b": {
+    "rbnAmount": 1290.57798652,
+    "heldRbnAfterTGE": true
+  },
+  "0x8934d2c764570b0a9c0dffdd7c376db06f957fa7": {
+    "rbnAmount": 1273.7566614744887,
+    "heldRbnAfterTGE": false
+  },
+  "0xef1555a5b28fe857998b546eb6bc04c8fc1a23c5": {
+    "rbnAmount": 1260.0633887298195,
+    "heldRbnAfterTGE": true
+  },
+  "0x82dc92b01c7ff54911842956083795f60f6f64f4": {
+    "rbnAmount": 1231.5552422162348,
+    "heldRbnAfterTGE": false
+  },
+  "0xaa6247d977d8d6c8adda8edd14632c33c691cb6d": {
+    "rbnAmount": 1228.1299999999999,
+    "heldRbnAfterTGE": false
+  },
+  "0xb05ec421903ea5003fe3f3f35b71e48b1c065f3c": {
+    "rbnAmount": 1227.4909340977474,
+    "heldRbnAfterTGE": true
+  },
+  "0x3dddaa942740b3b5c8688240a230845f09699771": {
+    "rbnAmount": 1220.5503651845822,
+    "heldRbnAfterTGE": true
+  },
+  "0x6ce3ac74ef6abfc13d811bdc6a2b7a6454ce0d07": {
+    "rbnAmount": 1213.2282293603455,
+    "heldRbnAfterTGE": false
+  },
+  "0x9679139108b491dc26fe90f4faa2ca656e6f8b69": {
+    "rbnAmount": 1207,
+    "heldRbnAfterTGE": false
+  },
+  "0xa3edae9a1fee5cb742404add3836e8eaed3dbbdb": {
+    "rbnAmount": 1150.0000009915993,
+    "heldRbnAfterTGE": false
+  },
+  "0xa2d7b91d137ef87203dfcc52c51e90c8ad0ec4bf": {
+    "rbnAmount": 1121.1708210946847,
+    "heldRbnAfterTGE": false
+  },
+  "0x14df40586e0f2ca5ca222db0dac8df2f4c5b1aab": {
+    "rbnAmount": 1115.3258825748842,
+    "heldRbnAfterTGE": false
+  },
+  "0x258d35e155485b0dae6b36a74b7910f3ecdcb16d": {
+    "rbnAmount": 1112.5216184144444,
+    "heldRbnAfterTGE": false
+  },
+  "0x46566da2acbad455fb91912483f584b6f35c42ea": {
+    "rbnAmount": 1103.337599436661,
+    "heldRbnAfterTGE": true
+  },
+  "0xc55ae491e46ce0a31e600033f430ca177faf305a": {
+    "rbnAmount": 1084.5472754707432,
+    "heldRbnAfterTGE": false
+  },
+  "0x5a333c5aaed62aa473e404169f9f8f989be5dbfd": {
+    "rbnAmount": 1049.56111142,
+    "heldRbnAfterTGE": false
+  },
+  "0x4d3dfa9562f091dbc822eef1ddec178f6329fc34": {
+    "rbnAmount": 1020,
+    "heldRbnAfterTGE": false
+  },
+  "0xd925e71b56a84f8763895a6939320a2465d2618f": {
+    "rbnAmount": 1014.7048685747516,
+    "heldRbnAfterTGE": false
+  },
+  "0x6319c7639340285d53fe0be2fc5ea098c3e1a417": {
+    "rbnAmount": 1014.22510121,
+    "heldRbnAfterTGE": false
+  },
+  "0x296db021fb093f87051d4ed82a8364661c91c35e": {
+    "rbnAmount": 1006.54418082,
+    "heldRbnAfterTGE": true
+  },
+  "0x8542ab72e61ac4a276c69a8a18706b5cd49b38ee": {
+    "rbnAmount": 1004.9975836676483,
+    "heldRbnAfterTGE": false
+  },
+  "0x18842d30863c114e4c6986db4e42fd910d68e034": {
+    "rbnAmount": 1000.5424596381994,
+    "heldRbnAfterTGE": false
+  },
+  "0x20f9e5a17b00350f1eaf9ad18bc5be0d54c0bc3f": {
+    "rbnAmount": 1000,
+    "heldRbnAfterTGE": false
+  },
+  "0x5701068ca0ba0338a5b64e8f59d5ae661e9ecfc0": {
+    "rbnAmount": 1000,
+    "heldRbnAfterTGE": true
+  },
+  "0x10d98b4809efe5e3a4269afe6f5f4388ce4c38f1": {
+    "rbnAmount": 1000,
+    "heldRbnAfterTGE": false
+  },
+  "0xd84e11bee5d555ccd905817cb8cbbd5b6e6c4f0d": {
+    "rbnAmount": 1000,
+    "heldRbnAfterTGE": true
+  },
+  "0x8cc7355a5c07207ef6ee188f7b74757b6bab7dac": {
+    "rbnAmount": 1000,
+    "heldRbnAfterTGE": true
+  },
+  "0x9f960acd821c28fd9aa9b017aa361b1ae744dcc7": {
+    "rbnAmount": 1000,
+    "heldRbnAfterTGE": false
+  },
+  "0x8218db50772c025fe8375cb89900dcfe3889a4f9": {
+    "rbnAmount": 974.2686256608366,
+    "heldRbnAfterTGE": false
+  },
+  "0xd4f9690fef8fb90fe83ac81dc06f346e496b4a25": {
+    "rbnAmount": 948.79273841,
+    "heldRbnAfterTGE": false
+  },
+  "0xb2043c543bb60fb7aa7265cdca359a35c4bc09fa": {
+    "rbnAmount": 940.2270557924669,
+    "heldRbnAfterTGE": false
+  },
+  "0xe7af11370c3bab51230d8307454350bdf6d68f4a": {
+    "rbnAmount": 890.3919714740437,
+    "heldRbnAfterTGE": true
+  },
+  "0x88401857025524b09f7708147d011a2c62ff2f98": {
+    "rbnAmount": 849.7460584328279,
+    "heldRbnAfterTGE": false
+  },
+  "0xe1d1c5f48f708aa038aa6a9976308cd1d19d951a": {
+    "rbnAmount": 843.3470121012429,
+    "heldRbnAfterTGE": false
+  },
+  "0x7d112a6724dfe4506a3bbfa29ded117bf8d332a4": {
+    "rbnAmount": 801.74,
+    "heldRbnAfterTGE": true
+  },
+  "0x03b0e4a19f357a112be59d658ec4e2834d510f39": {
+    "rbnAmount": 783.3214077663292,
+    "heldRbnAfterTGE": false
+  },
+  "0x61d9e931a72c9fb3eb9731dcc5a30f1f6c3ab63f": {
+    "rbnAmount": 671.842760663762,
+    "heldRbnAfterTGE": false
+  },
+  "0xad24ff5b503be5b6dd3936f842a252b0843ab808": {
+    "rbnAmount": 638.2994657015806,
+    "heldRbnAfterTGE": false
+  },
+  "0x9bdd638db67a520274e8744c2705c912b4a1aac3": {
+    "rbnAmount": 633,
+    "heldRbnAfterTGE": true
+  },
+  "0x9497243478392b1f7f508874f606379f989c6eea": {
+    "rbnAmount": 616.1190889250906,
+    "heldRbnAfterTGE": false
+  },
+  "0xf977bf5f5ccb1bfd868bd95d563294494f0d5d89": {
+    "rbnAmount": 614.6111265027106,
+    "heldRbnAfterTGE": false
+  },
+  "0x3431fe0fc002fbb7dbfa4fce251f22966503ce11": {
+    "rbnAmount": 596.5548389744573,
+    "heldRbnAfterTGE": false
+  },
+  "0xe6b5a31d8bb53d2c769864ac137fe25f4989f1fd": {
+    "rbnAmount": 586.8368489526946,
+    "heldRbnAfterTGE": false
+  },
+  "0x6cd5fa7a48ba7e980b62ec27eacfdbf92009ebc8": {
+    "rbnAmount": 562.9823292473959,
+    "heldRbnAfterTGE": false
+  },
+  "0x6a74e4bc659560bc895587a33b078d904ec62393": {
+    "rbnAmount": 562.6596693110428,
+    "heldRbnAfterTGE": true
+  },
+  "0xc10898eda672fdfc4ac0228bb1da9b2bf54c768f": {
+    "rbnAmount": 520.4140039155676,
+    "heldRbnAfterTGE": true
+  },
+  "0x8ac5c1cbafc564fbd01ee4b116dea85e6a593ab4": {
+    "rbnAmount": 502.70598228889133,
+    "heldRbnAfterTGE": true
+  },
+  "0x7e1e1c5ac70038a9718431c92a618f01f8dada18": {
+    "rbnAmount": 502,
+    "heldRbnAfterTGE": true
+  },
+  "0xdcdb7882172079c1a0f9e0bbe7734c4cfb4ee91f": {
+    "rbnAmount": 496.76824573054984,
+    "heldRbnAfterTGE": false
+  },
+  "0xdd4a19dc351ba42421db282196af38b433aa86ba": {
+    "rbnAmount": 495.8719361405007,
+    "heldRbnAfterTGE": false
+  },
+  "0xed91f76f2a9e7bdbe09a6a0d76986829137a93c9": {
+    "rbnAmount": 491.66990291,
+    "heldRbnAfterTGE": false
+  },
+  "0xa558139e7ed8e2926ca0abe3c84c9506155e7092": {
+    "rbnAmount": 481.8237507850495,
+    "heldRbnAfterTGE": true
+  },
+  "0x1fec6f448eb3ff479ea9682f7eff21a69762318f": {
+    "rbnAmount": 473.33156987711493,
+    "heldRbnAfterTGE": false
+  },
+  "0xa2b00e3e2432fdf3c404156cd4f5eae45ffa83c3": {
+    "rbnAmount": 448.27501513,
+    "heldRbnAfterTGE": false
+  },
+  "0xd55b9b0666d096ff16ebc2bfe81994f6475d752c": {
+    "rbnAmount": 427.73541784532836,
+    "heldRbnAfterTGE": false
+  },
+  "0x05ac3d28434804ec02ed9472490fc42d7e9e646d": {
+    "rbnAmount": 423,
+    "heldRbnAfterTGE": false
+  },
+  "0x138ac110804cd66bcaa15b461326e73055f9f5f8": {
+    "rbnAmount": 420.9186847916423,
+    "heldRbnAfterTGE": false
+  },
+  "0x66f26fe3fb9728b1b262f7716e75912c3159e951": {
+    "rbnAmount": 417.9260601570877,
+    "heldRbnAfterTGE": false
+  },
+  "0xe569d2e298ca4ac8228954a985949436cd65259b": {
+    "rbnAmount": 409.506437401845,
+    "heldRbnAfterTGE": false
+  },
+  "0xc9d13bdcf27b24569d02d28411a9f20852fa8a0a": {
+    "rbnAmount": 400.83005988264335,
+    "heldRbnAfterTGE": false
+  },
+  "0xdabb14edd4555d0b4baef125ee59150c2f50c426": {
+    "rbnAmount": 393.4512167588518,
+    "heldRbnAfterTGE": false
+  },
+  "0x35bb7ab3956738e0b6e9e1cbc1732d357bee9793": {
+    "rbnAmount": 381.26484132534085,
+    "heldRbnAfterTGE": true
+  },
+  "0x5936aee75f56548b487540d1b96f05ce69a05ed5": {
+    "rbnAmount": 375.8444406697022,
+    "heldRbnAfterTGE": false
+  },
+  "0x9594c04c3324f38d8ba446f6b4a9b682c06d75e1": {
+    "rbnAmount": 370,
+    "heldRbnAfterTGE": true
+  },
+  "0x87628fd843d953021000cd83dbed8a6a8194957e": {
+    "rbnAmount": 370,
+    "heldRbnAfterTGE": false
+  },
+  "0xcf0b387a6b2b15e60e0f48e87dfe7a64b801af26": {
+    "rbnAmount": 357.97888275,
+    "heldRbnAfterTGE": false
+  },
+  "0x2c145f7e559eb9cecfe13141246971ad888c072c": {
+    "rbnAmount": 356.79562593739985,
+    "heldRbnAfterTGE": true
+  },
+  "0x9628be77fb3dcd890fd93a5d039092fca855d3cc": {
+    "rbnAmount": 333.8251015621705,
+    "heldRbnAfterTGE": false
+  },
+  "0x9d32f1e7c5ff707e92b4b30937a1e5e2c2de2462": {
+    "rbnAmount": 330,
+    "heldRbnAfterTGE": true
+  },
+  "0xd3630f1f6afcd1440672638689d0006d95ef5dec": {
+    "rbnAmount": 328.0217449475016,
+    "heldRbnAfterTGE": false
+  },
+  "0x55f571c0b4c0bf99fcef1587e6b15680e9e7dc2a": {
+    "rbnAmount": 321.0877595575459,
+    "heldRbnAfterTGE": false
+  },
+  "0xb5325fb430030bb888885d80ea0ad2611b38ef22": {
+    "rbnAmount": 315.5102716255176,
+    "heldRbnAfterTGE": false
+  },
+  "0x9aed162f5e61e2e42a06d50657c7b5e085319227": {
+    "rbnAmount": 304.7286816136301,
+    "heldRbnAfterTGE": true
+  },
+  "0xf9a4800cf61aa3b4b44e88dbfb333af2d9c6447b": {
+    "rbnAmount": 304.20146105180066,
+    "heldRbnAfterTGE": false
+  },
+  "0x6c4adea8f704410d4146368203856dc4c439acdb": {
+    "rbnAmount": 302.276831571247,
+    "heldRbnAfterTGE": false
+  },
+  "0xf5d9cd9bc51a0a59598a5bcd8eb6440002be3e64": {
+    "rbnAmount": 301.55342424137143,
+    "heldRbnAfterTGE": false
+  },
+  "0x53b66c4c61a1a2c6d0d15a287c27c03745208ebc": {
+    "rbnAmount": 294,
+    "heldRbnAfterTGE": false
+  },
+  "0x41c0f529f559c6a3ddc324cd86a6d0c75b50c949": {
+    "rbnAmount": 289.36133198029023,
+    "heldRbnAfterTGE": false
+  },
+  "0x1bb0b115018e3b6b52d0db7c5ddd8e8266d98c52": {
+    "rbnAmount": 282,
+    "heldRbnAfterTGE": false
+  },
+  "0x96043daaf7b6637d21f67bf9b85111ba036cc879": {
+    "rbnAmount": 276.2636930579104,
+    "heldRbnAfterTGE": true
+  },
+  "0xfd94fb2f07a4a0cb5c8b88c7a4346dded36f2b1d": {
+    "rbnAmount": 265.56877247944476,
+    "heldRbnAfterTGE": true
+  },
+  "0x29192275117bc291aef3c5d6432a0f551f4f168d": {
+    "rbnAmount": 257.5816985290688,
+    "heldRbnAfterTGE": false
+  },
+  "0xb4fbd802d9dc5c0208346c311bcb6b9ecff468c6": {
+    "rbnAmount": 248.6703056709548,
+    "heldRbnAfterTGE": false
+  },
+  "0x7798ba9512b5a684c12e31518923ea4221a41fb9": {
+    "rbnAmount": 247,
+    "heldRbnAfterTGE": true
+  },
+  "0xda550482c296cfa01a80cc0b7e379c8c13e7b6c1": {
+    "rbnAmount": 237.94537723,
+    "heldRbnAfterTGE": false
+  },
+  "0x39d7dad316f4ee3a241877c884ee55f971a7d52c": {
+    "rbnAmount": 231.44901964730784,
+    "heldRbnAfterTGE": true
+  },
+  "0x25a76d10b870c07000e9fee68c901d9a354460ab": {
+    "rbnAmount": 228.08867912485104,
+    "heldRbnAfterTGE": false
+  },
+  "0x45d80fb72b9757f33f9a1b77730226a97c958032": {
+    "rbnAmount": 223.75068477332928,
+    "heldRbnAfterTGE": false
+  },
+  "0xb957dccaa1ccfb1eb78b495b499801d591d8a403": {
+    "rbnAmount": 222,
+    "heldRbnAfterTGE": false
+  },
+  "0x611327a78065a38f151d19ed4876610e5b3fa90f": {
+    "rbnAmount": 219.20658111116495,
+    "heldRbnAfterTGE": false
+  },
+  "0x35c4fb87e383403fa50be1047e8445e4e228ab56": {
+    "rbnAmount": 218.31689081037146,
+    "heldRbnAfterTGE": false
+  },
+  "0xf3ef2a78e4a87e7ac44683bc039b4d4151d649b9": {
+    "rbnAmount": 216,
+    "heldRbnAfterTGE": false
+  },
+  "0x070213e2afd44154873f2a481caa65095e31b78a": {
+    "rbnAmount": 215,
+    "heldRbnAfterTGE": false
+  },
+  "0x8e269d9c2804aaf5521f869026d551109774f93a": {
+    "rbnAmount": 215,
+    "heldRbnAfterTGE": false
+  },
+  "0xe72e9fb386c922125d33ce1bb62e3019bc060e3d": {
+    "rbnAmount": 214,
+    "heldRbnAfterTGE": false
+  },
+  "0xf4b8b34ed886372dc8171d1558b57c7921374adb": {
+    "rbnAmount": 214,
+    "heldRbnAfterTGE": false
+  },
+  "0x1e5778657415c6b21e58a0732e5bb3667d54891e": {
+    "rbnAmount": 213,
+    "heldRbnAfterTGE": false
+  },
+  "0x84f6b432de07ccee2a066ca040c920bc3c63fbc9": {
+    "rbnAmount": 211.60265823850585,
+    "heldRbnAfterTGE": false
+  },
+  "0xb5413e7a5027e7632746ed598dcabf5fd1e4de6f": {
+    "rbnAmount": 211,
+    "heldRbnAfterTGE": false
+  },
+  "0x7846375a953a3df168a6224ec924fb07efa8157e": {
+    "rbnAmount": 211,
+    "heldRbnAfterTGE": false
+  },
+  "0x1df2535cf0956abec21c4738534885d3849d6578": {
+    "rbnAmount": 209.2851137882102,
+    "heldRbnAfterTGE": true
+  },
+  "0x8fd7b37df552cc72f2c317b365e151ad6b54b7a4": {
+    "rbnAmount": 193,
+    "heldRbnAfterTGE": false
+  },
+  "0x81ba93b26bce8ca5d649b6607df15e6d45462d8f": {
+    "rbnAmount": 189.49,
+    "heldRbnAfterTGE": true
+  },
+  "0x351ea145eef977872b39c9475e7d4af1808316c8": {
+    "rbnAmount": 187.16986882,
+    "heldRbnAfterTGE": false
+  },
+  "0x60dd456273cbb018c2222621d4c2dc5016e870d3": {
+    "rbnAmount": 177,
+    "heldRbnAfterTGE": false
+  },
+  "0x3af42e1100715a6e56abcadb3f7d700999fa6689": {
+    "rbnAmount": 174.3534,
+    "heldRbnAfterTGE": true
+  },
+  "0x0001f85d5eecc0a176e6197690baa3e62bde35c5": {
+    "rbnAmount": 166.4116797658599,
+    "heldRbnAfterTGE": false
+  },
+  "0x755611a5f073138dd9b60131122051526629982c": {
+    "rbnAmount": 154.45984280248953,
+    "heldRbnAfterTGE": false
+  },
+  "0x69e69571d0d07edbede6c43849e8d877573ee6bf": {
+    "rbnAmount": 152.2780642052722,
+    "heldRbnAfterTGE": false
+  },
+  "0x434057ad8ff687846789427b7a018328613c6686": {
+    "rbnAmount": 147.05794052799772,
+    "heldRbnAfterTGE": false
+  },
+  "0xe5c80a7963c0d8f4ab9c0bb8d854e47594cf9394": {
+    "rbnAmount": 138.0232736741485,
+    "heldRbnAfterTGE": false
+  },
+  "0x5004fd066f066669c73e0bbdf55f1079707c0a4d": {
+    "rbnAmount": 133.8026797922689,
+    "heldRbnAfterTGE": false
+  },
+  "0x42c83b1a022abd2ef6cf46605fd60d404e578674": {
+    "rbnAmount": 126.9843501,
+    "heldRbnAfterTGE": false
+  },
+  "0x0cfbac656cd6624b70e32d446f897b03cf6beda0": {
+    "rbnAmount": 122.22805763141116,
+    "heldRbnAfterTGE": false
+  },
+  "0xc8e7817c4ac86ef3afc525f150091391205b727c": {
+    "rbnAmount": 122.14011951755043,
+    "heldRbnAfterTGE": false
+  },
+  "0x08ae44ce15d7635e1ff61d3f489986af8bc5848d": {
+    "rbnAmount": 117.00158208612659,
+    "heldRbnAfterTGE": false
+  },
+  "0xe9595317dc5fe9fea60bad0cdb3240a82ae8662d": {
+    "rbnAmount": 109.53931718342439,
+    "heldRbnAfterTGE": false
+  },
+  "0xa45e88303231bcd1021a08fb6f31a5ba3d245928": {
+    "rbnAmount": 106.76057348335326,
+    "heldRbnAfterTGE": false
+  },
+  "0xf9e1d1e9f22c96752356adfd377231528c7e851e": {
+    "rbnAmount": 102.78024634448828,
+    "heldRbnAfterTGE": false
+  },
+  "0xa9782643b047de459d37a4951a1cd7ca46aa1932": {
+    "rbnAmount": 100,
+    "heldRbnAfterTGE": false
+  },
+  "0xac5f6ad16b9ba91d652faec3093e49be689fe7a5": {
+    "rbnAmount": 100,
+    "heldRbnAfterTGE": false
+  },
+  "0x87d2543617c9839d048abcf5b26d7f073b6a8826": {
+    "rbnAmount": 97.6138392970437,
+    "heldRbnAfterTGE": false
+  },
+  "0xed9a912182745fe101ecb4291d00b802d982ba0f": {
+    "rbnAmount": 95.9902515436732,
+    "heldRbnAfterTGE": true
+  },
+  "0x6c88ad01aef7088ec0f8b2217c63dadc8f136749": {
+    "rbnAmount": 85.86507997099847,
+    "heldRbnAfterTGE": false
+  },
+  "0x8eb5fe3e2553c246f4af98e9fec9bc60aa2e2940": {
+    "rbnAmount": 83.66,
+    "heldRbnAfterTGE": false
+  },
+  "0xa2852a920a71bbc836f1c66520ed4abbf7f3e55d": {
+    "rbnAmount": 83.10087760061634,
+    "heldRbnAfterTGE": false
+  },
+  "0xbd46cd0e482e7979b37a16e43c831fc9c1bec997": {
+    "rbnAmount": 80.65627663066151,
+    "heldRbnAfterTGE": false
+  },
+  "0xe58056ffb6f5c5056af172f3717a2f2bcea053b6": {
+    "rbnAmount": 80,
+    "heldRbnAfterTGE": false
+  },
+  "0xe7832071ed24f2437d5d292d7873a0b193c2b0d5": {
+    "rbnAmount": 80,
+    "heldRbnAfterTGE": false
+  },
+  "0xc79aca1c28f03574e5f5bd88f6f79de746728e4f": {
+    "rbnAmount": 80,
+    "heldRbnAfterTGE": false
+  },
+  "0x065e80b6a6c668da2590688677716bd45ff3bfca": {
+    "rbnAmount": 80,
+    "heldRbnAfterTGE": false
+  },
+  "0xc67917b359641707a1eafd1e7653a70d20caecee": {
+    "rbnAmount": 80,
+    "heldRbnAfterTGE": false
+  },
+  "0x0fd16cccea5dd4bf248d8a8a02059ee5b95d7fe6": {
+    "rbnAmount": 80,
+    "heldRbnAfterTGE": false
+  },
+  "0x7fc538cd464651460500cbc7614f8ceebfa35943": {
+    "rbnAmount": 80,
+    "heldRbnAfterTGE": false
+  },
+  "0xfbc998663b1b28b42375c188e2fe6b30511dbae3": {
+    "rbnAmount": 80,
+    "heldRbnAfterTGE": false
+  },
+  "0x11877a8b499cf00b030b37fe20575493f009cca5": {
+    "rbnAmount": 80,
+    "heldRbnAfterTGE": false
+  },
+  "0x7846e0b4febd3092c0407df34c6d34cf3464d55b": {
+    "rbnAmount": 77.333,
+    "heldRbnAfterTGE": false
+  },
+  "0xcdb6b70a684c7bce56d8a82a0219ae9205d9be2c": {
+    "rbnAmount": 73.78371346332592,
+    "heldRbnAfterTGE": false
+  },
+  "0x30086306afc449739fd7e320600715ce132c360d": {
+    "rbnAmount": 71.66840630313006,
+    "heldRbnAfterTGE": false
+  },
+  "0x62f9b12d78e5cee61dd364aea433024ed3e2d57c": {
+    "rbnAmount": 64.87254449,
+    "heldRbnAfterTGE": false
+  },
+  "0x8de04612279dab36ecc2071471697e755ccf3a22": {
+    "rbnAmount": 54.3867806837772,
+    "heldRbnAfterTGE": false
+  },
+  "0x06c13b8ccfbff773bc39b52d7f5d3cb8570e74e4": {
+    "rbnAmount": 51.96059528063616,
+    "heldRbnAfterTGE": false
+  },
+  "0x3b1ffa0b9c7e6c5b2804ed144e47aa7ce100abad": {
+    "rbnAmount": 51.68443158,
+    "heldRbnAfterTGE": false
+  },
+  "0x73b843d33e0c82292a9931c8ca859b47a30020bb": {
+    "rbnAmount": 50.42710315376017,
+    "heldRbnAfterTGE": true
+  },
+  "0x8330a84d3c16a55302f921c36979b1067418053a": {
+    "rbnAmount": 50,
+    "heldRbnAfterTGE": false
+  },
+  "0x856dc4a12f08afa49f42b52f81769a96505f312c": {
+    "rbnAmount": 40.03109645694474,
+    "heldRbnAfterTGE": false
+  },
+  "0x3d44f67b32454ebc1f579873edf480faa80cd953": {
+    "rbnAmount": 38.61793761627518,
+    "heldRbnAfterTGE": false
+  },
+  "0x4f4bd77781ceee4914b6bc16633d5437eabca5d3": {
+    "rbnAmount": 35.169663931544626,
+    "heldRbnAfterTGE": false
+  },
+  "0x577c10a65b8bd49d082fd2850e2fe42c3b82dae9": {
+    "rbnAmount": 35,
+    "heldRbnAfterTGE": false
+  },
+  "0xeaead3b256143fb48660a052a4ef42ab3c47f754": {
+    "rbnAmount": 34.01521407236953,
+    "heldRbnAfterTGE": true
+  },
+  "0xe801f929de25077e2319de63545ba49806bca801": {
+    "rbnAmount": 27.75694737607505,
+    "heldRbnAfterTGE": false
+  },
+  "0xd6a0de95bd5e094a280b1681ab40e3e26ae78e22": {
+    "rbnAmount": 26.504818791086613,
+    "heldRbnAfterTGE": false
+  },
+  "0x49d2db5f6c17a5a2894f52125048aaa988850009": {
+    "rbnAmount": 25,
+    "heldRbnAfterTGE": true
+  },
+  "0x8a4a50b13fd2cb36feb96c408cb98b4c9f2b8f25": {
+    "rbnAmount": 11.402841621709564,
+    "heldRbnAfterTGE": false
+  },
+  "0x654b1de76443c423afd304583eba886fe66b54a7": {
+    "rbnAmount": 7,
+    "heldRbnAfterTGE": true
+  },
+  "0x31f8622fdff22c95ebd21f986d1fc8f5450bf201": {
+    "rbnAmount": 5.991952245157145,
+    "heldRbnAfterTGE": false
+  },
+  "0x899b2d61a5943dd2452cbc9ff5d158c63a2275dd": {
+    "rbnAmount": 5,
+    "heldRbnAfterTGE": false
+  },
+  "0xbb5b712875983e59b904dc51f32e9f1d93b9ca2e": {
+    "rbnAmount": 3.538757476011576,
+    "heldRbnAfterTGE": false
+  },
+  "0x13b02cd066b0236066b0b40dfbac921c492ada9c": {
+    "rbnAmount": 3,
+    "heldRbnAfterTGE": true
+  },
+  "0xb51758105440c85c6c9cb85fe56c45a730be6348": {
+    "rbnAmount": 3,
+    "heldRbnAfterTGE": false
+  },
+  "0xba8b2042af6c560f0264bb2537ddc1770e67db67": {
+    "rbnAmount": 3,
+    "heldRbnAfterTGE": false
+  },
+  "0x8d52baf7fac6311bba516827c6e92a779d5a1e1a": {
+    "rbnAmount": 3,
+    "heldRbnAfterTGE": false
+  },
+  "0xc9c5a0228fb686e9720ca24691e59e9410c52688": {
+    "rbnAmount": 3,
+    "heldRbnAfterTGE": false
+  },
+  "0xdb204c626e6b62aef46f289468c7e227199599ae": {
+    "rbnAmount": 3,
+    "heldRbnAfterTGE": false
+  },
+  "0xa64b01fd919181a4c178f64bb60fa25061b6e6a6": {
+    "rbnAmount": 3,
+    "heldRbnAfterTGE": false
+  },
+  "0xff049ec2f92e167a0aac6bea0fb11ec6a9abfc1b": {
+    "rbnAmount": 3,
+    "heldRbnAfterTGE": false
+  },
+  "0x4a078f95c45504349e7c8be1af69a7e9de73f4c4": {
+    "rbnAmount": 3,
+    "heldRbnAfterTGE": false
+  },
+  "0xf6c589402278e88e48bcd6243ef3aa11a3eff2d6": {
+    "rbnAmount": 3,
+    "heldRbnAfterTGE": true
+  },
+  "0xa01ce2e52c17e2f98be84d696a0bbcc9b4333d3c": {
+    "rbnAmount": 3,
+    "heldRbnAfterTGE": false
+  },
+  "0x480babef0e73392b36f5d2f54c92d74135fb408a": {
+    "rbnAmount": 3,
+    "heldRbnAfterTGE": false
+  },
+  "0xe59aa2dc6c567857f9840a6235e9048b389da4f0": {
+    "rbnAmount": 3,
+    "heldRbnAfterTGE": false
+  },
+  "0x515491350701b46a54c666d18822fd7e3c44ebd8": {
+    "rbnAmount": 3,
+    "heldRbnAfterTGE": true
+  },
+  "0x54060b2b8ba8f2d8da1bbb3c0ed82325f42aaade": {
+    "rbnAmount": 3,
+    "heldRbnAfterTGE": false
+  },
+  "0x486eb0e2fa31db1e30fc035bf8a37c304da87a23": {
+    "rbnAmount": 3,
+    "heldRbnAfterTGE": false
+  },
+  "0xad1f2688641d9fe17239d3625a8b6ab92ae78e89": {
+    "rbnAmount": 3,
+    "heldRbnAfterTGE": false
+  },
+  "0x03894d4ac41dd6c4c2f524ed4417c90fa46972c6": {
+    "rbnAmount": 1.720732714293664,
+    "heldRbnAfterTGE": false
+  },
+  "0x0c5a2c72c009252f0e7312f5a1ab87de02be6fbe": {
+    "rbnAmount": 1,
+    "heldRbnAfterTGE": false
+  },
+  "0xd8c31bfe46800dce48e0372c77a637b945060310": {
+    "rbnAmount": 1,
+    "heldRbnAfterTGE": false
+  }
+}
