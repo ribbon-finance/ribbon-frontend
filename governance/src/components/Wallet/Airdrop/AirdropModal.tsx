@@ -52,6 +52,7 @@ const AirdropModal: React.FC<AirdropModalProps> = ({ show, onClose }) => {
       await provider.waitForTransaction(txhash, 2);
       setStep("claimed");
     } catch (err) {
+      console.error(err)
       setStep("info");
     }
   }, [

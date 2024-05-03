@@ -242,7 +242,7 @@ const AirdropInfo: React.FC<AirdropInfoProps> = ({ loading, airdropInfo, onClaim
           </UnclaimLabel>
         </BaseModalContentColumn>
         <BaseModalContentColumn marginTop={8}>
-          <Title fontSize={84} lineHeight={84}>
+          <Title fontSize={56} lineHeight={56}>
             {loading ? loadingText : airdropAmountStr}
           </Title>
         </BaseModalContentColumn>
@@ -297,7 +297,7 @@ const AirdropInfo: React.FC<AirdropInfoProps> = ({ loading, airdropInfo, onClaim
           </UnclaimLabel>
         </BaseModalContentColumn>
         <BaseModalContentColumn marginTop={24}>
-          <Title fontSize={64} lineHeight={64}>
+          <Title fontSize={48} lineHeight={48}>
             {airdropAmountStr}
           </Title>
         </BaseModalContentColumn>

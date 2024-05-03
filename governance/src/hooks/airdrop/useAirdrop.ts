@@ -84,7 +84,7 @@ const useAirdrop = () => {
       proof: { ...airdropClaim, amount: BigNumber.from(airdropClaim.amount) },
       breakdown: {
         [AirdropBreakdownKeys.maxStaked]: !totalBn.isZero(),
-        [AirdropBreakdownKeys.heldRbnAfterTGE]: airdropBreakdown[account]?.heldRbnAfterTGE
+        [AirdropBreakdownKeys.heldRbnAfterTGE]: airdropBreakdown[account.toLowerCase()]?.heldRbnAfterTGE
       },
       unclaimedAmount: totalBn.sub(claimedAmount)
     });
