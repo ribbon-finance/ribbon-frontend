@@ -10,19 +10,18 @@ import {
 import {
   BaseLink,
   BaseModalContentColumn,
-  PrimaryText,
   SecondaryText,
   Subtitle,
-  Title,
+  Title
 } from "shared/lib/designSystem";
 import colors from "shared/lib/designSystem/colors";
 import theme from "shared/lib/designSystem/theme";
 import useConnectWalletModal from "shared/lib/hooks/useConnectWalletModal";
+import useLoadingText from "shared/lib/hooks/useLoadingText";
 import { useWeb3Wallet } from "shared/lib/hooks/useWeb3Wallet";
 import { GovernanceAirdropInfoData } from "shared/lib/store/types";
 import styled, { keyframes } from "styled-components";
 import AirdropBreakdown from "./AirdropBreakdown";
-import useLoadingText from "shared/lib/hooks/useLoadingText";
 
 const rotate = keyframes`
   from {
@@ -185,21 +184,6 @@ const AirdropInfo: React.FC<AirdropInfoProps> = ({
     []
   );
 
-  const readMore = useMemo(
-    () => (
-      <LearnMoreLink
-        // TODO: - Learn more link
-        to="#"
-        target="_blank"
-        rel="noreferrer noopener"
-      >
-        <PrimaryText>Learn More</PrimaryText>
-        <LearnMoreIcon height="20px" width="20px" color="white" />
-      </LearnMoreLink>
-    ),
-    []
-  );
-
   const renderInfo = useCallback(() => {
     if (!account) {
       return (
@@ -219,9 +203,6 @@ const AirdropInfo: React.FC<AirdropInfoProps> = ({
             </Description>
           </BaseModalContentColumn>
           <BaseModalContentColumn marginTop="auto">
-            {readMore}
-          </BaseModalContentColumn>
-          <BaseModalContentColumn>
             <ConnectWalletButton
               onClick={() => setShowConnectModal(true)}
               type="button"
@@ -265,9 +246,6 @@ const AirdropInfo: React.FC<AirdropInfoProps> = ({
           </ViewBreakdownPill>
         </BaseModalContentColumn>
         <BaseModalContentColumn marginTop="auto">
-          {readMore}
-        </BaseModalContentColumn>
-        <BaseModalContentColumn>
           <ActionButton
             className="btn py-3 mb-2"
             onClick={onClaim}
@@ -287,7 +265,6 @@ const AirdropInfo: React.FC<AirdropInfoProps> = ({
     airdropAmountStr,
     onClaim,
     airdropInfo,
-    readMore,
   ]);
 
   const renderBreakdown = useCallback(
@@ -308,9 +285,6 @@ const AirdropInfo: React.FC<AirdropInfoProps> = ({
         <BaseModalContentColumn>
           <AirdropBreakdown breakdown={airdropInfo?.breakdown} />
         </BaseModalContentColumn>
-        <BaseModalContentColumn marginTop="auto">
-          {readMore}
-        </BaseModalContentColumn>
         <HideBreakdownButton
           role="button"
           onClick={() => setShowBreakdown(false)}
@@ -319,7 +293,7 @@ const AirdropInfo: React.FC<AirdropInfoProps> = ({
         </HideBreakdownButton>
       </>
     ),
-    [airdropInfo, airdropAmountStr, readMore]
+    [airdropInfo, airdropAmountStr]
   );
 
   return (
