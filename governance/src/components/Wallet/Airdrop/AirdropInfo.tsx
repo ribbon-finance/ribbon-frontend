@@ -1,6 +1,6 @@
 import { AnimatePresence, motion } from "framer-motion";
 import React, { useCallback, useMemo, useState } from "react";
-import { BarChartIcon, ExternalIcon } from "shared/lib/assets/icons/icons";
+import { BarChartIcon } from "shared/lib/assets/icons/icons";
 import Logo from "shared/lib/assets/icons/logo";
 import ButtonArrow from "shared/lib/components/Common/ButtonArrow";
 import {
@@ -8,11 +8,10 @@ import {
   ConnectWalletButton,
 } from "shared/lib/components/Common/buttons";
 import {
-  BaseLink,
   BaseModalContentColumn,
   SecondaryText,
   Subtitle,
-  Title,
+  Title
 } from "shared/lib/designSystem";
 import colors from "shared/lib/designSystem/colors";
 import theme from "shared/lib/designSystem/theme";
@@ -77,19 +76,6 @@ const ViewBreakdownPillText = styled(Subtitle)`
 const AirdropExplanationText = styled(Subtitle)`
   margin: 16px;
   text-align: center;
-`;
-
-const LearnMoreLink = styled(BaseLink)`
-  display: flex;
-  align-items: center;
-
-  span {
-    text-decoration: underline;
-  }
-`;
-
-const LearnMoreIcon = styled(ExternalIcon)`
-  margin-left: 8px;
 `;
 
 const BreakdownContainer = styled(motion.div)`
@@ -249,7 +235,7 @@ const AirdropInfo: React.FC<AirdropInfoProps> = ({
           <ActionButton
             className="btn py-3 mb-2"
             onClick={onClaim}
-            disabled={airdropInfo?.unclaimedAmount.isZero()}
+            disabled={!airdropInfo || airdropInfo?.unclaimedAmount.isZero()}
           >
             CLAIM $RBN AIRDROP
           </ActionButton>
@@ -333,4 +319,3 @@ const AirdropInfo: React.FC<AirdropInfoProps> = ({
 
 export default AirdropInfo;
 
-// export const x = ""
