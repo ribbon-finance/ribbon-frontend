@@ -12,6 +12,7 @@ export type { LiquidityGaugeV4 } from "./LiquidityGaugeV4";
 export type { LiquidityGaugeV5 } from "./LiquidityGaugeV5";
 export type { LiquidityTokenMinter } from "./LiquidityTokenMinter";
 export type { MerkleDistributor } from "./MerkleDistributor";
+export type { MerkleDistributorAdjustable } from "./MerkleDistributorAdjustable";
 export type { PenaltyRewards } from "./PenaltyRewards";
 export type { RibbonCoveredCall } from "./RibbonCoveredCall";
 export type { RibbonEarnVault } from "./RibbonEarnVault";
@@ -39,6 +40,7 @@ export { LiquidityGaugeV4__factory } from "./factories/LiquidityGaugeV4__factory
 export { LiquidityGaugeV5__factory } from "./factories/LiquidityGaugeV5__factory";
 export { LiquidityTokenMinter__factory } from "./factories/LiquidityTokenMinter__factory";
 export { MerkleDistributor__factory } from "./factories/MerkleDistributor__factory";
+export { MerkleDistributorAdjustable__factory } from "./factories/MerkleDistributorAdjustable__factory";
 export { PenaltyRewards__factory } from "./factories/PenaltyRewards__factory";
 export { RibbonCoveredCall__factory } from "./factories/RibbonCoveredCall__factory";
 export { RibbonEarnVault__factory } from "./factories/RibbonEarnVault__factory";

@@ -135,7 +135,7 @@ export type PendingTransaction = {
     }
 );
 
-export type AirdropInfoData = {
+type CommonMerkleProofData = {
   account: string;
   total: number;
   proof: {
@@ -143,8 +143,23 @@ export type AirdropInfoData = {
     amount: BigNumber;
     proof: string[];
   };
+};
+
+export type AirdropInfoData = CommonMerkleProofData & {
   breakdown: {
     [key: string]: number;
   };
   claimed: boolean;
+};
+
+export enum AirdropBreakdownKeys {
+  maxStaked = "max_staked_rbn",
+  heldRbnAfterTGE = "held_after_tge",
+}
+
+export type GovernanceAirdropInfoData = CommonMerkleProofData & {
+  breakdown: {
+    [key in AirdropBreakdownKeys]: boolean;
+  };
+  unclaimedAmount: BigNumber;
 };
