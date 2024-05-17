@@ -584,6 +584,7 @@ const EarnPage = () => {
                       <StyledActionButton
                         className={`mt-5 py-3 mb-0 w-100`}
                         color={color}
+                        disabled
                         onClick={() => {
                           setShowDepositModal(true);
                         }}
