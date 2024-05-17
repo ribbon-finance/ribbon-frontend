@@ -16,7 +16,7 @@ export const getMerkleDistributor = (
     const provider = ethereumProvider.getSigner();
     return MerkleDistributorAdjustable__factory.connect(
       isProduction()
-        ? isMissedMerkleProof 
+        ? isMissedMerkleProof
           ? deployments.mainnet.MerkleDistributorStakingAirdrop2
           : deployments.mainnet.MerkleDistributorStakingAirdrop
         : deployments.sepolia.MerkleDistributorStakingAirdrop,
@@ -39,7 +39,7 @@ const useMerkleDistributor = () => {
 
   return {
     contract,
-    contract2
+    contract2,
   };
 };
 

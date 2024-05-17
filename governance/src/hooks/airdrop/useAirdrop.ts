@@ -41,7 +41,6 @@ export type AirdropBreakdownData = {
   };
 };
 
-
 const airdropBreakdown = isProduction()
   ? (BreakdownData as AirdropBreakdownData)
   : (BreakdownTestnetData as AirdropBreakdownData);
@@ -50,20 +49,20 @@ const rbnDecimals = getAssetDecimals("RBN");
 
 const getProof = (account: string) => {
   const proof = isProduction()
-  ? (ProofData as AirdropProof)
-  : (ProofTestnetData as AirdropProof);
+    ? (ProofData as AirdropProof)
+    : (ProofTestnetData as AirdropProof);
 
-const missedProof = isProduction()
-  ? (ProofData2 as AirdropProof)
-  : (ProofTestnetData as AirdropProof);
+  const missedProof = isProduction()
+    ? (ProofData2 as AirdropProof)
+    : (ProofTestnetData as AirdropProof);
 
-  const isMissedAccount = !proof.claims[account] && missedProof.claims[account]
+  const isMissedAccount = !proof.claims[account] && missedProof.claims[account];
 
   return {
     merkleProof: isMissedAccount ? missedProof : proof,
-    isMissedAccount
-  }
-}
+    isMissedAccount,
+  };
+};
 
 const useAirdrop = () => {
   const web3Context = useWeb3Wallet();
@@ -77,21 +76,26 @@ const useAirdrop = () => {
 
   const proof = useMemo(() => {
     if (account) {
-      return getProof(account)
+      return getProof(account);
     }
-    return undefined
-  }, [account])
+    return undefined;
+  }, [account]);
 
   const merkleDistributor = useMemo(() => {
     if (proof) {
-      const { isMissedAccount } = proof
-      return isMissedAccount ? contract2 : contract
+      const { isMissedAccount } = proof;
+      return isMissedAccount ? contract2 : contract;
     }
-    return contract
-  }, [contract, contract2, proof])
+    return contract;
+  }, [contract, contract2, proof]);
 
   const updateAirdropInfo = useCallback(async () => {
-    if (!proof || chainId !== CHAINID.ETH_MAINNET || !account || !merkleDistributor) {
+    if (
+      !proof ||
+      chainId !== CHAINID.ETH_MAINNET ||
+      !account ||
+      !merkleDistributor
+    ) {
       setAirdropInfo(undefined);
       return;
     }
