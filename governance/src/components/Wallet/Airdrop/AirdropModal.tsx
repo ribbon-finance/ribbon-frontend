@@ -6,7 +6,6 @@ import RBNClaimModalContent from "shared/lib/components/Common/RBNClaimModalCont
 import { usePendingTransactions } from "shared/lib/hooks/pendingTransactionsContext";
 import { useWeb3Context } from "shared/lib/hooks/web3Context";
 import useAirdrop from "../../../hooks/airdrop/useAirdrop";
-import useMerkleDistributor from "../../../hooks/useMerkleDistributor";
 import AirdropInfo from "./AirdropInfo";
 
 interface AirdropModalProps {
@@ -18,10 +17,9 @@ const AirdropModal: React.FC<AirdropModalProps> = ({ show, onClose }) => {
   const [step, setStep] = useState<"info" | "claim" | "claiming" | "claimed">(
     "info"
   );
-  const merkleDistributor = useMerkleDistributor();
   const { account } = useWeb3Wallet();
   const { provider } = useWeb3Context();
-  const { loading, airdropInfo } = useAirdrop();
+  const { merkleDistributor, loading, airdropInfo } = useAirdrop();
   const { addPendingTransaction } = usePendingTransactions();
 
   const claimAirdrop = useCallback(async () => {

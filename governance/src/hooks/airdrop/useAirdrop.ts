@@ -1,5 +1,5 @@
 import { BigNumber } from "@ethersproject/bignumber";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { useWeb3Wallet } from "shared/lib/hooks/useWeb3Wallet";
 
 import { formatUnits } from "@ethersproject/units";
@@ -14,6 +14,7 @@ import {
 } from "shared/lib/store/types";
 import { isProduction } from "shared/lib/utils/env";
 import ProofData from "./proof-mainnet.json";
+import ProofData2 from "./proof-mainnet-2.json";
 import ProofTestnetData from "./proof-testnet.json";
 import BreakdownData from "./breakdown-mainnet.json";
 import BreakdownTestnetData from "./breakdown-testnet.json";
@@ -40,32 +41,62 @@ export type AirdropBreakdownData = {
   };
 };
 
-const proof = isProduction()
-  ? (ProofData as AirdropProof)
-  : (ProofTestnetData as AirdropProof);
+
 const airdropBreakdown = isProduction()
   ? (BreakdownData as AirdropBreakdownData)
   : (BreakdownTestnetData as AirdropBreakdownData);
 
 const rbnDecimals = getAssetDecimals("RBN");
 
+const getProof = (account: string) => {
+  const proof = isProduction()
+  ? (ProofData as AirdropProof)
+  : (ProofTestnetData as AirdropProof);
+
+const missedProof = isProduction()
+  ? (ProofData2 as AirdropProof)
+  : (ProofTestnetData as AirdropProof);
+
+  const isMissedAccount = !proof.claims[account] && missedProof.claims[account]
+
+  return {
+    merkleProof: isMissedAccount ? missedProof : proof,
+    isMissedAccount
+  }
+}
+
 const useAirdrop = () => {
   const web3Context = useWeb3Wallet();
   const { chainId } = web3Context;
   const account = impersonateAddress ? impersonateAddress : web3Context.account;
-  const merkleDistributor = useMerkleDistributor();
-  const [airdropInfo, setAirdropInfo] = useState<GovernanceAirdropInfoData>();
+  const { contract, contract2 } = useMerkleDistributor();
   const { pendingTransactions } = usePendingTransactions();
 
+  const [airdropInfo, setAirdropInfo] = useState<GovernanceAirdropInfoData>();
   const [loading, setLoading] = useState(false);
 
+  const proof = useMemo(() => {
+    if (account) {
+      return getProof(account)
+    }
+    return undefined
+  }, [account])
+
+  const merkleDistributor = useMemo(() => {
+    if (proof) {
+      const { isMissedAccount } = proof
+      return isMissedAccount ? contract2 : contract
+    }
+    return contract
+  }, [contract, contract2, proof])
+
   const updateAirdropInfo = useCallback(async () => {
-    if (chainId !== CHAINID.ETH_MAINNET || !account || !merkleDistributor) {
+    if (!proof || chainId !== CHAINID.ETH_MAINNET || !account || !merkleDistributor) {
       setAirdropInfo(undefined);
       return;
     }
 
-    const airdropClaim = proof["claims"][account];
+    const airdropClaim = proof.merkleProof.claims[account];
     const totalBn = BigNumber.from(airdropClaim?.amount || 0);
     const total = parseFloat(formatUnits(totalBn, rbnDecimals));
 
@@ -92,7 +123,7 @@ const useAirdrop = () => {
       },
       unclaimedAmount: totalBn.sub(claimedAmount),
     });
-  }, [account, merkleDistributor, setAirdropInfo, chainId]);
+  }, [proof, chainId, account, merkleDistributor]);
 
   useEffect(() => {
     if (!airdropInfo || airdropInfo.account !== account) {
@@ -110,6 +141,7 @@ const useAirdrop = () => {
   }, [pendingTransactions, setAirdropInfo]);
 
   return {
+    merkleDistributor,
     airdropInfo,
     loading,
   };

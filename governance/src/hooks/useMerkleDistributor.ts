@@ -9,13 +9,16 @@ import deployments from "shared/lib/constants/v1Deployments.json";
 import { isProduction } from "shared/lib/utils/env";
 
 export const getMerkleDistributor = (
-  ethereumProvider: any
+  ethereumProvider: any,
+  isMissedMerkleProof: boolean
 ): MerkleDistributorAdjustable | undefined => {
   if (ethereumProvider) {
     const provider = ethereumProvider.getSigner();
     return MerkleDistributorAdjustable__factory.connect(
       isProduction()
-        ? deployments.mainnet.MerkleDistributorStakingAirdrop
+        ? isMissedMerkleProof 
+          ? deployments.mainnet.MerkleDistributorStakingAirdrop2
+          : deployments.mainnet.MerkleDistributorStakingAirdrop
         : deployments.sepolia.MerkleDistributorStakingAirdrop,
       provider
     );
@@ -24,15 +27,20 @@ export const getMerkleDistributor = (
   return undefined;
 };
 
-const useMerkleDistributor = (): MerkleDistributorAdjustable | undefined => {
+const useMerkleDistributor = () => {
   const { ethereumProvider, active } = useWeb3Wallet();
   const [contract, setContract] = useState<MerkleDistributorAdjustable>();
+  const [contract2, setContract2] = useState<MerkleDistributorAdjustable>();
 
   useEffect(() => {
-    setContract(getMerkleDistributor(ethereumProvider));
+    setContract(getMerkleDistributor(ethereumProvider, false));
+    setContract2(getMerkleDistributor(ethereumProvider, true));
   }, [ethereumProvider, active]);
 
-  return contract;
+  return {
+    contract,
+    contract2
+  };
 };
 
 export default useMerkleDistributor;
