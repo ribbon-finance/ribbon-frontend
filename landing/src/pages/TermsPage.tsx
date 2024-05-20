@@ -38,10 +38,6 @@ const SectionAnswer = styled(SecondaryText)`
   margin-bottom: 24px;
 `;
 
-const StyledLink = styled.a`
-  color: white;
-`;
-
 const sections = [
   {
     sectionName: "Overview",
@@ -52,12 +48,13 @@ const sections = [
           <span>
             <p>
               These Terms of Use, together with any documents and additional
-              terms they, by reference, expressly incorporate (collectively,
-              these "Terms"), are entered into between Ribbon Research LLC
-              (hereinafter referred to as "Ribbon", "we", "our" or "us") and the
-              person making use of Ribbon's services (hereinafter referred to as
-              the "User", "you" or "your"). These Terms constitute a binding
-              legal agreement between Ribbon and the User following such User's
+              terms they, by reference, expressly incorporated (collectively,
+              these “Terms”), are entered into between Ribbon Research LLC
+              (hereinafter referred to as “Ribbon”, “we”, “our” or “us”) and the
+              person making use of Ribbon’s services, including, but not limited
+              to, the use of this website (hereinafter referred to as the
+              “User”, “you” or “your”). These Terms constitute a binding legal
+              agreement between Ribbon and the User following such User’s
               acceptance of such Terms.
             </p>
             <p>
@@ -173,27 +170,27 @@ const sections = [
               that:
             </p>
             <p>
-              1. The User is an individual that is 18 years of age or older,
+              2.1 The User is an individual that is 18 years of age or older,
               capable of forming a binding contract with us, and under no legal
               impediment or incapability;
             </p>
             <p>
-              2. The User is an authorised representative of a company and have
+              2.2 The User is an authorised representative of a company and have
               the authority from that company to access the Portal and form a
               binding agreement with us on behalf of that company;
             </p>
             <p>
-              3. The User is not identified as a "Specially Designated National"
-              by the US Office of Foreign Assets Control or otherwise subject to
-              any sanctions or restrictions which may affect our ability to
-              provide the User with our Services;
+              2.3 The User is not identified as a "Specially Designated
+              National" by the US Office of Foreign Assets Control or otherwise
+              subject to any sanctions or restrictions which may affect our
+              ability to provide the User with our Services;
             </p>
             <p>
-              4. The User has the full power and authority to agree to these
+              2.4 The User has the full power and authority to agree to these
               Terms and to use any Service offered by Ribbon through the Portal;
             </p>
             <p>
-              5. The User has read the Risk Sections and the Product Terms of
+              2.5 The User has read the Risk Sections and the Product Terms of
               Use prior to using any Service, and that you are solely
               responsible for your trading or non-trading actions and have had
               the opportunity to take any legal, financial, accounting or other
@@ -201,30 +198,30 @@ const sections = [
               using any of the Services;
             </p>
             <p>
-              6. The User will only trade with legally obtained digital assets
+              2.6 The User will only trade with legally obtained digital assets
               that belong to The User, and that The User has full legal and
               beneficial title to any such assets at the time The User transfers
               them to us;
             </p>
             <p>
-              7. The User is not located in, or a resident of, any Restricted
+              2.7 The User is not located in, or a resident of, any Restricted
               Territory (as defined below) and has not used any technical means
-              to misrepresent its geographical location to access the Portal
-              from any Restricted Territory; and
+              (including a VPN) to misrepresent its geographical location to
+              access the Portal from any Restricted Territory; and
             </p>
             <p>
-              8. The User is acting for its own account as principal and not as
-              trustee, agent or otherwise on behalf of any other persons
+              2.8 The User is acting for its own account as principal and not as
+              trustee, agent or otherwise on behalf of any other persons.
             </p>
             <p>
               Your access to the Portal and any Services may be restricted based
               on your jurisdiction or geographical location. You must not use
               the Protocol if you are located in or a citizen or resident of any
-              state, country, territory or other jurisdiction in which use of
+              state, country, territory, or other jurisdiction in which use of
               the Portal or the Services would be illegal or otherwise violate
               any applicable law (a “Restricted Territory”). The fact that the
               Portal is accessible in a Restricted Territory or that the Portal
-              allows the use of the official language of a Restricted Territory
+              allows the use of the official language of a Restricted Territory,
               or a language commonly used in a Restricted Territory must not be
               construed as a license to use the Portal in such a Restricted
               Territory. We unconditionally reserve the right to restrict access
@@ -232,17 +229,28 @@ const sections = [
               to prevent access to the Portal or any Services from any
               Restricted Territory. No services are offered to persons or
               entities who reside in, are citizens of, are located in, are
-              incorporated in, or have a registered office in any restricted
-              territory (as defined below). (a) Belarus, Cuba, Democratic
-              People’s Republic of Korea (DPRK), Democratic Republic of Congo,
-              Iran, Lebanon, Libya, Mali, Myanmar, Nicaragua, Russia, Somalia,
-              South Sudan, Sudan, Syria, the following regions of Ukraine:
-              Crimea, Donetsk and Luhansk, or any other country or region that
-              is the subject of comprehensive country-wide or region-wide or
-              economic sanctions by the United Nations, United States of
-              America, the European Union or the United Kingdom; and (b) United
-              States of America, the United Kingdom, Canada, and the People’s
-              Republic of China.
+              incorporated in, or have a registered office in any Restricted
+              Territory, which include, without limitation the following: (a)
+              Belarus, Cuba, Democratic People’s Republic of Korea (DPRK),
+              Democratic Republic of Congo, Iran, Lebanon, Libya, Mali, Myanmar,
+              Nicaragua, Russia, Somalia, South Sudan, Sudan, Syria, the
+              following regions of Ukraine: Crimea, Donetsk and Luhansk, or any
+              other country or region that is the subject of comprehensive
+              country-wide or region-wide or economic sanctions by the United
+              Nations, United States of America, the European Union or the
+              United Kingdom; and (b) United States of America, the United
+              Kingdom, Canada, and the People’s Republic of China. If you are a
+              resident or citizen of or otherwise are located or incorporated
+              in, or have a registered office in any Restricted Territory, do
+              not use Ribbon’s Portal or Services or attempt to use a virtual
+              private network (VPN) or other technology to circumvent the
+              restrictions set forth herein. Use of a VPN to access Ribbon’s
+              Portal or Services is expressly prohibited. You acknowledge and
+              agree that you will not use a VPN or similar technology to access
+              or use Ribbon’s Portal or Services in any way. We reserve the
+              right to restrict or discontinue your access to and use of the
+              Portal and Services if we know or have reason to suspect you are
+              using a VPN for such access or use.
             </p>
           </span>
         ),
@@ -355,13 +363,6 @@ const sections = [
               the risks mentioned in Sections 5, 6, 7 and 8.
             </p>
             <p>
-              The User hereby irrevocably waives, releases and discharges all
-              claims, whether known or unknown, against Ribbon, its affiliates
-              and their respective shareholders, members, directors, officers,
-              employees, agents and representatives related to any of the risks
-              set forth herein.
-            </p>
-            <p>
               4.7 Your Content - The User hereby grants to Ribbon a
               royalty-free, fully paid-up, sublicensable, transferable,
               perpetual, irrevocable, non-exclusive, worldwide license to use,
@@ -402,7 +403,7 @@ const sections = [
               sentiment.
             </p>
             <p>
-              5.2 Lack of Information available: You may not have full access to
+              5.2 Lack of Information Available: You may not have full access to
               all the information relevant to the particular Digital Asset or
               its underlying platform or network. It may not be possible to
               obtain updated information regarding the progress or any changes
@@ -459,7 +460,7 @@ const sections = [
               holders of Digital Assets to conduct transactions. Information
               relating to these Network Events may be difficult to ascertain
               ahead of time and may be subject to limited oversight by any third
-              party capable of intervening to stabilise the network.
+              party capable of intervening to stabilize the network.
             </p>
           </span>
         ),
@@ -469,7 +470,7 @@ const sections = [
         answer: (
           <span>
             <p>
-              6.1 Source code changes and flaws: The various source codes
+              6.1 Source Code Changes and Flaws: The various source codes
               underlying Digital Assets and smart contracts are subject to
               change and may at any time contain one or more defects,
               weaknesses, inconsistencies, errors or bugs. Unless otherwise
@@ -585,7 +586,7 @@ const sections = [
               of its use of the Services.
             </p>
             <p>
-              7.4 Legal status of digital assets, Services and Portal: The laws
+              7.4 Legal Status of Digital Assets, Services and Portal: The laws
               of various jurisdictions may apply to Digital Assets or Services
               offered through the Ribbon Portal. Applying these laws and
               regulations to Digital Assets is largely untested, and laws and
@@ -764,29 +765,30 @@ const sections = [
         answer: (
           <span>
             <p>
-              The Portal and the Services are provided on an "as is" and "as
-              available" basis. The Indemnified Parties make no guarantees in
+              The Portal and the Services are provided on an “as is” and “as
+              available” basis. The Indemnified Parties make no guarantees in
               connection with the Portal or the Services. To the maximum extent
               permitted under applicable law, the Indemnified Parties disclaim
               all warranties and conditions, whether express or implied, of
               merchantability, fitness for a particular purpose, or
               non-infringement and disclaim all responsibility and liability
-              for: (1) The Portal or the Services is accurate, complete,
-              current, reliable, uninterrupted, timely, secure, or error-free.
-              Information (including, without limitation, the value or outcome
-              of any transaction) available through the Portal is provided for
-              general information only and should not be relied upon or used as
-              the sole basis for making decisions. Any reliance on the Services
-              is at your own risk; (2) You expressly acknowledge, understand,
-              and agree that the Services may contain audio-visual effects,
-              strobe lights or other materials that may affect your physical
-              senses or physical condition. (3) The User expressly acknowledges
-              that the Indemnified Parties are not liable for loss or damage
-              caused by another User's conduct, unauthorised actors, or any
-              unauthorised access to or use of the Portal or Services; and (4)
-              Viruses, worms, trojan horses, time bombs, cancelbots, spiders,
-              malware or other types of malicious code that may be used to
-              affect the functionality or operation of the Portal or Services.
+              for: (1) the Portal or the Services being inaccurate, incomplete,
+              out of date, unreliable, interrupted, untimely, unsecure, or
+              subject to errors or other issues. Information (including, without
+              limitation, the value or outcome of any transaction) available
+              through the Portal is provided for general information only and
+              should not be relied upon or used as the sole basis for making
+              decisions. Any reliance on the Services is at your own risk; and
+              (2) viruses, worms, trojan horses, time bombs, cancelbots,
+              spiders, malware or other types of malicious code that may be used
+              to affect the functionality or operation of the Portal or
+              Services. You expressly acknowledge, understand, and agree that
+              the Services may contain audio-visual effects, strobe lights or
+              other materials that may affect your physical senses or physical
+              condition. The User expressly acknowledges that the Indemnified
+              Parties are not liable for loss or damage caused by another User’s
+              conduct, unauthorized actors, or any unauthorized access to or use
+              of the Portal or Services.
             </p>
           </span>
         ),
@@ -898,6 +900,17 @@ const sections = [
               any prior or contemporaneous written or oral agreements,
               communications and other understandings relating to the subject
               matter of the Terms.
+            </p>
+          </span>
+        ),
+      },
+      {
+        question: "20. CONTACT US",
+        answer: (
+          <span>
+            <p>
+              Please send your feedback, comments, or requests for technical
+              support to julian@ribbon.finance.
             </p>
           </span>
         ),
