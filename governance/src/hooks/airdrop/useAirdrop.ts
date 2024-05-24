@@ -52,11 +52,34 @@ const getProof = (account: string) => {
     ? (ProofData as AirdropProof)
     : (ProofTestnetData as AirdropProof);
 
+  // lowercased all claims
+  const proofClaims = Object.keys(proof.claims).reduce((prev, address) => {
+    return {
+      ...prev,
+      [address.toLowerCase()]: proof.claims[address],
+    };
+  }, proof.claims);
+  proof.claims = proofClaims;
+
   const missedProof = isProduction()
     ? (ProofData2 as AirdropProof)
     : (ProofTestnetData as AirdropProof);
 
-  const isMissedAccount = !proof.claims[account] && missedProof.claims[account];
+  // lowercased all claims
+  const missedProofClaims = Object.keys(missedProof.claims).reduce(
+    (prev, address) => {
+      return {
+        ...prev,
+        [address.toLowerCase()]: missedProof.claims[address],
+      };
+    },
+    missedProof.claims
+  );
+  missedProof.claims = missedProofClaims;
+
+  const isMissedAccount =
+    !Boolean(proof.claims[account.toLowerCase()]) &&
+    Boolean(missedProof.claims[account.toLowerCase()]);
 
   return {
     merkleProof: isMissedAccount ? missedProof : proof,
@@ -100,7 +123,7 @@ const useAirdrop = () => {
       return;
     }
 
-    const airdropClaim = proof.merkleProof.claims[account];
+    const airdropClaim = proof.merkleProof.claims[account.toLowerCase()];
     const totalBn = BigNumber.from(airdropClaim?.amount || 0);
     const total = parseFloat(formatUnits(totalBn, rbnDecimals));
 
