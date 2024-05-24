@@ -56,25 +56,30 @@ const getProof = (account: string) => {
   const proofClaims = Object.keys(proof.claims).reduce((prev, address) => {
     return {
       ...prev,
-      [address.toLowerCase()]: proof.claims[address]
-    }
-  }, proof.claims)
-  proof.claims = proofClaims
+      [address.toLowerCase()]: proof.claims[address],
+    };
+  }, proof.claims);
+  proof.claims = proofClaims;
 
   const missedProof = isProduction()
     ? (ProofData2 as AirdropProof)
     : (ProofTestnetData as AirdropProof);
 
   // lowercased all claims
-  const missedProofClaims = Object.keys(missedProof.claims).reduce((prev, address) => {
-    return {
-      ...prev,
-      [address.toLowerCase()]: missedProof.claims[address]
-    }
-  }, missedProof.claims)
-  missedProof.claims = missedProofClaims
+  const missedProofClaims = Object.keys(missedProof.claims).reduce(
+    (prev, address) => {
+      return {
+        ...prev,
+        [address.toLowerCase()]: missedProof.claims[address],
+      };
+    },
+    missedProof.claims
+  );
+  missedProof.claims = missedProofClaims;
 
-  const isMissedAccount = !Boolean(proof.claims[account.toLowerCase()]) && Boolean(missedProof.claims[account.toLowerCase()]);
+  const isMissedAccount =
+    !Boolean(proof.claims[account.toLowerCase()]) &&
+    Boolean(missedProof.claims[account.toLowerCase()]);
 
   return {
     merkleProof: isMissedAccount ? missedProof : proof,
