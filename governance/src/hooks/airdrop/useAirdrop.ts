@@ -77,9 +77,7 @@ const getProof = (account: string) => {
   );
   missedProof.claims = missedProofClaims;
 
-  const isMissedAccount =
-    !Boolean(proof.claims[account.toLowerCase()]) &&
-    Boolean(missedProof.claims[account.toLowerCase()]);
+  const isMissedAccount = Boolean(missedProof.claims[account.toLowerCase()]);
 
   return {
     merkleProof: isMissedAccount ? missedProof : proof,
@@ -146,7 +144,9 @@ const useAirdrop = () => {
       breakdown: {
         [AirdropBreakdownKeys.maxStaked]: !totalBn.isZero(),
         [AirdropBreakdownKeys.heldRbnAfterTGE]:
-          airdropBreakdown[account.toLowerCase()]?.heldRbnAfterTGE,
+        proof.isMissedAccount
+          ? true
+          : airdropBreakdown[account.toLowerCase()]?.heldRbnAfterTGE,
       },
       unclaimedAmount: totalBn.sub(claimedAmount),
     });
