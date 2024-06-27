@@ -41,7 +41,6 @@ export const vaultGraphql = (version: VaultVersion, chain: Chains) =>
             symbol
             totalBalance
             totalPremiumEarned
-            totalWithdrawalFee
             totalNotionalVolume
             underlyingAsset
             underlyingSymbol
