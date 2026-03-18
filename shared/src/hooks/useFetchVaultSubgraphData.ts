@@ -53,8 +53,6 @@ const useFetchVaultSubgraphData = () => {
     defaultVaultSubgraphData
   );
 
-  console.log("what is account: ", account);
-  console.log("what is data: ", data);
   const { transactionsCounter } = usePendingTransactions();
   const [, setMulticallCounter] = useState(0);
 

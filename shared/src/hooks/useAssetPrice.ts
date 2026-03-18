@@ -102,7 +102,7 @@ export const useFetchAssetsPrice = (
             [asset]: {
               loading: false,
               latestPrice: 0,
-              dailyChange: 0
+              dailyChange: 0,
             },
           };
         });
