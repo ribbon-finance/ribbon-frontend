@@ -101,12 +101,8 @@ export const useFetchAssetsPrice = (
             ...prev,
             [asset]: {
               loading: false,
-              latestPrice: coinId ? latestPrices[coinId].current_price : 0,
-              dailyChange: coinId
-                ? (latestPrices[coinId].price_change_24h /
-                    latestPrices[coinId].current_price) *
-                  100
-                : 0,
+              latestPrice: 0,
+              dailyChange: 0
             },
           };
         });
