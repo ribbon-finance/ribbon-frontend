@@ -1,6 +1,6 @@
-import Airtable from "airtable";
 import { useEffect, useMemo, useState } from "react";
 import { VaultOptions } from "../constants/constants";
+import { getAirtableBase } from "../utils/airtable";
 import useAssetPrice from "./useAssetPrice";
 
 export type EarnData = {
@@ -99,11 +99,6 @@ const airtableValueArray = [
   "borrowRate",
 ];
 
-Airtable.configure({
-  endpointUrl: "https://api.airtable.com",
-  apiKey: process.env.REACT_APP_AIRTABLE_API_KEY,
-});
-
 const baseName = (vault: VaultOptions) => {
   switch (vault) {
     case "rEARN":
@@ -115,7 +110,7 @@ const baseName = (vault: VaultOptions) => {
   }
 };
 
-const base = Airtable.base("appkUHzxJ1lehQTIt");
+const base = getAirtableBase("appkUHzxJ1lehQTIt");
 
 const recordHasUndefined = (recordTemp: any): boolean => {
   for (const key in airtableValueArray) {
@@ -226,6 +221,22 @@ export const useAirtableEarnData = (vaultOption: VaultOptions) => {
   });
 
   useEffect(() => {
+    if (!base) {
+      setValues({
+        strikePrice: 0,
+        baseYield: defaultEarnData(vaultOption).baseYield,
+        optionPrice: defaultEarnData(vaultOption).optionPrice,
+        participationRate: defaultEarnData(vaultOption).participationRate,
+        lowerBarrierPercentage:
+          defaultEarnData(vaultOption).lowerBarrierPercentage,
+        upperBarrierPercentage:
+          defaultEarnData(vaultOption).upperBarrierPercentage,
+        borrowRate: defaultEarnData(vaultOption).borrowRate,
+      });
+      setItmRecords([]);
+      return;
+    }
+
     // 1. When init load schedules
     base(baseName(vaultOption))
       .select({ view: "Grid view" })
@@ -369,7 +380,10 @@ export const useAirtableEarnData = (vaultOption: VaultOptions) => {
 
   if (loading || !values) {
     //placeholder values while values are loading
-    return defaultEarnData(vaultOption);
+    return {
+      ...defaultEarnData(vaultOption),
+      loading,
+    };
   }
 
   return {

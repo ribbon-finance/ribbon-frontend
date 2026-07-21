@@ -35,7 +35,13 @@ const TreasuryAssets: Assets[] = [
   "AAVE",
 ];
 
-const useFetchTreasuryBalanceData = () => {
+type FetchTreasuryBalanceDataOptions = {
+  enabled?: boolean;
+};
+
+const useFetchTreasuryBalanceData = ({
+  enabled = true,
+}: FetchTreasuryBalanceDataOptions = {}) => {
   const [data, setData] = useState(defaultTreasuryBalanceData);
   const { provider } = useETHWeb3Context();
   const queryChainId = isDevelopment()
@@ -43,6 +49,11 @@ const useFetchTreasuryBalanceData = () => {
     : CHAINID.ETH_MAINNET;
 
   const doMulticall = useCallback(async () => {
+    if (!enabled) {
+      setData((curr) => ({ ...curr, loading: false }));
+      return;
+    }
+
     if (!isProduction()) {
       console.time("Treasury Balance Data Fetch"); // eslint-disable-line
     }
@@ -82,7 +93,7 @@ const useFetchTreasuryBalanceData = () => {
     if (!isProduction()) {
       console.timeEnd("Treasury Balance Data Fetch"); // eslint-disable-line
     }
-  }, [queryChainId, provider]);
+  }, [enabled, queryChainId, provider]);
 
   useEffect(() => {
     doMulticall();

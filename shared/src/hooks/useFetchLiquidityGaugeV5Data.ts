@@ -22,7 +22,13 @@ import { calculateClaimableRbn } from "../utils/governanceMath";
 import useWeb3Wallet from "./useWeb3Wallet";
 import { getVaultContract } from "./useVaultContract";
 
-const useFetchLiquidityGaugeV5Data = (): LiquidityGaugeV5PoolData => {
+const useFetchLiquidityGaugeV5Data = ({
+  enabled = true,
+  includeAccountData = true,
+}: {
+  enabled?: boolean;
+  includeAccountData?: boolean;
+} = {}): LiquidityGaugeV5PoolData => {
   const {
     active,
     account: web3Account,
@@ -41,6 +47,14 @@ const useFetchLiquidityGaugeV5Data = (): LiquidityGaugeV5PoolData => {
   const [, setMulticallCounter] = useState(0);
 
   const doMulticall = useCallback(async () => {
+    if (!enabled) {
+      setData({
+        ...defaultLiquidityGaugeV5PoolData,
+        loading: false,
+      });
+      return;
+    }
+
     if (
       // If a wallet is connected and its NOT ETH, dont fetch
       (chainId && !isEthNetwork(chainId)) ||
@@ -79,6 +93,9 @@ const useFetchLiquidityGaugeV5Data = (): LiquidityGaugeV5PoolData => {
     ]);
     const [rate, periodEndTime] = await minterResponsePromises;
 
+    const userAccount = includeAccountData ? account : undefined;
+    const userActive = includeAccountData ? active : false;
+
     const gaugeResponsesPromises = Promise.all(
       Object.keys(VaultLiquidityMiningMap.lg5).map(async (_vault) => {
         const vault = _vault as VaultOptions;
@@ -86,13 +103,13 @@ const useFetchLiquidityGaugeV5Data = (): LiquidityGaugeV5PoolData => {
         const lg5Contract = getLiquidityGaugeV5(
           ethereumProvider || provider,
           vault,
-          active
+          userActive
         )!;
 
         const vaultContract = getVaultContract(
           ethereumProvider || provider,
           vault,
-          active
+          userActive
         );
 
         /**
@@ -103,7 +120,7 @@ const useFetchLiquidityGaugeV5Data = (): LiquidityGaugeV5PoolData => {
         const isKilled = await lg5Contract.is_killed();
         const unconnectedPromises: Promise<BigNumber>[] = [
           lg5Contract.totalSupply(),
-          lg5Contract.working_balances(account ?? constants.AddressZero),
+          lg5Contract.working_balances(userAccount ?? constants.AddressZero),
           lg5Contract.working_supply(),
           gaugeControllerContract["gauge_relative_weight(address)"](
             VaultLiquidityMiningMap.lg5[vault]!
@@ -123,21 +140,21 @@ const useFetchLiquidityGaugeV5Data = (): LiquidityGaugeV5PoolData => {
          * 4. Claimed rbn
          */
         const promises = unconnectedPromises.concat(
-          account
+          userAccount
             ? [
-                lg5Contract.balanceOf(account),
-                vaultContract!.shares(account),
-                lg5Contract.integrate_fraction(account),
+                lg5Contract.balanceOf(userAccount),
+                vaultContract!.shares(userAccount),
+                lg5Contract.integrate_fraction(userAccount),
                 minterContract.minted(
-                  account,
+                  userAccount,
                   VaultLiquidityMiningMap.lg5[vault]!
                 ),
 
                 // To calculate claimable rbn
-                lg5Contract.integrate_inv_supply_of(account),
+                lg5Contract.integrate_inv_supply_of(userAccount),
 
                 // Block timestamp of the last time integrate_checkpoint was called
-                lg5Contract.integrate_checkpoint_of(account),
+                lg5Contract.integrate_checkpoint_of(userAccount),
               ]
             : [
                 // Default value when not connected
@@ -250,8 +267,10 @@ const useFetchLiquidityGaugeV5Data = (): LiquidityGaugeV5PoolData => {
   }, [
     account,
     active,
+    enabled,
     ethereumProvider,
     gaugeControllerContract,
+    includeAccountData,
     minterContract,
     provider,
     chainId,

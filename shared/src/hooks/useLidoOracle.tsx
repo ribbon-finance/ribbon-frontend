@@ -33,12 +33,23 @@ export const defaultLidoOracleData: LidoOracleData = {
   loading: true,
 };
 
-export const useFetchLidoOracleData = () => {
+type FetchLidoOracleDataOptions = {
+  enabled?: boolean;
+};
+
+export const useFetchLidoOracleData = ({
+  enabled = true,
+}: FetchLidoOracleDataOptions = {}) => {
   const { provider } = useETHWeb3Context();
 
   const [data, setData] = useState(defaultLidoOracleData);
 
   const fetchLidoOracleData = useCallback(async () => {
+    if (!enabled) {
+      setData((prev) => ({ ...prev, loading: false }));
+      return;
+    }
+
     if (!isProduction()) {
       console.time("Lido Oracle Data Fetch"); // eslint-disable-line
     }
@@ -64,7 +75,7 @@ export const useFetchLidoOracleData = () => {
     if (!isProduction()) {
       console.timeEnd("Lido Oracle Data Fetch"); // eslint-disable-line
     }
-  }, [provider]);
+  }, [enabled, provider]);
 
   useEffect(() => {
     fetchLidoOracleData();

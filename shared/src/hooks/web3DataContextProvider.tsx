@@ -11,18 +11,50 @@ import useFetchV2VaultData from "./useFetchV2VaultData";
 import useFetchVaultData from "./useFetchVaultData";
 import { useFetchLidoOracleData } from "./useLidoOracle";
 
-export const Web3DataContextProvider: React.FC<{ children: ReactElement }> = ({
+type Web3DataContextProviderProps = {
+  children: ReactElement;
+  fetchAssetBalances?: boolean;
+  fetchLiquidityGaugeV5?: boolean;
+  fetchLiquidityMining?: boolean;
+  fetchSolanaVaults?: boolean;
+  fetchLidoOracle?: boolean;
+  fetchTreasuryBalance?: boolean;
+  includeAccountData?: boolean;
+};
+
+export const Web3DataContextProvider: React.FC<
+  Web3DataContextProviderProps
+> = ({
   children,
+  fetchAssetBalances = true,
+  fetchLiquidityGaugeV5 = true,
+  fetchLiquidityMining = true,
+  fetchSolanaVaults = true,
+  fetchLidoOracle = true,
+  fetchTreasuryBalance = true,
+  includeAccountData = true,
 }) => {
-  const vaultData = useFetchVaultData();
-  const v2VaultData = useFetchV2VaultData();
-  const earnVaultData = useFetchEarnVaultData();
-  const solVaultData = useFetchSolVaultData();
-  const assetBalance = useFetchAssetBalanceData();
-  const liquidityGaugeV5Pool = useFetchLiquidityGaugeV5Data();
-  const liquidityMiningPool = useFetchLiquidityMiningData();
-  const lidoOracle = useFetchLidoOracleData();
-  const treasuryBalance = useFetchTreasuryBalanceData();
+  const vaultData = useFetchVaultData({ includeAccountData });
+  const v2VaultData = useFetchV2VaultData({ includeAccountData });
+  const earnVaultData = useFetchEarnVaultData({ includeAccountData });
+  const solVaultData = useFetchSolVaultData({ enabled: fetchSolanaVaults });
+  const assetBalance = useFetchAssetBalanceData({
+    enabled: fetchAssetBalances,
+    poll: false,
+    pollingFrequency: 20000,
+  });
+  const liquidityGaugeV5Pool = useFetchLiquidityGaugeV5Data({
+    enabled: fetchLiquidityGaugeV5,
+    includeAccountData,
+  });
+  const liquidityMiningPool = useFetchLiquidityMiningData({
+    enabled: fetchLiquidityMining,
+    includeAccountData,
+  });
+  const lidoOracle = useFetchLidoOracleData({ enabled: fetchLidoOracle });
+  const treasuryBalance = useFetchTreasuryBalanceData({
+    enabled: fetchTreasuryBalance,
+  });
 
   return (
     <Web3DataContext.Provider

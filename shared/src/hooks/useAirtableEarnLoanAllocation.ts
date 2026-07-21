@@ -1,8 +1,9 @@
-import Airtable, { Record, FieldSet } from "airtable";
+import { Record, FieldSet } from "airtable";
 import { useEffect, useMemo, useState } from "react";
 
 import { PoolOptions } from "../constants/lendConstants";
 import { PoolList } from "../constants/lendConstants";
+import { getAirtableBase } from "../utils/airtable";
 export type EarnLoanAllocationResponse = {
   [pool in PoolOptions]: number;
 };
@@ -33,20 +34,20 @@ const recordHasUndefined = (recordTemp: any): boolean => {
   return false;
 };
 
-Airtable.configure({
-  endpointUrl: "https://api.airtable.com",
-  apiKey: process.env.REACT_APP_AIRTABLE_API_KEY,
-});
-
 const BASE_NAME = "EarnLoanAllocation";
 
-const base = Airtable.base("appkUHzxJ1lehQTIt");
+const base = getAirtableBase("appkUHzxJ1lehQTIt");
 
 export const useAirtableEarnLoanAllocation = () => {
   const [records, setRecords] = useState<Record<FieldSet>[]>();
   const [, setError] = useState<string>();
 
   useEffect(() => {
+    if (!base) {
+      setRecords([]);
+      return;
+    }
+
     // 1. When init load schedules
     base(BASE_NAME)
       .select({ view: "Grid view" })

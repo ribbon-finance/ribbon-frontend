@@ -24,7 +24,11 @@ import { isVaultSupportedOnChain } from "../utils/vault";
 import { calculatePricePerShare, getNextFridayTimestamp } from "../utils/math";
 import { RibbonV2ThetaVault } from "../codegen";
 
-const useFetchV2VaultData = (): V2VaultData => {
+const useFetchV2VaultData = ({
+  includeAccountData = true,
+}: {
+  includeAccountData?: boolean;
+} = {}): V2VaultData => {
   const {
     chainId,
     isActive: web3Active,
@@ -64,7 +68,8 @@ const useFetchV2VaultData = (): V2VaultData => {
           getVaultNetwork(vault)
         );
         const active = Boolean(
-          web3Active &&
+          includeAccountData &&
+            web3Active &&
             isVaultSupportedOnChain(
               vault,
               chainId || inferredProviderFromVault._network.chainId
@@ -272,6 +277,7 @@ const useFetchV2VaultData = (): V2VaultData => {
     provider,
     expiryTimestamp,
     account,
+    includeAccountData,
   ]);
 
   useEffect(() => {

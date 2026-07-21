@@ -1,6 +1,6 @@
-import Airtable from "airtable";
 import { useEffect, useMemo, useState } from "react";
 import { VaultOptions } from "../constants/constants";
+import { getAirtableBase } from "../utils/airtable";
 import useWeb3WalletReadOnly from "./useWeb3WalletReadOnly";
 
 export type VIP = {
@@ -36,14 +36,9 @@ const airtableValueArray = [
   "passcodeHash",
 ];
 
-Airtable.configure({
-  endpointUrl: "https://api.airtable.com",
-  apiKey: process.env.REACT_APP_AIRTABLE_API_KEY,
-});
-
 const baseName = "VIP";
 
-const base = Airtable.base("appkUHzxJ1lehQTIt");
+const base = getAirtableBase("appkUHzxJ1lehQTIt");
 
 const recordHasUndefined = (recordTemp: any): boolean => {
   for (const key in airtableValueArray) {
@@ -60,6 +55,12 @@ export const useAirtableVIPData = () => {
   const [loading, setLoading] = useState<boolean>(true);
   const { account } = useWeb3WalletReadOnly();
   useEffect(() => {
+    if (!base) {
+      setValues([]);
+      setLoading(false);
+      return;
+    }
+
     // 1. When init load schedules
     base(baseName)
       .select({ view: "Grid view" })

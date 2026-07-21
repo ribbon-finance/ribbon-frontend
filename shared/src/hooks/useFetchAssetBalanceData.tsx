@@ -34,12 +34,14 @@ export const defaultUserAssetBalanceData: UserAssetBalanceData = {
 
 const useFetchAssetBalanceData = (
   {
+    enabled,
     poll,
     pollingFrequency,
   }: {
+    enabled: boolean;
     poll: boolean;
     pollingFrequency: number;
-  } = { poll: false, pollingFrequency: 20000 }
+  } = { enabled: true, poll: false, pollingFrequency: 20000 }
 ) => {
   const [data, setData] = useState<UserAssetBalanceData>(
     defaultUserAssetBalanceData
@@ -57,6 +59,11 @@ const useFetchAssetBalanceData = (
   const [chain] = useChain();
   const doMulticall = useCallback(async () => {
     try {
+      if (!enabled) {
+        setData({ ...defaultUserAssetBalanceData, loading: false });
+        return;
+      }
+
       if (!isProduction()) {
         console.time("Asset Balance Data Fetch"); // eslint-disable-line
       }
@@ -149,6 +156,7 @@ const useFetchAssetBalanceData = (
     active,
     chain,
     chainId,
+    enabled,
     ethereumProvider,
     connection,
     publicKey,

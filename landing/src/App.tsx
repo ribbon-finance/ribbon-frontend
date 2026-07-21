@@ -11,6 +11,10 @@ import { WalletProvider as SolanaWalletProvider } from "@solana/wallet-adapter-r
 import { SubgraphDataContextProvider } from "shared/lib/hooks/subgraphDataContext";
 import { ExternalAPIDataContextProvider } from "shared/lib/hooks/externalAPIDataContext";
 import { ChainContextProvider } from "shared/lib/hooks/chainContext";
+import {
+  metaMask,
+  hooks as metaMaskHooks,
+} from "shared/lib/utils/wallet/connectors/metamask";
 
 import Header from "./components/Header";
 import Hero from "./components/Hero";
@@ -37,7 +41,7 @@ const MainContainer = styled.div`
 function App() {
   return (
     <ChainContextProvider>
-      <Web3ReactProvider connectors={[]}>
+      <Web3ReactProvider connectors={[[metaMask, metaMaskHooks]]}>
         <SolanaWalletProvider wallets={[]} autoConnect={false}>
           <SubgraphDataContextProvider>
             <ExternalAPIDataContextProvider>

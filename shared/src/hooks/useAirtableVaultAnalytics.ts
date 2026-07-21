@@ -1,6 +1,7 @@
-import Airtable, { Record, FieldSet } from "airtable";
+import { Record, FieldSet } from "airtable";
 import { useEffect, useMemo, useState } from "react";
 import { VaultList, VaultOptions } from "../constants/constants";
+import { getAirtableBase } from "../utils/airtable";
 
 export type VaultAnalyticsResponses = {
   [vault in VaultOptions]: {
@@ -38,20 +39,20 @@ const recordHasUndefined = (recordTemp: any): boolean => {
   return false;
 };
 
-Airtable.configure({
-  endpointUrl: "https://api.airtable.com",
-  apiKey: process.env.REACT_APP_AIRTABLE_API_KEY,
-});
-
 const BASE_NAME = "Analytics";
 
-const base = Airtable.base("app21SlIS88M8IjHj");
+const base = getAirtableBase("app21SlIS88M8IjHj");
 
 export const useAirtableVaultAnalytics = () => {
   const [records, setRecords] = useState<Record<FieldSet>[]>();
   const [, setError] = useState<string>();
 
   useEffect(() => {
+    if (!base) {
+      setRecords([]);
+      return;
+    }
+
     // 1. When init load schedules
     base(BASE_NAME)
       .select({ view: "Grid view" })

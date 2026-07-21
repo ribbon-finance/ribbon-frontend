@@ -14,14 +14,30 @@ import {
 } from "../utils/vault";
 import { TOKEN_PROGRAM_ID, Token } from "@solana/spl-token";
 import useWeb3Wallet from "./useWeb3Wallet";
+import { useChain } from "./chainContext";
+import { isSolanaChain } from "../utils/chains";
 
-const useFetchSolVaultData = (): SolanaVaultData => {
+const useFetchSolVaultData = ({
+  enabled: enabledOption = true,
+}: {
+  enabled?: boolean;
+} = {}): SolanaVaultData => {
   const { connection } = useConnection();
-  const { vault, client } = useFlexVault();
+  const [chain] = useChain();
+  const enabled = enabledOption && isSolanaChain(chain);
+  const { vault, client } = useFlexVault(enabled);
   const { publicKey } = useWeb3Wallet();
   const [data, setData] = useState<SolanaVaultData>();
 
   useEffect(() => {
+    if (!enabled) {
+      setData({
+        ...defaultSolanaVaultData,
+        loading: false,
+      });
+      return;
+    }
+
     const doMulticall = async () => {
       // Should always set loading to false when no vault and no conection
       if (!vault || !connection) {
@@ -116,7 +132,7 @@ const useFetchSolVaultData = (): SolanaVaultData => {
     };
 
     doMulticall();
-  }, [publicKey, vault, client, connection]);
+  }, [enabled, publicKey, vault, client, connection]);
 
   return data || defaultSolanaVaultData;
 };

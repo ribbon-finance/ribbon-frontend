@@ -21,7 +21,13 @@ import { usePendingTransactions } from "./pendingTransactionsContext";
 import { getERC20TokenNameFromVault } from "../models/eth";
 import useWeb3Wallet from "./useWeb3Wallet";
 
-const useFetchLiquidityMiningData = (): LiquidityMiningPoolData => {
+const useFetchLiquidityMiningData = ({
+  enabled = true,
+  includeAccountData = true,
+}: {
+  enabled?: boolean;
+  includeAccountData?: boolean;
+} = {}): LiquidityMiningPoolData => {
   const { chainId, account: web3Account, provider } = useWeb3React();
   const { active } = useWeb3Wallet();
   const { provider: defaultProvider } = useWeb3Context();
@@ -34,6 +40,14 @@ const useFetchLiquidityMiningData = (): LiquidityMiningPoolData => {
   const [, setMulticallCounter] = useState(0);
 
   const doMulticall = useCallback(async () => {
+    if (!enabled) {
+      setData({
+        ...defaultLiquidityMiningPoolData,
+        loading: false,
+      });
+      return;
+    }
+
     if (!chainId) {
       return;
     }
@@ -91,7 +105,7 @@ const useFetchLiquidityMiningData = (): LiquidityMiningPoolData => {
          * 4. Claim Events
          */
         const promises = unconnectedPromises.concat(
-          active
+          includeAccountData && active
             ? [
                 contract.balanceOf(account!),
                 contract.earned(account!),
@@ -167,7 +181,15 @@ const useFetchLiquidityMiningData = (): LiquidityMiningPoolData => {
     if (!isProduction()) {
       console.timeEnd("Liquidity Mining Pool Data Fetch"); // eslint-disable-line
     }
-  }, [account, active, chainId, defaultProvider, provider]);
+  }, [
+    account,
+    active,
+    chainId,
+    defaultProvider,
+    enabled,
+    includeAccountData,
+    provider,
+  ]);
 
   useEffect(() => {
     doMulticall();

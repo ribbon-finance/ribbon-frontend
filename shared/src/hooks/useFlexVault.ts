@@ -22,7 +22,7 @@ interface FlexVaultData {
   update: () => void;
 }
 
-export const useFlexVault = (): FlexVaultData => {
+export const useFlexVault = (enabled = true): FlexVaultData => {
   const { connection } = useConnection();
   const anchorWallet = useAnchorWallet();
   const network = getSolanaNetwork();
@@ -33,6 +33,10 @@ export const useFlexVault = (): FlexVaultData => {
 
   // FLEX VAULT INITIALIZER
   useEffect(() => {
+    if (!enabled) {
+      return;
+    }
+
     if (!isProduction()) {
       console.time("SOL Vault Data Fetch"); // eslint-disable-line
     }
@@ -53,7 +57,7 @@ export const useFlexVault = (): FlexVaultData => {
 
       clearInterval(setVault);
     };
-  }, [flexVault]);
+  }, [enabled, flexVault]);
 
   // FLEX VAULT HANDLER
   useEffect(() => {
@@ -68,6 +72,7 @@ export const useFlexVault = (): FlexVaultData => {
     };
 
     if (
+      enabled &&
       !Flex.isInitialized &&
       !Vault.isInitialized &&
       !flexVault &&
@@ -77,7 +82,7 @@ export const useFlexVault = (): FlexVaultData => {
         setFlexVault(vault);
       });
     }
-  }, [connection, flexVault, flexAddress, network, vaultProgramId]);
+  }, [connection, enabled, flexVault, flexAddress, network, vaultProgramId]);
 
   // FLEX CLIENT HANDLER
   useEffect(() => {
@@ -85,12 +90,12 @@ export const useFlexVault = (): FlexVaultData => {
       return await VaultClient.load(connection, anchorWallet as Wallet);
     };
 
-    if (anchorWallet && !flexClient && connection) {
+    if (enabled && anchorWallet && !flexClient && connection) {
       loadFlexClient().then((client: VaultClient) => {
         setFlexClient(client);
       });
     }
-  }, [anchorWallet, connection, flexClient]);
+  }, [anchorWallet, connection, enabled, flexClient]);
 
   const update = () => {
     if (Flex) Flex.updateState();

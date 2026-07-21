@@ -17,7 +17,11 @@ import { RibbonEarnVault } from "../codegen";
 import { calculatePricePerShare } from "../utils/math";
 import useWeb3Wallet from "./useWeb3Wallet";
 
-const useFetchEarnVaultData = (): V2VaultData => {
+const useFetchEarnVaultData = ({
+  includeAccountData = true,
+}: {
+  includeAccountData?: boolean;
+} = {}): V2VaultData => {
   const { chainId, account: web3Account, provider } = useWeb3React();
   const { active: web3Active } = useWeb3Wallet();
   const account = impersonateAddress ? impersonateAddress : web3Account;
@@ -49,7 +53,8 @@ const useFetchEarnVaultData = (): V2VaultData => {
           getVaultNetwork(vault)
         );
         const active = Boolean(
-          web3Active &&
+          includeAccountData &&
+            web3Active &&
             isVaultSupportedOnChain(
               vault,
               chainId || inferredProviderFromVault?._network?.chainId
@@ -236,7 +241,7 @@ const useFetchEarnVaultData = (): V2VaultData => {
       return counter;
     });
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [getProviderForNetwork, web3Active, chainId, account]);
+  }, [getProviderForNetwork, web3Active, chainId, account, includeAccountData]);
 
   useEffect(() => {
     doMulticall();

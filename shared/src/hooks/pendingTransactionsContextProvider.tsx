@@ -18,7 +18,7 @@ export const PendingTransactionsContextProvider: React.FC<{
   );
   const [transactionsCounter, setTransactionsCounter] = useState(0);
   const [chain] = useChain();
-  const { update } = useFlexVault();
+  const { update } = useFlexVault(isSolanaChain(chain));
   const { connection } = useConnection();
   const { provider } = useWeb3Context();
 

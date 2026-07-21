@@ -16,7 +16,11 @@ import { usePendingTransactions } from "./pendingTransactionsContext";
 import { isVaultSupportedOnChain } from "../utils/vault";
 import useWeb3Wallet from "./useWeb3Wallet";
 
-const useFetchVaultData = (): VaultData => {
+const useFetchVaultData = ({
+  includeAccountData = true,
+}: {
+  includeAccountData?: boolean;
+} = {}): VaultData => {
   const { chainId, provider, account: web3Account } = useWeb3React();
   const { active: web3Active } = useWeb3Wallet();
   const { provider: defaultProvider } = useWeb3Context();
@@ -44,7 +48,9 @@ const useFetchVaultData = (): VaultData => {
       VaultList.map(async (vault) => {
         // If we don't support the vault on the chainId, we just return the inactive data state
         const active = Boolean(
-          web3Active && isVaultSupportedOnChain(vault, chainId || 1)
+          includeAccountData &&
+            web3Active &&
+            isVaultSupportedOnChain(vault, chainId || 1)
         );
         const contract = getVault(provider || defaultProvider, vault, active);
 
@@ -143,7 +149,14 @@ const useFetchVaultData = (): VaultData => {
     if (!isProduction()) {
       console.timeEnd("V1 Vault Data Fetch"); // eslint-disable-line
     }
-  }, [web3Active, chainId, provider, defaultProvider, account]);
+  }, [
+    web3Active,
+    chainId,
+    provider,
+    defaultProvider,
+    account,
+    includeAccountData,
+  ]);
 
   useEffect(() => {
     doMulticall();
