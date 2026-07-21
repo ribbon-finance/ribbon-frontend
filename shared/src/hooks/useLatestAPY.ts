@@ -15,7 +15,7 @@ import useVaultPriceHistory, {
 } from "./useVaultPerformanceUpdate";
 import { VaultPriceHistory } from "../models/vault";
 import { getAssetDecimals } from "../utils/asset";
-import useLidoAPY from "./useLidoOracle";
+import useLidoAPY from "./useLidoAPY";
 import { useV2VaultsData } from "./web3DataContext";
 import { apyFromPricePerShare } from "../utils/math";
 import { useSTETHStakingApr } from "../hooks/useSTETHStakingApr";

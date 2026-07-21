@@ -1,4 +1,5 @@
-import React, { ReactElement, useContext, useMemo } from "react";
+import { BigNumber } from "ethers";
+import React, { useContext, useMemo } from "react";
 
 import {
   getAssets,
@@ -20,27 +21,52 @@ import {
   defaultSolanaVaultData,
   SolanaVaultData,
 } from "../models/vault";
-import { Assets } from "../store/types";
+import { Assets, AssetsList } from "../store/types";
 import { getAssetDecimals } from "../utils/asset";
-import useFetchAssetBalanceData, {
-  defaultUserAssetBalanceData,
-  UserAssetBalanceData,
-} from "./useFetchAssetBalanceData";
-import useFetchLiquidityMiningData from "./useFetchLiquidityMiningData";
-import useFetchV2VaultData from "./useFetchV2VaultData";
-import useFetchEarnVaultData from "./useFetchEarnVaultData";
-import useFetchVaultData from "./useFetchVaultData";
-import {
-  defaultLidoOracleData,
-  LidoOracleData,
-  useFetchLidoOracleData,
-} from "./useLidoOracle";
-import useFetchTreasuryBalanceData, {
-  defaultTreasuryBalanceData,
-  TreasuryBalanceData,
-} from "./useFetchTreasuryBalanceData";
-import useFetchLiquidityGaugeV5Data from "./useFetchLiquidityGaugeV5Data";
-import useFetchSolVaultData from "./useFetchSolVaultData";
+
+export type UserAssetBalanceResponses = { [asset in Assets]: BigNumber };
+export type UserAssetBalanceData = {
+  data: UserAssetBalanceResponses;
+  loading: boolean;
+};
+export const defaultUserAssetBalanceData: UserAssetBalanceData = {
+  data: Object.fromEntries(
+    AssetsList.map((asset) => [asset, BigNumber.from(0)])
+  ) as UserAssetBalanceResponses,
+  loading: true,
+};
+
+export interface LidoOracleData {
+  data: {
+    preTotalPooledEther: BigNumber;
+    postTotalPooledEther: BigNumber;
+    timeElapsed: number;
+  };
+  loading: boolean;
+}
+
+export const defaultLidoOracleData: LidoOracleData = {
+  data: {
+    preTotalPooledEther: BigNumber.from(0),
+    postTotalPooledEther: BigNumber.from(0),
+    timeElapsed: 0,
+  },
+  loading: true,
+};
+
+export type TreasuryBalanceResponses = {
+  [asset in Assets]: BigNumber;
+};
+export interface TreasuryBalanceData {
+  data: TreasuryBalanceResponses;
+  loading: boolean;
+}
+export const defaultTreasuryBalanceData: TreasuryBalanceData = {
+  data: Object.fromEntries(
+    AssetsList.map((asset) => [asset, BigNumber.from(0)])
+  ) as TreasuryBalanceResponses,
+  loading: true,
+};
 
 export type Web3DataContextType = {
   v1: VaultData;
@@ -194,36 +220,4 @@ export const useTreasuryBalance = () => {
   const contextData = useContext(Web3DataContext);
 
   return contextData.treasuryBalance;
-};
-
-export const Web3DataContextProvider: React.FC<{ children: ReactElement }> = ({
-  children,
-}) => {
-  const vaultData = useFetchVaultData();
-  const v2VaultData = useFetchV2VaultData();
-  const earnVaultData = useFetchEarnVaultData();
-  const solVaultData = useFetchSolVaultData();
-  const assetBalance = useFetchAssetBalanceData();
-  const liquidityGaugeV5Pool = useFetchLiquidityGaugeV5Data();
-  const liquidityMiningPool = useFetchLiquidityMiningData();
-  const lidoOracle = useFetchLidoOracleData();
-  const treasuryBalance = useFetchTreasuryBalanceData();
-
-  return (
-    <Web3DataContext.Provider
-      value={{
-        v1: vaultData,
-        v2: v2VaultData,
-        earn: earnVaultData,
-        solana: solVaultData,
-        assetBalance,
-        liquidityGaugeV5Pool,
-        liquidityMiningPool,
-        lidoOracle,
-        treasuryBalance,
-      }}
-    >
-      {children}
-    </Web3DataContext.Provider>
-  );
 };

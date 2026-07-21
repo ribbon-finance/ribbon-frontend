@@ -7,9 +7,7 @@ import {
   Switch,
 } from "react-router-dom";
 import { Web3ReactProvider } from "@web3-react/core";
-import { ConnectionProvider } from "@solana/wallet-adapter-react";
-import { Web3ContextProvider } from "shared/lib/hooks/web3Context";
-import { Web3DataContextProvider } from "shared/lib/hooks/web3DataContext";
+import { WalletProvider as SolanaWalletProvider } from "@solana/wallet-adapter-react";
 import { SubgraphDataContextProvider } from "shared/lib/hooks/subgraphDataContext";
 import { ExternalAPIDataContextProvider } from "shared/lib/hooks/externalAPIDataContext";
 import { ChainContextProvider } from "shared/lib/hooks/chainContext";
@@ -23,9 +21,7 @@ import Investors from "./components/Investors";
 import PolicyPage from "./pages/PolicyPage";
 import TermsPage from "./pages/TermsPage";
 import colors from "shared/lib/designSystem/colors";
-import { getSolanaClusterURI } from "shared/lib/utils/env";
 import StickyFooter from "./components/StickyFooter/StickyFooter";
-import { allConnectors } from "shared/lib/utils/wallet/connectors";
 import "shared/lib/i18n/config";
 
 const Body = styled.div`
@@ -41,49 +37,45 @@ const MainContainer = styled.div`
 function App() {
   return (
     <ChainContextProvider>
-      <ConnectionProvider endpoint={getSolanaClusterURI()}>
-        <Web3ContextProvider>
-          <Web3ReactProvider connectors={allConnectors}>
-            <Web3DataContextProvider>
-              <SubgraphDataContextProvider>
-                <ExternalAPIDataContextProvider>
-                  <Body>
-                    <Router>
-                      <Header />
+      <Web3ReactProvider connectors={[]}>
+        <SolanaWalletProvider wallets={[]} autoConnect={false}>
+          <SubgraphDataContextProvider>
+            <ExternalAPIDataContextProvider>
+              <Body>
+                <Router>
+                  <Header />
 
-                      <Switch>
-                        <Route path="/" exact>
-                          <MainContainer>
-                            <Hero />
-                            <ProductCarousel />
-                            <Mission />
-                            <Investors />
-                          </MainContainer>
-                        </Route>
+                  <Switch>
+                    <Route path="/" exact>
+                      <MainContainer>
+                        <Hero />
+                        <ProductCarousel />
+                        <Mission />
+                        <Investors />
+                      </MainContainer>
+                    </Route>
 
-                        <Route path="/policy">
-                          <PolicyPage></PolicyPage>
-                        </Route>
+                    <Route path="/policy">
+                      <PolicyPage></PolicyPage>
+                    </Route>
 
-                        <Route path="/terms">
-                          <TermsPage></TermsPage>
-                        </Route>
+                    <Route path="/terms">
+                      <TermsPage></TermsPage>
+                    </Route>
 
-                        <Route>
-                          <Redirect to="/" />
-                        </Route>
-                      </Switch>
+                    <Route>
+                      <Redirect to="/" />
+                    </Route>
+                  </Switch>
 
-                      <Footer />
-                    </Router>
-                    <StickyFooter />
-                  </Body>
-                </ExternalAPIDataContextProvider>
-              </SubgraphDataContextProvider>
-            </Web3DataContextProvider>
-          </Web3ReactProvider>
-        </Web3ContextProvider>
-      </ConnectionProvider>
+                  <Footer />
+                </Router>
+                <StickyFooter />
+              </Body>
+            </ExternalAPIDataContextProvider>
+          </SubgraphDataContextProvider>
+        </SolanaWalletProvider>
+      </Web3ReactProvider>
     </ChainContextProvider>
   );
 }

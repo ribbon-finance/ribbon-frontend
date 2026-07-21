@@ -9,10 +9,10 @@ import { WalletProvider as SolanaWalletProvider } from "@solana/wallet-adapter-r
 import RootApp from "./components/RootApp";
 import { Web3ContextProvider } from "shared/lib/hooks/web3Context";
 import { ConnectionProvider } from "@solana/wallet-adapter-react";
-import { getSolanaClusterURI } from "shared/lib/utils/env";
-import { Web3DataContextProvider } from "shared/lib/hooks/web3DataContext";
+import { getSolanaClusterURI } from "shared/lib/utils/nodeEnv";
+import { Web3DataContextProvider } from "shared/lib/hooks/web3DataContextProvider";
 import { SubgraphDataContextProvider } from "shared/lib/hooks/subgraphDataContext";
-import { PendingTransactionsContextProvider } from "shared/lib/hooks/pendingTransactionsContext";
+import { PendingTransactionsContextProvider } from "shared/lib/hooks/pendingTransactionsContextProvider";
 import { ExternalAPIDataContextProvider } from "shared/lib/hooks/externalAPIDataContext";
 import { ChainContextProvider } from "shared/lib/hooks/chainContext";
 import { GeofenceCountry, useGeofence } from "shared/lib/hooks/useGeofence";

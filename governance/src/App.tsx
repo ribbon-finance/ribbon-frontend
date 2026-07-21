@@ -16,15 +16,15 @@ import { SubgraphDataContextProvider } from "shared/lib/hooks/subgraphDataContex
 import RootApp from "./components/RootApp";
 import { Web3ContextProvider } from "shared/lib/hooks/web3Context";
 import { ExternalAPIDataContextProvider } from "shared/lib/hooks/externalAPIDataContext";
-import { Web3DataContextProvider } from "shared/lib/hooks/web3DataContext";
-import { PendingTransactionsContextProvider } from "shared/lib/hooks/pendingTransactionsContext";
+import { Web3DataContextProvider } from "shared/lib/hooks/web3DataContextProvider";
+import { PendingTransactionsContextProvider } from "shared/lib/hooks/pendingTransactionsContextProvider";
 import { ChainContextProvider } from "shared/lib/hooks/chainContext";
 import { GeofenceCountry, useGeofence } from "shared/lib/hooks/useGeofence";
 import TextPreview from "shared/lib/components/TextPreview/TextPreview";
 import Geoblocked from "shared/lib/components/Geoblocked/Geoblocked";
 import { LoadingText } from "shared/lib/hooks/useLoadingText";
 import { allConnectors } from "shared/lib/utils/wallet/connectors";
-import { getSolanaClusterURI } from "shared/lib/utils/env";
+import { getSolanaClusterURI } from "shared/lib/utils/nodeEnv";
 
 function App() {
   const { loading, rejected } = useGeofence(GeofenceCountry.SINGAPORE);

@@ -1,11 +1,9 @@
 import { BigNumber } from "@ethersproject/bignumber";
-import { formatUnits } from "@ethersproject/units";
-import { useCallback, useContext, useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { LidoOracleFactory } from "../codegen/LidoOracleFactory";
 import { LidoOracleAddress } from "../constants/constants";
 import { isProduction } from "../utils/env";
 import { useETHWeb3Context } from "./web3Context";
-import { Web3DataContext } from "./web3DataContext";
 
 export const getLidoOracle = (library: any, useSigner: boolean = true) => {
   if (!LidoOracleAddress) {
@@ -74,21 +72,3 @@ export const useFetchLidoOracleData = () => {
 
   return data;
 };
-
-const useLidoAPY = () => {
-  const contextData = useContext(Web3DataContext);
-  const preTotalPooledEther = parseFloat(
-    formatUnits(contextData.lidoOracle.data.preTotalPooledEther, 18)
-  );
-  const postTotalPooledEther = parseFloat(
-    formatUnits(contextData.lidoOracle.data.postTotalPooledEther, 18)
-  );
-  const secondsInYear = 60 * 60 * 24 * 365;
-
-  return contextData.lidoOracle.loading
-    ? 0
-    : ((postTotalPooledEther - preTotalPooledEther) * secondsInYear) /
-        (preTotalPooledEther * contextData.lidoOracle.data.timeElapsed);
-};
-
-export default useLidoAPY;

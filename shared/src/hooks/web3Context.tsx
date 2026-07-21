@@ -1,6 +1,7 @@
 import React, { ReactElement, useContext } from "react";
 import { StaticJsonRpcProvider } from "@ethersproject/providers";
-import { NODE_URI, isDevelopment } from "../utils/env";
+import { isDevelopment } from "../utils/env";
+import { NODE_URI } from "../utils/nodeEnv";
 import {
   CHAINID,
   isAvaxNetwork,

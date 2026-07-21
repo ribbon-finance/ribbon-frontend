@@ -1,6 +1,5 @@
-import { Network } from "@zetamarkets/flex-sdk";
 import SolanaDeployments from "../constants/solanaDeployments.json";
-// import { CHAINID } from "../constants/constants";
+import { Network } from "@zetamarkets/flex-sdk";
 
 enum CHAINID {
   NOT_SELECTED = -1,
@@ -48,22 +47,6 @@ export const isTreasury = () =>
 // we use treasury for now
 export const isVIP = () =>
   process.env.REACT_APP_VAULT_COLLECTION === "treasury";
-
-export const NODE_URI: Record<number, string> = {
-  [CHAINID.NOT_SELECTED]: process.env.REACT_APP_MAINNET_URI || "",
-  [CHAINID.ETH_MAINNET]: process.env.REACT_APP_MAINNET_URI || "",
-  [CHAINID.ETH_KOVAN]: process.env.REACT_APP_TESTNET_URI || "",
-  [CHAINID.AVAX_MAINNET]: process.env.REACT_APP_AVAX_URI || "",
-  [CHAINID.AVAX_FUJI]: process.env.REACT_APP_FUJI_URI || "",
-  [CHAINID.BINANCE_MAINNET]: process.env.REACT_APP_BINANCE_URI || "",
-};
-
-export const getSolanaClusterURI: () => string = () =>
-  isDevelopment()
-    ? process.env.REACT_APP_SOLANA_TESTNET_URI ||
-      "https://api.devnet.solana.com"
-    : process.env.REACT_APP_SOLANA_MAINNET_URI ||
-      "https://solana-api.projectserum.com";
 
 export const getSolanaAddresses = () =>
   isDevelopment() ? SolanaDeployments.devnet : SolanaDeployments.mainnet;

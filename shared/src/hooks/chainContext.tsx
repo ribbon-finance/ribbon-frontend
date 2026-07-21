@@ -1,7 +1,5 @@
 import React, { ReactElement, useContext, useState } from "react";
 import { Chains } from "../constants/constants";
-import { Web3ReactProvider } from "@web3-react/core";
-import { allConnectors } from "../utils/wallet/connectors";
 
 interface ChainContextType {
   chain: Chains;
@@ -24,10 +22,8 @@ export const ChainContextProvider: React.FC<{
   const [chain, setChain] = useState(Chains.NotSelected);
 
   return (
-    <Web3ReactProvider connectors={allConnectors}>
-      <ChainContext.Provider value={{ chain, setChain }}>
-        {children}
-      </ChainContext.Provider>
-    </Web3ReactProvider>
+    <ChainContext.Provider value={{ chain, setChain }}>
+      {children}
+    </ChainContext.Provider>
   );
 };
