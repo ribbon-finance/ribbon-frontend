@@ -1,7 +1,7 @@
 import { initializeConnector } from "@web3-react/core";
 import { Network } from "@web3-react/network";
 
-import { CHAINID, Chains } from "../../../constants/constants";
+import { CHAINID } from "../../../constants/constants";
 import { CHAIN_PARAMS } from "../../../constants/chainParameters";
 
 const allRpcUrls = {
@@ -13,7 +13,10 @@ const allRpcUrls = {
     }),
     {}
   ),
-  [CHAINID.ETH_MAINNET]: process.env.REACT_APP_MAINNET_RPC || "",
+  [CHAINID.ETH_MAINNET]:
+    process.env.REACT_APP_MAINNET_RPC ||
+    process.env.REACT_APP_MAINNET_URI ||
+    "",
 };
 
 export const [network, hooks] = initializeConnector<Network>(

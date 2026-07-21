@@ -96,13 +96,15 @@ export const useFetchAssetsPrice = (
     assetsBarUSDC.forEach((asset) => {
       const coinId = COINGECKO_CURRENCIES[asset];
       if (coinId) {
+        const latestPrice = latestPrices[coinId];
+
         setData((prev) => {
           return {
             ...prev,
             [asset]: {
               loading: false,
-              latestPrice: 0,
-              dailyChange: 0,
+              latestPrice: latestPrice?.current_price || 0,
+              dailyChange: latestPrice?.price_change_24h || 0,
             },
           };
         });
@@ -120,7 +122,15 @@ export const useFetchAssetsPrice = (
               };
             });
           })
-          .catch((e) => console.error(e));
+          .catch(() => {
+            setHistoricalData((prev) => ({
+              ...prev,
+              [asset]: {
+                loading: false,
+                history: prev[asset]?.history || {},
+              },
+            }));
+          });
       }
     });
   }, []);

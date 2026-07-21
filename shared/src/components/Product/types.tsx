@@ -34,6 +34,7 @@ export interface HeaderScrollIndicatorProps {
 export interface ProductCatalogueProps {
   variant: "landing" | "webapp" | "vip";
   onVaultPress: (vault: VaultOptions, vaultVersion: VaultVersion) => void;
+  showLivePositionData?: boolean;
 }
 
 export type DesktopViewType = "grid" | "gallery";

@@ -1,5 +1,5 @@
 import { BigNumber } from "ethers";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { useWeb3React } from "@web3-react/core";
 
 import { useWeb3Context } from "./web3Context";
@@ -31,6 +31,7 @@ const useFetchVaultData = ({
 
   const [data, setData] = useState<VaultData>(defaultVaultData);
   const [, setMulticallCounter] = useState(0);
+  const lastFetchKey = useRef<string>();
 
   const doMulticall = useCallback(async () => {
     if (!enabled) {
@@ -166,10 +167,30 @@ const useFetchVaultData = ({
   ]);
 
   useEffect(() => {
-    doMulticall();
-  }, [doMulticall, transactionsCounter]);
+    if (!enabled) {
+      return;
+    }
 
-  return data;
+    const fetchKey = includeAccountData
+      ? [chainId, account, web3Active, transactionsCounter].join(":")
+      : "public";
+    if (lastFetchKey.current === fetchKey) {
+      return;
+    }
+    lastFetchKey.current = fetchKey;
+
+    doMulticall();
+  }, [
+    account,
+    chainId,
+    doMulticall,
+    enabled,
+    includeAccountData,
+    transactionsCounter,
+    web3Active,
+  ]);
+
+  return enabled ? data : { ...defaultVaultData, loading: false };
 };
 
 export default useFetchVaultData;

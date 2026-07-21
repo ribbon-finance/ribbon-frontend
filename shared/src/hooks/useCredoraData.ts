@@ -59,8 +59,8 @@ export const useCredoraData = () => {
       ) as PoolsCredoraData;
       setData(credoraData);
       setLoading(false);
-    } catch (error) {
-      console.log(error);
+    } catch {
+      setLoading(false);
     }
   }, [data]);
 

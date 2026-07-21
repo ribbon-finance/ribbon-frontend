@@ -412,6 +412,7 @@ interface YieldCardProps {
   onVaultVersionChange: (version: VaultVersion) => void;
   onVaultPress: (vault: VaultOptions, vaultVersion: VaultVersion) => void;
   vaultAccount?: VaultAccount;
+  showLivePositionData?: boolean;
 }
 
 const YieldCard: React.FC<YieldCardProps> = ({
@@ -420,6 +421,7 @@ const YieldCard: React.FC<YieldCardProps> = ({
   onVaultVersionChange,
   onVaultPress,
   vaultAccount,
+  showLivePositionData = false,
 }) => {
   const {
     status,
@@ -809,7 +811,9 @@ const YieldCard: React.FC<YieldCardProps> = ({
     asset,
   ]);
 
-  const { pausedAmount } = usePausedPosition(vault, vaultVersion);
+  const { pausedAmount } = usePausedPosition(vault, vaultVersion, {
+    enabled: showLivePositionData && Boolean(vaultAccount),
+  });
   const [positionState, setPositionState] = useState<
     "position" | "paused" | "partiallyPaused"
   >("position");

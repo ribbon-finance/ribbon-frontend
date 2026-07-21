@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { useWeb3React } from "@web3-react/core";
 import { BigNumber } from "ethers";
 import { getVaultNetwork, EarnVaultList } from "../constants/constants";
@@ -32,6 +32,7 @@ const useFetchEarnVaultData = ({
 
   const [data, setData] = useState<V2VaultData>(defaultV2VaultData);
   const [, setMulticallCounter] = useState(0);
+  const lastFetchKey = useRef<string>();
 
   const doMulticall = useCallback(async () => {
     if (!enabled) {
@@ -257,10 +258,30 @@ const useFetchEarnVaultData = ({
   ]);
 
   useEffect(() => {
-    doMulticall();
-  }, [doMulticall, transactionsCounter]);
+    if (!enabled) {
+      return;
+    }
 
-  return data;
+    const fetchKey = includeAccountData
+      ? [chainId, account, web3Active, transactionsCounter].join(":")
+      : "public";
+    if (lastFetchKey.current === fetchKey) {
+      return;
+    }
+    lastFetchKey.current = fetchKey;
+
+    doMulticall();
+  }, [
+    account,
+    chainId,
+    doMulticall,
+    enabled,
+    includeAccountData,
+    transactionsCounter,
+    web3Active,
+  ]);
+
+  return enabled ? data : { ...defaultV2VaultData, loading: false };
 };
 
 export default useFetchEarnVaultData;

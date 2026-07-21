@@ -94,6 +94,7 @@ interface ProductCatalogueGridViewProps {
     [key: string]: VaultAccount | undefined;
   };
   variant: "desktop" | "mobile" | "vip";
+  showLivePositionData?: boolean;
 }
 
 const ProductCatalogueGridView: React.FC<
@@ -110,6 +111,7 @@ const ProductCatalogueGridView: React.FC<
   filteredProducts,
   vaultAccounts,
   variant,
+  showLivePositionData = false,
   vaultsDisplayVersion,
   setVaultDisplayVersion,
 }) => {
@@ -152,6 +154,7 @@ const ProductCatalogueGridView: React.FC<
               onVaultPress={onVaultPress}
               vaultAccount={vaultAccounts[vault]}
               vaultVersion={vaultsDisplayVersion[vault]}
+              showLivePositionData={showLivePositionData}
               onVaultVersionChange={(version) =>
                 setVaultDisplayVersion(vault, version)
               }
@@ -166,6 +169,7 @@ const ProductCatalogueGridView: React.FC<
     setFilterAssets,
     setFilterStrategies,
     setVaultDisplayVersion,
+    showLivePositionData,
     vaultAccounts,
     vaultsDisplayVersion,
   ]);

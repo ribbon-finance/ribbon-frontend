@@ -13,11 +13,17 @@ export const defaultSTETHStakingAprData = {
   weeklyAvgApr: 0,
 };
 
-export const useSTETHStakingApr = () => {
+export const useSTETHStakingApr = ({
+  enabled = true,
+}: { enabled?: boolean } = {}) => {
   const [loading, setLoading] = useState(false);
   const [data, setData] = useState<any>();
 
   const fetchSTETHStakingApr = useCallback(async () => {
+    if (!enabled) {
+      return;
+    }
+
     if (data) {
       return;
     }
@@ -30,16 +36,20 @@ export const useSTETHStakingApr = () => {
       const { data } = response;
       setData(data.data);
       setLoading(false);
-    } catch (error) {
-      console.log(error);
+    } catch {
+      setLoading(false);
     }
-  }, [data]);
+  }, [data, enabled]);
 
   useEffect(() => {
     fetchSTETHStakingApr();
   }, [fetchSTETHStakingApr]);
 
   const sTETHStakingAprData = useMemo(() => {
+    if (!enabled) {
+      return { ...defaultSTETHStakingAprData, loading: false };
+    }
+
     if (loading || !data) {
       return defaultSTETHStakingAprData;
     }
@@ -50,10 +60,9 @@ export const useSTETHStakingApr = () => {
         currentApr,
         weeklyAvgApr: data.smaApr,
       } as STETHStakingAprData;
-    } catch (error) {
-      console.log(error);
+    } catch {
       return defaultSTETHStakingAprData;
     }
-  }, [data, loading]);
+  }, [data, enabled, loading]);
   return sTETHStakingAprData;
 };

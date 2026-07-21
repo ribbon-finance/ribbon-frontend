@@ -40,6 +40,7 @@ import theme from "../../designSystem/theme";
 const ProductCatalogue: React.FC<ProductCatalogueProps> = ({
   variant,
   onVaultPress,
+  showLivePositionData = false,
 }) => {
   const [chain] = useChain();
   const { loading, allUserVaults } = useAirtableVIPData();
@@ -215,6 +216,7 @@ const ProductCatalogue: React.FC<ProductCatalogueProps> = ({
       filteredProducts={filteredProducts}
       vaultAccounts={vaultAccounts}
       vaultsDisplayVersion={vaultsDisplayVersion}
+      showLivePositionData={showLivePositionData}
       setVaultDisplayVersion={setVaultDisplayVersion}
     />
   ) : (
@@ -230,6 +232,7 @@ const ProductCatalogue: React.FC<ProductCatalogueProps> = ({
       filteredProducts={filteredProducts}
       vaultAccounts={vaultAccounts}
       vaultsDisplayVersion={vaultsDisplayVersion}
+      showLivePositionData={showLivePositionData}
       setVaultDisplayVersion={setVaultDisplayVersion}
     />
   );

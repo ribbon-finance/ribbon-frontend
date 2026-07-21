@@ -1,6 +1,6 @@
 import { BigNumber } from "ethers";
 import { parseUnits } from "ethers/lib/utils";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { RibbonVaultPauser } from "../codegen";
 import {
   isBinanceVault,
@@ -19,7 +19,8 @@ import { isVIP } from "../utils/env";
 
 export const usePausedPosition = (
   vaultOption: VaultOptions,
-  vaultVersion: VaultVersion
+  vaultVersion: VaultVersion,
+  { enabled = true }: { enabled?: boolean } = {}
 ) => {
   const [pausedShares, setPausedShares] = useState(BigNumber.from(0));
   const [roundPricePerShare, setRoundPricePerShare] = useState(
@@ -27,6 +28,7 @@ export const usePausedPosition = (
   );
   const [canResume, setCanResume] = useState(false);
   const [canPause, setCanPause] = useState(false);
+  const lastFetchKey = useRef<string>();
   const {
     data: { lockedBalanceInAsset, round, decimals },
   } = useV2VaultData(vaultOption);
@@ -38,47 +40,78 @@ export const usePausedPosition = (
 
   useEffect(() => {
     if (
-      pauseContract &&
-      v2Contract &&
-      vaultAddress &&
-      account &&
-      !isVIP() &&
-      !isBinanceVault(vaultOption) &&
-      !isSolanaVault(vaultOption) &&
-      !isEarnVault(vaultOption)
+      !enabled ||
+      !pauseContract ||
+      !v2Contract ||
+      !vaultAddress ||
+      !account ||
+      isVIP() ||
+      isBinanceVault(vaultOption) ||
+      isSolanaVault(vaultOption) ||
+      isEarnVault(vaultOption)
     ) {
-      pauseContract
-        .getPausePosition(vaultAddress, account)
-        .then(([pauseRound, pauseAmount]) => {
-          if (pauseRound !== 0) {
-            setPausedShares(pauseAmount);
-            setCanResume(pauseRound !== 0 && pauseRound < round); // edge case round returns 0
-            setCanPause(
-              isPracticallyZero(pauseAmount, decimals) &&
-                !isPracticallyZero(lockedBalanceInAsset, decimals)
-            );
-            if (pauseRound === round) {
-              v2Contract.pricePerShare().then((val) => {
-                setRoundPricePerShare(val);
-              });
-            } else {
-              v2Contract.roundPricePerShare(pauseRound).then((val) => {
-                setRoundPricePerShare(val);
-              });
-            }
-          }
-        });
+      return;
     }
+
+    const fetchKey = [
+      chainId || 1,
+      vaultOption,
+      vaultVersion,
+      vaultAddress,
+      account,
+      round,
+      decimals,
+      lockedBalanceInAsset.toString(),
+    ].join(":");
+
+    if (lastFetchKey.current === fetchKey) {
+      return;
+    }
+    lastFetchKey.current = fetchKey;
+
+    let cancelled = false;
+
+    pauseContract
+      .getPausePosition(vaultAddress, account)
+      .then(async ([pauseRound, pauseAmount]) => {
+        if (cancelled || pauseRound === 0) {
+          return;
+        }
+
+        const pricePerShare =
+          pauseRound === round
+            ? await v2Contract.pricePerShare()
+            : await v2Contract.roundPricePerShare(pauseRound);
+
+        if (cancelled) {
+          return;
+        }
+
+        setPausedShares(pauseAmount);
+        setCanResume(pauseRound < round);
+        setCanPause(
+          isPracticallyZero(pauseAmount, decimals) &&
+            !isPracticallyZero(lockedBalanceInAsset, decimals)
+        );
+        setRoundPricePerShare(pricePerShare);
+      })
+      .catch(() => {});
+
+    return () => {
+      cancelled = true;
+    };
   }, [
     pauseContract,
-    canResume,
+    enabled,
     vaultAddress,
     account,
+    chainId,
     lockedBalanceInAsset,
     decimals,
     round,
     v2Contract,
     vaultOption,
+    vaultVersion,
   ]);
 
   const pausedAmount = useMemo(() => {

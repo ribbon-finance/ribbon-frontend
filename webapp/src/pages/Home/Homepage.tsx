@@ -24,6 +24,7 @@ const Homepage = () => {
       <ProductTitle>PRODUCT</ProductTitle>
       <ProductCatalogue
         variant="webapp"
+        showLivePositionData
         onVaultPress={(vault, version) =>
           history.push(getVaultURI(vault, version))
         }

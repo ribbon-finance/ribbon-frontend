@@ -148,8 +148,11 @@ const useFetchAssetBalanceData = (
       if (!isProduction()) {
         console.timeEnd("Asset Balance Data Fetch"); // eslint-disable-line
       }
-    } catch (error) {
-      console.log(error);
+    } catch {
+      setData((prev) => ({
+        ...prev,
+        loading: false,
+      }));
     }
   }, [
     account,
@@ -187,7 +190,7 @@ const useFetchAssetBalanceData = (
     };
   }, [doMulticall, poll, pollingFrequency]);
 
-  return data;
+  return enabled ? data : { ...defaultUserAssetBalanceData, loading: false };
 };
 
 export default useFetchAssetBalanceData;

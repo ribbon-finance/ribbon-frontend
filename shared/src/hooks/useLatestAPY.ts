@@ -241,7 +241,7 @@ export const useLatestAPY = (
   const { priceHistory, loading: vaultPriceHistoryLoading } =
     useVaultPriceHistory(vaultOption, vaultVersion);
   const loading = vaultPriceHistoryLoading;
-  const { currentApr } = useSTETHStakingApr();
+  const { currentApr } = useSTETHStakingApr({ enabled: false });
   let underlyingYieldAPR = 0;
 
   switch (vaultOption) {
@@ -303,7 +303,7 @@ export const useLatestAPYs = () => {
                   ? 0
                   : calculateAPYFromPriceHistory(
                       priceHistory.map((history) =>
-                        history.round === round
+                        history.round === round && !pricePerShare.isZero()
                           ? { ...history, pricePerShare }
                           : history
                       ),

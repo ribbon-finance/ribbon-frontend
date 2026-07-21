@@ -125,7 +125,6 @@ const useFetchVaultSubgraphData = () => {
             query,
           }
         );
-        console.log("response: ", response);
         return [version, response.data.data];
       })
     );

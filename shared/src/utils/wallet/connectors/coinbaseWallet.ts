@@ -6,7 +6,10 @@ export const [coinbaseWallet, hooks] = initializeConnector<CoinbaseWallet>(
     new CoinbaseWallet({
       actions,
       options: {
-        url: process.env.REACT_APP_MAINNET_RPC || "", // Coinbase only valid for mainnet
+        url:
+          process.env.REACT_APP_MAINNET_RPC ||
+          process.env.REACT_APP_MAINNET_URI ||
+          "", // Coinbase only valid for mainnet
         appName: "aevo otc",
       },
     })

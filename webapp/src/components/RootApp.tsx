@@ -47,8 +47,10 @@ const RoutedApp = () => {
     location.pathname.startsWith("/earn/");
   const isPortfolioPage = location.pathname.startsWith("/portfolio");
   const isStakingPage = location.pathname.startsWith("/staking");
+  const isHomepage = location.pathname === "/";
   const needsAccountData = isVaultPage || isPortfolioPage || isStakingPage;
-  const needsVaultData = isVaultPage || isPortfolioPage || isStakingPage;
+  const needsVaultData =
+    isHomepage || isVaultPage || isPortfolioPage || isStakingPage;
   const needsStakingData = isStakingPage || isVaultPage;
 
   return (
