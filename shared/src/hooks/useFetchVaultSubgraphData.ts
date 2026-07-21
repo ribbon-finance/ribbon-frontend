@@ -44,10 +44,10 @@ import {
   liquidityMiningPoolAccountsGraphql,
   resolveLiquidityMiningPoolAccountsSubgraphResponse,
 } from "./useLiquidityMiningPoolAccounts";
-import useWeb3Wallet from "./useWeb3Wallet";
+import useWeb3WalletReadOnly from "./useWeb3WalletReadOnly";
 
 const useFetchVaultSubgraphData = () => {
-  const { account: acc } = useWeb3Wallet();
+  const { account: acc } = useWeb3WalletReadOnly();
   const account = impersonateAddress || acc;
   const [data, setData] = useState<VaultSubgraphDataContextType>(
     defaultVaultSubgraphData

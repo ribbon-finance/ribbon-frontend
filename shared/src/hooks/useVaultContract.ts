@@ -14,7 +14,7 @@ import {
   VaultAddressMap,
   VaultOptions,
 } from "../constants/constants";
-import useWeb3Wallet from "./useWeb3Wallet";
+import useWeb3WalletReadOnly from "./useWeb3WalletReadOnly";
 
 export const getVaultContract = (
   library: any,
@@ -47,7 +47,7 @@ export const getVaultContract = (
 
 const useVaultContract = (vaultOption: VaultOptions) => {
   const { provider } = useWeb3React();
-  const { active } = useWeb3Wallet();
+  const { active } = useWeb3WalletReadOnly();
   const [vault, setVault] = useState<
     RibbonV2ThetaVault | RibbonV2stETHThetaVault | RibbonEarnVault | null
   >(null);

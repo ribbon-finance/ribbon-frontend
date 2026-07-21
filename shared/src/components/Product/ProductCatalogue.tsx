@@ -29,7 +29,7 @@ import {
   VaultSortByList,
   VaultStrategy,
 } from "./types";
-import useWeb3Wallet from "../../hooks/useWeb3Wallet";
+import useWeb3WalletReadOnly from "../../hooks/useWeb3WalletReadOnly";
 import { getChainByVaultOption, getIntegralAsset } from "../../utils/asset";
 import { useChain } from "../../hooks/chainContext";
 import { useAirtableVIPData } from "../../hooks/useAirtableVIPData";
@@ -43,7 +43,7 @@ const ProductCatalogue: React.FC<ProductCatalogueProps> = ({
 }) => {
   const [chain] = useChain();
   const { loading, allUserVaults } = useAirtableVIPData();
-  const { chainId } = useWeb3Wallet();
+  const { chainId } = useWeb3WalletReadOnly();
   const { width } = useScreenSize();
   const [filterStrategies, setFilterStrategies] = useState<VaultStrategy[]>([]);
   const [filterAssets, setFilterAssets] = useState<Assets[]>([]);

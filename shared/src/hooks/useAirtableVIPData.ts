@@ -1,7 +1,7 @@
 import Airtable from "airtable";
 import { useEffect, useMemo, useState } from "react";
 import { VaultOptions } from "../constants/constants";
-import useWeb3Wallet from "./useWeb3Wallet";
+import useWeb3WalletReadOnly from "./useWeb3WalletReadOnly";
 
 export type VIP = {
   loading: boolean;
@@ -58,7 +58,7 @@ export const useAirtableVIPData = () => {
   const [values, setValues] = useState<AirtableValues[]>();
   const [, setError] = useState<string>();
   const [loading, setLoading] = useState<boolean>(true);
-  const { account } = useWeb3Wallet();
+  const { account } = useWeb3WalletReadOnly();
   useEffect(() => {
     // 1. When init load schedules
     base(baseName)

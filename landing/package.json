@@ -36,7 +36,7 @@
   },
   "scripts": {
     "start": "craco start",
-    "build": "craco build",
+    "build": "REACT_APP_MAINNET_URI= REACT_APP_MAINNET_RPC= REACT_APP_TESTNET_URI= REACT_APP_AVAX_URI= REACT_APP_FUJI_URI= REACT_APP_BINANCE_URI= REACT_APP_SOLANA_MAINNET_URI= REACT_APP_SOLANA_TESTNET_URI= craco build",
     "test": "craco test",
     "eject": "react-scripts eject",
     "lint": "eslint --fix --ext .tsx,.ts ."

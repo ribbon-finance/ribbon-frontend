@@ -50,7 +50,7 @@ import { ETHMonoLogo } from "../../../assets/icons/vaultMonoLogos";
 import { AVAXMonoLogo } from "../../../assets/icons/vaultMonoLogos";
 import { BINANCEMonoLogo } from "../../../assets/icons/vaultMonoLogos";
 import { SOLMonoLogo } from "../../../assets/icons/vaultMonoLogos";
-import useWeb3Wallet from "../../../hooks/useWeb3Wallet";
+import useWeb3WalletReadOnly from "../../../hooks/useWeb3WalletReadOnly";
 import TooltipExplanation from "../../Common/TooltipExplanation";
 import HelpInfo from "../../Common/HelpInfo";
 import { calculateBaseRewards } from "../../../utils/governanceMath";
@@ -434,7 +434,7 @@ const YieldCard: React.FC<YieldCardProps> = ({
     data: { totalBalance: v2Deposits, cap: v2VaultLimit, pricePerShare },
     loading: v2DataLoading,
   } = useV2VaultData(vault);
-  const { account, chainId } = useWeb3Wallet();
+  const { account, chainId } = useWeb3WalletReadOnly();
   const { t } = useTranslation();
   const isLoading = useMemo(() => status === "loading", [status]);
   const color = getVaultColor(vault);

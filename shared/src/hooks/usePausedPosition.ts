@@ -13,7 +13,7 @@ import {
 import { isPracticallyZero } from "../utils/math";
 import useVaultContract from "./useVaultContract";
 import useVaultPauser from "./useV2VaultPauserContract";
-import useWeb3Wallet from "./useWeb3Wallet";
+import useWeb3WalletReadOnly from "./useWeb3WalletReadOnly";
 import { useV2VaultData } from "./web3DataContext";
 import { isVIP } from "../utils/env";
 
@@ -31,7 +31,7 @@ export const usePausedPosition = (
     data: { lockedBalanceInAsset, round, decimals },
   } = useV2VaultData(vaultOption);
 
-  const { account, chainId } = useWeb3Wallet();
+  const { account, chainId } = useWeb3WalletReadOnly();
   const pauseContract = useVaultPauser(chainId || 1) as RibbonVaultPauser;
   const vaultAddress = VaultAddressMap[vaultOption][vaultVersion];
   const v2Contract = useVaultContract(vaultOption);
