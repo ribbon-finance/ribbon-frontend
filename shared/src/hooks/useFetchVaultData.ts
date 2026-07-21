@@ -17,8 +17,10 @@ import { isVaultSupportedOnChain } from "../utils/vault";
 import useWeb3Wallet from "./useWeb3Wallet";
 
 const useFetchVaultData = ({
+  enabled = true,
   includeAccountData = true,
 }: {
+  enabled?: boolean;
   includeAccountData?: boolean;
 } = {}): VaultData => {
   const { chainId, provider, account: web3Account } = useWeb3React();
@@ -31,6 +33,10 @@ const useFetchVaultData = ({
   const [, setMulticallCounter] = useState(0);
 
   const doMulticall = useCallback(async () => {
+    if (!enabled) {
+      return;
+    }
+
     if (!isProduction()) {
       console.time("V1 Vault Data Fetch"); // eslint-disable-line
     }
@@ -155,6 +161,7 @@ const useFetchVaultData = ({
     provider,
     defaultProvider,
     account,
+    enabled,
     includeAccountData,
   ]);
 

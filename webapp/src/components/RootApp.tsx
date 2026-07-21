@@ -48,11 +48,13 @@ const RoutedApp = () => {
   const isPortfolioPage = location.pathname.startsWith("/portfolio");
   const isStakingPage = location.pathname.startsWith("/staking");
   const needsAccountData = isVaultPage || isPortfolioPage || isStakingPage;
+  const needsVaultData = isVaultPage || isPortfolioPage || isStakingPage;
   const needsStakingData = isStakingPage || isVaultPage;
 
   return (
     <Web3DataContextProvider
       fetchAssetBalances={isVaultPage || isStakingPage}
+      fetchVaultData={needsVaultData}
       fetchLiquidityGaugeV5={needsStakingData}
       fetchLiquidityMining={isStakingPage}
       fetchLidoOracle={isVaultPage}

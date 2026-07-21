@@ -25,8 +25,10 @@ import { calculatePricePerShare, getNextFridayTimestamp } from "../utils/math";
 import { RibbonV2ThetaVault } from "../codegen";
 
 const useFetchV2VaultData = ({
+  enabled = true,
   includeAccountData = true,
 }: {
+  enabled?: boolean;
   includeAccountData?: boolean;
 } = {}): V2VaultData => {
   const {
@@ -43,6 +45,10 @@ const useFetchV2VaultData = ({
   const [, setMulticallCounter] = useState(0);
 
   const doMulticall = useCallback(async () => {
+    if (!enabled) {
+      return;
+    }
+
     if (!isProduction()) {
       console.time("V2 Vault Data Fetch"); // eslint-disable-line
     }
@@ -277,6 +283,7 @@ const useFetchV2VaultData = ({
     provider,
     expiryTimestamp,
     account,
+    enabled,
     includeAccountData,
   ]);
 

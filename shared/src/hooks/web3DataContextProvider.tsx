@@ -14,6 +14,7 @@ import { useFetchLidoOracleData } from "./useLidoOracle";
 type Web3DataContextProviderProps = {
   children: ReactElement;
   fetchAssetBalances?: boolean;
+  fetchVaultData?: boolean;
   fetchLiquidityGaugeV5?: boolean;
   fetchLiquidityMining?: boolean;
   fetchSolanaVaults?: boolean;
@@ -27,6 +28,7 @@ export const Web3DataContextProvider: React.FC<
 > = ({
   children,
   fetchAssetBalances = true,
+  fetchVaultData = true,
   fetchLiquidityGaugeV5 = true,
   fetchLiquidityMining = true,
   fetchSolanaVaults = true,
@@ -34,9 +36,18 @@ export const Web3DataContextProvider: React.FC<
   fetchTreasuryBalance = true,
   includeAccountData = true,
 }) => {
-  const vaultData = useFetchVaultData({ includeAccountData });
-  const v2VaultData = useFetchV2VaultData({ includeAccountData });
-  const earnVaultData = useFetchEarnVaultData({ includeAccountData });
+  const vaultData = useFetchVaultData({
+    enabled: fetchVaultData,
+    includeAccountData,
+  });
+  const v2VaultData = useFetchV2VaultData({
+    enabled: fetchVaultData,
+    includeAccountData,
+  });
+  const earnVaultData = useFetchEarnVaultData({
+    enabled: fetchVaultData,
+    includeAccountData,
+  });
   const solVaultData = useFetchSolVaultData({ enabled: fetchSolanaVaults });
   const assetBalance = useFetchAssetBalanceData({
     enabled: fetchAssetBalances,

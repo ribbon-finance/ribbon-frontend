@@ -18,8 +18,10 @@ import { calculatePricePerShare } from "../utils/math";
 import useWeb3Wallet from "./useWeb3Wallet";
 
 const useFetchEarnVaultData = ({
+  enabled = true,
   includeAccountData = true,
 }: {
+  enabled?: boolean;
   includeAccountData?: boolean;
 } = {}): V2VaultData => {
   const { chainId, account: web3Account, provider } = useWeb3React();
@@ -32,6 +34,10 @@ const useFetchEarnVaultData = ({
   const [, setMulticallCounter] = useState(0);
 
   const doMulticall = useCallback(async () => {
+    if (!enabled) {
+      return;
+    }
+
     if (!isProduction()) {
       console.time("V2 Vault Data Fetch"); // eslint-disable-line
     }
@@ -241,7 +247,14 @@ const useFetchEarnVaultData = ({
       return counter;
     });
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [getProviderForNetwork, web3Active, chainId, account, includeAccountData]);
+  }, [
+    getProviderForNetwork,
+    web3Active,
+    chainId,
+    account,
+    enabled,
+    includeAccountData,
+  ]);
 
   useEffect(() => {
     doMulticall();
