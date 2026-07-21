@@ -39,7 +39,7 @@ const useFetchAssetBalanceData = (
   }: {
     poll: boolean;
     pollingFrequency: number;
-  } = { poll: true, pollingFrequency: 20000 }
+  } = { poll: false, pollingFrequency: 20000 }
 ) => {
   const [data, setData] = useState<UserAssetBalanceData>(
     defaultUserAssetBalanceData
@@ -162,9 +162,8 @@ const useFetchAssetBalanceData = (
   }, [doMulticall, transactionsCounter]);
 
   /**
-   * Schedule polling
-   * We still need polling as user might perform transaction that changes their asset balance
-   * (buy/sell) outside of app
+   * Schedule optional polling. By default, balances refresh on wallet/context
+   * changes and completed app transactions to avoid background RPC churn.
    */
   useEffect(() => {
     let pollInterval: any = undefined;
