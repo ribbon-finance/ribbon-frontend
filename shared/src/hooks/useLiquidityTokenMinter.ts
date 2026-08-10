@@ -1,14 +1,8 @@
-import { useWeb3React } from "@web3-react/core";
-import { useEffect, useState } from "react";
+import { useMemo } from "react";
 
-import { LiquidityTokenMinter } from "../codegen/LiquidityTokenMinter";
 import { LiquidityTokenMinterFactory } from "../codegen/LiquidityTokenMinterFactory";
-import {
-  isEthNetwork,
-  LiquidityTokenMinterAddress,
-} from "../constants/constants";
-import { useETHWeb3Context, useWeb3Context } from "./web3Context";
-import useWeb3Wallet from "./useWeb3Wallet";
+import { LiquidityTokenMinterAddress } from "../constants/constants";
+import { useWeb3Context } from "./web3Context";
 
 export const getLiquidityTokenMinter = (
   library: any,
@@ -23,21 +17,11 @@ export const getLiquidityTokenMinter = (
 };
 
 const useLiquidityTokenMinter = () => {
-  const { chainId, provider } = useWeb3React();
-  const { active } = useWeb3Wallet();
   const { provider: defaultProvider } = useWeb3Context();
-  const [contract, setContract] = useState<LiquidityTokenMinter | null>(null);
-
-  useEffect(() => {
-    if (active && chainId && isEthNetwork(chainId)) {
-      setContract(getLiquidityTokenMinter(provider || defaultProvider, active));
-      return;
-    }
-
-    setContract(getLiquidityTokenMinter(provider, false));
-  }, [provider, chainId, active, defaultProvider]);
-
-  return contract;
+  return useMemo(
+    () => getLiquidityTokenMinter(defaultProvider, false),
+    [defaultProvider]
+  );
 };
 
 export default useLiquidityTokenMinter;

@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { useWeb3React } from "@web3-react/core";
 import { BigNumber, Event } from "ethers";
 import moment from "moment";
@@ -28,7 +28,7 @@ const useFetchLiquidityMiningData = ({
   enabled?: boolean;
   includeAccountData?: boolean;
 } = {}): LiquidityMiningPoolData => {
-  const { chainId, account: web3Account, provider } = useWeb3React();
+  const { chainId, account: web3Account } = useWeb3React();
   const { active } = useWeb3Wallet();
   const { provider: defaultProvider } = useWeb3Context();
   const account = impersonateAddress ? impersonateAddress : web3Account;
@@ -38,6 +38,7 @@ const useFetchLiquidityMiningData = ({
     defaultLiquidityMiningPoolData
   );
   const [, setMulticallCounter] = useState(0);
+  const lastFetchKey = useRef<string>();
 
   const doMulticall = useCallback(async () => {
     if (!enabled) {
@@ -68,19 +69,15 @@ const useFetchLiquidityMiningData = ({
     const responses = await Promise.all(
       StakingVaultList.map(async (vault) => {
         const tokenContract = getERC20Token(
-          provider || defaultProvider,
+          defaultProvider,
           getERC20TokenNameFromVault(vault, "v1"),
           chainId,
-          active
+          false
         );
         if (!tokenContract) {
           return { vault };
         }
-        const contract = getStakingReward(
-          provider || defaultProvider,
-          vault,
-          active
-        );
+        const contract = getStakingReward(defaultProvider, vault, false);
         if (!contract || !VaultLiquidityMiningMap.lm[vault]) {
           return { vault };
         }
@@ -181,21 +178,34 @@ const useFetchLiquidityMiningData = ({
     if (!isProduction()) {
       console.timeEnd("Liquidity Mining Pool Data Fetch"); // eslint-disable-line
     }
+  }, [account, active, chainId, defaultProvider, enabled, includeAccountData]);
+
+  useEffect(() => {
+    if (!enabled) {
+      lastFetchKey.current = undefined;
+      return;
+    }
+
+    const fetchKey = includeAccountData
+      ? [chainId, account, active, transactionsCounter].join(":")
+      : "public";
+    if (lastFetchKey.current === fetchKey) {
+      return;
+    }
+    lastFetchKey.current = fetchKey;
+
+    doMulticall();
   }, [
     account,
     active,
     chainId,
-    defaultProvider,
+    doMulticall,
     enabled,
     includeAccountData,
-    provider,
+    transactionsCounter,
   ]);
 
-  useEffect(() => {
-    doMulticall();
-  }, [doMulticall, transactionsCounter]);
-
-  return data;
+  return enabled ? data : { ...defaultLiquidityMiningPoolData, loading: false };
 };
 
 export default useFetchLiquidityMiningData;

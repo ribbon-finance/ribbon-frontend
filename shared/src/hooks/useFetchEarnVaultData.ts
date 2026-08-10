@@ -24,7 +24,7 @@ const useFetchEarnVaultData = ({
   enabled?: boolean;
   includeAccountData?: boolean;
 } = {}): V2VaultData => {
-  const { chainId, account: web3Account, provider } = useWeb3React();
+  const { chainId, account: web3Account } = useWeb3React();
   const { active: web3Active } = useWeb3Wallet();
   const account = impersonateAddress ? impersonateAddress : web3Account;
   const { transactionsCounter } = usePendingTransactions();
@@ -69,9 +69,9 @@ const useFetchEarnVaultData = ({
         );
 
         const contract = getVaultContract(
-          active ? provider : inferredProviderFromVault,
+          inferredProviderFromVault,
           vault,
-          active
+          false
         ) as RibbonEarnVault;
 
         if (!contract) {
@@ -259,6 +259,7 @@ const useFetchEarnVaultData = ({
 
   useEffect(() => {
     if (!enabled) {
+      lastFetchKey.current = undefined;
       return;
     }
 

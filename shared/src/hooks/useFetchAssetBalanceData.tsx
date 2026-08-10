@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { BigNumber } from "ethers";
 
 import { Assets, AssetsList } from "../store/types";
@@ -14,6 +14,7 @@ import useWeb3Wallet from "./useWeb3Wallet";
 import { isEVMChain, isSolanaChain } from "../utils/chains";
 import { useChain } from "./chainContext";
 import { getChainByAsset } from "../utils/asset";
+import { useWeb3Context } from "./web3Context";
 
 interface AssetBalance {
   asset: Assets;
@@ -46,17 +47,14 @@ const useFetchAssetBalanceData = (
   const [data, setData] = useState<UserAssetBalanceData>(
     defaultUserAssetBalanceData
   );
-  const {
-    ethereumProvider,
-    chainId,
-    active,
-    account: web3Account,
-  } = useWeb3Wallet();
+  const { chainId, active, account: web3Account } = useWeb3Wallet();
   const account = impersonateAddress ? impersonateAddress : web3Account;
   const { transactionsCounter } = usePendingTransactions();
   const { connection } = useConnection();
   const { publicKey } = useWallet();
   const [chain] = useChain();
+  const { provider: readOnlyProvider } = useWeb3Context(chainId);
+  const lastFetchKey = useRef<string>();
   const doMulticall = useCallback(async () => {
     try {
       if (!enabled) {
@@ -90,15 +88,16 @@ const useFetchAssetBalanceData = (
               /**
                * Return default response if it is not eth chain
                */
-              if (isEVMChain(chain) && ethereumProvider) {
+              if (isEVMChain(chain)) {
                 const token = getERC20Token(
-                  ethereumProvider,
+                  readOnlyProvider,
                   asset.toLowerCase() as ERC20Token,
-                  chainId as number
+                  chainId as number,
+                  false
                 );
                 if (token) {
                   const balance = await (isNoApproveToken(asset)
-                    ? ethereumProvider.getBalance(account!)
+                    ? readOnlyProvider.getBalance(account!)
                     : token.balanceOf(account!));
 
                   return { asset, balance };
@@ -160,7 +159,7 @@ const useFetchAssetBalanceData = (
     chain,
     chainId,
     enabled,
-    ethereumProvider,
+    readOnlyProvider,
     connection,
     publicKey,
   ]);
@@ -169,8 +168,35 @@ const useFetchAssetBalanceData = (
    * Fetch on first load and transaction success
    */
   useEffect(() => {
+    if (!enabled) {
+      lastFetchKey.current = undefined;
+      return;
+    }
+
+    const fetchKey = [
+      active,
+      account,
+      chain,
+      chainId,
+      publicKey?.toString(),
+      transactionsCounter,
+    ].join(":");
+    if (lastFetchKey.current === fetchKey) {
+      return;
+    }
+    lastFetchKey.current = fetchKey;
+
     doMulticall();
-  }, [doMulticall, transactionsCounter]);
+  }, [
+    account,
+    active,
+    chain,
+    chainId,
+    doMulticall,
+    enabled,
+    publicKey,
+    transactionsCounter,
+  ]);
 
   /**
    * Schedule optional polling. By default, balances refresh on wallet/context

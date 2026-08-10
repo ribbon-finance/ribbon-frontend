@@ -24,7 +24,14 @@ const getHistoricalAssetPricesInUSD = async (
   const response = await axios.get(apiURL);
   const { data } = response;
 
-  return data;
+  if (!Array.isArray(data)) {
+    throw new Error("Invalid historical asset price response");
+  }
+
+  return data.filter(
+    (item): item is { price: number; timestamp: number } =>
+      typeof item?.price === "number" && typeof item?.timestamp === "number"
+  );
 };
 
 interface SimplePriceAPI {

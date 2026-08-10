@@ -23,7 +23,7 @@ const useFetchVaultData = ({
   enabled?: boolean;
   includeAccountData?: boolean;
 } = {}): VaultData => {
-  const { chainId, provider, account: web3Account } = useWeb3React();
+  const { chainId, account: web3Account } = useWeb3React();
   const { active: web3Active } = useWeb3Wallet();
   const { provider: defaultProvider } = useWeb3Context();
   const account = impersonateAddress ? impersonateAddress : web3Account;
@@ -59,7 +59,10 @@ const useFetchVaultData = ({
             web3Active &&
             isVaultSupportedOnChain(vault, chainId || 1)
         );
-        const contract = getVault(provider || defaultProvider, vault, active);
+        // These are all view calls, including the account-specific reads.
+        // Keep them on the shared read-only provider instead of routing them
+        // through the connected wallet and its RPC/simulation pipeline.
+        const contract = getVault(defaultProvider, vault, false);
 
         if (!contract) {
           return { vault };
@@ -159,7 +162,6 @@ const useFetchVaultData = ({
   }, [
     web3Active,
     chainId,
-    provider,
     defaultProvider,
     account,
     enabled,
@@ -168,6 +170,7 @@ const useFetchVaultData = ({
 
   useEffect(() => {
     if (!enabled) {
+      lastFetchKey.current = undefined;
       return;
     }
 

@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import {
   defaultLiquidityGaugeV5PoolData,
   LiquidityGaugeV5PoolData,
@@ -29,12 +29,7 @@ const useFetchLiquidityGaugeV5Data = ({
   enabled?: boolean;
   includeAccountData?: boolean;
 } = {}): LiquidityGaugeV5PoolData => {
-  const {
-    active,
-    account: web3Account,
-    ethereumProvider,
-    chainId,
-  } = useWeb3Wallet();
+  const { active, account: web3Account, chainId } = useWeb3Wallet();
   const { provider } = useWeb3Context();
   const account = impersonateAddress ? impersonateAddress : web3Account;
   const { transactionsCounter } = usePendingTransactions();
@@ -45,6 +40,7 @@ const useFetchLiquidityGaugeV5Data = ({
     defaultLiquidityGaugeV5PoolData
   );
   const [, setMulticallCounter] = useState(0);
+  const lastFetchKey = useRef<string>();
 
   const doMulticall = useCallback(async () => {
     if (!enabled) {
@@ -93,24 +89,15 @@ const useFetchLiquidityGaugeV5Data = ({
     ]);
     const [rate, periodEndTime] = await minterResponsePromises;
 
-    const userAccount = includeAccountData ? account : undefined;
-    const userActive = includeAccountData ? active : false;
+    const userAccount = includeAccountData && active ? account : undefined;
 
     const gaugeResponsesPromises = Promise.all(
       Object.keys(VaultLiquidityMiningMap.lg5).map(async (_vault) => {
         const vault = _vault as VaultOptions;
 
-        const lg5Contract = getLiquidityGaugeV5(
-          ethereumProvider || provider,
-          vault,
-          userActive
-        )!;
+        const lg5Contract = getLiquidityGaugeV5(provider, vault, false)!;
 
-        const vaultContract = getVaultContract(
-          ethereumProvider || provider,
-          vault,
-          userActive
-        );
+        const vaultContract = getVaultContract(provider, vault, false);
 
         /**
          * 1. Pool size
@@ -268,7 +255,6 @@ const useFetchLiquidityGaugeV5Data = ({
     account,
     active,
     enabled,
-    ethereumProvider,
     gaugeControllerContract,
     includeAccountData,
     minterContract,
@@ -277,10 +263,33 @@ const useFetchLiquidityGaugeV5Data = ({
   ]);
 
   useEffect(() => {
-    doMulticall();
-  }, [doMulticall, transactionsCounter]);
+    if (!enabled) {
+      lastFetchKey.current = undefined;
+      return;
+    }
 
-  return data;
+    const fetchKey = includeAccountData
+      ? [chainId, account, active, transactionsCounter].join(":")
+      : "public";
+    if (lastFetchKey.current === fetchKey) {
+      return;
+    }
+    lastFetchKey.current = fetchKey;
+
+    doMulticall();
+  }, [
+    account,
+    active,
+    chainId,
+    doMulticall,
+    enabled,
+    includeAccountData,
+    transactionsCounter,
+  ]);
+
+  return enabled
+    ? data
+    : { ...defaultLiquidityGaugeV5PoolData, loading: false };
 };
 
 export default useFetchLiquidityGaugeV5Data;

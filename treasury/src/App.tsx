@@ -4,9 +4,9 @@ import smoothscroll from "smoothscroll-polyfill";
 
 import RootApp from "./components/RootApp";
 import { Web3ContextProvider } from "shared/lib/hooks/web3Context";
-import { Web3DataContextProvider } from "shared/lib/hooks/web3DataContext";
+import { Web3DataContextProvider } from "shared/lib/hooks/web3DataContextProvider";
 import { SubgraphDataContextProvider } from "shared/lib/hooks/subgraphDataContext";
-import { PendingTransactionsContextProvider } from "shared/lib/hooks/pendingTransactionsContext";
+import { PendingTransactionsContextProvider } from "shared/lib/hooks/pendingTransactionsContextProvider";
 import { ExternalAPIDataContextProvider } from "shared/lib/hooks/externalAPIDataContext";
 import { ChainContextProvider } from "shared/lib/hooks/chainContext";
 import { allConnectors } from "shared/lib/utils/wallet/connectors";

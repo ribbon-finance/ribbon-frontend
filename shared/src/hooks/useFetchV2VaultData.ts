@@ -36,7 +36,6 @@ const useFetchV2VaultData = ({
     chainId,
     isActive: web3Active,
     account: web3Account,
-    provider,
   } = useWeb3React();
   const account = impersonateAddress ? impersonateAddress : web3Account;
   const expiryTimestamp = getNextFridayTimestamp();
@@ -85,9 +84,9 @@ const useFetchV2VaultData = ({
         );
 
         const contract = getVaultContract(
-          active ? provider : inferredProviderFromVault,
+          inferredProviderFromVault,
           vault,
-          active
+          false
         ) as RibbonV2ThetaVault;
 
         if (!contract) {
@@ -103,9 +102,9 @@ const useFetchV2VaultData = ({
 
         const strikeSelectionContract = strikeSelectionAddress
           ? getStrikeSelectionContract(
-              provider || inferredProviderFromVault,
+              inferredProviderFromVault,
               strikeSelectionAddress,
-              active
+              false
             )
           : undefined;
 
@@ -283,7 +282,6 @@ const useFetchV2VaultData = ({
     getProviderForNetwork,
     web3Active,
     chainId,
-    provider,
     expiryTimestamp,
     account,
     enabled,
@@ -292,6 +290,7 @@ const useFetchV2VaultData = ({
 
   useEffect(() => {
     if (!enabled) {
+      lastFetchKey.current = undefined;
       return;
     }
 
